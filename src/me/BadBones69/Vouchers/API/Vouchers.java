@@ -58,6 +58,9 @@ public class Vouchers {
 		String vName = getVoucher(voucher, "%Arg%").getItemMeta().getDisplayName();
 		if(vName.contains("%Arg%") || vName.contains("%arg%")){
 			String[] b = vName.split("%Arg%");
+			if(!name.startsWith(b[0])){
+				return false;
+			}
 			if(b.length>=1)argument = name.replace(b[0], "");
 			if(b.length>=2)argument = argument.replace(b[1], "");
 			if(name.equalsIgnoreCase(getVoucher(voucher, argument).getItemMeta().getDisplayName())){
