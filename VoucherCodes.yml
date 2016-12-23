@@ -1,0 +1,18 @@
+Codes:
+  IamAVoucherCode: #The Voucher Code.
+    Enabled/Disabled: True
+    CaseSensitive: False #Toggle on Case Sensitive code.
+    Commands: #Commands run when used. Delete if you don't want to use any commands.
+      - 'Give %Player% stone 23'
+    Messages: #The message given to a player when they redeem the code. Delete if you don't want to use a message.
+      - '&5Congrads on redeeming the code %Code% %Player%.'
+    BroadCasts: #The broadcast when the voucher is used. Delete if you don't want to use a broadcast.
+      - '&6&l%Player% &3has just used the code IAmAVoucherCode!!!'
+    Limited: False #If false then anyone can use it. If true then only a specified amount can use it.
+    CodesLeft: 10 #The amount of times the code can be used.
+    Permission-Toggle: True #If the it checks if the Player has permission to use the Voucher.
+    Permission-Node: IAmAVoucherPerm #The Voucher's Perm Voucher.<VoucherPerm>
+    SoundToggle: True #Turn on and off the sound when the code is used.
+    #1.8 sounds are found here: http://docs.codelanx.com/Bukkit/1.8/org/bukkit/Sound.html
+    #1.9 sounds are found here: https://hub.spigotmc.org/javadocs/bukkit/org/bukkit/Sound.html
+    Sound: 'UI_BUTTON_CLICK' #This is a 1.9 sound. Make sure to change it to CLICK if you are on 1.8. Delete if you dont want a sound.
