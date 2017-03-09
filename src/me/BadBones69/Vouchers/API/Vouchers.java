@@ -13,9 +13,8 @@ import org.bukkit.enchantments.Enchantment;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 
-import me.BadBones69.Vouchers.Methods;
 import me.BadBones69.Vouchers.Main;
-import me.BadBones69.Vouchers.MultiSupport.Version;
+import me.BadBones69.Vouchers.Methods;
 
 public class Vouchers {
 	
@@ -230,17 +229,13 @@ public class Vouchers {
 	}
 	
 	public static Sound getSound(String voucher){
-		Sound sound = Sound.valueOf(getConfig().getString("Vouchers." + voucher + ".Options.Sound.Sound"));
-		if(sound == null){
-			Bukkit.getLogger().log(Level.WARNING, "[Vouchers]>> The voucher " + voucher + "'s sound that you set to " + sound + " is not a sound. "
-					+ "Please go to the config and set a correct sound or turn the sound off in the SoundToggle setting.");
-			if(Version.getVersion().getVersionInteger()>=Version.v1_9_R1.getVersionInteger()){
-				sound = Sound.valueOf("UI_BUTTON_CLICK");
-			}else{
-				sound = Sound.valueOf("CLICK");
-			}
+		try{
+			return Sound.valueOf(getConfig().getString("Vouchers." + voucher + ".Options.Sound.Sound"));
+		}catch(Exception e){
+			Bukkit.getLogger().log(Level.WARNING, "[Vouchers]>> The voucher " + voucher + "'s sound that you set to " + getConfig().getString("Vouchers." + voucher + ".Options.Sound.Sound")
+					+ " is not a sound. Please go to the config and set a correct sound or turn the sound off in the SoundToggle setting.");	
+			return null;
 		}
-		return sound;
 	}
 	
 	private static Color getColor(String color) {

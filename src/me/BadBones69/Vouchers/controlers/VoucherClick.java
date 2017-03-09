@@ -14,6 +14,7 @@ import org.bukkit.inventory.ItemStack;
 
 import me.BadBones69.Vouchers.Main;
 import me.BadBones69.Vouchers.Methods;
+import me.BadBones69.Vouchers.Version;
 import me.BadBones69.Vouchers.API.Vouchers;
 
 public class VoucherClick implements Listener{
@@ -22,7 +23,7 @@ public class VoucherClick implements Listener{
 	
 	@EventHandler
 	public void onVoucherClick(PlayerInteractEvent e){
-		ItemStack item = e.getItem();
+		ItemStack item = getItemInHand(e.getPlayer());
 		Player player = e.getPlayer();
 		Action action = e.getAction();
 		FileConfiguration data = Main.settings.getData();
@@ -76,6 +77,15 @@ public class VoucherClick implements Listener{
 					}
 				}
 			}
+		}
+	}
+	
+	@SuppressWarnings("deprecation")
+	private static ItemStack getItemInHand(Player player){
+		if(Version.getVersion().getVersionInteger()>=Version.v1_9_R1.getVersionInteger()){
+			return player.getInventory().getItemInMainHand();
+		}else{
+			return player.getItemInHand();
 		}
 	}
 	
