@@ -1,4 +1,4 @@
-package me.BadBones69.Vouchers.API;
+package me.BadBones69.Vouchers.api;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -51,6 +51,7 @@ public class Vouchers {
 		}
 		return null;
 	}
+	
 	public static Boolean hasVoucherItemName(ItemStack item, String voucher){
 		String name = item.getItemMeta().getDisplayName();
 		String argument = "";
@@ -114,14 +115,22 @@ public class Vouchers {
 		String id = getConfig().getString("Vouchers." + voucher + ".Item");
 		String name = getConfig().getString("Vouchers." + voucher + ".Name");
 		List<String> lore = getConfig().getStringList("Vouchers." + voucher + ".Lore");
-		return Methods.makeItem(id, 1, name, lore);
+		Boolean glowing = false;
+		if(getConfig().contains("Vouchers." + voucher + ".Glowing")){
+			glowing = getConfig().getBoolean("Vouchers." + voucher + ".Glowing");
+		}
+		return Methods.addGlow(Methods.makeItem(id, 1, name, lore), glowing);
 	}
 	
 	public static ItemStack getVoucher(String voucher, Integer amount){
 		String id = getConfig().getString("Vouchers." + voucher + ".Item");
 		String name = getConfig().getString("Vouchers." + voucher + ".Name");
 		List<String> lore = getConfig().getStringList("Vouchers." + voucher + ".Lore");
-		return Methods.makeItem(id, amount, name, lore);
+		Boolean glowing = false;
+		if(getConfig().contains("Vouchers." + voucher + ".Glowing")){
+			glowing = getConfig().getBoolean("Vouchers." + voucher + ".Glowing");
+		}
+		return Methods.addGlow(Methods.makeItem(id, amount, name, lore), glowing);
 	}
 	
 	public static ItemStack getVoucher(String voucher, String argument){
@@ -132,7 +141,11 @@ public class Vouchers {
 		for(String l : getConfig().getStringList("Vouchers." + voucher + ".Lore")){
 			lore.add(l.replaceAll("%Arg%", argument).replaceAll("%arg%", argument));
 		}
-		return Methods.makeItem(id, 1, name, lore);
+		Boolean glowing = false;
+		if(getConfig().contains("Vouchers." + voucher + ".Glowing")){
+			glowing = getConfig().getBoolean("Vouchers." + voucher + ".Glowing");
+		}
+		return Methods.addGlow(Methods.makeItem(id, 1, name, lore), glowing);
 	}
 	
 	public static ItemStack getVoucher(String voucher, String argument, Integer amount){
@@ -143,7 +156,11 @@ public class Vouchers {
 		for(String l : getConfig().getStringList("Vouchers." + voucher + ".Lore")){
 			lore.add(l.replaceAll("%Arg%", argument).replaceAll("%arg%", argument));
 		}
-		return Methods.makeItem(id, amount, name, lore);
+		Boolean glowing = false;
+		if(getConfig().contains("Vouchers." + voucher + ".Glowing")){
+			glowing = getConfig().getBoolean("Vouchers." + voucher + ".Glowing");
+		}
+		return Methods.addGlow(Methods.makeItem(id, amount, name, lore), glowing);
 	}
 	
 	public static ArrayList<ItemStack> getItems(String voucher){

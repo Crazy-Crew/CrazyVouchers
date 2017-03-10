@@ -22,12 +22,13 @@ import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.enchantments.Enchantment;
 import org.bukkit.entity.Firework;
 import org.bukkit.entity.Player;
+import org.bukkit.inventory.ItemFlag;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.FireworkMeta;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.plugin.Plugin;
 
-import me.BadBones69.Vouchers.API.FireworkDamageAPI;
+import me.BadBones69.Vouchers.api.FireworkDamageAPI;
 
 public class Methods{
 	
@@ -406,5 +407,22 @@ public class Methods{
 		}
 		return enchants.get(en.getName());
 	}
+	
+	public static ItemStack addGlow(ItemStack item, boolean glowing){
+		if(glowing){
+			if(item != null){
+				if(item.hasItemMeta()){
+					if(item.getItemMeta().hasEnchants()){
+						return item;
+					}
+				}
+				item.addUnsafeEnchantment(Enchantment.LUCK, 1);
+				ItemMeta  meta = item.getItemMeta();
+				meta.addItemFlags(ItemFlag.HIDE_ENCHANTS);
+				item.setItemMeta(meta);
+			}
+		}
+        return item;
+    }
 	
 }

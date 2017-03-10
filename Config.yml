@@ -7,8 +7,8 @@
 # <Enchantment>:<Level> - Choose the enchantment you want to add to the item. You can use the in-game names of the enchantment if you want. Replace the spaces in the name with a "_".
 ###########################################################
 #                    Sound Options                        #
-# 1.8 and lower players use these sounds: <Link Needed>   #
-# 1.9 and up players use these sounds: <Link Needed>      #
+# 1.8 and lower players use these sounds: http://docs.codelanx.com/Bukkit/1.8/org/bukkit/Sound.html
+# 1.9 and up players use these sounds: https://hub.spigotmc.org/javadocs/spigot/org/bukkit/Sound.html
 ###################################################################
 #                         Firework Colors:                        #
 #      Aqua, Black, Blue, Fuchsia, Gray, Green, Lime, Maroon,     #
@@ -23,6 +23,7 @@ Vouchers: #Where you make your vouchers.
     Lore: #The item lore
       - '&7Use this voucher to gain &a$%Arg%&7.'
       - '&7&l(&6&l!&7&l) &7Right click to redeem.'
+    Glowing: false #Toggle if the item will have a glowing effect or not.
     Commands: #The commands that are run when redeemed.
       - 'eco give %Player% %Arg%'
     Options: #The options
@@ -47,6 +48,7 @@ Vouchers: #Where you make your vouchers.
     Lore:
       - '&7Use this voucher to rank up to &c%Arg%&7.'
       - '&7&l(&6&l!&7&l) &7Right click to redeem.'
+    Glowing: false
     Commands:
       - 'pex user %Player% group set %Arg%'
     Options:
@@ -71,6 +73,7 @@ Vouchers: #Where you make your vouchers.
     Lore:
       - '&7Use this voucher to get a god set.'
       - '&7&l(&6&l!&7&l) &7Right click to redeem.'
+    Glowing: true
     Items:
       - 'Item:310, Amount:1, Name:&bGod Helmet, Protection:4, Respiration:1, Aqua_Affinity:3, Unbreaking:3, Thorns:3'
       - 'Item:311, Amount:1, Name:&bGod Chestplate, Protection:4, Unbreaking:3, Thorns:3'

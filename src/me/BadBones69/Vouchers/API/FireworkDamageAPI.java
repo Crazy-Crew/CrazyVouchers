@@ -1,4 +1,4 @@
-package me.BadBones69.Vouchers.API;
+package me.BadBones69.Vouchers.api;
 
 import java.util.ArrayList;
 

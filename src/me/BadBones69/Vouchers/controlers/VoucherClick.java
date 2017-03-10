@@ -10,12 +10,13 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.Action;
 import org.bukkit.event.player.PlayerInteractEvent;
+import org.bukkit.inventory.EquipmentSlot;
 import org.bukkit.inventory.ItemStack;
 
 import me.BadBones69.Vouchers.Main;
 import me.BadBones69.Vouchers.Methods;
-import me.BadBones69.Vouchers.Version;
-import me.BadBones69.Vouchers.API.Vouchers;
+import me.BadBones69.Vouchers.api.Vouchers;
+import me.BadBones69.Vouchers.multisupport.Version;
 
 public class VoucherClick implements Listener{
 	
@@ -28,10 +29,15 @@ public class VoucherClick implements Listener{
 		Action action = e.getAction();
 		FileConfiguration data = Main.settings.getData();
 		FileConfiguration config = Main.settings.getConfig();
+		if(Version.getVersion().getVersionInteger() >= Version.v1_9_R1.getVersionInteger()){
+			if(e.getHand() != EquipmentSlot.HAND){
+				return;
+			}
+		}
 		if(action == Action.RIGHT_CLICK_BLOCK || action == Action.RIGHT_CLICK_AIR){
-			if(item==null)return;
+			if(item == null)return;
 			if(item.hasItemMeta()){
-				if(item.getItemMeta().hasDisplayName()&&item.getItemMeta().hasLore()){
+				if(item.getItemMeta().hasDisplayName() && item.getItemMeta().hasLore()){
 					for(String voucher : Vouchers.getVouchers()){
 						if(Vouchers.hasVoucherItemName(item, voucher) || item.getItemMeta().getDisplayName().equalsIgnoreCase(Vouchers.getVoucher(voucher).getItemMeta().getDisplayName())){
 							e.setCancelled(true);

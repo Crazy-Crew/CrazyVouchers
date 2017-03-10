@@ -11,7 +11,7 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.plugin.java.JavaPlugin;
 
-import me.BadBones69.Vouchers.API.Vouchers;
+import me.BadBones69.Vouchers.api.Vouchers;
 import me.BadBones69.Vouchers.controlers.GUI;
 import me.BadBones69.Vouchers.controlers.VoucherClick;
 
