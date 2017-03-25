@@ -29,8 +29,13 @@ Vouchers: #Where you make your vouchers.
     Options: #The options
       Message: '&7You have just earned $%Arg%.' #The message sent to the player when redeemed. Set to '' if no message needs sent.
       Permission: #Permission options.
-        Toggle: false #Toggle the permission on or off.
-        Node: 'Money' #The permission node.
+        Whitelist-Permission: #The player needs this permission to use it.
+          Toggle: false #Toggle the permission on or off.
+          Node: 'money' #The permission node.
+        Blacklist-Permissions: #If the player has any of these permissions then they can't use the voucher.
+          Toggle: false #Toggle if it checks for black listed permissions.
+          Permissions: #List all the blacklisted permissions here.
+            - 'voucher.blacklist.money'
       Limiter: #Limiter options.
         Toggle: false #Toggle on or off the limiter.
         Limit: 10 #The limit of how many time it may be used.
@@ -54,8 +59,13 @@ Vouchers: #Where you make your vouchers.
     Options:
       Message: '&7Congratulation, you have just ranked up to &6%Arg%&7.'
       Permission:
-        Toggle: false
-        Node: 'RankUp'
+        Whitelist-Permission:
+          Toggle: false
+          Node: 'rankup'
+        Blacklist-Permissions:
+          Toggle: false
+          Permissions:
+            - 'voucher.blacklist.rankup'
       Limiter:
         Toggle: false
         Limit: 10
@@ -82,8 +92,13 @@ Vouchers: #Where you make your vouchers.
     Options:
       Message: '&7Congratulation, you have your self a new God-Set.'
       Permission:
-        Toggle: false
-        Node: 'GSet'
+        Whitelist-Permission:
+          Toggle: false
+          Node: 'gset'
+        Blacklist-Permissions:
+          Toggle: false
+          Permissions:
+            - 'voucher.blacklist.gset'
       Limiter:
         Toggle: false
         Limit: 10

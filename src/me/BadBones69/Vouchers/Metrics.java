@@ -1,4 +1,4 @@
-package me.BadBones69.Vouchers;
+package me.badbones69.vouchers;
 
 import java.io.BufferedReader;
 import java.io.File;

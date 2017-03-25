@@ -1,4 +1,4 @@
-package me.BadBones69.Vouchers.multisupport;
+package me.badbones69.vouchers.api;
 
 import org.bukkit.Bukkit;
 

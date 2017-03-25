@@ -1,4 +1,4 @@
-package me.BadBones69.Vouchers.api;
+package me.badbones69.vouchers.api;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -13,8 +13,8 @@ import org.bukkit.enchantments.Enchantment;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 
-import me.BadBones69.Vouchers.Main;
-import me.BadBones69.Vouchers.Methods;
+import me.badbones69.vouchers.Main;
+import me.badbones69.vouchers.Methods;
 
 public class Vouchers {
 	
@@ -225,12 +225,20 @@ public class Vouchers {
 		return colors;
 	}
 	
-	public static Boolean isPermissionEnabled(String voucher){
-		return getConfig().getBoolean("Vouchers." + voucher + ".Options.Permission.Toggle");
+	public static Boolean isWhitelistPermissionEnabled(String voucher){
+		return getConfig().getBoolean("Vouchers." + voucher + ".Options.Permission.Whitelist-Permission.Toggle");
 	}
 	
-	public static String getPermissionNode(String voucher){
-		return getConfig().getString("Vouchers." + voucher + ".Options.Permission.Node");
+	public static String getWhitelistPermissionNode(String voucher){
+		return getConfig().getString("Vouchers." + voucher + ".Options.Permission.Whitelist-Permission.Node");
+	}
+	
+	public static Boolean isBlacklistPermissionsEnabled(String voucher){
+		return getConfig().getBoolean("Vouchers." + voucher + ".Options.Permission.Blacklist-Permissions.Toggle");
+	}
+	
+	public static List<String> getBlacklistPermissions(String voucher){
+		return getConfig().getStringList("Vouchers." + voucher + ".Options.Permission.Blacklist-Permissions.Permissions");
 	}
 	
 	public static Boolean isLimiterEnabled(String voucher){

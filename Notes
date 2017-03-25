@@ -1,18 +1,16 @@
 Requests:
   - Add a option to make vouchers only work in a spasific region.
-  - Add it so a command is ran by the player instead of by console.
   
-Bug Fixes:
+Bug Reports:
   - 
   
 Bug Fixes:
-  - 1.9+ servers when right clicking a block with more then a stack of 1 voucher would use 2 vouchers instead of one.
+  - 
 
 Added:
-  - New Glowing: option for the vouchers.
+  - New black list permission option. This allows you to make the player not able to use a voucher if they have an permission.
   
 Changes:
-  - Code clean up.
-  - Default config now has the missing links for the sounds for 1.8 down and 1.9 up.
-  - 1.8 down sounds: http://docs.codelanx.com/Bukkit/1.8/org/bukkit/Sound.html
-  - 1.9 up sounds: https://hub.spigotmc.org/javadocs/spigot/org/bukkit/Sound.html
+  - Changed the packages names so they follow the java standerds.
+  - Version class was moved to the API package.
+  - Some small code clean up to make it nicer.

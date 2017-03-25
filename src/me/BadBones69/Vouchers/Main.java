@@ -1,4 +1,4 @@
-package me.BadBones69.Vouchers;
+package me.badbones69.vouchers;
 
 import java.io.IOException;
 
@@ -11,9 +11,9 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.plugin.java.JavaPlugin;
 
-import me.BadBones69.Vouchers.api.Vouchers;
-import me.BadBones69.Vouchers.controlers.GUI;
-import me.BadBones69.Vouchers.controlers.VoucherClick;
+import me.badbones69.vouchers.api.Vouchers;
+import me.badbones69.vouchers.controlers.GUI;
+import me.badbones69.vouchers.controlers.VoucherClick;
 
 public class Main extends JavaPlugin implements Listener{
 	

@@ -1,4 +1,4 @@
-package me.BadBones69.Vouchers.controlers;
+package me.badbones69.vouchers.controlers;
 
 import java.util.HashMap;
 import java.util.List;
@@ -13,10 +13,10 @@ import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.inventory.EquipmentSlot;
 import org.bukkit.inventory.ItemStack;
 
-import me.BadBones69.Vouchers.Main;
-import me.BadBones69.Vouchers.Methods;
-import me.BadBones69.Vouchers.api.Vouchers;
-import me.BadBones69.Vouchers.multisupport.Version;
+import me.badbones69.vouchers.Main;
+import me.badbones69.vouchers.Methods;
+import me.badbones69.vouchers.api.Version;
+import me.badbones69.vouchers.api.Vouchers;
 
 public class VoucherClick implements Listener{
 	
@@ -44,7 +44,7 @@ public class VoucherClick implements Listener{
 							String id = config.getString("Vouchers." + voucher + ".Item");
 							ItemStack i = Methods.makeItem(id, 1);
 							if(item.getType() == i.getType()){
-								if(Methods.perVoucherPerm(player, Vouchers.getPermissionNode(voucher), Vouchers.isPermissionEnabled(voucher))){
+								if(passesPermissionChecks(player, voucher)){
 									String uuid = player.getUniqueId().toString();
 									if(!player.hasPermission("Voucher.Bypass")){
 										if(Vouchers.isLimiterEnabled(voucher)){
@@ -87,12 +87,33 @@ public class VoucherClick implements Listener{
 	}
 	
 	@SuppressWarnings("deprecation")
-	private static ItemStack getItemInHand(Player player){
+	private ItemStack getItemInHand(Player player){
 		if(Version.getVersion().getVersionInteger()>=Version.v1_9_R1.getVersionInteger()){
 			return player.getInventory().getItemInMainHand();
 		}else{
 			return player.getItemInHand();
 		}
+	}
+	
+	private boolean passesPermissionChecks(Player player, String voucher){
+		Boolean checker = true;
+		if(!player.isOp()){
+			if(!player.hasPermission(("Voucher." + Vouchers.getWhitelistPermissionNode(voucher)).toLowerCase()) && Vouchers.isWhitelistPermissionEnabled(voucher)){
+				player.sendMessage(Methods.color(Main.settings.getMsgs().getString("Messages.No-Permission-To-Voucher")));
+				checker =  false;
+			}
+			if(checker){
+				if(Vouchers.isBlacklistPermissionsEnabled(voucher)){
+					for(String permission : Vouchers.getBlacklistPermissions(voucher)){
+						if(player.hasPermission(permission.toLowerCase())){
+							player.sendMessage(Methods.color(Main.settings.getMsgs().getString("Messages.Has-Blacklist-Permission")));
+							checker = false;
+						}
+					}
+				}
+			}
+		}
+		return checker;
 	}
 	
 	private void voucherClick(Player player, ItemStack item, String voucher){

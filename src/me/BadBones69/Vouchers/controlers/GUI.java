@@ -1,4 +1,4 @@
-package me.BadBones69.Vouchers.controlers;
+package me.badbones69.vouchers.controlers;
 
 import java.util.ArrayList;
 
@@ -11,9 +11,9 @@ import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 
-import me.BadBones69.Vouchers.Methods;
-import me.BadBones69.Vouchers.api.Vouchers;
-import me.BadBones69.Vouchers.Main;
+import me.badbones69.vouchers.Main;
+import me.badbones69.vouchers.Methods;
+import me.badbones69.vouchers.api.Vouchers;
 
 public class GUI implements Listener{
 	

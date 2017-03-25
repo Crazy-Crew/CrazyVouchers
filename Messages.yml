@@ -12,3 +12,4 @@ Messages:
   Given-All-Players-Voucher: '&3You have just given all players a &6%Voucher% &3voucher.'
   Hit-Limit: '&cYou have hit your limit for using this voucher.'
   Two-Step-Authentication: '&7Right click again to confirm that you want to use this voucher.'
+  Has-Blacklist-Permission: '&cSorry but you can not use this voucher because you have a black-listed permission.'

@@ -1,4 +1,4 @@
-package me.BadBones69.Vouchers;
+package me.badbones69.vouchers;
 
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
@@ -28,7 +28,7 @@ import org.bukkit.inventory.meta.FireworkMeta;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.plugin.Plugin;
 
-import me.BadBones69.Vouchers.api.FireworkDamageAPI;
+import me.badbones69.vouchers.api.FireworkDamageAPI;
 
 public class Methods{
 	
@@ -55,6 +55,7 @@ public class Methods{
 		arg = arg.replaceAll("(&([a-f0-9]))", "");
 		return arg;
 	}
+	
 	public static String color(String msg){
 		msg = msg.replaceAll("(&([a-f0-9]))", "\u00A7$2");
 		msg = msg.replaceAll("&l", ChatColor.BOLD + "");
@@ -63,10 +64,12 @@ public class Methods{
 		msg = msg.replaceAll("&n", ChatColor.UNDERLINE + "");
 		return msg;
 	}
+	
 	public static String removeColor(String msg){
 		msg = ChatColor.stripColor(msg);
 		return msg;
 	}
+	
 	public static boolean isInt(String s) {
 	    try {
 	        Integer.parseInt(s);
@@ -75,6 +78,7 @@ public class Methods{
 	    }
 	    return true;
 	}
+	
 	public static boolean isInt(CommandSender sender, String s) {
 	    try {
 	        Integer.parseInt(s);
@@ -85,6 +89,7 @@ public class Methods{
 	    }
 	    return true;
 	}
+	
 	public static boolean isOnline(CommandSender sender, String name){
 		for(Player player : Bukkit.getServer().getOnlinePlayers()){
 			if(player.getName().equalsIgnoreCase(name)){
@@ -94,6 +99,7 @@ public class Methods{
 		sender.sendMessage(color(Main.settings.getMsgs().getString("Messages.Not-Online")));
 		return false;
 	}
+	
 	public static boolean hasPermission(Player player, String perm){
 		if(!player.hasPermission("Voucher." + perm)){
 			player.sendMessage(color(Main.settings.getMsgs().getString("Messages.No-Permission")));
@@ -101,6 +107,7 @@ public class Methods{
 		}
 		return true;
 	}
+	
 	public static boolean hasPermission(CommandSender sender, String perm){
 		if(sender instanceof Player){
 			Player player = (Player) sender;
@@ -114,13 +121,7 @@ public class Methods{
 			return true;
 		}
 	}
-	public static boolean perVoucherPerm(Player player, String perm, Boolean toggle){
-		if(!player.hasPermission("Voucher." + perm) && toggle){
-			player.sendMessage(color(Main.settings.getMsgs().getString("Messages.No-Permission-To-Voucher")));
-			return false;
-		}
-		return true;
-	}
+	
 	public static ItemStack makeItem(Material material, int amount, int type, String name){
 		ItemStack item = new ItemStack(material, amount, (short) type);
 		ItemMeta m = item.getItemMeta();
@@ -128,6 +129,7 @@ public class Methods{
 		item.setItemMeta(m);
 		return item;
 	}
+	
 	public static ItemStack makeItem(Material material, int amount, int type, String name, List<String> lore){
 		ArrayList<String> l = new ArrayList<String>();
 		ItemStack item = new ItemStack(material, amount, (short) type);
@@ -138,6 +140,7 @@ public class Methods{
 		item.setItemMeta(m);
 		return item;
 	}
+	
 	public static ItemStack makeItem(String type, int amount){
 		int ty = 0;
 		if(type.contains(":")){
@@ -149,6 +152,7 @@ public class Methods{
 		ItemStack item = new ItemStack(m, amount, (short) ty);
 		return item;
 	}
+	
 	public static ItemStack makeItem(String type, int amount, String name, List<String> lore){
 		ArrayList<String> l = new ArrayList<String>();
 		int ty = 0;
@@ -166,6 +170,7 @@ public class Methods{
 		item.setItemMeta(me);
 		return item;
 	}
+	
 	public static ItemStack makeItem(String id, int amount, String name, List<String> lore, Map<Enchantment, Integer> enchants){
 		ArrayList<String> l = new ArrayList<String>();
 		String ma = id;
@@ -185,6 +190,7 @@ public class Methods{
 		item.addUnsafeEnchantments(enchants);
 		return item;
 	}
+	
 	public static boolean isRealCode(Player player, String code){
 		FileConfiguration Code = Main.settings.getCode();
 		if(Code.contains("Codes")){
@@ -202,6 +208,7 @@ public class Methods{
 				.replace("%Arg%", code).replace("%arg%", code)));
 		return false;
 	}
+	
 	public static boolean isCodeEnabled(Player player, String code){
 		if(Main.settings.getCode().contains("Codes")){
 			for(String C : Main.settings.getCode().getConfigurationSection("Codes").getKeys(false)){
@@ -216,6 +223,7 @@ public class Methods{
 				.replace("%Arg%", code).replace("%arg%", code)));
 		return false;
 	}
+	
 	public static boolean hasCodePerm(Player player, String code){
 		if(Main.settings.getCode().contains("Codes")){
 			for(String C : Main.settings.getCode().getConfigurationSection("Codes").getKeys(false)){
@@ -234,6 +242,7 @@ public class Methods{
 				.replace("%Arg%", code).replace("%arg%", code)));
 		return false;
 	}
+	
 	public static void codeRedeem(Player player, String code){
 		FileConfiguration Code = Main.settings.getCode();
 		FileConfiguration Data = Main.settings.getData();
@@ -309,6 +318,7 @@ public class Methods{
 			}
 		}
 	}
+	
 	public static void hasUpdate(){
 		try {
 			HttpURLConnection c = (HttpURLConnection)new URL("http://www.spigotmc.org/api/general.php").openConnection();
@@ -325,6 +335,7 @@ public class Methods{
 			return;
 		}
 	}
+	
 	public static void hasUpdate(Player player){
 		try {
 			HttpURLConnection c = (HttpURLConnection)new URL("http://www.spigotmc.org/api/general.php").openConnection();
