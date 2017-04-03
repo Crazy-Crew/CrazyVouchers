@@ -361,26 +361,23 @@ public class Methods{
 	}
 	
 	public static void fireWork(Location loc, ArrayList<Color> colors) {
-		Firework fw = loc.getWorld().spawn(loc, Firework.class);
-		FireworkMeta fm = fw.getFireworkMeta();
+		final Firework f = loc.getWorld().spawn(loc, Firework.class);
+		FireworkMeta fm = f.getFireworkMeta();
 		fm.addEffects(FireworkEffect.builder().with(FireworkEffect.Type.BALL_LARGE)
 				.withColor(colors)
 				.trail(false)
 				.flicker(false)
 				.build());
 		fm.setPower(0);
-		fw.setFireworkMeta(fm);
-		FireworkDamageAPI.addFirework(fw);
-		detonate(fw);
-	}
-	
-	private static void detonate(final Firework f) {
+		f.setFireworkMeta(fm);
+		FireworkDamageAPI.addFirework(f);
 		Bukkit.getServer().getScheduler().scheduleSyncDelayedTask(plugin, new Runnable() {
 			public void run() {
 				f.detonate();
 			}
 		}, 2);
 	}
+	
 	
 	public static String getEnchantmentName(Enchantment en){
 		HashMap<String, String> enchants = new HashMap<String, String>();

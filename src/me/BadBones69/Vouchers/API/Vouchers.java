@@ -21,7 +21,7 @@ public class Vouchers {
 	private static ArrayList<String> vouchers = new ArrayList<String>();
 	private static HashMap<String, List<String>> commands = new HashMap<String, List<String>>();
 	
-	public static void onLoad(){
+	public static void load(){
 		vouchers.clear();
 		commands.clear();
 		for(String vouch : getConfig().getConfigurationSection("Vouchers").getKeys(false)){
@@ -253,14 +253,17 @@ public class Vouchers {
 		return getConfig().getBoolean("Vouchers." + voucher + ".Options.Sound.Toggle");
 	}
 	
-	public static Sound getSound(String voucher){
+	public static ArrayList<Sound> getSound(String voucher){
+		ArrayList<Sound> sounds = new ArrayList<Sound>();
 		try{
-			return Sound.valueOf(getConfig().getString("Vouchers." + voucher + ".Options.Sound.Sound"));
+			for(String sound : getConfig().getStringList("Vouchers." + voucher + ".Options.Sound.Sounds")){
+				sounds.add(Sound.valueOf(sound));
+			}
 		}catch(Exception e){
-			Bukkit.getLogger().log(Level.WARNING, "[Vouchers]>> The voucher " + voucher + "'s sound that you set to " + getConfig().getString("Vouchers." + voucher + ".Options.Sound.Sound")
-					+ " is not a sound. Please go to the config and set a correct sound or turn the sound off in the SoundToggle setting.");	
-			return null;
+			Bukkit.getLogger().log(Level.WARNING, "[Vouchers]>> The voucher " + voucher + "'s sound that you set to is not a sound. "
+					+ "Please go to the config and set a correct sound or turn the sound off in the SoundToggle setting.");	
 		}
+		return sounds;
 	}
 	
 	private static Color getColor(String color) {

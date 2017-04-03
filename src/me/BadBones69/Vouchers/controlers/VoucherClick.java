@@ -4,6 +4,7 @@ import java.util.HashMap;
 import java.util.List;
 
 import org.bukkit.Bukkit;
+import org.bukkit.Sound;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
@@ -151,7 +152,9 @@ public class VoucherClick implements Listener{
 			}
 		}
 		if(Vouchers.isSoundEnabled(voucher)){
-			player.playSound(player.getLocation(), Vouchers.getSound(voucher), 1, 1);
+			for(Sound sound : Vouchers.getSound(voucher)){
+				player.playSound(player.getLocation(), sound, 1, 1);
+			}
 		}
 		if(Vouchers.isFireworkEnabled(voucher)){
 			Methods.fireWork(player.getLocation(), Vouchers.getFireworkColors(voucher));

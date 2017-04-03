@@ -16,6 +16,7 @@
 ###################################################################
 Settings: #Settings
   Prefix: '&7[&6Vouchers&7]: ' #The prefix before messages.
+  Updater: true
 Vouchers: #Where you make your vouchers.
   Money: #The name of the voucher.
     Item: '339' #The item the voucher is.
@@ -43,7 +44,8 @@ Vouchers: #Where you make your vouchers.
         Toggle: false #Toggle this option on or off.
       Sound: #The sound options.
         Toggle: true #Toggle on or off if a sound is played.
-        Sound: 'CLICK' #The sound that is played. Make sure the sound works with your minecraft version.
+        Sounds: #The sound that is played. Make sure the sound works with your minecraft version.
+          - 'CLICK'
       Firework: #The firework options
         Toggle: true #Toggle if the firework goes off.
         Colors: 'Green, Lime' #The colors of the firework.
@@ -73,7 +75,8 @@ Vouchers: #Where you make your vouchers.
         Toggle: false
       Sound:
         Toggle: true
-        Sound: 'CLICK'
+        Sounds:
+          - 'CLICK'
       Firework:
         Toggle: true
         Colors: 'Black, Gray, Red'
@@ -106,7 +109,8 @@ Vouchers: #Where you make your vouchers.
         Toggle: false
       Sound:
         Toggle: true
-        Sound: 'CLICK'
+        Sounds:
+          - 'CLICK'
       Firework:
         Toggle: true
         Colors: 'Black, Gray, Aqua'

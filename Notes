@@ -1,5 +1,8 @@
 Requests:
   - Add a option to make vouchers only work in a spasific region.
+  - Recode the vouchers to use the constroctors.
+  - Add an option to make temperary codes.
+  - Add an option to allow multiple sounds.
   
 Bug Reports:
   - 
@@ -8,9 +11,7 @@ Bug Fixes:
   - 
 
 Added:
-  - New black list permission option. This allows you to make the player not able to use a voucher if they have an permission.
+  - 
   
 Changes:
-  - Changed the packages names so they follow the java standerds.
-  - Version class was moved to the API package.
-  - Some small code clean up to make it nicer.
+  - 

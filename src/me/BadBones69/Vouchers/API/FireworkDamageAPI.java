@@ -33,7 +33,9 @@ public class FireworkDamageAPI implements Listener{
 	 * @param firework The firework you want to add.
 	 */
 	public static void addFirework(Entity firework){
-		fireworks.add(firework);
+		if(Version.getVersion().comparedTo(Version.v1_11_R1) >= 0){
+			fireworks.add(firework);
+		}
 	}
 	
 	/**

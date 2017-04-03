@@ -10,7 +10,10 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.plugin.java.JavaPlugin;
+import org.bukkit.scheduler.BukkitRunnable;
 
+import me.badbones69.vouchers.api.FireworkDamageAPI;
+import me.badbones69.vouchers.api.Version;
 import me.badbones69.vouchers.api.Vouchers;
 import me.badbones69.vouchers.controlers.GUI;
 import me.badbones69.vouchers.controlers.VoucherClick;
@@ -29,12 +32,15 @@ public class Main extends JavaPlugin implements Listener{
 		Bukkit.getServer().getPluginManager().registerEvents(this, this);
 		Bukkit.getServer().getPluginManager().registerEvents(new VoucherClick(), this);
 		Bukkit.getServer().getPluginManager().registerEvents(new GUI(), this);
-		Vouchers.onLoad();
+		try{
+			if(Version.getVersion().comparedTo(Version.v1_11_R1) >= 0){
+				Bukkit.getServer().getPluginManager().registerEvents(new FireworkDamageAPI(this), this);
+			}
+		}catch(Exception e){}
+		Vouchers.load();
 		try {
 			Metrics metrics = new Metrics(this); metrics.start();
-		} catch (IOException e) { // Failed to submit the stats :-(
-			System.out.println("Error Submitting stats!");
-		}
+		} catch (IOException e) {}
 	}
 	
 	public boolean onCommand(CommandSender sender, Command cmd, String commandLable, String[] args){
@@ -86,7 +92,7 @@ public class Main extends JavaPlugin implements Listener{
 						settings.getData().set("Players.Clear", null);
 						settings.saveData();
 					}
-					Vouchers.onLoad();
+					Vouchers.load();
 					sender.sendMessage(Methods.getPrefix() + Methods.color(settings.getMsgs().getString("Messages.Config-Reload")));
 					return true;
 				}
@@ -193,7 +199,7 @@ public class Main extends JavaPlugin implements Listener{
 	@EventHandler
 	public void onPlayerJoin(PlayerJoinEvent e){
 		final Player player = e.getPlayer();
-		Bukkit.getScheduler().scheduleSyncDelayedTask(this, new Runnable(){
+		new BukkitRunnable(){
 			@Override
 			public void run() {
 				if(player.getName().equals("BadBones69")){
@@ -201,10 +207,16 @@ public class Main extends JavaPlugin implements Listener{
 							+ "&7It is running version &av"+Bukkit.getServer().getPluginManager().getPlugin("Vouchers").getDescription().getVersion()+"&7."));
 				}
 				if(player.isOp()){
-					Methods.hasUpdate(player);
+					if(settings.getConfig().contains("Settings.Updater")){
+						if(settings.getConfig().getBoolean("Settings.Updater")){
+							Methods.hasUpdate(player);
+						}
+					}else{
+						Methods.hasUpdate(player);
+					}
 				}
 			}
-		}, 1*20);
+		}.runTaskLaterAsynchronously(this, 20);
 	}
 	
 }
