@@ -100,14 +100,14 @@ public class VoucherClick implements Listener{
 		Boolean checker = true;
 		if(!player.isOp()){
 			if(!player.hasPermission(("Voucher." + Vouchers.getWhitelistPermissionNode(voucher)).toLowerCase()) && Vouchers.isWhitelistPermissionEnabled(voucher)){
-				player.sendMessage(Methods.color(Main.settings.getMsgs().getString("Messages.No-Permission-To-Voucher")));
+				player.sendMessage(Methods.color(Methods.getPrefix() + Main.settings.getMsgs().getString("Messages.No-Permission-To-Voucher")));
 				checker =  false;
 			}
 			if(checker){
 				if(Vouchers.isBlacklistPermissionsEnabled(voucher)){
 					for(String permission : Vouchers.getBlacklistPermissions(voucher)){
 						if(player.hasPermission(permission.toLowerCase())){
-							player.sendMessage(Methods.color(Main.settings.getMsgs().getString("Messages.Has-Blacklist-Permission")));
+							player.sendMessage(Methods.color(Methods.getPrefix() + Main.settings.getMsgs().getString("Messages.Has-Blacklist-Permission")));
 							checker = false;
 						}
 					}

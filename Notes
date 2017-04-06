@@ -8,10 +8,10 @@ Bug Reports:
   - 
   
 Bug Fixes:
-  - 
+  - Some messages missing the prefix.
 
 Added:
-  - 
+  - New MCUpdate metrics. http://mcupdate.org/plugin?pl=63
   
 Changes:
   - 
