@@ -29,6 +29,7 @@ import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.plugin.Plugin;
 
 import me.badbones69.vouchers.api.FireworkDamageAPI;
+import me.badbones69.vouchers.api.Version;
 
 public class Methods{
 	
@@ -57,17 +58,11 @@ public class Methods{
 	}
 	
 	public static String color(String msg){
-		msg = msg.replaceAll("(&([a-f0-9]))", "\u00A7$2");
-		msg = msg.replaceAll("&l", ChatColor.BOLD + "");
-		msg = msg.replaceAll("&o", ChatColor.ITALIC + "");
-		msg = msg.replaceAll("&k", ChatColor.MAGIC + "");
-		msg = msg.replaceAll("&n", ChatColor.UNDERLINE + "");
-		return msg;
+		return ChatColor.translateAlternateColorCodes('&', msg);
 	}
 	
 	public static String removeColor(String msg){
-		msg = ChatColor.stripColor(msg);
-		return msg;
+		return ChatColor.stripColor(msg);
 	}
 	
 	public static boolean isInt(String s) {
@@ -417,17 +412,19 @@ public class Methods{
 	}
 	
 	public static ItemStack addGlow(ItemStack item, boolean glowing){
-		if(glowing){
-			if(item != null){
-				if(item.hasItemMeta()){
-					if(item.getItemMeta().hasEnchants()){
-						return item;
+		if(Version.getVersion().comparedTo(Version.v1_8_R1) >= 0){
+			if(glowing){
+				if(item != null){
+					if(item.hasItemMeta()){
+						if(item.getItemMeta().hasEnchants()){
+							return item;
+						}
 					}
+					item.addUnsafeEnchantment(Enchantment.LUCK, 1);
+					ItemMeta  meta = item.getItemMeta();
+					meta.addItemFlags(ItemFlag.HIDE_ENCHANTS);
+					item.setItemMeta(meta);
 				}
-				item.addUnsafeEnchantment(Enchantment.LUCK, 1);
-				ItemMeta  meta = item.getItemMeta();
-				meta.addItemFlags(ItemFlag.HIDE_ENCHANTS);
-				item.setItemMeta(meta);
 			}
 		}
         return item;

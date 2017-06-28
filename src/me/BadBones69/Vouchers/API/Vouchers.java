@@ -52,6 +52,98 @@ public class Vouchers {
 		return null;
 	}
 	
+	public static Boolean isVoucher(ItemStack item){
+		try{
+			if(item != null){
+				if(item.hasItemMeta()){
+					if(item.getItemMeta().hasDisplayName() && item.getItemMeta().hasLore()){
+						for(String voucher : getVouchers()){
+							if(getVoucher(voucher, "%Arg%").getItemMeta().getDisplayName().contains("%Arg%")){
+								if(hasVoucherItemName(item, voucher)){
+									int line = 0;
+									Boolean sameLore = true;
+									ItemStack voucherItem = getVoucher(voucher, getVoucherArgumentItemName(item, voucher));
+									for(String lore : item.getItemMeta().getLore()){
+										if(!lore.equals(voucherItem.getItemMeta().getLore().get(line))){
+											sameLore = false;
+											break;
+										}
+										line++;
+									}
+									if(sameLore){
+										return true;
+									}
+									return true;
+								}
+							}else if(item.getItemMeta().getDisplayName().equals(getVoucher(voucher).getItemMeta().getDisplayName())){
+								int line = 0;
+								Boolean sameLore = true;
+								ItemStack voucherItem = getVoucher(voucher);
+								for(String lore : item.getItemMeta().getLore()){
+									if(!lore.equals(voucherItem.getItemMeta().getLore().get(line))){
+										sameLore = false;
+										break;
+									}
+									line++;
+								}
+								if(sameLore){
+									return true;
+								}
+							}
+						}
+					}
+				}
+			}
+		}catch(Exception e){}
+		return false;
+	}
+	
+	public static String getItemVoucher(ItemStack item){
+		try{
+			if(item != null){
+				if(item.hasItemMeta()){
+					if(item.getItemMeta().hasDisplayName() && item.getItemMeta().hasLore()){
+						for(String voucher : getVouchers()){
+							if(getVoucher(voucher, "%Arg%").getItemMeta().getDisplayName().contains("%Arg%")){
+								if(hasVoucherItemName(item, voucher)){
+									int line = 0;
+									Boolean sameLore = true;
+									ItemStack voucherItem = getVoucher(voucher, getVoucherArgumentItemName(item, voucher));
+									for(String lore : item.getItemMeta().getLore()){
+										if(!lore.equals(voucherItem.getItemMeta().getLore().get(line))){
+											sameLore = false;
+											break;
+										}
+										line++;
+									}
+									if(sameLore){
+										return voucher;
+									}
+									return voucher;
+								}
+							}else if(item.getItemMeta().getDisplayName().equals(getVoucher(voucher).getItemMeta().getDisplayName())){
+								int line = 0;
+								Boolean sameLore = true;
+								ItemStack voucherItem = getVoucher(voucher);
+								for(String lore : item.getItemMeta().getLore()){
+									if(!lore.equals(voucherItem.getItemMeta().getLore().get(line))){
+										sameLore = false;
+										break;
+									}
+									line++;
+								}
+								if(sameLore){
+									return voucher;
+								}
+							}
+						}
+					}
+				}
+			}
+		}catch(Exception e){}
+		return null;
+	}
+	
 	public static Boolean hasVoucherItemName(ItemStack item, String voucher){
 		String name = item.getItemMeta().getDisplayName();
 		String argument = "";
@@ -61,8 +153,8 @@ public class Vouchers {
 			if(!name.startsWith(b[0])){
 				return false;
 			}
-			if(b.length>=1)argument = name.replace(b[0], "");
-			if(b.length>=2)argument = argument.replace(b[1], "");
+			if(b.length >= 1)argument = name.replace(b[0], "");
+			if(b.length >= 2)argument = argument.replace(b[1], "");
 			if(name.equalsIgnoreCase(getVoucher(voucher, argument).getItemMeta().getDisplayName())){
 				return true;
 			}

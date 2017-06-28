@@ -35,6 +35,7 @@ Vouchers: #Where you make your vouchers.
           Node: 'money' #The permission node.
         Blacklist-Permissions: #If the player has any of these permissions then they can't use the voucher.
           Toggle: false #Toggle if it checks for black listed permissions.
+          Message: '&cYou have a blacklisted permission and can''t use this voucher.' #The message that is sent to the player if they have a blacklisted message. Use %permission% if you wise to show the permission they need.
           Permissions: #List all the blacklisted permissions here.
             - 'voucher.blacklist.money'
       Limiter: #Limiter options.
@@ -66,6 +67,7 @@ Vouchers: #Where you make your vouchers.
           Node: 'rankup'
         Blacklist-Permissions:
           Toggle: false
+          Message: '&cYou already have this rank and can''t use this voucher.'
           Permissions:
             - 'voucher.blacklist.rankup'
       Limiter:
@@ -100,6 +102,7 @@ Vouchers: #Where you make your vouchers.
           Node: 'gset'
         Blacklist-Permissions:
           Toggle: false
+          Message: '&cYou have a blacklisted permission and can''t use this voucher.'
           Permissions:
             - 'voucher.blacklist.gset'
       Limiter:
