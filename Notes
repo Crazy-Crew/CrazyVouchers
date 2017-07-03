@@ -7,15 +7,10 @@ Bug Reports:
   - 
   
 Bug Fixes:
-  - Fixed some of the color codes not working.
-  - Fireworks in 1.12 would damage players.
-  - If a player has more then one blacklisted permission it sends multiple messages.
-  - 1.7.10 down would error when tring to add glowing to the voucher. 1.7.10 down now do not glow even when set to true.
-  - If you had multiple vouchers with the same name only the top voucher would be used.
+  - 
 
 Added:
-  - The MCUpdate class has been updated.
-  - New option to send spesific blacklisted permisison message to a player.
+  - 
   
 Changes:
   - 

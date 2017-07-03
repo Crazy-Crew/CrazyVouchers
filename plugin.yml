@@ -1,8 +1,7 @@
 name: Vouchers
 main: me.badbones69.vouchers.Main
-version: 1.6.4
-description: >
-             Make Custom Vouchers just for your server!
+version: 1.6.4.1
+description:  Make Custom Vouchers just for your server!
 commands:
   Voucher:
     description: Give yourself a Voucher!
