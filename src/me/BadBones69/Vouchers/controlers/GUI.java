@@ -11,25 +11,20 @@ import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 
-import me.badbones69.vouchers.Main;
 import me.badbones69.vouchers.Methods;
+import me.badbones69.vouchers.api.Voucher;
 import me.badbones69.vouchers.api.Vouchers;
 
 public class GUI implements Listener{
 	
 	public static void openGUI(Player player){
 		ArrayList<ItemStack> items = new ArrayList<ItemStack>();
-		int size = 0;
-		for(String voucher : Main.settings.getConfig().getConfigurationSection("Vouchers").getKeys(false)){
-			items.add(Vouchers.getVoucher(voucher, "%Arg%"));
+		int slots = 9;
+		for(Voucher voucher : Vouchers.getVouchers()){
+			items.add(voucher.buildItem());
 		}
-		if(items.size()<=9)size=9;
-		if(items.size()>9&&items.size()<=18)size=18;
-		if(items.size()>18&&items.size()<=27)size=27;
-		if(items.size()>27&&items.size()<=36)size=36;
-		if(items.size()>36&&items.size()<=45)size=45;
-		if(items.size()>45&&items.size()<=54)size=54;
-		Inventory inv = Bukkit.createInventory(null, size, Methods.color("&8&l&nVouchers"));
+		for(int size = items.size(); size > 9 && slots < 54; size -= 9, slots += 9){}
+		Inventory inv = Bukkit.createInventory(null, slots, Methods.color("&8&l&nVouchers"));
 		for(ItemStack i : items)inv.addItem(i);
 		player.openInventory(inv);
 	}
@@ -40,7 +35,7 @@ public class GUI implements Listener{
 		Player player = (Player) e.getWhoClicked();
 		if(inv!=null){
 			if(inv.getName().equals(Methods.color("&8&l&nVouchers"))){
-				if(e.getCurrentItem().getType()!=Material.AIR){
+				if(e.getCurrentItem().getType() != Material.AIR){
 					e.setCancelled(true);
 					player.getInventory().addItem(e.getCurrentItem());
 				}

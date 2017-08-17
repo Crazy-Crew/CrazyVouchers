@@ -117,25 +117,6 @@ public class Methods{
 		}
 	}
 	
-	public static ItemStack makeItem(Material material, int amount, int type, String name){
-		ItemStack item = new ItemStack(material, amount, (short) type);
-		ItemMeta m = item.getItemMeta();
-		m.setDisplayName(color(name));
-		item.setItemMeta(m);
-		return item;
-	}
-	
-	public static ItemStack makeItem(Material material, int amount, int type, String name, List<String> lore){
-		ArrayList<String> l = new ArrayList<String>();
-		ItemStack item = new ItemStack(material, amount, (short) type);
-		ItemMeta m = item.getItemMeta();
-		m.setDisplayName(color(name));
-		for(String L:lore)l.add(color(L));
-		m.setLore(l);
-		item.setItemMeta(m);
-		return item;
-	}
-	
 	public static ItemStack makeItem(String type, int amount){
 		int ty = 0;
 		if(type.contains(":")){
@@ -184,6 +165,42 @@ public class Methods{
 		item.setItemMeta(m);
 		item.addUnsafeEnchantments(enchants);
 		return item;
+	}
+	
+	public static ItemStack makeItem(String itemString){
+		String id = "1";
+		Integer amount = 1;
+		String name = "";
+		List<String> lore = new ArrayList<String>();
+		HashMap<Enchantment, Integer> enchantments = new HashMap<Enchantment, Integer>();
+		for(String d : itemString.split(", ")){
+			if(d.startsWith("Item:")){
+				id = d.replace("Item:", "");
+			}else if(d.startsWith("Amount:")){
+				if(isInt(d.replace("Amount:", ""))){
+					amount = Integer.parseInt(d.replace("Amount:", ""));
+				}
+			}else if(d.startsWith("Name:")){
+				name = d.replace("Name:", "");
+			}else if(d.startsWith("Lore:")){
+				d = d.replace("Lore:", "");
+				if(d.contains(",")){
+					for(String D : d.split(",")){
+						lore.add(D);
+					}
+				}else{
+					lore.add(d);
+				}
+			}
+			for(Enchantment ench : Enchantment.values()){
+				if(d.startsWith(ench.getName() + ":") || d.startsWith(getEnchantmentName(ench) + ":")){
+					String[] breakdown = d.split(":");
+					int lvl = Integer.parseInt(breakdown[1]);
+					enchantments.put(ench, lvl);
+				}
+			}
+		}
+		return makeItem(id, amount, name, lore, enchantments);
 	}
 	
 	public static boolean isRealCode(Player player, String code){
@@ -298,7 +315,7 @@ public class Methods{
 										+ "Please go to the config and set a correct sound or turn the sound off in the SoundToggle setting.");
 								for(Player p : Bukkit.getServer().getOnlinePlayers()){
 									if(p.isOp()){
-										p.sendMessage(Methods.color("&4&l[Vouchers]>> &cThe voucher &6"+C+"'s &csound that you set to &6"+sound+" &cis not a sound. "
+										p.sendMessage(color("&4&l[Vouchers]>> &cThe voucher &6"+C+"'s &csound that you set to &6"+sound+" &cis not a sound. "
 										+ "&cPlease go to the config and set a correct sound or turn the sound off in the SoundToggle setting."));
 									}
 								}
@@ -323,7 +340,7 @@ public class Methods{
 			String oldVersion = plugin.getDescription().getVersion();
 			String newVersion = new BufferedReader(new InputStreamReader(c.getInputStream())).readLine().replaceAll("[a-zA-Z ]", "");
 			if(!newVersion.equals(oldVersion)) {
-				Bukkit.getConsoleSender().sendMessage(Methods.color("&8[&bVouchers&8]: "+"&cYour server is running &7v"+oldVersion+"&c and the newest is &7v"+newVersion+"&c."));
+				Bukkit.getConsoleSender().sendMessage(color("&8[&bVouchers&8]: "+"&cYour server is running &7v"+oldVersion+"&c and the newest is &7v"+newVersion+"&c."));
 			}
 		}
 		catch(Exception e) {
@@ -340,7 +357,7 @@ public class Methods{
 			String oldVersion = plugin.getDescription().getVersion();
 			String newVersion = new BufferedReader(new InputStreamReader(c.getInputStream())).readLine().replaceAll("[a-zA-Z ]", "");
 			if(!newVersion.equals(oldVersion)) {
-				player.sendMessage(Methods.color("&8[&bVouchers&8]: "+"&cYour server is running &7v"+oldVersion+"&c and the newest is &7v"+newVersion+"&c."));
+				player.sendMessage(color("&8[&bVouchers&8]: "+"&cYour server is running &7v"+oldVersion+"&c and the newest is &7v"+newVersion+"&c."));
 			}
 		}
 		catch(Exception e) {
@@ -355,11 +372,11 @@ public class Methods{
 		return false;
 	}
 	
-	public static void fireWork(Location loc, ArrayList<Color> colors) {
+	public static void fireWork(Location loc, List<Color> list) {
 		final Firework f = loc.getWorld().spawn(loc, Firework.class);
 		FireworkMeta fm = f.getFireworkMeta();
 		fm.addEffects(FireworkEffect.builder().with(FireworkEffect.Type.BALL_LARGE)
-				.withColor(colors)
+				.withColor(list)
 				.trail(false)
 				.flicker(false)
 				.build());
@@ -372,7 +389,6 @@ public class Methods{
 			}
 		}, 2);
 	}
-	
 	
 	public static String getEnchantmentName(Enchantment en){
 		HashMap<String, String> enchants = new HashMap<String, String>();
@@ -429,5 +445,50 @@ public class Methods{
 		}
         return item;
     }
+	
+	public static Color getColor(String color) {
+		if (color.equalsIgnoreCase("AQUA")) return Color.AQUA;
+		if (color.equalsIgnoreCase("BLACK")) return Color.BLACK;
+		if (color.equalsIgnoreCase("BLUE")) return Color.BLUE;
+		if (color.equalsIgnoreCase("FUCHSIA")) return Color.FUCHSIA;
+		if (color.equalsIgnoreCase("GRAY")) return Color.GRAY;
+		if (color.equalsIgnoreCase("GREEN")) return Color.GREEN;
+		if (color.equalsIgnoreCase("LIME")) return Color.LIME;
+		if (color.equalsIgnoreCase("MAROON")) return Color.MAROON;
+		if (color.equalsIgnoreCase("NAVY")) return Color.NAVY;
+		if (color.equalsIgnoreCase("OLIVE")) return Color.OLIVE;
+		if (color.equalsIgnoreCase("ORANGE")) return Color.ORANGE;
+		if (color.equalsIgnoreCase("PURPLE")) return Color.PURPLE;
+		if (color.equalsIgnoreCase("RED")) return Color.RED;
+		if (color.equalsIgnoreCase("SILVER")) return Color.SILVER;
+		if (color.equalsIgnoreCase("TEAL")) return Color.TEAL;
+		if (color.equalsIgnoreCase("WHITE")) return Color.WHITE;
+		if (color.equalsIgnoreCase("YELLOW")) return Color.YELLOW;
+		return Color.WHITE;
+	}
+	
+	public static boolean isSimilar(ItemStack one, ItemStack two){
+		if(one.getType() == two.getType()){
+			if(one.hasItemMeta()){
+				if(one.getItemMeta().hasDisplayName()){
+					if(one.getItemMeta().getDisplayName().equalsIgnoreCase(two.getItemMeta().getDisplayName())){
+						if(one.getItemMeta().hasLore()){
+							if(one.getItemMeta().getLore().size() == two.getItemMeta().getLore().size()){
+								int i = 0;
+								for(String lore : one.getItemMeta().getLore()){
+									if(!lore.equals(two.getItemMeta().getLore().get(i))){
+										return false;
+									}
+									i++;
+								}
+								return true;
+							}
+						}
+					}
+				}
+			}
+		}
+		return false;
+	}
 	
 }

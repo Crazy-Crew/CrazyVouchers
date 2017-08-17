@@ -14,6 +14,7 @@ import org.bukkit.scheduler.BukkitRunnable;
 
 import me.badbones69.vouchers.api.FireworkDamageAPI;
 import me.badbones69.vouchers.api.Version;
+import me.badbones69.vouchers.api.Voucher;
 import me.badbones69.vouchers.api.Vouchers;
 import me.badbones69.vouchers.controlers.GUI;
 import me.badbones69.vouchers.controlers.VoucherClick;
@@ -124,12 +125,11 @@ public class Main extends JavaPlugin implements Listener{
 					}
 					if(args.length>1){
 						String name = sender.getName();
-						String voucher = args[1];
-						if(!Vouchers.isVoucher(voucher)){
+						if(!Vouchers.isVoucherName(args[1])){
 							sender.sendMessage(Methods.getPrefix() + Methods.color(Main.settings.getMsgs().getString("Messages.Not-A-Voucher")));
 							return true;
 						}
-						voucher = Vouchers.getVoucherName(voucher);
+						Voucher voucher = Vouchers.getVoucher(args[1]);
 						int amount = 1;
 						if(args.length>=3){
 							if(!Methods.isInt(sender, args[2]))return true;
@@ -141,14 +141,14 @@ public class Main extends JavaPlugin implements Listener{
 						}
 						Player player = Bukkit.getPlayer(name);
 						if(args.length >= 5){
-							player.getInventory().addItem(Vouchers.getVoucher(voucher, args[4], amount));
+							player.getInventory().addItem(voucher.buildItem(args[4], amount));
 						}else{
-							player.getInventory().addItem(Vouchers.getVoucher(voucher, amount));
+							player.getInventory().addItem(voucher.buildItem(amount));
 						}
 						player.updateInventory();
 						sender.sendMessage(Methods.getPrefix() + Methods.color(settings.getMsgs().getString("Messages.Given-A-Voucher")
 								.replace("%Player%", player.getName()).replace("%player%", player.getName())
-								.replace("%Voucher%", voucher).replace("%voucher%", voucher)));
+								.replace("%Voucher%", voucher.getName()).replace("%voucher%", voucher.getName())));
 						return true;
 					}
 					sender.sendMessage(Methods.getPrefix() + Methods.color("&c/Voucher Give <Type> [Amount] [Player] [Arguments]"));
@@ -163,12 +163,11 @@ public class Main extends JavaPlugin implements Listener{
 						}
 					}
 					if(args.length>1){
-						String voucher = args[1];
-						if(!Vouchers.isVoucher(voucher)){
+						if(!Vouchers.isVoucherName(args[1])){
 							sender.sendMessage(Methods.getPrefix() + Methods.color(Main.settings.getMsgs().getString("Messages.Not-A-Voucher")));
 							return true;
 						}
-						voucher = Vouchers.getVoucherName(voucher);
+						Voucher voucher = Vouchers.getVoucher(args[1]);
 						int amount = 1;
 						if(args.length >= 3){
 							if(!Methods.isInt(sender, args[2]))return true;
@@ -176,14 +175,14 @@ public class Main extends JavaPlugin implements Listener{
 						}
 						for(Player player : Bukkit.getServer().getOnlinePlayers()){
 							if(args.length >= 4){
-								player.getInventory().addItem(Vouchers.getVoucher(voucher, args[3], amount));
+								player.getInventory().addItem(voucher.buildItem(args[3], amount));
 							}else{
-								player.getInventory().addItem(Vouchers.getVoucher(voucher, amount));
+								player.getInventory().addItem(voucher.buildItem(amount));
 							}
 							player.updateInventory();
 						}
 						sender.sendMessage(Methods.getPrefix() + Methods.color(settings.getMsgs().getString("Messages.Given-All-Players-Voucher")
-								.replace("%Voucher%", voucher).replace("%voucher%", voucher)));
+								.replace("%Voucher%", voucher.getName()).replace("%voucher%", voucher.getName())));
 						return true;
 					}
 					sender.sendMessage(Methods.getPrefix() + Methods.color("&c/Voucher GiveAll <Type> [Amount] [Arguments]"));
