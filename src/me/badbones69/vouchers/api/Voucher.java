@@ -139,20 +139,20 @@ public class Voucher {
 	}
 	
 	public ItemStack buildItem(String argument) {
-		String name = itemName.replaceAll("%Arg%", argument).replaceAll("%arg%", argument);
+		String name = itemName.replace("%Arg%", argument).replace("%arg%", argument);
 		List<String> lore = new ArrayList<String>();
 		for(String l : itemLore){
-			lore.add(l.replaceAll("%Arg%", argument).replaceAll("%arg%", argument));
+			lore.add(l.replace("%Arg%", argument).replace("%arg%", argument));
 		}
 		return Methods.addGlow(Methods.makeItem(itemID, 1, name,
 				lore), itemGlow);
 	}
 	
 	public ItemStack buildItem(String argument, int amount) {
-		String name = itemName.replaceAll("%Arg%", argument).replaceAll("%arg%", argument);
+		String name = itemName.replace("%Arg%", argument).replace("%arg%", argument);
 		List<String> lore = new ArrayList<String>();
 		for(String l : itemLore){
-			lore.add(l.replaceAll("%Arg%", argument).replaceAll("%arg%", argument));
+			lore.add(l.replace("%Arg%", argument).replace("%arg%", argument));
 		}
 		return Methods.addGlow(Methods.makeItem(itemID, amount, name,
 				lore), itemGlow);
