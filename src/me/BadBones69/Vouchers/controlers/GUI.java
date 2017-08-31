@@ -15,27 +15,28 @@ import me.badbones69.vouchers.Methods;
 import me.badbones69.vouchers.api.Voucher;
 import me.badbones69.vouchers.api.Vouchers;
 
-public class GUI implements Listener{
+public class GUI implements Listener {
 	
-	public static void openGUI(Player player){
+	public static void openGUI(Player player) {
 		ArrayList<ItemStack> items = new ArrayList<ItemStack>();
 		int slots = 9;
-		for(Voucher voucher : Vouchers.getVouchers()){
+		for(Voucher voucher : Vouchers.getVouchers()) {
 			items.add(voucher.buildItem());
 		}
-		for(int size = items.size(); size > 9 && slots < 54; size -= 9, slots += 9){}
+		for(int size = items.size(); size > 9 && slots < 54; size -= 9, slots += 9) {}
 		Inventory inv = Bukkit.createInventory(null, slots, Methods.color("&8&l&nVouchers"));
-		for(ItemStack i : items)inv.addItem(i);
+		for(ItemStack i : items)
+			inv.addItem(i);
 		player.openInventory(inv);
 	}
 	
 	@EventHandler
-	public void invClick(InventoryClickEvent e){
+	public void invClick(InventoryClickEvent e) {
 		Inventory inv = e.getClickedInventory();
 		Player player = (Player) e.getWhoClicked();
-		if(inv!=null){
-			if(inv.getName().equals(Methods.color("&8&l&nVouchers"))){
-				if(e.getCurrentItem().getType() != Material.AIR){
+		if(inv != null) {
+			if(inv.getName().equals(Methods.color("&8&l&nVouchers"))) {
+				if(e.getCurrentItem().getType() != Material.AIR) {
 					e.setCancelled(true);
 					player.getInventory().addItem(e.getCurrentItem());
 				}

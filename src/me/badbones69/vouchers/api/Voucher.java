@@ -141,21 +141,19 @@ public class Voucher {
 	public ItemStack buildItem(String argument) {
 		String name = itemName.replace("%Arg%", argument).replace("%arg%", argument);
 		List<String> lore = new ArrayList<String>();
-		for(String l : itemLore){
+		for(String l : itemLore) {
 			lore.add(l.replace("%Arg%", argument).replace("%arg%", argument));
 		}
-		return Methods.addGlow(Methods.makeItem(itemID, 1, name,
-				lore), itemGlow);
+		return Methods.addGlow(Methods.makeItem(itemID, 1, name, lore), itemGlow);
 	}
 	
 	public ItemStack buildItem(String argument, int amount) {
 		String name = itemName.replace("%Arg%", argument).replace("%arg%", argument);
 		List<String> lore = new ArrayList<String>();
-		for(String l : itemLore){
+		for(String l : itemLore) {
 			lore.add(l.replace("%Arg%", argument).replace("%arg%", argument));
 		}
-		return Methods.addGlow(Methods.makeItem(itemID, amount, name,
-				lore), itemGlow);
+		return Methods.addGlow(Methods.makeItem(itemID, amount, name, lore), itemGlow);
 	}
 	
 	public String getVoucherUsedMessage() {
@@ -174,7 +172,7 @@ public class Voucher {
 		return blacklistToggle;
 	}
 	
-	public List<String> getBlackListPermissions(){
+	public List<String> getBlackListPermissions() {
 		return blacklistPermissions;
 	}
 	
@@ -198,7 +196,7 @@ public class Voucher {
 		return soundToggle;
 	}
 	
-	public List<Sound> getSounds(){
+	public List<Sound> getSounds() {
 		return sounds;
 	}
 	
@@ -206,15 +204,15 @@ public class Voucher {
 		return fireworkToggle;
 	}
 	
-	public List<Color> getFireworkColors(){
+	public List<Color> getFireworkColors() {
 		return fireworkColors;
 	}
 	
-	public List<String> getCommands(){
+	public List<String> getCommands() {
 		return commands;
 	}
 	
-	public List<ItemStack> getItems(){
+	public List<ItemStack> getItems() {
 		return items;
 	}
 	

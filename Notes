@@ -3,6 +3,7 @@ Requests:
   - Recode the vouchers to use the constroctors.
   - Add an option to make temperary codes.
   - An option to do /vouch open [page]
+  - Add these placeholders %world% %x% %y% %z%.
   
 Bug Reports:
   - Vouchers with the %Arg% placeholder do not work.

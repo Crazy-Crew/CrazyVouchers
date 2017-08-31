@@ -19,33 +19,33 @@ import me.badbones69.vouchers.api.Version;
 import me.badbones69.vouchers.api.Voucher;
 import me.badbones69.vouchers.api.Vouchers;
 
-public class VoucherClick implements Listener{
+public class VoucherClick implements Listener {
 	
 	private HashMap<Player, String> twoAuth = new HashMap<Player, String>();
 	
 	@EventHandler
-	public void onVoucherClick(PlayerInteractEvent e){
+	public void onVoucherClick(PlayerInteractEvent e) {
 		ItemStack item = getItemInHand(e.getPlayer());
 		Player player = e.getPlayer();
 		Action action = e.getAction();
 		FileConfiguration data = Main.settings.getData();
-		if(Version.getVersion().getVersionInteger() >= Version.v1_9_R1.getVersionInteger()){
-			if(e.getHand() != EquipmentSlot.HAND){
+		if(Version.getVersion().getVersionInteger() >= Version.v1_9_R1.getVersionInteger()) {
+			if(e.getHand() != EquipmentSlot.HAND) {
 				return;
 			}
 		}
-		if(action == Action.RIGHT_CLICK_BLOCK || action == Action.RIGHT_CLICK_AIR){
+		if(action == Action.RIGHT_CLICK_BLOCK || action == Action.RIGHT_CLICK_AIR) {
 			Voucher voucher = Vouchers.getVoucherFromItem(item);
-			if(voucher != null){
+			if(voucher != null) {
 				e.setCancelled(true);
-				if(passesPermissionChecks(player, voucher)){
+				if(passesPermissionChecks(player, voucher)) {
 					String uuid = player.getUniqueId().toString();
-					if(!player.hasPermission("Voucher.Bypass")){
-						if(voucher.useLimiter()){
-							if(data.contains("Players." + uuid)){
-								if(data.contains("Players." + uuid + ".Vouchers." + voucher.getName())){
+					if(!player.hasPermission("Voucher.Bypass")) {
+						if(voucher.useLimiter()) {
+							if(data.contains("Players." + uuid)) {
+								if(data.contains("Players." + uuid + ".Vouchers." + voucher.getName())) {
 									int amount = data.getInt("Players." + uuid + ".Vouchers." + voucher.getName());
-									if(amount >= voucher.getLimiterLimit()){
+									if(amount >= voucher.getLimiterLimit()) {
 										player.sendMessage(Methods.getPrefix() + Methods.color(Main.settings.getMsgs().getString("Messages.Hit-Limit")));
 										return;
 									}
@@ -53,21 +53,21 @@ public class VoucherClick implements Listener{
 							}
 						}
 					}
-					if(voucher.useTwoStepAuthentication()){
-						if(twoAuth.containsKey(player)){
-							if(!twoAuth.get(player).equalsIgnoreCase(voucher.getName())){
+					if(voucher.useTwoStepAuthentication()) {
+						if(twoAuth.containsKey(player)) {
+							if(!twoAuth.get(player).equalsIgnoreCase(voucher.getName())) {
 								player.sendMessage(Methods.getPrefix() + Methods.color(Main.settings.getMsgs().getString("Messages.Two-Step-Authentication")));
 								twoAuth.put(player, voucher.getName());
 								return;
 							}
-						}else{
+						}else {
 							player.sendMessage(Methods.getPrefix() + Methods.color(Main.settings.getMsgs().getString("Messages.Two-Step-Authentication")));
 							twoAuth.put(player, voucher.getName());
 							return;
 						}
 					}
 					voucherClick(player, item, voucher);
-					if(twoAuth.containsKey(player)){
+					if(twoAuth.containsKey(player)) {
 						twoAuth.remove(player);
 					}
 					return;
@@ -77,25 +77,25 @@ public class VoucherClick implements Listener{
 	}
 	
 	@SuppressWarnings("deprecation")
-	private ItemStack getItemInHand(Player player){
-		if(Version.getVersion().getVersionInteger() >= Version.v1_9_R1.getVersionInteger()){
+	private ItemStack getItemInHand(Player player) {
+		if(Version.getVersion().getVersionInteger() >= Version.v1_9_R1.getVersionInteger()) {
 			return player.getInventory().getItemInMainHand();
-		}else{
+		}else {
 			return player.getItemInHand();
 		}
 	}
 	
-	private boolean passesPermissionChecks(Player player, Voucher voucher){
+	private boolean passesPermissionChecks(Player player, Voucher voucher) {
 		Boolean checker = true;
-		if(!player.isOp()){
-			if(!player.hasPermission(voucher.getWhiteListPermission()) && voucher.useWhiteListPermissions()){
+		if(!player.isOp()) {
+			if(!player.hasPermission(voucher.getWhiteListPermission()) && voucher.useWhiteListPermissions()) {
 				player.sendMessage(Methods.color(Methods.getPrefix() + Main.settings.getMsgs().getString("Messages.No-Permission-To-Voucher")));
-				checker =  false;
+				checker = false;
 			}
-			if(checker){
-				if(voucher.useBlackListPermissions()){
-					for(String permission : voucher.getBlackListPermissions()){
-						if(player.hasPermission(permission.toLowerCase())){
+			if(checker) {
+				if(voucher.useBlackListPermissions()) {
+					for(String permission : voucher.getBlackListPermissions()) {
+						if(player.hasPermission(permission.toLowerCase())) {
 							player.sendMessage(Methods.color(Methods.getPrefix() + voucher.getBlackListMessage()));
 							checker = false;
 							break;
@@ -107,46 +107,42 @@ public class VoucherClick implements Listener{
 		return checker;
 	}
 	
-	private void voucherClick(Player player, ItemStack item, Voucher voucher){
+	private void voucherClick(Player player, ItemStack item, Voucher voucher) {
 		String name = player.getName();
 		String argument = Vouchers.getArgument(item, voucher);
 		if(argument == null) {
 			argument = "";
 		}
 		Methods.removeItem(item, player);
-		for(String cmd : voucher.getCommands()){
-			Bukkit.dispatchCommand(Bukkit.getConsoleSender(), 
-					cmd.replaceAll("%Player%", name).replaceAll("%player%", name)
-					.replaceAll("%Arg%", argument).replaceAll("%arg%", argument));
+		for(String cmd : voucher.getCommands()) {
+			Bukkit.dispatchCommand(Bukkit.getConsoleSender(), cmd.replaceAll("%Player%", name).replaceAll("%player%", name).replaceAll("%Arg%", argument).replaceAll("%arg%", argument));
 		}
-		for(ItemStack it : voucher.getItems()){
-			if(!Methods.isInvFull(player)){
+		for(ItemStack it : voucher.getItems()) {
+			if(!Methods.isInvFull(player)) {
 				player.getInventory().addItem(it);
-			}else{
+			}else {
 				player.getWorld().dropItem(player.getLocation(), it);
 			}
 		}
-		if(voucher.playSounds()){
-			for(Sound sound : voucher.getSounds()){
+		if(voucher.playSounds()) {
+			for(Sound sound : voucher.getSounds()) {
 				player.playSound(player.getLocation(), sound, 1, 1);
 			}
 		}
-		if(voucher.useFirework()){
+		if(voucher.useFirework()) {
 			Methods.fireWork(player.getLocation(), voucher.getFireworkColors());
 		}
-		String msg = voucher.getVoucherUsedMessage()
-				.replaceAll("%Player%", name).replaceAll("%player%", name)
-				.replaceAll("%Arg%", argument).replaceAll("%arg%", argument);
-		if(!msg.equals("")){
+		String msg = voucher.getVoucherUsedMessage().replaceAll("%Player%", name).replaceAll("%player%", name).replaceAll("%Arg%", argument).replaceAll("%arg%", argument);
+		if(!msg.equals("")) {
 			player.sendMessage(Methods.getPrefix() + Methods.color(msg));
 		}
 		int amount = 0;
-		if(Main.settings.getData().contains("Players."+player.getUniqueId()+".Vouchers." + voucher.getName())){
-			amount = Main.settings.getData().getInt("Players."+player.getUniqueId()+".Vouchers." + voucher.getName());
+		if(Main.settings.getData().contains("Players." + player.getUniqueId() + ".Vouchers." + voucher.getName())) {
+			amount = Main.settings.getData().getInt("Players." + player.getUniqueId() + ".Vouchers." + voucher.getName());
 		}
 		amount++;
-		Main.settings.getData().set("Players."+player.getUniqueId()+".UserName",player.getName());
-		Main.settings.getData().set("Players."+player.getUniqueId()+".Vouchers." + voucher.getName(), amount);
+		Main.settings.getData().set("Players." + player.getUniqueId() + ".UserName", player.getName());
+		Main.settings.getData().set("Players." + player.getUniqueId() + ".Vouchers." + voucher.getName(), amount);
 		Main.settings.saveData();
 	}
 	

@@ -13,14 +13,14 @@ public class Vouchers {
 	
 	private static ArrayList<Voucher> vouchers = new ArrayList<>();
 	
-	public static void load(){
+	public static void load() {
 		vouchers.clear();
-		for(String voucherName : getConfig().getConfigurationSection("Vouchers").getKeys(false)){
+		for(String voucherName : getConfig().getConfigurationSection("Vouchers").getKeys(false)) {
 			vouchers.add(new Voucher(voucherName));
 		}
 	}
 	
-	public static ArrayList<Voucher> getVouchers(){
+	public static ArrayList<Voucher> getVouchers() {
 		return vouchers;
 	}
 	
@@ -33,7 +33,7 @@ public class Vouchers {
 		return null;
 	}
 	
-	public static Boolean isVoucherName(String voucherName){
+	public static Boolean isVoucherName(String voucherName) {
 		for(Voucher voucher : getVouchers()) {
 			if(voucher.getName().equalsIgnoreCase(voucherName)) {
 				return true;
@@ -42,31 +42,31 @@ public class Vouchers {
 		return false;
 	}
 	
-	public static Voucher getVoucherFromItem(ItemStack item){
-		try{
-			if(item != null){
-				if(item.hasItemMeta()){
-					if(item.getItemMeta().hasDisplayName() && item.getItemMeta().hasLore()){
-						for(Voucher voucher : getVouchers()){
-							if(voucher.usesArguments()){
+	public static Voucher getVoucherFromItem(ItemStack item) {
+		try {
+			if(item != null) {
+				if(item.hasItemMeta()) {
+					if(item.getItemMeta().hasDisplayName() && item.getItemMeta().hasLore()) {
+						for(Voucher voucher : getVouchers()) {
+							if(voucher.usesArguments()) {
 								String argument = getArgument(item, voucher);
-								if(argument != null){
+								if(argument != null) {
 									if(Methods.isSimilar(item, voucher.buildItem(argument))) {
 										return voucher;
 									}
 								}
-							}else if(item.getItemMeta().getDisplayName().equals(voucher.buildItem().getItemMeta().getDisplayName())){
+							}else if(item.getItemMeta().getDisplayName().equals(voucher.buildItem().getItemMeta().getDisplayName())) {
 								int line = 0;
 								Boolean sameLore = true;
 								ItemStack voucherItem = voucher.buildItem();
-								for(String lore : item.getItemMeta().getLore()){
-									if(!lore.equals(voucherItem.getItemMeta().getLore().get(line))){
+								for(String lore : item.getItemMeta().getLore()) {
+									if(!lore.equals(voucherItem.getItemMeta().getLore().get(line))) {
 										sameLore = false;
 										break;
 									}
 									line++;
 								}
-								if(sameLore){
+								if(sameLore) {
 									return voucher;
 								}
 							}
@@ -74,7 +74,7 @@ public class Vouchers {
 					}
 				}
 			}
-		}catch(Exception e){
+		}catch(Exception e) {
 			e.printStackTrace();
 		}
 		return null;
@@ -88,11 +88,11 @@ public class Vouchers {
 			List<String> voucherLore = voucher.buildItem().getItemMeta().getLore();
 			String argument = "";
 			int line = 0;
-			if(voucherName.contains("%Arg%")){
+			if(voucherName.contains("%Arg%")) {
 				String[] b = voucherName.split("%Arg%");
-				if(b.length >= 1)argument = itemName.replace(b[0], "");
-				if(b.length >= 2)argument = argument.replace(b[1], "");
-				if(itemName.equalsIgnoreCase(voucher.buildItem(argument).getItemMeta().getDisplayName())){
+				if(b.length >= 1) argument = itemName.replace(b[0], "");
+				if(b.length >= 2) argument = argument.replace(b[1], "");
+				if(itemName.equalsIgnoreCase(voucher.buildItem(argument).getItemMeta().getDisplayName())) {
 					return argument;
 				}
 			}
@@ -109,7 +109,7 @@ public class Vouchers {
 						if(Methods.isSimilar(item, voucher.buildItem(argument))) {
 							return argument;
 						}
-					}else if(!itemLore.get(line).equals(lore)){
+					}else if(!itemLore.get(line).equals(lore)) {
 						break;
 					}
 					line++;
@@ -119,7 +119,7 @@ public class Vouchers {
 		return null;
 	}
 	
-	private static FileConfiguration getConfig(){
+	private static FileConfiguration getConfig() {
 		return Main.settings.getConfig();
 	}
 	
