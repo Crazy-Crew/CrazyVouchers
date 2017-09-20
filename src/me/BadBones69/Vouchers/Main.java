@@ -58,13 +58,19 @@ public class Main extends JavaPlugin implements Listener {
 					sender.sendMessage(Methods.color("&8- &6/Voucher Redeem <Code> &3Allows player to redeem a voucher code."));
 					sender.sendMessage(Methods.color("&8- &6/Voucher Give <Type> [Amount] [Player] [Arguments] &3Gives a player a voucher."));
 					sender.sendMessage(Methods.color("&8- &6/Voucher GiveAll <Type> [Amount] [Arguments] &3Gives all players a voucher."));
-					sender.sendMessage(Methods.color("&8- &6/Voucher Open &3Opens a GUI so you can get vouchers easy."));
+					sender.sendMessage(Methods.color("&8- &6/Voucher Open [Page] &3Opens a GUI so you can get vouchers easy."));
 					sender.sendMessage(Methods.color("&8- &6/Voucher Reload &3Reloadeds the config.yml."));
 					return true;
 				}
 				if(args[0].equalsIgnoreCase("Open")) {
 					if(!Methods.hasPermission(sender, "Admin")) return true;
-					GUI.openGUI((Player) sender);
+					if(args.length >= 2) {
+						if(Methods.isInt(args[1])) {
+							GUI.openGUI((Player) sender, Integer.parseInt(args[1]));
+							return true;
+						}
+					}
+					GUI.openGUI((Player) sender, 1);
 					return true;
 				}
 				if(args[0].equalsIgnoreCase("Types") || args[0].equalsIgnoreCase("List")) {
