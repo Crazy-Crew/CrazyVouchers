@@ -115,7 +115,12 @@ public class VoucherClick implements Listener {
 		}
 		Methods.removeItem(item, player);
 		for(String cmd : voucher.getCommands()) {
-			Bukkit.dispatchCommand(Bukkit.getConsoleSender(), cmd.replaceAll("%Player%", name).replaceAll("%player%", name).replaceAll("%Arg%", argument).replaceAll("%arg%", argument));
+			Bukkit.dispatchCommand(Bukkit.getConsoleSender(), cmd.replaceAll("%Player%", name).replaceAll("%player%", name)
+			.replaceAll("%Arg%", argument).replaceAll("%arg%", argument)
+			.replaceAll("%World%", player.getWorld().getName()).replaceAll("%world%", player.getWorld().getName())
+			.replaceAll("%X%", player.getLocation().getBlockX() + "").replaceAll("%x%", player.getLocation().getBlockX() + "")
+			.replaceAll("%Y%", player.getLocation().getBlockY() + "").replaceAll("%y%", player.getLocation().getBlockY() + "")
+			.replaceAll("%Z%", player.getLocation().getBlockZ() + "").replaceAll("%z%", player.getLocation().getBlockZ() + ""));
 		}
 		for(ItemStack it : voucher.getItems()) {
 			if(!Methods.isInvFull(player)) {
@@ -132,7 +137,12 @@ public class VoucherClick implements Listener {
 		if(voucher.useFirework()) {
 			Methods.fireWork(player.getLocation(), voucher.getFireworkColors());
 		}
-		String msg = voucher.getVoucherUsedMessage().replaceAll("%Player%", name).replaceAll("%player%", name).replaceAll("%Arg%", argument).replaceAll("%arg%", argument);
+		String msg = voucher.getVoucherUsedMessage().replaceAll("%Player%", name).replaceAll("%player%", name)
+		.replaceAll("%Arg%", argument).replaceAll("%arg%", argument)
+		.replaceAll("%World%", player.getWorld().getName()).replaceAll("%world%", player.getWorld().getName())
+		.replaceAll("%X%", player.getLocation().getBlockX() + "").replaceAll("%x%", player.getLocation().getBlockX() + "")
+		.replaceAll("%Y%", player.getLocation().getBlockY() + "").replaceAll("%y%", player.getLocation().getBlockY() + "")
+		.replaceAll("%Z%", player.getLocation().getBlockZ() + "").replaceAll("%z%", player.getLocation().getBlockZ() + "");
 		if(!msg.equals("")) {
 			player.sendMessage(Methods.getPrefix() + Methods.color(msg));
 		}
