@@ -1,6 +1,6 @@
-name: Vouchers
+name: ${project.artifactId}
 main: me.badbones69.vouchers.Main
-version: 1.6.4.5
+version: ${project.version}
 description:  Make Custom Vouchers just for your server!
 commands:
   Voucher:

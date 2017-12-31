@@ -1,12 +1,11 @@
 package me.badbones69.vouchers.controlers;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.List;
-import java.util.UUID;
-
+import me.badbones69.vouchers.Methods;
+import me.badbones69.vouchers.api.ItemBuilder;
+import me.badbones69.vouchers.api.Voucher;
+import me.badbones69.vouchers.api.Vouchers;
 import org.bukkit.Bukkit;
+import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -14,15 +13,13 @@ import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 
-import me.badbones69.vouchers.Methods;
-import me.badbones69.vouchers.api.Voucher;
-import me.badbones69.vouchers.api.Vouchers;
+import java.util.*;
 
 public class GUI implements Listener {
-	
+
 	private static String inventoryName = Methods.color("&8&l&nVouchers");
 	private static HashMap<UUID, Integer> playerPage = new HashMap<>();
-	
+
 	public static void openGUI(Player player) {
 		int page = getPage(player);
 		Inventory inv = Bukkit.createInventory(null, 54, inventoryName);
@@ -32,7 +29,7 @@ public class GUI implements Listener {
 		}
 		player.openInventory(inv);
 	}
-	
+
 	public static void openGUI(Player player, int pageNumber) {
 		setPage(player, pageNumber);
 		pageNumber = getPage(player);
@@ -43,7 +40,7 @@ public class GUI implements Listener {
 		}
 		player.openInventory(inv);
 	}
-	
+
 	@EventHandler
 	public void invClick(InventoryClickEvent e) {
 		Inventory inv = e.getInventory();
@@ -78,14 +75,14 @@ public class GUI implements Listener {
 			}
 		}
 	}
-	
+
 	private static int getPage(Player player) {
 		if(playerPage.containsKey(player.getUniqueId())) {
 			return playerPage.get(player.getUniqueId());
 		}
 		return 1;
 	}
-	
+
 	private static void setPage(Player player, int pageNumber) {
 		int max = getMaxPage();
 		if(pageNumber < 1) {
@@ -95,22 +92,22 @@ public class GUI implements Listener {
 		}
 		playerPage.put(player.getUniqueId(), pageNumber);
 	}
-	
+
 	private void nextPage(Player player) {
 		setPage(player, getPage(player) + 1);
 	}
-	
+
 	private void backPage(Player player) {
 		setPage(player, getPage(player) - 1);
 	}
-	
+
 	private static int getMaxPage() {
 		int maxPage = 1;
 		int amount = Vouchers.getVouchers().size();
-		for(; amount > 36; amount -= 45, maxPage++);
+		for(; amount > 36; amount -= 45, maxPage++) ;
 		return maxPage;
 	}
-	
+
 	private static List<Voucher> getPageVouchers(Integer page) {
 		List<Voucher> list = Vouchers.getVouchers();
 		List<Voucher> vouchers = new ArrayList<>();
@@ -131,23 +128,43 @@ public class GUI implements Listener {
 		}
 		return vouchers;
 	}
-	
+
 	private static void setDefaultItems(Player player, Inventory inv) {
 		for(int i : Arrays.asList(0, 1, 2, 3, 4, 5, 6, 7, 8, 45, 46, 47, 49, 51, 52, 53)) {
-			inv.setItem(i, Methods.makeItem("160:11", 1, " ", Arrays.asList("")));
+			inv.setItem(i, new ItemBuilder()
+			.setMaterial(Material.STAINED_GLASS_PANE)
+			.setMetaData((short) 11)
+			.setName(" ")
+			.build());
 		}
 		int page = getPage(player);
 		int maxPage = getMaxPage();
 		if(page == 1) {
-			inv.setItem(48, Methods.makeItem("160:7", 1, " ", Arrays.asList("")));
+			inv.setItem(48, new ItemBuilder()
+			.setMaterial(Material.STAINED_GLASS_PANE)
+			.setMetaData((short) 7)
+			.setName(" ")
+			.build());
 		}else {
-			inv.setItem(48, Methods.makeItem("288", 1, "&6&l<< Back", Arrays.asList("&7&lPage: &b" + (getPage(player) - 1))));
+			inv.setItem(48, new ItemBuilder()
+			.setMaterial(Material.FEATHER)
+			.setName("&6&l<< Back")
+			.addLore("&7&lPage: &b" + (getPage(player) - 1))
+			.build());
 		}
 		if(page == maxPage) {
-			inv.setItem(50, Methods.makeItem("160:7", 1, " ", Arrays.asList("")));
+			inv.setItem(50, new ItemBuilder()
+			.setMaterial(Material.STAINED_GLASS_PANE)
+			.setMetaData((short) 7)
+			.setName(" ")
+			.build());
 		}else {
-			inv.setItem(50, Methods.makeItem("288", 1, "&6&lNext >>", Arrays.asList("&7&lPage: &b" + (getPage(player) + 1))));
+			inv.setItem(50, new ItemBuilder()
+			.setMaterial(Material.FEATHER)
+			.setName("&6&lNext >>")
+			.addLore("&7&lPage: &b" + (getPage(player) + 1))
+			.build());
 		}
 	}
-	
+
 }

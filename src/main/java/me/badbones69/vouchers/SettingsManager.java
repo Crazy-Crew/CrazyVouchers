@@ -1,10 +1,5 @@
 package me.badbones69.vouchers;
 
-import java.io.File;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.InputStream;
-
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.configuration.file.FileConfiguration;
@@ -12,33 +7,38 @@ import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.plugin.Plugin;
 import org.bukkit.plugin.PluginDescriptionFile;
 
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
+
 public class SettingsManager {
-	
+
 	static SettingsManager instance = new SettingsManager();
-	
+
 	public static SettingsManager getInstance() {
 		return instance;
 	}
-	
-	Plugin p;
-	
-	FileConfiguration config;
-	File cfile;
-	
-	FileConfiguration data;
-	File dfile;
-	
-	FileConfiguration msg;
-	File mfile;
-	
-	FileConfiguration code;
-	File cofile;
-	
+
+	private Plugin p;
+
+	private FileConfiguration config;
+	private File cfile;
+
+	private FileConfiguration data;
+	private File dfile;
+
+	private FileConfiguration msg;
+	private File mfile;
+
+	private FileConfiguration code;
+	private File cofile;
+
 	public void setup(Plugin p) {
 		if(!p.getDataFolder().exists()) {
 			p.getDataFolder().mkdir();
 		}
-		
+
 		cfile = new File(p.getDataFolder(), "Config.yml");
 		if(!cfile.exists()) {
 			try {
@@ -50,7 +50,7 @@ public class SettingsManager {
 			}
 		}
 		config = YamlConfiguration.loadConfiguration(cfile);
-		
+
 		dfile = new File(p.getDataFolder(), "Data.yml");
 		if(!dfile.exists()) {
 			try {
@@ -62,7 +62,7 @@ public class SettingsManager {
 			}
 		}
 		data = YamlConfiguration.loadConfiguration(dfile);
-		
+
 		mfile = new File(p.getDataFolder(), "Messages.yml");
 		if(!mfile.exists()) {
 			try {
@@ -74,7 +74,7 @@ public class SettingsManager {
 			}
 		}
 		msg = YamlConfiguration.loadConfiguration(mfile);
-		
+
 		cofile = new File(p.getDataFolder(), "VoucherCodes.yml");
 		if(!cofile.exists()) {
 			try {
@@ -87,7 +87,7 @@ public class SettingsManager {
 		}
 		code = YamlConfiguration.loadConfiguration(cofile);
 	}
-	
+
 	public FileConfiguration getMsgs() {
 		return msg;
 	}
@@ -130,7 +130,7 @@ public class SettingsManager {
 	public FileConfiguration getConfig() {
 		return config;
 	}
-	
+
 	public void saveConfig() {
 		try {
 			config.save(cfile);
@@ -138,15 +138,16 @@ public class SettingsManager {
 			Bukkit.getServer().getLogger().severe(ChatColor.RED + "Could not save Config.yml!");
 		}
 	}
-	
+
 	public void reloadConfig() {
 		config = YamlConfiguration.loadConfiguration(cfile);
 	}
-	
+
 	public PluginDescriptionFile getDesc() {
 		return p.getDescription();
 	}
-	public static void copyFile(InputStream in, File out) throws Exception { // https://bukkit.org/threads/extracting-file-from-jar.16962/
+
+	private static void copyFile(InputStream in, File out) throws Exception { // https://bukkit.org/threads/extracting-file-from-jar.16962/
 		InputStream fis = in;
 		FileOutputStream fos = new FileOutputStream(out);
 		try {
