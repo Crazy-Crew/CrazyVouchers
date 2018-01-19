@@ -1,7 +1,5 @@
 package me.badbones69.vouchers.api;
 
-import java.util.ArrayList;
-
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.EntityType;
 import org.bukkit.event.EventHandler;
@@ -11,35 +9,37 @@ import org.bukkit.event.entity.FireworkExplodeEvent;
 import org.bukkit.plugin.Plugin;
 import org.bukkit.scheduler.BukkitRunnable;
 
+import java.util.ArrayList;
+
 public class FireworkDamageAPI implements Listener {
-	
+
 	private Plugin plugin;
-	private static ArrayList<Entity> fireworks = new ArrayList<Entity>();
-	
+	private static ArrayList<Entity> fireworks = new ArrayList<>();
+
 	public FireworkDamageAPI(Plugin plugin) {
 		this.plugin = plugin;
 	}
-	
+
 	/**
-	 * 
+	 *
 	 * @return All the active fireworks.
 	 */
 	public static ArrayList<Entity> getFireworks() {
 		return fireworks;
 	}
-	
+
 	/**
-	 * 
+	 *
 	 * @param firework The firework you want to add.
 	 */
 	public static void addFirework(Entity firework) {
-		if(Version.getVersion().comparedTo(Version.v1_11_R1) >= 0) {
+		if(Version.getCurrentVersion().comparedTo(Version.v1_11_R1) >= 0) {
 			fireworks.add(firework);
 		}
 	}
-	
+
 	/**
-	 * 
+	 *
 	 * @param firework The firework you are removing.
 	 */
 	public static void removeFirework(Entity firework) {
@@ -47,7 +47,7 @@ public class FireworkDamageAPI implements Listener {
 			fireworks.remove(firework);
 		}
 	}
-	
+
 	@EventHandler
 	public void onPlayerDamage(EntityDamageEvent e) {
 		for(Entity en : e.getEntity().getNearbyEntities(5, 5, 5)) {
@@ -58,7 +58,7 @@ public class FireworkDamageAPI implements Listener {
 			}
 		}
 	}
-	
+
 	@EventHandler
 	public void onFireworkExplode(FireworkExplodeEvent e) {
 		final Entity firework = e.getEntity();
@@ -71,5 +71,5 @@ public class FireworkDamageAPI implements Listener {
 			}.runTaskLater(plugin, 5);
 		}
 	}
-	
+
 }

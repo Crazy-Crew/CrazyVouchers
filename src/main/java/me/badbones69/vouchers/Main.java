@@ -1,7 +1,11 @@
 package me.badbones69.vouchers;
 
-import java.io.IOException;
-
+import me.badbones69.vouchers.api.FireworkDamageAPI;
+import me.badbones69.vouchers.api.Version;
+import me.badbones69.vouchers.api.Voucher;
+import me.badbones69.vouchers.api.Vouchers;
+import me.badbones69.vouchers.controlers.GUI;
+import me.badbones69.vouchers.controlers.VoucherClick;
 import org.bukkit.Bukkit;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
@@ -12,17 +16,12 @@ import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.scheduler.BukkitRunnable;
 
-import me.badbones69.vouchers.api.FireworkDamageAPI;
-import me.badbones69.vouchers.api.Version;
-import me.badbones69.vouchers.api.Voucher;
-import me.badbones69.vouchers.api.Vouchers;
-import me.badbones69.vouchers.controlers.GUI;
-import me.badbones69.vouchers.controlers.VoucherClick;
+import java.io.IOException;
 
 public class Main extends JavaPlugin implements Listener {
-	
+
 	public static SettingsManager settings = SettingsManager.getInstance();
-	
+
 	@Override
 	public void onEnable() {
 		settings.setup(this);
@@ -34,23 +33,24 @@ public class Main extends JavaPlugin implements Listener {
 		Bukkit.getServer().getPluginManager().registerEvents(new VoucherClick(), this);
 		Bukkit.getServer().getPluginManager().registerEvents(new GUI(), this);
 		try {
-			if(Version.getVersion().comparedTo(Version.v1_11_R1) >= 0) {
+			if(Version.getCurrentVersion().comparedTo(Version.v1_11_R1) >= 0) {
 				Bukkit.getServer().getPluginManager().registerEvents(new FireworkDamageAPI(this), this);
 			}
-		}catch(Exception e) {}
+		}catch(Exception e) {
+		}
 		Vouchers.load();
 		try {
 			new MCUpdate(this, true);
-		}catch(IOException e) {}
+		}catch(IOException e) {
+		}
 	}
-	
+
 	public boolean onCommand(CommandSender sender, Command cmd, String commandLable, String[] args) {
 		if(commandLable.equalsIgnoreCase("Voucher") || commandLable.equalsIgnoreCase("Vouch")) {
 			if(args.length == 0) {
 				Bukkit.dispatchCommand(sender, "voucher help");
 				return true;
-			}
-			if(args.length >= 1) {
+			}else {
 				if(args[0].equalsIgnoreCase("Help")) {
 					if(!Methods.hasPermission(sender, "Access")) return true;
 					sender.sendMessage(Methods.color("&8- &6/Voucher Help &3Lists all the commands for vouchers."));
@@ -197,7 +197,7 @@ public class Main extends JavaPlugin implements Listener {
 		}
 		return false;
 	}
-	
+
 	@EventHandler
 	public void onPlayerJoin(PlayerJoinEvent e) {
 		final Player player = e.getPlayer();
@@ -219,5 +219,5 @@ public class Main extends JavaPlugin implements Listener {
 			}
 		}.runTaskLaterAsynchronously(this, 20);
 	}
-	
+
 }

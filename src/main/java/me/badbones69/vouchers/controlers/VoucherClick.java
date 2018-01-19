@@ -1,7 +1,10 @@
 package me.badbones69.vouchers.controlers;
 
-import java.util.HashMap;
-
+import me.badbones69.vouchers.Main;
+import me.badbones69.vouchers.Methods;
+import me.badbones69.vouchers.api.Version;
+import me.badbones69.vouchers.api.Voucher;
+import me.badbones69.vouchers.api.Vouchers;
 import org.bukkit.Bukkit;
 import org.bukkit.Sound;
 import org.bukkit.configuration.file.FileConfiguration;
@@ -13,23 +16,19 @@ import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.inventory.EquipmentSlot;
 import org.bukkit.inventory.ItemStack;
 
-import me.badbones69.vouchers.Main;
-import me.badbones69.vouchers.Methods;
-import me.badbones69.vouchers.api.Version;
-import me.badbones69.vouchers.api.Voucher;
-import me.badbones69.vouchers.api.Vouchers;
+import java.util.HashMap;
 
 public class VoucherClick implements Listener {
-	
-	private HashMap<Player, String> twoAuth = new HashMap<Player, String>();
-	
+
+	private HashMap<Player, String> twoAuth = new HashMap<>();
+
 	@EventHandler
 	public void onVoucherClick(PlayerInteractEvent e) {
 		ItemStack item = getItemInHand(e.getPlayer());
 		Player player = e.getPlayer();
 		Action action = e.getAction();
 		FileConfiguration data = Main.settings.getData();
-		if(Version.getVersion().getVersionInteger() >= Version.v1_9_R1.getVersionInteger()) {
+		if(Version.getCurrentVersion().getVersionInteger() >= Version.v1_9_R1.getVersionInteger()) {
 			if(e.getHand() != EquipmentSlot.HAND) {
 				return;
 			}
@@ -38,7 +37,7 @@ public class VoucherClick implements Listener {
 			Voucher voucher = Vouchers.getVoucherFromItem(item);
 			if(voucher != null) {
 				e.setCancelled(true);
-				if(passesPermissionChecks(player, voucher)) {
+				if(passesPermissionChecks(player, voucher, item)) {
 					String uuid = player.getUniqueId().toString();
 					if(!player.hasPermission("Voucher.Bypass")) {
 						if(voucher.useLimiter()) {
@@ -75,27 +74,28 @@ public class VoucherClick implements Listener {
 			}
 		}
 	}
-	
+
 	@SuppressWarnings("deprecation")
 	private ItemStack getItemInHand(Player player) {
-		if(Version.getVersion().getVersionInteger() >= Version.v1_9_R1.getVersionInteger()) {
+		if(Version.getCurrentVersion().getVersionInteger() >= Version.v1_9_R1.getVersionInteger()) {
 			return player.getInventory().getItemInMainHand();
 		}else {
 			return player.getItemInHand();
 		}
 	}
-	
-	private boolean passesPermissionChecks(Player player, Voucher voucher) {
+
+	private boolean passesPermissionChecks(Player player, Voucher voucher, ItemStack item) {
 		Boolean checker = true;
+		String argument = Vouchers.getArgument(item, voucher);
 		if(!player.isOp()) {
-			if(!player.hasPermission(voucher.getWhiteListPermission()) && voucher.useWhiteListPermissions()) {
+			if(!player.hasPermission(voucher.getWhiteListPermission().toLowerCase().replaceAll("%arg%", argument != null ? argument : "%arg%")) && voucher.useWhiteListPermissions()) {
 				player.sendMessage(Methods.color(Methods.getPrefix() + Main.settings.getMsgs().getString("Messages.No-Permission-To-Voucher")));
 				checker = false;
 			}
 			if(checker) {
 				if(voucher.useBlackListPermissions()) {
 					for(String permission : voucher.getBlackListPermissions()) {
-						if(player.hasPermission(permission.toLowerCase())) {
+						if(player.hasPermission(permission.toLowerCase().replaceAll("%arg%", argument != null ? argument : "%arg%"))) {
 							player.sendMessage(Methods.color(Methods.getPrefix() + voucher.getBlackListMessage()));
 							checker = false;
 							break;
@@ -106,7 +106,7 @@ public class VoucherClick implements Listener {
 		}
 		return checker;
 	}
-	
+
 	private void voucherClick(Player player, ItemStack item, Voucher voucher) {
 		String name = player.getName();
 		String argument = Vouchers.getArgument(item, voucher);
@@ -155,5 +155,5 @@ public class VoucherClick implements Listener {
 		Main.settings.getData().set("Players." + player.getUniqueId() + ".Vouchers." + voucher.getName(), amount);
 		Main.settings.saveData();
 	}
-	
+
 }

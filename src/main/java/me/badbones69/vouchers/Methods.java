@@ -1,22 +1,9 @@
 package me.badbones69.vouchers;
 
-import java.io.BufferedReader;
-import java.io.InputStreamReader;
-import java.net.HttpURLConnection;
-import java.net.URL;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.logging.Level;
-
-import org.bukkit.Bukkit;
-import org.bukkit.ChatColor;
-import org.bukkit.Color;
-import org.bukkit.FireworkEffect;
-import org.bukkit.Location;
-import org.bukkit.Material;
-import org.bukkit.Sound;
+import me.badbones69.vouchers.api.FireworkDamageAPI;
+import me.badbones69.vouchers.api.ItemBuilder;
+import me.badbones69.vouchers.api.Version;
+import org.bukkit.*;
 import org.bukkit.command.CommandSender;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.enchantments.Enchantment;
@@ -28,13 +15,19 @@ import org.bukkit.inventory.meta.FireworkMeta;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.plugin.Plugin;
 
-import me.badbones69.vouchers.api.FireworkDamageAPI;
-import me.badbones69.vouchers.api.Version;
+import java.io.BufferedReader;
+import java.io.InputStreamReader;
+import java.net.HttpURLConnection;
+import java.net.URL;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.logging.Level;
 
 public class Methods {
-	
+
 	public static Plugin plugin = Bukkit.getServer().getPluginManager().getPlugin("Vouchers");
-	
+
 	public static void removeItem(ItemStack item, Player player) {
 		if(item.getAmount() <= 1) {
 			player.getInventory().removeItem(item);
@@ -44,11 +37,11 @@ public class Methods {
 			i.setAmount(item.getAmount() - 1);
 		}
 	}
-	
+
 	public static String getPrefix() {
 		return color(Main.settings.getConfig().getString("Settings.Prefix"));
 	}
-	
+
 	public static String Args(String arg) {
 		arg = ChatColor.stripColor(arg);
 		arg = arg.replace("&l", "");
@@ -56,15 +49,15 @@ public class Methods {
 		arg = arg.replaceAll("(&([a-f0-9]))", "");
 		return arg;
 	}
-	
+
 	public static String color(String msg) {
 		return ChatColor.translateAlternateColorCodes('&', msg);
 	}
-	
+
 	public static String removeColor(String msg) {
 		return ChatColor.stripColor(msg);
 	}
-	
+
 	public static boolean isInt(String s) {
 		try {
 			Integer.parseInt(s);
@@ -73,7 +66,7 @@ public class Methods {
 		}
 		return true;
 	}
-	
+
 	public static boolean isInt(CommandSender sender, String s) {
 		try {
 			Integer.parseInt(s);
@@ -83,93 +76,10 @@ public class Methods {
 		}
 		return true;
 	}
-	
-	public static boolean isOnline(CommandSender sender, String name) {
-		for(Player player : Bukkit.getServer().getOnlinePlayers()) {
-			if(player.getName().equalsIgnoreCase(name)) {
-				return true;
-			}
-		}
-		sender.sendMessage(color(Main.settings.getMsgs().getString("Messages.Not-Online")));
-		return false;
-	}
-	
-	public static boolean hasPermission(Player player, String perm) {
-		if(!player.hasPermission("Voucher." + perm)) {
-			player.sendMessage(color(Main.settings.getMsgs().getString("Messages.No-Permission")));
-			return false;
-		}
-		return true;
-	}
-	
-	public static boolean hasPermission(CommandSender sender, String perm) {
-		if(sender instanceof Player) {
-			Player player = (Player) sender;
-			if(!player.hasPermission("Voucher." + perm)) {
-				player.sendMessage(color(Main.settings.getMsgs().getString("Messages.No-Permission")));
-				return false;
-			}else {
-				return true;
-			}
-		}else {
-			return true;
-		}
-	}
-	
-	public static ItemStack makeItem(String type, int amount) {
-		int ty = 0;
-		if(type.contains(":")) {
-			String[] b = type.split(":");
-			type = b[0];
-			ty = Integer.parseInt(b[1]);
-		}
-		Material m = Material.matchMaterial(type);
-		ItemStack item = new ItemStack(m, amount, (short) ty);
-		return item;
-	}
-	
-	public static ItemStack makeItem(String type, int amount, String name, List<String> lore) {
-		ArrayList<String> l = new ArrayList<String>();
-		int ty = 0;
-		if(type.contains(":")) {
-			String[] b = type.split(":");
-			type = b[0];
-			ty = Integer.parseInt(b[1]);
-		}
-		Material m = Material.matchMaterial(type);
-		ItemStack item = new ItemStack(m, amount, (short) ty);
-		ItemMeta me = item.getItemMeta();
-		me.setDisplayName(color(name));
-		for(String L : lore)
-			l.add(color(L));
-		me.setLore(l);
-		item.setItemMeta(me);
-		return item;
-	}
-	
-	public static ItemStack makeItem(String id, int amount, String name, List<String> lore, Map<Enchantment, Integer> enchants) {
-		ArrayList<String> l = new ArrayList<String>();
-		String ma = id;
-		int type = 0;
-		if(ma.contains(":")) {
-			String[] b = ma.split(":");
-			ma = b[0];
-			type = Integer.parseInt(b[1]);
-		}
-		Material material = Material.matchMaterial(ma);
-		ItemStack item = new ItemStack(material, amount, (short) type);
-		ItemMeta m = item.getItemMeta();
-		m.setDisplayName(color(name));
-		for(String L : lore)
-			l.add(color(L));
-		m.setLore(l);
-		item.setItemMeta(m);
-		item.addUnsafeEnchantments(enchants);
-		return item;
-	}
-	
+
 	public static ItemStack makeItem(String itemString) {
 		String id = "1";
+		Short itemMetaData = 0;
 		Integer amount = 1;
 		String name = "";
 		List<String> lore = new ArrayList<String>();
@@ -201,9 +111,53 @@ public class Methods {
 				}
 			}
 		}
-		return makeItem(id, amount, name, lore, enchantments);
+		if(id.contains(":")) {
+			String[] b = id.split(":");
+			id = b[0];
+			itemMetaData = Short.parseShort(b[1]);
+		}
+		return new ItemBuilder()
+		.setMaterial(Material.matchMaterial(id))
+		.setMetaData(itemMetaData)
+		.setAmount(amount)
+		.setName(name)
+		.setLore(lore)
+		.setEnchantments(enchantments)
+		.build();
 	}
-	
+
+	public static boolean isOnline(CommandSender sender, String name) {
+		for(Player player : Bukkit.getServer().getOnlinePlayers()) {
+			if(player.getName().equalsIgnoreCase(name)) {
+				return true;
+			}
+		}
+		sender.sendMessage(color(Main.settings.getMsgs().getString("Messages.Not-Online")));
+		return false;
+	}
+
+	public static boolean hasPermission(Player player, String perm) {
+		if(!player.hasPermission("Voucher." + perm)) {
+			player.sendMessage(color(Main.settings.getMsgs().getString("Messages.No-Permission")));
+			return false;
+		}
+		return true;
+	}
+
+	public static boolean hasPermission(CommandSender sender, String perm) {
+		if(sender instanceof Player) {
+			Player player = (Player) sender;
+			if(!player.hasPermission("Voucher." + perm)) {
+				player.sendMessage(color(Main.settings.getMsgs().getString("Messages.No-Permission")));
+				return false;
+			}else {
+				return true;
+			}
+		}else {
+			return true;
+		}
+	}
+
 	public static boolean isRealCode(Player player, String code) {
 		FileConfiguration Code = Main.settings.getCode();
 		if(Code.contains("Codes")) {
@@ -220,7 +174,7 @@ public class Methods {
 		player.sendMessage(color(Main.settings.getMsgs().getString("Messages.Code-UnAvailable").replace("%Arg%", code).replace("%arg%", code)));
 		return false;
 	}
-	
+
 	public static boolean isCodeEnabled(Player player, String code) {
 		if(Main.settings.getCode().contains("Codes")) {
 			for(String C : Main.settings.getCode().getConfigurationSection("Codes").getKeys(false)) {
@@ -234,7 +188,7 @@ public class Methods {
 		player.sendMessage(color(Main.settings.getMsgs().getString("Messages.Code-UnAvailable").replace("%Arg%", code).replace("%arg%", code)));
 		return false;
 	}
-	
+
 	public static boolean hasCodePerm(Player player, String code) {
 		if(Main.settings.getCode().contains("Codes")) {
 			for(String C : Main.settings.getCode().getConfigurationSection("Codes").getKeys(false)) {
@@ -252,7 +206,7 @@ public class Methods {
 		player.sendMessage(color(Main.settings.getMsgs().getString("Messages.Code-UnAvailable").replace("%Arg%", code).replace("%arg%", code)));
 		return false;
 	}
-	
+
 	public static void codeRedeem(Player player, String code) {
 		FileConfiguration Code = Main.settings.getCode();
 		FileConfiguration Data = Main.settings.getData();
@@ -324,7 +278,7 @@ public class Methods {
 			}
 		}
 	}
-	
+
 	public static void hasUpdate() {
 		try {
 			HttpURLConnection c = (HttpURLConnection) new URL("http://www.spigotmc.org/api/general.php").openConnection();
@@ -340,7 +294,7 @@ public class Methods {
 			return;
 		}
 	}
-	
+
 	public static void hasUpdate(Player player) {
 		try {
 			HttpURLConnection c = (HttpURLConnection) new URL("http://www.spigotmc.org/api/general.php").openConnection();
@@ -356,14 +310,14 @@ public class Methods {
 			return;
 		}
 	}
-	
+
 	public static boolean isInvFull(Player player) {
 		if(player.getInventory().firstEmpty() == -1) {
 			return true;
 		}
 		return false;
 	}
-	
+
 	public static void fireWork(Location loc, List<Color> list) {
 		final Firework f = loc.getWorld().spawn(loc, Firework.class);
 		FireworkMeta fm = f.getFireworkMeta();
@@ -377,7 +331,7 @@ public class Methods {
 			}
 		}, 2);
 	}
-	
+
 	public static String getEnchantmentName(Enchantment en) {
 		HashMap<String, String> enchants = new HashMap<String, String>();
 		enchants.put("ARROW_DAMAGE", "Power");
@@ -414,9 +368,9 @@ public class Methods {
 		}
 		return enchants.get(en.getName());
 	}
-	
+
 	public static ItemStack addGlow(ItemStack item, boolean glowing) {
-		if(Version.getVersion().comparedTo(Version.v1_8_R1) >= 0) {
+		if(Version.getCurrentVersion().comparedTo(Version.v1_8_R1) >= 0) {
 			if(glowing) {
 				if(item != null) {
 					if(item.hasItemMeta()) {
@@ -433,7 +387,7 @@ public class Methods {
 		}
 		return item;
 	}
-	
+
 	public static Color getColor(String color) {
 		if(color.equalsIgnoreCase("AQUA")) return Color.AQUA;
 		if(color.equalsIgnoreCase("BLACK")) return Color.BLACK;
@@ -454,7 +408,7 @@ public class Methods {
 		if(color.equalsIgnoreCase("YELLOW")) return Color.YELLOW;
 		return Color.WHITE;
 	}
-	
+
 	public static boolean isSimilar(ItemStack one, ItemStack two) {
 		if(one.getType() == two.getType()) {
 			if(one.hasItemMeta()) {
@@ -478,5 +432,5 @@ public class Methods {
 		}
 		return false;
 	}
-	
+
 }

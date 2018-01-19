@@ -9,3 +9,9 @@
 
 .gitattributes
 bin/
+
+*.iml
+
+\.idea/
+
+target/
