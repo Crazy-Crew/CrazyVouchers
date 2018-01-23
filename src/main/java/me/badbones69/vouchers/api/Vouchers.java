@@ -114,7 +114,7 @@ public class Vouchers {
 						if(!itemLine.startsWith(b[0])) {
 							break;
 						}
-						if(b.length >= 1) argument = itemLine.replace(b[0], "");
+						argument = itemLine.replace(b[0], "");
 						if(b.length >= 2) argument = argument.replace(b[1], "");
 						if(Methods.isSimilar(item, voucher.buildItem(argument))) {
 							return argument;

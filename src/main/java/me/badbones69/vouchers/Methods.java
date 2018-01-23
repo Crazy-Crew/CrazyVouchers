@@ -1,6 +1,6 @@
 package me.badbones69.vouchers;
 
-import me.badbones69.vouchers.api.FireworkDamageAPI;
+import me.badbones69.vouchers.controlers.FireworkDamageAPI;
 import me.badbones69.vouchers.api.ItemBuilder;
 import me.badbones69.vouchers.api.Version;
 import org.bukkit.*;

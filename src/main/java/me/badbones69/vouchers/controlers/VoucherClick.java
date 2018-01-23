@@ -69,7 +69,6 @@ public class VoucherClick implements Listener {
 					if(twoAuth.containsKey(player)) {
 						twoAuth.remove(player);
 					}
-					return;
 				}
 			}
 		}

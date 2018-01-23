@@ -1,5 +1,6 @@
 package me.badbones69.vouchers.api;
 
+import de.tr7zw.itemnbtapi.NBTItem;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.enchantments.Enchantment;
@@ -63,10 +64,12 @@ public class ItemBuilder {
 		.setMetaData(item.getDurability())
 		.setEnchantments(new HashMap<>(item.getEnchantments()));
 		if(item.hasItemMeta()) {
-			itemBuilder.setFlags(new ArrayList<>(item.getItemMeta().getItemFlags()))
-			.setName(item.getItemMeta().getDisplayName())
-			.setLore(item.getItemMeta().getLore())
-			.setUnbreakable(item.getItemMeta().isUnbreakable());
+			itemBuilder.setName(item.getItemMeta().getDisplayName())
+			.setLore(item.getItemMeta().getLore());
+			NBTItem nbt = new NBTItem(item);
+			if(nbt.hasKey("Unbreakable")) {
+				itemBuilder.setUnbreakable(nbt.getBoolean("Unbreakable"));
+			}
 		}
 		return itemBuilder;
 	}
@@ -399,9 +402,14 @@ public class ItemBuilder {
 		itemMeta.setDisplayName(getUpdatedName());
 		itemMeta.setLore(getUpdatedLore());
 		itemMeta.addItemFlags(flags.toArray(new ItemFlag[flags.size()]));
-		itemMeta.spigot().setUnbreakable(unbreakable);
 		item.setItemMeta(itemMeta);
 		item.addUnsafeEnchantments(enchantments);
+		if(unbreakable) {
+			NBTItem nbt = new NBTItem(item);
+			nbt.setBoolean("Unbreakable", true);
+			nbt.setInteger("HideFlags", 4);
+			return nbt.getItem();
+		}
 		return item;
 	}
 
