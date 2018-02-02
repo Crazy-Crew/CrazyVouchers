@@ -19,9 +19,9 @@ import org.bukkit.inventory.ItemStack;
 import java.util.HashMap;
 
 public class VoucherClick implements Listener {
-
+	
 	private HashMap<Player, String> twoAuth = new HashMap<>();
-
+	
 	@EventHandler
 	public void onVoucherClick(PlayerInteractEvent e) {
 		ItemStack item = getItemInHand(e.getPlayer());
@@ -73,7 +73,7 @@ public class VoucherClick implements Listener {
 			}
 		}
 	}
-
+	
 	@SuppressWarnings("deprecation")
 	private ItemStack getItemInHand(Player player) {
 		if(Version.getCurrentVersion().getVersionInteger() >= Version.v1_9_R1.getVersionInteger()) {
@@ -82,7 +82,7 @@ public class VoucherClick implements Listener {
 			return player.getItemInHand();
 		}
 	}
-
+	
 	private boolean passesPermissionChecks(Player player, Voucher voucher, ItemStack item) {
 		Boolean checker = true;
 		String argument = Vouchers.getArgument(item, voucher);
@@ -105,7 +105,7 @@ public class VoucherClick implements Listener {
 		}
 		return checker;
 	}
-
+	
 	private void voucherClick(Player player, ItemStack item, Voucher voucher) {
 		String name = player.getName();
 		String argument = Vouchers.getArgument(item, voucher);
@@ -154,5 +154,5 @@ public class VoucherClick implements Listener {
 		Main.settings.getData().set("Players." + player.getUniqueId() + ".Vouchers." + voucher.getName(), amount);
 		Main.settings.saveData();
 	}
-
+	
 }
