@@ -13,13 +13,13 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class Voucher {
-
+	
 	private String name;
 	private Boolean usesArgs;
 	private Material itemMaterial;
 	private Short itemMetaData;
 	private String itemName;
-	private List<String> itemLore = new ArrayList<>();
+	private List<String> itemLore;
 	private Boolean itemGlow;
 	private String usedMessage;
 	private Boolean whitelistToggle;
@@ -36,7 +36,7 @@ public class Voucher {
 	private List<Color> fireworkColors = new ArrayList<>();
 	private List<String> commands = new ArrayList<>();
 	private List<ItemStack> items = new ArrayList<>();
-
+	
 	public Voucher(String name) {
 		this.name = name;
 		this.usesArgs = false;
@@ -63,11 +63,7 @@ public class Voucher {
 				}
 			}
 		}
-		if(config.contains(path + "Glowing")) {
-			this.itemGlow = config.getBoolean(path + "Glowing");
-		}else {
-			this.itemGlow = false;
-		}
+		this.itemGlow = config.contains(path + "Glowing") && config.getBoolean(path + "Glowing");
 		if(config.contains(path + "Commands")) {
 			this.commands = config.getStringList(path + "Commands");
 		}
@@ -81,20 +77,20 @@ public class Voucher {
 		}else {
 			this.usedMessage = "";
 		}
-		if(config.contains(path + "Options.Whitelist-Permission")) {
-			this.whitelistToggle = config.getBoolean(path + "Options.Whitelist-Permission.Toggle");
-			this.whitelistNode = config.getString(path + "Options.Whitelist-Permission.Node").toLowerCase();
+		if(config.contains(path + "Options.Permission.Whitelist-Permission")) {
+			this.whitelistToggle = config.getBoolean(path + "Options.Permission.Whitelist-Permission.Toggle");
+			this.whitelistNode = config.getString(path + "Options.Permission.Whitelist-Permission.Node").toLowerCase();
 		}else {
 			this.whitelistToggle = false;
 		}
-		if(config.contains(path + "Options.BlackList-Permissions")) {
-			this.blacklistToggle = config.getBoolean(path + "Options.BlackList-Permissions.Toggle");
-			if(config.contains(path + "Options.BlackList-Permissions.Message")) {
-				this.blacklistMessage = config.getString(path + "Options.BlackList-Permissions.Message");
+		if(config.contains(path + "Options.Permission.Blacklist-Permissions")) {
+			this.blacklistToggle = config.getBoolean(path + "Options.Permission.Blacklist-Permissions.Toggle");
+			if(config.contains(path + "Options.Permission.Blacklist-Permissions.Message")) {
+				this.blacklistMessage = config.getString(path + "Options.Permission.Blacklist-Permissions.Message");
 			}else {
 				this.blacklistMessage = Main.settings.getMsgs().getString("Messages.Has-Blacklist-Permission");
 			}
-			this.blacklistPermissions = config.getStringList(path + "Options.BlackList-Permissions.Permissions");
+			this.blacklistPermissions = config.getStringList(path + "Options.Permission.Blacklist-Permissions.Permissions");
 		}else {
 			this.blacklistToggle = false;
 		}
@@ -104,18 +100,12 @@ public class Voucher {
 		}else {
 			this.limiterToggle = false;
 		}
-		if(config.contains(path + "Options.Two-Step-Authentication")) {
-			this.twostepAuthentication = config.getBoolean(path + "Options.Two-Step-Authentication.Toggle");
-		}else {
-			this.twostepAuthentication = false;
-		}
+		this.twostepAuthentication = config.contains(path + "Options.Two-Step-Authentication") && config.getBoolean(path + "Options.Two-Step-Authentication.Toggle");
 		if(config.contains(path + "Options.Sound")) {
 			this.soundToggle = config.getBoolean(path + "Options.Sound.Toggle");
 			for(String sound : config.getStringList(path + "Options.Sound.Sounds")) {
 				try {
-					if(Sound.valueOf(sound) != null) {
-						this.sounds.add(Sound.valueOf(sound));
-					}
+					this.sounds.add(Sound.valueOf(sound));
 				}catch(Exception e) {
 				}
 			}
@@ -131,15 +121,15 @@ public class Voucher {
 			this.fireworkToggle = false;
 		}
 	}
-
+	
 	public String getName() {
 		return name;
 	}
-
+	
 	public Boolean usesArguments() {
 		return usesArgs;
 	}
-
+	
 	public ItemStack buildItem() {
 		ItemStack item = Methods.addGlow(new ItemBuilder()
 		.setMaterial(itemMaterial)
@@ -151,7 +141,7 @@ public class Voucher {
 		nbt.setString("voucher", name);
 		return nbt.getItem();
 	}
-
+	
 	public ItemStack buildItem(int amount) {
 		ItemStack item = Methods.addGlow(new ItemBuilder()
 		.setMaterial(itemMaterial)
@@ -164,7 +154,7 @@ public class Voucher {
 		nbt.setString("voucher", name);
 		return nbt.getItem();
 	}
-
+	
 	public ItemStack buildItem(String argument) {
 		ItemStack item = Methods.addGlow(new ItemBuilder()
 		.setMaterial(itemMaterial)
@@ -180,9 +170,9 @@ public class Voucher {
 		nbt.setString("voucher", name);
 		nbt.setString("argument", argument);
 		return nbt.getItem();
-
+		
 	}
-
+	
 	public ItemStack buildItem(String argument, int amount) {
 		ItemStack item = Methods.addGlow(new ItemBuilder()
 		.setMaterial(itemMaterial)
@@ -200,65 +190,65 @@ public class Voucher {
 		nbt.setString("argument", argument);
 		return nbt.getItem();
 	}
-
+	
 	public String getVoucherUsedMessage() {
 		return usedMessage;
 	}
-
+	
 	public Boolean useWhiteListPermissions() {
 		return whitelistToggle;
 	}
-
+	
 	public String getWhiteListPermission() {
 		return "voucher." + whitelistNode;
 	}
-
+	
 	public Boolean useBlackListPermissions() {
 		return blacklistToggle;
 	}
-
+	
 	public List<String> getBlackListPermissions() {
 		return blacklistPermissions;
 	}
-
+	
 	public String getBlackListMessage() {
 		return blacklistMessage;
 	}
-
+	
 	public Boolean useLimiter() {
 		return limiterToggle;
 	}
-
+	
 	public Integer getLimiterLimit() {
 		return limiterLimit;
 	}
-
+	
 	public Boolean useTwoStepAuthentication() {
 		return twostepAuthentication;
 	}
-
+	
 	public Boolean playSounds() {
 		return soundToggle;
 	}
-
+	
 	public List<Sound> getSounds() {
 		return sounds;
 	}
-
+	
 	public Boolean useFirework() {
 		return fireworkToggle;
 	}
-
+	
 	public List<Color> getFireworkColors() {
 		return fireworkColors;
 	}
-
+	
 	public List<String> getCommands() {
 		return commands;
 	}
-
+	
 	public List<ItemStack> getItems() {
 		return items;
 	}
-
+	
 }

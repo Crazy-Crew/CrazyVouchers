@@ -10,20 +10,20 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class Vouchers {
-
+	
 	private static ArrayList<Voucher> vouchers = new ArrayList<>();
-
+	
 	public static void load() {
 		vouchers.clear();
 		for(String voucherName : getConfig().getConfigurationSection("Vouchers").getKeys(false)) {
 			vouchers.add(new Voucher(voucherName));
 		}
 	}
-
+	
 	public static ArrayList<Voucher> getVouchers() {
 		return vouchers;
 	}
-
+	
 	public static Voucher getVoucher(String voucherName) {
 		for(Voucher voucher : getVouchers()) {
 			if(voucher.getName().equalsIgnoreCase(voucherName)) {
@@ -32,7 +32,7 @@ public class Vouchers {
 		}
 		return null;
 	}
-
+	
 	public static Boolean isVoucherName(String voucherName) {
 		for(Voucher voucher : getVouchers()) {
 			if(voucher.getName().equalsIgnoreCase(voucherName)) {
@@ -41,7 +41,7 @@ public class Vouchers {
 		}
 		return false;
 	}
-
+	
 	public static Voucher getVoucherFromItem(ItemStack item) {
 		NBTItem nbt = new NBTItem(item);
 		if(nbt.hasKey("voucher")) {
@@ -81,7 +81,7 @@ public class Vouchers {
 		}
 		return null;
 	}
-
+	
 	public static String getArgument(ItemStack item, Voucher voucher) {
 		if(voucher.usesArguments()) {
 			//Checks to see if the voucher uses nbt tags.
@@ -128,7 +128,7 @@ public class Vouchers {
 		}
 		return null;
 	}
-
+	
 	private static FileConfiguration getConfig() {
 		return Main.settings.getConfig();
 	}
