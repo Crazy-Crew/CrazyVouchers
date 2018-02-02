@@ -13,3 +13,11 @@ Messages:
   Hit-Limit: '&cYou have hit your limit for using this voucher.'
   Two-Step-Authentication: '&7Right click again to confirm that you want to use this voucher.'
   Has-Blacklist-Permission: '&cSorry but you can not use this voucher because you have a black-listed permission.'
+  Help:
+    - '&8- &6/Voucher Help &3Lists all the commands for vouchers.'
+    - '&8- &6/Voucher Types &3Lists all types of vouchers and codes.'
+    - '&8- &6/Voucher Redeem <Code> &3Allows player to redeem a voucher code.'
+    - '&8- &6/Voucher Give <Type> [Amount] [Player] [Arguments] &3Gives a player a voucher.'
+    - '&8- &6/Voucher GiveAll <Type> [Amount] [Arguments] &3Gives all players a voucher.'
+    - '&8- &6/Voucher Open [Page] &3Opens a GUI so you can get vouchers easy.'
+    - '&8- &6/Voucher Reload &3Reloadeds the config.yml.'

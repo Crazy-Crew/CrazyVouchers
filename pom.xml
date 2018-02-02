@@ -6,7 +6,7 @@
 
     <groupId>me.badbones69</groupId>
     <artifactId>Vouchers</artifactId>
-    <version>1.6.5.2</version>
+    <version>1.7</version>
 
     <repositories>
         <repository>
@@ -64,8 +64,8 @@
                         </includes>
                     </artifactSet>
                     <!--<finalName>${project.artifactId}[v${project.version}]</finalName>-->
-                    <!--<outputFile>/Users/Joe/Desktop/Stuff/Server/plugins/${project.artifactId}[v${project.version}].jar</outputFile>-->
-                    <outputFile>/Users/Joe/Plugins/Public Plugins/Vouchers/${project.artifactId}[v${project.version}].jar</outputFile>
+                    <outputFile>/Users/badbones/Desktop/Stuff/Server/plugins/${project.artifactId}[v${project.version}].jar</outputFile>
+                    <!--<outputFile>/Users/badbones/Plugins/Public Plugins/Vouchers/${project.artifactId}[v${project.version}].jar</outputFile>-->
                 </configuration>
                 <executions>
                     <execution>

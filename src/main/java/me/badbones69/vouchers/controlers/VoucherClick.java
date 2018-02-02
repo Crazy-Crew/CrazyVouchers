@@ -1,11 +1,13 @@
 package me.badbones69.vouchers.controlers;
 
-import me.badbones69.vouchers.Main;
 import me.badbones69.vouchers.Methods;
-import me.badbones69.vouchers.api.Version;
-import me.badbones69.vouchers.api.Voucher;
+import me.badbones69.vouchers.api.FileManager.Files;
 import me.badbones69.vouchers.api.Vouchers;
+import me.badbones69.vouchers.api.enums.Messages;
+import me.badbones69.vouchers.api.enums.Version;
+import me.badbones69.vouchers.api.objects.Voucher;
 import org.bukkit.Bukkit;
+import org.bukkit.Material;
 import org.bukkit.Sound;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.entity.Player;
@@ -17,63 +19,64 @@ import org.bukkit.inventory.EquipmentSlot;
 import org.bukkit.inventory.ItemStack;
 
 import java.util.HashMap;
+import java.util.Random;
 
 public class VoucherClick implements Listener {
-
+	
 	private HashMap<Player, String> twoAuth = new HashMap<>();
-
+	
 	@EventHandler
 	public void onVoucherClick(PlayerInteractEvent e) {
 		ItemStack item = getItemInHand(e.getPlayer());
 		Player player = e.getPlayer();
 		Action action = e.getAction();
-		FileConfiguration data = Main.settings.getData();
-		if(Version.getCurrentVersion().getVersionInteger() >= Version.v1_9_R1.getVersionInteger()) {
-			if(e.getHand() != EquipmentSlot.HAND) {
-				return;
+		FileConfiguration data = Files.DATA.getFile();
+		if(item != null && item.getType() != Material.AIR) {
+			if(Version.getCurrentVersion().getVersionInteger() >= Version.v1_9_R1.getVersionInteger()) {
+				if(e.getHand() != EquipmentSlot.HAND) {
+					return;
+				}
 			}
-		}
-		if(action == Action.RIGHT_CLICK_BLOCK || action == Action.RIGHT_CLICK_AIR) {
-			Voucher voucher = Vouchers.getVoucherFromItem(item);
-			if(voucher != null) {
-				e.setCancelled(true);
-				if(passesPermissionChecks(player, voucher, item)) {
-					String uuid = player.getUniqueId().toString();
-					if(!player.hasPermission("Voucher.Bypass")) {
-						if(voucher.useLimiter()) {
-							if(data.contains("Players." + uuid)) {
-								if(data.contains("Players." + uuid + ".Vouchers." + voucher.getName())) {
-									int amount = data.getInt("Players." + uuid + ".Vouchers." + voucher.getName());
-									if(amount >= voucher.getLimiterLimit()) {
-										player.sendMessage(Methods.getPrefix() + Methods.color(Main.settings.getMsgs().getString("Messages.Hit-Limit")));
-										return;
+			if(action == Action.RIGHT_CLICK_BLOCK || action == Action.RIGHT_CLICK_AIR) {
+				Voucher voucher = Vouchers.getVoucherFromItem(item);
+				if(voucher != null) {
+					e.setCancelled(true);
+					if(passesPermissionChecks(player, voucher, item)) {
+						String uuid = player.getUniqueId().toString();
+						if(!player.hasPermission("Voucher.Bypass")) {
+							if(voucher.useLimiter()) {
+								if(data.contains("Players." + uuid)) {
+									if(data.contains("Players." + uuid + ".Vouchers." + voucher.getName())) {
+										int amount = data.getInt("Players." + uuid + ".Vouchers." + voucher.getName());
+										if(amount >= voucher.getLimiterLimit()) {
+											player.sendMessage(Messages.HIT_LIMIT.getMessage());
+											return;
+										}
 									}
 								}
 							}
 						}
-					}
-					if(voucher.useTwoStepAuthentication()) {
-						if(twoAuth.containsKey(player)) {
-							if(!twoAuth.get(player).equalsIgnoreCase(voucher.getName())) {
-								player.sendMessage(Methods.getPrefix() + Methods.color(Main.settings.getMsgs().getString("Messages.Two-Step-Authentication")));
+						if(voucher.useTwoStepAuthentication()) {
+							if(twoAuth.containsKey(player)) {
+								if(!twoAuth.get(player).equalsIgnoreCase(voucher.getName())) {
+									player.sendMessage(Messages.TWO_STEP_AUTHENTICATION.getMessage());
+									twoAuth.put(player, voucher.getName());
+									return;
+								}
+							}else {
+								player.sendMessage(Messages.TWO_STEP_AUTHENTICATION.getMessage());
 								twoAuth.put(player, voucher.getName());
 								return;
 							}
-						}else {
-							player.sendMessage(Methods.getPrefix() + Methods.color(Main.settings.getMsgs().getString("Messages.Two-Step-Authentication")));
-							twoAuth.put(player, voucher.getName());
-							return;
 						}
-					}
-					voucherClick(player, item, voucher);
-					if(twoAuth.containsKey(player)) {
+						voucherClick(player, item, voucher);
 						twoAuth.remove(player);
 					}
 				}
 			}
 		}
 	}
-
+	
 	@SuppressWarnings("deprecation")
 	private ItemStack getItemInHand(Player player) {
 		if(Version.getCurrentVersion().getVersionInteger() >= Version.v1_9_R1.getVersionInteger()) {
@@ -82,13 +85,13 @@ public class VoucherClick implements Listener {
 			return player.getItemInHand();
 		}
 	}
-
+	
 	private boolean passesPermissionChecks(Player player, Voucher voucher, ItemStack item) {
 		Boolean checker = true;
 		String argument = Vouchers.getArgument(item, voucher);
 		if(!player.isOp()) {
 			if(!player.hasPermission(voucher.getWhiteListPermission().toLowerCase().replaceAll("%arg%", argument != null ? argument : "%arg%")) && voucher.useWhiteListPermissions()) {
-				player.sendMessage(Methods.color(Methods.getPrefix() + Main.settings.getMsgs().getString("Messages.No-Permission-To-Voucher")));
+				player.sendMessage(Messages.NO_PERMISSION_TO_VOUCHER.getMessage());
 				checker = false;
 			}
 			if(checker) {
@@ -105,7 +108,7 @@ public class VoucherClick implements Listener {
 		}
 		return checker;
 	}
-
+	
 	private void voucherClick(Player player, ItemStack item, Voucher voucher) {
 		String name = player.getName();
 		String argument = Vouchers.getArgument(item, voucher);
@@ -115,6 +118,24 @@ public class VoucherClick implements Listener {
 		Methods.removeItem(item, player);
 		for(String cmd : voucher.getCommands()) {
 			Bukkit.dispatchCommand(Bukkit.getConsoleSender(), cmd.replaceAll("%Player%", name).replaceAll("%player%", name)
+			.replaceAll("%Arg%", argument).replaceAll("%arg%", argument)
+			.replaceAll("%World%", player.getWorld().getName()).replaceAll("%world%", player.getWorld().getName())
+			.replaceAll("%X%", player.getLocation().getBlockX() + "").replaceAll("%x%", player.getLocation().getBlockX() + "")
+			.replaceAll("%Y%", player.getLocation().getBlockY() + "").replaceAll("%y%", player.getLocation().getBlockY() + "")
+			.replaceAll("%Z%", player.getLocation().getBlockZ() + "").replaceAll("%z%", player.getLocation().getBlockZ() + ""));
+		}
+		if(voucher.getRandomCoammnds().size() >= 1) {// Picks a random command from the Random-Commands list.
+			Bukkit.dispatchCommand(Bukkit.getConsoleSender(), voucher.getRandomCoammnds().get(new Random().nextInt(voucher.getRandomCoammnds().size()))
+			.replaceAll("%Player%", name).replaceAll("%player%", name)
+			.replaceAll("%Arg%", argument).replaceAll("%arg%", argument)
+			.replaceAll("%World%", player.getWorld().getName()).replaceAll("%world%", player.getWorld().getName())
+			.replaceAll("%X%", player.getLocation().getBlockX() + "").replaceAll("%x%", player.getLocation().getBlockX() + "")
+			.replaceAll("%Y%", player.getLocation().getBlockY() + "").replaceAll("%y%", player.getLocation().getBlockY() + "")
+			.replaceAll("%Z%", player.getLocation().getBlockZ() + "").replaceAll("%z%", player.getLocation().getBlockZ() + ""));
+		}
+		if(voucher.getChanceCommands().size() >= 1) {// Picks a command based on the chance system of the Chance-Commands list.
+			Bukkit.dispatchCommand(Bukkit.getConsoleSender(), voucher.getChanceCommands().get(new Random().nextInt(voucher.getChanceCommands().size()))
+			.replaceAll("%Player%", name).replaceAll("%player%", name)
 			.replaceAll("%Arg%", argument).replaceAll("%arg%", argument)
 			.replaceAll("%World%", player.getWorld().getName()).replaceAll("%world%", player.getWorld().getName())
 			.replaceAll("%X%", player.getLocation().getBlockX() + "").replaceAll("%x%", player.getLocation().getBlockX() + "")
@@ -136,23 +157,23 @@ public class VoucherClick implements Listener {
 		if(voucher.useFirework()) {
 			Methods.fireWork(player.getLocation(), voucher.getFireworkColors());
 		}
-		String msg = voucher.getVoucherUsedMessage().replaceAll("%Player%", name).replaceAll("%player%", name)
-		.replaceAll("%Arg%", argument).replaceAll("%arg%", argument)
-		.replaceAll("%World%", player.getWorld().getName()).replaceAll("%world%", player.getWorld().getName())
-		.replaceAll("%X%", player.getLocation().getBlockX() + "").replaceAll("%x%", player.getLocation().getBlockX() + "")
-		.replaceAll("%Y%", player.getLocation().getBlockY() + "").replaceAll("%y%", player.getLocation().getBlockY() + "")
-		.replaceAll("%Z%", player.getLocation().getBlockZ() + "").replaceAll("%z%", player.getLocation().getBlockZ() + "");
-		if(!msg.equals("")) {
-			player.sendMessage(Methods.getPrefix() + Methods.color(msg));
+		if(!voucher.getVoucherUsedMessage().equals("")) {
+			player.sendMessage(Methods.getPrefix() + Methods.color(voucher.getVoucherUsedMessage()
+			.replaceAll("%Player%", name).replaceAll("%player%", name)
+			.replaceAll("%Arg%", argument).replaceAll("%arg%", argument)
+			.replaceAll("%World%", player.getWorld().getName()).replaceAll("%world%", player.getWorld().getName())
+			.replaceAll("%X%", player.getLocation().getBlockX() + "").replaceAll("%x%", player.getLocation().getBlockX() + "")
+			.replaceAll("%Y%", player.getLocation().getBlockY() + "").replaceAll("%y%", player.getLocation().getBlockY() + "")
+			.replaceAll("%Z%", player.getLocation().getBlockZ() + "").replaceAll("%z%", player.getLocation().getBlockZ() + "")));
 		}
 		int amount = 0;
-		if(Main.settings.getData().contains("Players." + player.getUniqueId() + ".Vouchers." + voucher.getName())) {
-			amount = Main.settings.getData().getInt("Players." + player.getUniqueId() + ".Vouchers." + voucher.getName());
+		if(Files.DATA.getFile().contains("Players." + player.getUniqueId() + ".Vouchers." + voucher.getName())) {
+			amount = Files.DATA.getFile().getInt("Players." + player.getUniqueId() + ".Vouchers." + voucher.getName());
 		}
 		amount++;
-		Main.settings.getData().set("Players." + player.getUniqueId() + ".UserName", player.getName());
-		Main.settings.getData().set("Players." + player.getUniqueId() + ".Vouchers." + voucher.getName(), amount);
-		Main.settings.saveData();
+		Files.DATA.getFile().set("Players." + player.getUniqueId() + ".UserName", player.getName());
+		Files.DATA.getFile().set("Players." + player.getUniqueId() + ".Vouchers." + voucher.getName(), amount);
+		Files.DATA.saveFile();
 	}
-
+	
 }
