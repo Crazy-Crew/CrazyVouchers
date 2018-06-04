@@ -117,3 +117,52 @@ Vouchers: #Where you make your vouchers.
       Firework:
         Toggle: true
         Colors: 'Black, Gray, Aqua'
+  Random_1:
+    Item: '331'
+    Name: '&8&l>&7&l>&cRandom Voucher &6&l#1&7&l<&8&l<'
+    Lore:
+      - '&7Win a random prize.'
+      - ''
+      - '&6&l#1: &a$100'
+      - '&6&l#2: &a$1,000'
+      - '&6&l#3: &a$10,000'
+      - '&6&l#4: &a$100,000'
+      - '&6&l#5: &a$1,000,000'
+      - ''
+      - '&7&l(&6&l!&7&l) &7Right click to redeem.'
+    Glowing: false
+    Random-Commands: #Picks a random prize. There is no chance system for this only a random prize.
+      - 'eco give %Player% 100'
+      - 'eco give %Player% 1000'
+      - 'eco give %Player% 10000'
+      - 'eco give %Player% 100000'
+      - 'eco give %Player% 1000000'
+    Options:
+      Firework:
+        Toggle: true
+        Colors: 'Black, Green'
+  Random_2:
+    Item: '331'
+    Name: '&8&l>&7&l>&cRandom Voucher &6&l#2&7&l<&8&l<'
+    Lore:
+      - '&7You feeling lucky?'
+      - ''
+      - '&6&l#1: &a$100 &c45%'
+      - '&6&l#2: &a$1,000 &c25%'
+      - '&6&l#3: &a$10,000 &c15%'
+      - '&6&l#4: &a$100,000 &c10%'
+      - '&6&l#5: &a$1,000,000 &c5%'
+      - ''
+      - '&7&l(&6&l!&7&l) &7Right click to redeem.'
+    Glowing: false
+    #Chance Command Layout: - '<Chance> <Command goes after>'
+    Chance-Commands: #Picks a prizes based on a chance system. Chance-System wiki:
+      - '45 eco give %Player% 100'
+      - '25 eco give %Player% 1000'
+      - '15 eco give %Player% 10000'
+      - '10 eco give %Player% 100000'
+      - '5 eco give %Player% 1000000'
+    Options:
+      Firework:
+        Toggle: true
+        Colors: 'Black, Green'

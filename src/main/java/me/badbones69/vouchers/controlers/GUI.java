@@ -1,9 +1,9 @@
 package me.badbones69.vouchers.controlers;
 
 import me.badbones69.vouchers.Methods;
-import me.badbones69.vouchers.api.ItemBuilder;
-import me.badbones69.vouchers.api.Voucher;
 import me.badbones69.vouchers.api.Vouchers;
+import me.badbones69.vouchers.api.objects.ItemBuilder;
+import me.badbones69.vouchers.api.objects.Voucher;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
@@ -16,10 +16,10 @@ import org.bukkit.inventory.ItemStack;
 import java.util.*;
 
 public class GUI implements Listener {
-
+	
 	private static String inventoryName = Methods.color("&8&l&nVouchers");
 	private static HashMap<UUID, Integer> playerPage = new HashMap<>();
-
+	
 	public static void openGUI(Player player) {
 		int page = getPage(player);
 		Inventory inv = Bukkit.createInventory(null, 54, inventoryName);
@@ -29,7 +29,7 @@ public class GUI implements Listener {
 		}
 		player.openInventory(inv);
 	}
-
+	
 	public static void openGUI(Player player, int pageNumber) {
 		setPage(player, pageNumber);
 		pageNumber = getPage(player);
@@ -40,7 +40,7 @@ public class GUI implements Listener {
 		}
 		player.openInventory(inv);
 	}
-
+	
 	@EventHandler
 	public void invClick(InventoryClickEvent e) {
 		Inventory inv = e.getInventory();
@@ -75,14 +75,14 @@ public class GUI implements Listener {
 			}
 		}
 	}
-
+	
 	private static int getPage(Player player) {
 		if(playerPage.containsKey(player.getUniqueId())) {
 			return playerPage.get(player.getUniqueId());
 		}
 		return 1;
 	}
-
+	
 	private static void setPage(Player player, int pageNumber) {
 		int max = getMaxPage();
 		if(pageNumber < 1) {
@@ -92,22 +92,22 @@ public class GUI implements Listener {
 		}
 		playerPage.put(player.getUniqueId(), pageNumber);
 	}
-
+	
 	private void nextPage(Player player) {
 		setPage(player, getPage(player) + 1);
 	}
-
+	
 	private void backPage(Player player) {
 		setPage(player, getPage(player) - 1);
 	}
-
+	
 	private static int getMaxPage() {
 		int maxPage = 1;
 		int amount = Vouchers.getVouchers().size();
 		for(; amount > 36; amount -= 45, maxPage++) ;
 		return maxPage;
 	}
-
+	
 	private static List<Voucher> getPageVouchers(Integer page) {
 		List<Voucher> list = Vouchers.getVouchers();
 		List<Voucher> vouchers = new ArrayList<>();
@@ -128,7 +128,7 @@ public class GUI implements Listener {
 		}
 		return vouchers;
 	}
-
+	
 	private static void setDefaultItems(Player player, Inventory inv) {
 		for(int i : Arrays.asList(0, 1, 2, 3, 4, 5, 6, 7, 8, 45, 46, 47, 49, 51, 52, 53)) {
 			inv.setItem(i, new ItemBuilder()
@@ -166,5 +166,5 @@ public class GUI implements Listener {
 			.build());
 		}
 	}
-
+	
 }

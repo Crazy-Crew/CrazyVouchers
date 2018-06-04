@@ -1,9 +1,9 @@
 package me.badbones69.vouchers.api;
 
 import de.tr7zw.itemnbtapi.NBTItem;
-import me.badbones69.vouchers.Main;
 import me.badbones69.vouchers.Methods;
-import org.bukkit.configuration.file.FileConfiguration;
+import me.badbones69.vouchers.api.FileManager.Files;
+import me.badbones69.vouchers.api.objects.Voucher;
 import org.bukkit.inventory.ItemStack;
 
 import java.util.ArrayList;
@@ -15,7 +15,7 @@ public class Vouchers {
 	
 	public static void load() {
 		vouchers.clear();
-		for(String voucherName : getConfig().getConfigurationSection("Vouchers").getKeys(false)) {
+		for(String voucherName : Files.CONFIG.getFile().getConfigurationSection("Vouchers").getKeys(false)) {
 			vouchers.add(new Voucher(voucherName));
 		}
 	}
@@ -129,7 +129,4 @@ public class Vouchers {
 		return null;
 	}
 	
-	private static FileConfiguration getConfig() {
-		return Main.settings.getConfig();
-	}
 }

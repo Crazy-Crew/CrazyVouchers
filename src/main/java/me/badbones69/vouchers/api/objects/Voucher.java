@@ -1,8 +1,9 @@
-package me.badbones69.vouchers.api;
+package me.badbones69.vouchers.api.objects;
 
 import de.tr7zw.itemnbtapi.NBTItem;
-import me.badbones69.vouchers.Main;
 import me.badbones69.vouchers.Methods;
+import me.badbones69.vouchers.api.FileManager.Files;
+import me.badbones69.vouchers.api.enums.Messages;
 import org.bukkit.Color;
 import org.bukkit.Material;
 import org.bukkit.Sound;
@@ -19,14 +20,12 @@ public class Voucher {
 	private Material itemMaterial;
 	private Short itemMetaData;
 	private String itemName;
-	private List<String> itemLore;
 	private Boolean itemGlow;
 	private String usedMessage;
 	private Boolean whitelistToggle;
 	private String whitelistNode;
 	private Boolean blacklistToggle;
 	private String blacklistMessage;
-	private List<String> blacklistPermissions = new ArrayList<>();
 	private Boolean limiterToggle;
 	private Integer limiterLimit;
 	private Boolean twostepAuthentication;
@@ -34,13 +33,17 @@ public class Voucher {
 	private List<Sound> sounds = new ArrayList<>();
 	private Boolean fireworkToggle;
 	private List<Color> fireworkColors = new ArrayList<>();
+	private List<String> itemLore;
 	private List<String> commands = new ArrayList<>();
+	private List<String> randomCoammnds = new ArrayList<>();
+	private List<String> chanceCommands = new ArrayList<>();
+	private List<String> blacklistPermissions = new ArrayList<>();
 	private List<ItemStack> items = new ArrayList<>();
 	
 	public Voucher(String name) {
 		this.name = name;
 		this.usesArgs = false;
-		FileConfiguration config = Main.settings.getConfig();
+		FileConfiguration config = Files.CONFIG.getFile();
 		String path = "Vouchers." + name + ".";
 		String id = config.getString(path + "Item");
 		itemMetaData = 0;
@@ -67,6 +70,24 @@ public class Voucher {
 		if(config.contains(path + "Commands")) {
 			this.commands = config.getStringList(path + "Commands");
 		}
+		if(config.contains(path + "Random-Commands")) {
+			this.randomCoammnds = config.getStringList(path + "Random-Commands");
+		}
+		if(config.contains(path + "Chance-Commands")) {
+			for(String line : config.getStringList(path + "Chance-Commands")) {
+				try {
+					String[] split = line.split(" ");
+					String command = line.substring(split[0].length() + 1);
+					int chance = Integer.parseInt(line.replace(" " + command, ""));
+					for(int i = 1; i <= chance; i++) {
+						chanceCommands.add(command);
+					}
+				}catch(Exception e) {
+					System.out.println("[Vouchers] An issue occerted when trying to use chance commands.");
+					e.printStackTrace();
+				}
+			}
+		}
 		if(config.contains(path + "Items")) {
 			for(String itemString : config.getStringList(path + "Items")) {
 				this.items.add(Methods.makeItem(itemString));
@@ -88,7 +109,7 @@ public class Voucher {
 			if(config.contains(path + "Options.Permission.Blacklist-Permissions.Message")) {
 				this.blacklistMessage = config.getString(path + "Options.Permission.Blacklist-Permissions.Message");
 			}else {
-				this.blacklistMessage = Main.settings.getMsgs().getString("Messages.Has-Blacklist-Permission");
+				this.blacklistMessage = Messages.HAS_BLACKLIST_PERMISSION.getMessageNoPrefix();
 			}
 			this.blacklistPermissions = config.getStringList(path + "Options.Permission.Blacklist-Permissions.Permissions");
 		}else {
@@ -245,6 +266,14 @@ public class Voucher {
 	
 	public List<String> getCommands() {
 		return commands;
+	}
+	
+	public List<String> getRandomCoammnds() {
+		return randomCoammnds;
+	}
+	
+	public List<String> getChanceCommands() {
+		return chanceCommands;
 	}
 	
 	public List<ItemStack> getItems() {

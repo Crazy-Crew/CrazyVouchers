@@ -1,9 +1,13 @@
 package me.badbones69.vouchers;
 
-import me.badbones69.vouchers.controlers.FireworkDamageAPI;
-import me.badbones69.vouchers.api.Version;
-import me.badbones69.vouchers.api.Voucher;
+import com.massivestats.MassiveStats;
+import me.badbones69.vouchers.api.FileManager;
+import me.badbones69.vouchers.api.FileManager.Files;
 import me.badbones69.vouchers.api.Vouchers;
+import me.badbones69.vouchers.api.enums.Messages;
+import me.badbones69.vouchers.api.enums.Version;
+import me.badbones69.vouchers.api.objects.Voucher;
+import me.badbones69.vouchers.controlers.FireworkDamageAPI;
 import me.badbones69.vouchers.controlers.GUI;
 import me.badbones69.vouchers.controlers.VoucherClick;
 import org.bukkit.Bukkit;
@@ -16,18 +20,18 @@ import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.scheduler.BukkitRunnable;
 
-import java.io.IOException;
+import java.util.HashMap;
 
 public class Main extends JavaPlugin implements Listener {
-
-	public static SettingsManager settings = SettingsManager.getInstance();
-
+	
+	private FileManager fileManager = FileManager.getInstance();
+	
 	@Override
 	public void onEnable() {
-		settings.setup(this);
-		if(!settings.getData().contains("Players")) {
-			settings.getData().set("Players.Clear", null);
-			settings.saveData();
+		fileManager.logInfo(true).setup(this);
+		if(!Files.DATA.getFile().contains("Players")) {
+			Files.DATA.getFile().set("Players.Clear", null);
+			Files.DATA.saveFile();
 		}
 		Bukkit.getServer().getPluginManager().registerEvents(this, this);
 		Bukkit.getServer().getPluginManager().registerEvents(new VoucherClick(), this);
@@ -40,11 +44,14 @@ public class Main extends JavaPlugin implements Listener {
 		}
 		Vouchers.load();
 		try {
-			new MCUpdate(this, true);
-		}catch(IOException e) {
+			MassiveStats massiveStats = new MassiveStats(this);
+			if(Files.CONFIG.getFile().contains("Settings.Updater")) {
+				massiveStats.setListenerDisabled(!Files.CONFIG.getFile().getBoolean("Settings.Updater"));
+			}
+		}catch(Exception e) {
 		}
 	}
-
+	
 	public boolean onCommand(CommandSender sender, Command cmd, String commandLable, String[] args) {
 		if(commandLable.equalsIgnoreCase("Voucher") || commandLable.equalsIgnoreCase("Vouch")) {
 			if(args.length == 0) {
@@ -53,13 +60,7 @@ public class Main extends JavaPlugin implements Listener {
 			}else {
 				if(args[0].equalsIgnoreCase("Help")) {
 					if(!Methods.hasPermission(sender, "Access")) return true;
-					sender.sendMessage(Methods.color("&8- &6/Voucher Help &3Lists all the commands for vouchers."));
-					sender.sendMessage(Methods.color("&8- &6/Voucher Types &3Lists all types of vouchers and codes."));
-					sender.sendMessage(Methods.color("&8- &6/Voucher Redeem <Code> &3Allows player to redeem a voucher code."));
-					sender.sendMessage(Methods.color("&8- &6/Voucher Give <Type> [Amount] [Player] [Arguments] &3Gives a player a voucher."));
-					sender.sendMessage(Methods.color("&8- &6/Voucher GiveAll <Type> [Amount] [Arguments] &3Gives all players a voucher."));
-					sender.sendMessage(Methods.color("&8- &6/Voucher Open [Page] &3Opens a GUI so you can get vouchers easy."));
-					sender.sendMessage(Methods.color("&8- &6/Voucher Reload &3Reloadeds the config.yml."));
+					sender.sendMessage(Messages.HELP.getMessageNoPrefix());
 					return true;
 				}
 				if(args[0].equalsIgnoreCase("Open")) {
@@ -77,10 +78,10 @@ public class Main extends JavaPlugin implements Listener {
 					if(!Methods.hasPermission(sender, "Admin")) return true;
 					String voucher = "";
 					String codes = "";
-					for(String vo : settings.getConfig().getConfigurationSection("Vouchers").getKeys(false)) {
+					for(String vo : Files.CONFIG.getFile().getConfigurationSection("Vouchers").getKeys(false)) {
 						voucher += Methods.color("&a" + vo + "&8, ");
 					}
-					for(String co : settings.getCode().getConfigurationSection("Codes").getKeys(false)) {
+					for(String co : Files.VOUCHER_CODES.getFile().getConfigurationSection("Codes").getKeys(false)) {
 						codes += Methods.color("&a" + co + "&8, ");
 					}
 					voucher = voucher.substring(0, voucher.length() - 2);
@@ -91,16 +92,17 @@ public class Main extends JavaPlugin implements Listener {
 				}
 				if(args[0].equalsIgnoreCase("Reload")) {
 					if(!Methods.hasPermission(sender, "Admin")) return true;
-					settings.reloadConfig();
-					settings.reloadData();
-					settings.reloadCode();
-					settings.setup(this);
-					if(!settings.getData().contains("Players")) {
-						settings.getData().set("Players.Clear", null);
-						settings.saveData();
+					Files.CONFIG.relaodFile();
+					Files.DATA.relaodFile();
+					Files.MESSAGES.relaodFile();
+					Files.VOUCHER_CODES.relaodFile();
+					fileManager.setup(this);
+					if(!Files.DATA.getFile().contains("Players")) {
+						Files.DATA.getFile().set("Players.Clear", null);
+						Files.DATA.saveFile();
 					}
 					Vouchers.load();
-					sender.sendMessage(Methods.getPrefix() + Methods.color(settings.getMsgs().getString("Messages.Config-Reload")));
+					sender.sendMessage(Messages.RELOAD.getMessage());
 					return true;
 				}
 				if(args[0].equalsIgnoreCase("Redeem")) {
@@ -108,7 +110,7 @@ public class Main extends JavaPlugin implements Listener {
 					if(args.length >= 2) {
 						String code = args[1];
 						if(!(sender instanceof Player)) {
-							sender.sendMessage(Methods.getPrefix() + Methods.color(settings.getMsgs().getString("Messages.Not-A-Player")));
+							sender.sendMessage(Messages.NOT_A_PLAYER.getMessage());
 							return true;
 						}
 						Player player = (Player) sender;
@@ -125,14 +127,14 @@ public class Main extends JavaPlugin implements Listener {
 					if(!Methods.hasPermission(sender, "Admin")) return true;
 					if(args.length == 1) {
 						if(!(sender instanceof Player)) {
-							sender.sendMessage(Methods.getPrefix() + Methods.color(settings.getMsgs().getString("Messages.Not-A-Player")));
+							sender.sendMessage(Messages.NOT_A_PLAYER.getMessage());
 							return true;
 						}
 					}
 					if(args.length > 1) {
 						String name = sender.getName();
 						if(!Vouchers.isVoucherName(args[1])) {
-							sender.sendMessage(Methods.getPrefix() + Methods.color(Main.settings.getMsgs().getString("Messages.Not-A-Voucher")));
+							sender.sendMessage(Messages.NOT_A_VOUCHER.getMessage());
 							return true;
 						}
 						Voucher voucher = Vouchers.getVoucher(args[1]);
@@ -152,7 +154,12 @@ public class Main extends JavaPlugin implements Listener {
 							player.getInventory().addItem(voucher.buildItem(amount));
 						}
 						player.updateInventory();
-						sender.sendMessage(Methods.getPrefix() + Methods.color(settings.getMsgs().getString("Messages.Given-A-Voucher").replace("%Player%", player.getName()).replace("%player%", player.getName()).replace("%Voucher%", voucher.getName()).replace("%voucher%", voucher.getName())));
+						HashMap<String, String> placeholders = new HashMap<>();
+						placeholders.put("%Player%", player.getName());
+						placeholders.put("%player%", player.getName());
+						placeholders.put("%Voucher%", voucher.getName());
+						placeholders.put("%voucher%", voucher.getName());
+						sender.sendMessage(Messages.GIVEN_A_VOUCHER.getMessage(placeholders));
 						return true;
 					}
 					sender.sendMessage(Methods.getPrefix() + Methods.color("&c/Voucher Give <Type> [Amount] [Player] [Arguments]"));
@@ -162,13 +169,13 @@ public class Main extends JavaPlugin implements Listener {
 					if(!Methods.hasPermission(sender, "Admin")) return true;
 					if(args.length == 1) {
 						if(!(sender instanceof Player)) {
-							sender.sendMessage(Methods.getPrefix() + Methods.color(settings.getMsgs().getString("Messages.Not=A-Player")));
+							sender.sendMessage(Messages.NOT_A_PLAYER.getMessage());
 							return true;
 						}
 					}
 					if(args.length > 1) {
 						if(!Vouchers.isVoucherName(args[1])) {
-							sender.sendMessage(Methods.getPrefix() + Methods.color(Main.settings.getMsgs().getString("Messages.Not-A-Voucher")));
+							sender.sendMessage(Messages.NOT_A_VOUCHER.getMessage());
 							return true;
 						}
 						Voucher voucher = Vouchers.getVoucher(args[1]);
@@ -185,7 +192,10 @@ public class Main extends JavaPlugin implements Listener {
 							}
 							player.updateInventory();
 						}
-						sender.sendMessage(Methods.getPrefix() + Methods.color(settings.getMsgs().getString("Messages.Given-All-Players-Voucher").replace("%Voucher%", voucher.getName()).replace("%voucher%", voucher.getName())));
+						HashMap<String, String> placeholders = new HashMap<>();
+						placeholders.put("%Voucher%", voucher.getName());
+						placeholders.put("%voucher%", voucher.getName());
+						sender.sendMessage(Messages.GIVEN_ALL_PLAYERS_VOUCHER.getMessage(placeholders));
 						return true;
 					}
 					sender.sendMessage(Methods.getPrefix() + Methods.color("&c/Voucher GiveAll <Type> [Amount] [Arguments]"));
@@ -197,7 +207,7 @@ public class Main extends JavaPlugin implements Listener {
 		}
 		return false;
 	}
-
+	
 	@EventHandler
 	public void onPlayerJoin(PlayerJoinEvent e) {
 		final Player player = e.getPlayer();
@@ -208,8 +218,8 @@ public class Main extends JavaPlugin implements Listener {
 					player.sendMessage(Methods.color("&8[&bVouchers&8]: " + "&7This server is running your Vouchers Plugin. " + "&7It is running version &av" + Bukkit.getServer().getPluginManager().getPlugin("Vouchers").getDescription().getVersion() + "&7."));
 				}
 				if(player.isOp()) {
-					if(settings.getConfig().contains("Settings.Updater")) {
-						if(settings.getConfig().getBoolean("Settings.Updater")) {
+					if(Files.CONFIG.getFile().contains("Settings.Updater")) {
+						if(Files.CONFIG.getFile().getBoolean("Settings.Updater")) {
 							Methods.hasUpdate(player);
 						}
 					}else {
@@ -219,5 +229,5 @@ public class Main extends JavaPlugin implements Listener {
 			}
 		}.runTaskLaterAsynchronously(this, 20);
 	}
-
+	
 }

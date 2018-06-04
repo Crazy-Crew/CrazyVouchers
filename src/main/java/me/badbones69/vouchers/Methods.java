@@ -1,8 +1,10 @@
 package me.badbones69.vouchers;
 
+import me.badbones69.vouchers.api.FileManager.Files;
+import me.badbones69.vouchers.api.enums.Messages;
+import me.badbones69.vouchers.api.enums.Version;
+import me.badbones69.vouchers.api.objects.ItemBuilder;
 import me.badbones69.vouchers.controlers.FireworkDamageAPI;
-import me.badbones69.vouchers.api.ItemBuilder;
-import me.badbones69.vouchers.api.Version;
 import org.bukkit.*;
 import org.bukkit.command.CommandSender;
 import org.bukkit.configuration.file.FileConfiguration;
@@ -20,28 +22,32 @@ import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.logging.Level;
 
 public class Methods {
-
+	
 	public static Plugin plugin = Bukkit.getServer().getPluginManager().getPlugin("Vouchers");
-
+	
 	public static void removeItem(ItemStack item, Player player) {
 		if(item.getAmount() <= 1) {
 			player.getInventory().removeItem(item);
 		}
 		if(item.getAmount() > 1) {
-			ItemStack i = item;
-			i.setAmount(item.getAmount() - 1);
+			item.setAmount(item.getAmount() - 1);
 		}
 	}
-
+	
 	public static String getPrefix() {
-		return color(Main.settings.getConfig().getString("Settings.Prefix"));
+		return color(Files.CONFIG.getFile().getString("Settings.Prefix"));
 	}
-
+	
+	public static String getPrefix(String message) {
+		return color(Files.CONFIG.getFile().getString("Settings.Prefix") + message);
+	}
+	
 	public static String Args(String arg) {
 		arg = ChatColor.stripColor(arg);
 		arg = arg.replace("&l", "");
@@ -49,15 +55,15 @@ public class Methods {
 		arg = arg.replaceAll("(&([a-f0-9]))", "");
 		return arg;
 	}
-
+	
 	public static String color(String msg) {
 		return ChatColor.translateAlternateColorCodes('&', msg);
 	}
-
+	
 	public static String removeColor(String msg) {
 		return ChatColor.stripColor(msg);
 	}
-
+	
 	public static boolean isInt(String s) {
 		try {
 			Integer.parseInt(s);
@@ -66,24 +72,27 @@ public class Methods {
 		}
 		return true;
 	}
-
+	
 	public static boolean isInt(CommandSender sender, String s) {
 		try {
 			Integer.parseInt(s);
 		}catch(NumberFormatException nfe) {
-			sender.sendMessage(color(Main.settings.getMsgs().getString("Messages.Not-A-Number").replace("%Arg%", s).replace("%arg%", s)));
+			HashMap<String, String> placeholders = new HashMap<>();
+			placeholders.put("%Arg%", s);
+			placeholders.put("%arg%", s);
+			sender.sendMessage(Messages.NOT_A_NUMBER.getMessage(placeholders));
 			return false;
 		}
 		return true;
 	}
-
+	
 	public static ItemStack makeItem(String itemString) {
 		String id = "1";
 		Short itemMetaData = 0;
 		Integer amount = 1;
 		String name = "";
-		List<String> lore = new ArrayList<String>();
-		HashMap<Enchantment, Integer> enchantments = new HashMap<Enchantment, Integer>();
+		List<String> lore = new ArrayList<>();
+		HashMap<Enchantment, Integer> enchantments = new HashMap<>();
 		for(String d : itemString.split(", ")) {
 			if(d.startsWith("Item:")) {
 				id = d.replace("Item:", "");
@@ -96,9 +105,7 @@ public class Methods {
 			}else if(d.startsWith("Lore:")) {
 				d = d.replace("Lore:", "");
 				if(d.contains(",")) {
-					for(String D : d.split(",")) {
-						lore.add(D);
-					}
+					Collections.addAll(lore, d.split(","));
 				}else {
 					lore.add(d);
 				}
@@ -125,30 +132,30 @@ public class Methods {
 		.setEnchantments(enchantments)
 		.build();
 	}
-
+	
 	public static boolean isOnline(CommandSender sender, String name) {
 		for(Player player : Bukkit.getServer().getOnlinePlayers()) {
 			if(player.getName().equalsIgnoreCase(name)) {
 				return true;
 			}
 		}
-		sender.sendMessage(color(Main.settings.getMsgs().getString("Messages.Not-Online")));
+		sender.sendMessage(Messages.NOT_ONLINE.getMessage());
 		return false;
 	}
-
+	
 	public static boolean hasPermission(Player player, String perm) {
 		if(!player.hasPermission("Voucher." + perm)) {
-			player.sendMessage(color(Main.settings.getMsgs().getString("Messages.No-Permission")));
+			player.sendMessage(Messages.NO_PERMISSION.getMessage());
 			return false;
 		}
 		return true;
 	}
-
+	
 	public static boolean hasPermission(CommandSender sender, String perm) {
 		if(sender instanceof Player) {
 			Player player = (Player) sender;
 			if(!player.hasPermission("Voucher." + perm)) {
-				player.sendMessage(color(Main.settings.getMsgs().getString("Messages.No-Permission")));
+				player.sendMessage(Messages.NO_PERMISSION.getMessage());
 				return false;
 			}else {
 				return true;
@@ -157,9 +164,9 @@ public class Methods {
 			return true;
 		}
 	}
-
+	
 	public static boolean isRealCode(Player player, String code) {
-		FileConfiguration Code = Main.settings.getCode();
+		FileConfiguration Code = Files.VOUCHER_CODES.getFile();
 		if(Code.contains("Codes")) {
 			for(String C : Code.getConfigurationSection("Codes").getKeys(false)) {
 				boolean toggle = false;
@@ -171,30 +178,36 @@ public class Methods {
 				}
 			}
 		}
-		player.sendMessage(color(Main.settings.getMsgs().getString("Messages.Code-UnAvailable").replace("%Arg%", code).replace("%arg%", code)));
+		HashMap<String, String> placeholders = new HashMap<>();
+		placeholders.put("%Arg%", code);
+		placeholders.put("%arg%", code);
+		player.sendMessage(Messages.CODE_UNAVAILABLE.getMessage(placeholders));
 		return false;
 	}
-
+	
 	public static boolean isCodeEnabled(Player player, String code) {
-		if(Main.settings.getCode().contains("Codes")) {
-			for(String C : Main.settings.getCode().getConfigurationSection("Codes").getKeys(false)) {
+		if(Files.VOUCHER_CODES.getFile().contains("Codes")) {
+			for(String C : Files.VOUCHER_CODES.getFile().getConfigurationSection("Codes").getKeys(false)) {
 				if(C.equalsIgnoreCase(code)) {
-					if(Main.settings.getCode().getBoolean("Codes." + C + ".Enabled/Disabled")) {
+					if(Files.VOUCHER_CODES.getFile().getBoolean("Codes." + C + ".Enabled/Disabled")) {
 						return true;
 					}
 				}
 			}
 		}
-		player.sendMessage(color(Main.settings.getMsgs().getString("Messages.Code-UnAvailable").replace("%Arg%", code).replace("%arg%", code)));
+		HashMap<String, String> placeholders = new HashMap<>();
+		placeholders.put("%Arg%", code);
+		placeholders.put("%arg%", code);
+		player.sendMessage(Messages.CODE_UNAVAILABLE.getMessage(placeholders));
 		return false;
 	}
-
+	
 	public static boolean hasCodePerm(Player player, String code) {
-		if(Main.settings.getCode().contains("Codes")) {
-			for(String C : Main.settings.getCode().getConfigurationSection("Codes").getKeys(false)) {
+		if(Files.VOUCHER_CODES.getFile().contains("Codes")) {
+			for(String C : Files.VOUCHER_CODES.getFile().getConfigurationSection("Codes").getKeys(false)) {
 				if(C.equalsIgnoreCase(code)) {
-					if(Main.settings.getCode().getBoolean("Codes." + C + ".Permission-Toggle")) {
-						if(player.hasPermission("Voucher." + Main.settings.getCode().getString("Codes." + C + ".Permission-Node"))) {
+					if(Files.VOUCHER_CODES.getFile().getBoolean("Codes." + C + ".Permission-Toggle")) {
+						if(player.hasPermission("Voucher." + Files.VOUCHER_CODES.getFile().getString("Codes." + C + ".Permission-Node"))) {
 							return true;
 						}
 					}else {
@@ -203,61 +216,67 @@ public class Methods {
 				}
 			}
 		}
-		player.sendMessage(color(Main.settings.getMsgs().getString("Messages.Code-UnAvailable").replace("%Arg%", code).replace("%arg%", code)));
+		HashMap<String, String> placeholders = new HashMap<>();
+		placeholders.put("%Arg%", code);
+		placeholders.put("%arg%", code);
+		player.sendMessage(Messages.CODE_UNAVAILABLE.getMessage(placeholders));
 		return false;
 	}
-
+	
 	public static void codeRedeem(Player player, String code) {
-		FileConfiguration Code = Main.settings.getCode();
-		FileConfiguration Data = Main.settings.getData();
-		if(Code.contains("Codes")) {
-			for(String C : Code.getConfigurationSection("Codes").getKeys(false)) {
+		FileConfiguration voucherCodes = Files.VOUCHER_CODES.getFile();
+		FileConfiguration dataFile = Files.DATA.getFile();
+		if(voucherCodes.contains("Codes")) {
+			for(String C : voucherCodes.getConfigurationSection("Codes").getKeys(false)) {
 				if(C.equalsIgnoreCase(code)) {
 					String uuid = player.getUniqueId() + "";
-					if(Data.contains("Players." + uuid)) {
-						Data.set("Players." + uuid + ".UserName", player.getName());
-						Main.settings.saveData();
-						if(Data.contains("Players." + uuid + ".Codes." + C)) {
-							if(Data.getString("Players." + uuid + ".Codes." + C).equalsIgnoreCase("Used")) {
+					if(dataFile.contains("Players." + uuid)) {
+						dataFile.set("Players." + uuid + ".UserName", player.getName());
+						Files.DATA.saveFile();
+						if(dataFile.contains("Players." + uuid + ".Codes." + C)) {
+							if(dataFile.getString("Players." + uuid + ".Codes." + C).equalsIgnoreCase("Used")) {
 								player.sendMessage(color("&cYou have used that code already."));
 								return;
 							}
 						}
 					}
-					if(Code.getInt("Codes." + C + ".CodesLeft") < 1) {
-						player.sendMessage(color(Main.settings.getMsgs().getString("Messages.Code-UnAvailable").replace("%Arg%", code).replace("%arg%", code)));
+					HashMap<String, String> placeholders = new HashMap<>();
+					placeholders.put("%Arg%", code);
+					placeholders.put("%arg%", code);
+					if(voucherCodes.getInt("Codes." + C + ".CodesLeft") < 1) {
+						player.sendMessage(Messages.CODE_UNAVAILABLE.getMessage(placeholders));
 						return;
 					}
-					if(Code.getBoolean("Codes." + C + ".Limited")) {
-						if(Code.getInt("Codes." + C + ".CodesLeft") <= 0) {
-							player.sendMessage(color(Main.settings.getMsgs().getString("Messages.Code-UnAvailable").replace("%Arg%", code).replace("%arg%", code)));
+					if(voucherCodes.getBoolean("Codes." + C + ".Limited")) {
+						if(voucherCodes.getInt("Codes." + C + ".CodesLeft") <= 0) {
+							player.sendMessage(Messages.CODE_UNAVAILABLE.getMessage(placeholders));
 							return;
 						}else {
-							Code.set("Codes." + C + ".CodesLeft", (Code.getInt("Codes." + C + ".CodesLeft") - 1));
+							voucherCodes.set("Codes." + C + ".CodesLeft", (voucherCodes.getInt("Codes." + C + ".CodesLeft") - 1));
 						}
 					}
-					if(Code.contains("Codes." + C + ".Commands")) {
-						for(String cmd : Code.getStringList("Codes." + C + ".Commands")) {
+					if(voucherCodes.contains("Codes." + C + ".Commands")) {
+						for(String cmd : voucherCodes.getStringList("Codes." + C + ".Commands")) {
 							cmd = cmd.replace("%player%", player.getName()).replace("%Player%", player.getName());
 							Bukkit.dispatchCommand(Bukkit.getConsoleSender(), cmd);
 						}
 					}
-					if(Code.contains("Codes." + C + ".Messages")) {
-						for(String msg : Code.getStringList("Codes." + C + ".Messages")) {
+					if(voucherCodes.contains("Codes." + C + ".Messages")) {
+						for(String msg : voucherCodes.getStringList("Codes." + C + ".Messages")) {
 							msg = msg.replace("%player%", player.getName()).replace("%Player%", player.getName());
-							msg = msg.replace("%Code%", C).replace("%code%", C);
+							msg = msg.replace("%voucherCodes%", C).replace("%code%", C);
 							player.sendMessage(color(msg));
 						}
 					}
-					if(Code.contains("Codes." + C + ".BroadCasts")) {
-						for(String msg : Code.getStringList("Codes." + C + ".BroadCasts")) {
+					if(voucherCodes.contains("Codes." + C + ".BroadCasts")) {
+						for(String msg : voucherCodes.getStringList("Codes." + C + ".BroadCasts")) {
 							msg = msg.replace("%player%", player.getName()).replace("%Player%", player.getName());
 							Bukkit.broadcastMessage(color(msg));
 						}
 					}
-					if(Code.contains("Codes." + C + ".SoundToggle") && Code.contains("Codes." + C + ".Sound")) {
-						if(Code.getBoolean("Codes." + C + ".SoundToggle")) {
-							String sound = Code.getString("Codes." + C + ".Sound");
+					if(voucherCodes.contains("Codes." + C + ".SoundToggle") && voucherCodes.contains("Codes." + C + ".Sound")) {
+						if(voucherCodes.getBoolean("Codes." + C + ".SoundToggle")) {
+							String sound = voucherCodes.getString("Codes." + C + ".Sound");
 							try {
 								player.playSound(player.getLocation(), Sound.valueOf(sound), 1, 1);
 							}catch(Exception e) {
@@ -270,15 +289,15 @@ public class Methods {
 							}
 						}
 					}
-					Data.set("Players." + uuid + ".UserName", player.getName());
-					Data.set("Players." + uuid + ".Codes." + C, "Used");
-					Main.settings.saveData();
-					Main.settings.saveCode();
+					dataFile.set("Players." + uuid + ".UserName", player.getName());
+					dataFile.set("Players." + uuid + ".Codes." + C, "Used");
+					Files.DATA.saveFile();
+					Files.VOUCHER_CODES.saveFile();
 				}
 			}
 		}
 	}
-
+	
 	public static void hasUpdate() {
 		try {
 			HttpURLConnection c = (HttpURLConnection) new URL("http://www.spigotmc.org/api/general.php").openConnection();
@@ -291,10 +310,9 @@ public class Methods {
 				Bukkit.getConsoleSender().sendMessage(color("&8[&bVouchers&8]: " + "&cYour server is running &7v" + oldVersion + "&c and the newest is &7v" + newVersion + "&c."));
 			}
 		}catch(Exception e) {
-			return;
 		}
 	}
-
+	
 	public static void hasUpdate(Player player) {
 		try {
 			HttpURLConnection c = (HttpURLConnection) new URL("http://www.spigotmc.org/api/general.php").openConnection();
@@ -307,17 +325,13 @@ public class Methods {
 				player.sendMessage(color("&8[&bVouchers&8]: " + "&cYour server is running &7v" + oldVersion + "&c and the newest is &7v" + newVersion + "&c."));
 			}
 		}catch(Exception e) {
-			return;
 		}
 	}
-
+	
 	public static boolean isInvFull(Player player) {
-		if(player.getInventory().firstEmpty() == -1) {
-			return true;
-		}
-		return false;
+		return player.getInventory().firstEmpty() == -1;
 	}
-
+	
 	public static void fireWork(Location loc, List<Color> list) {
 		final Firework f = loc.getWorld().spawn(loc, Firework.class);
 		FireworkMeta fm = f.getFireworkMeta();
@@ -325,15 +339,11 @@ public class Methods {
 		fm.setPower(0);
 		f.setFireworkMeta(fm);
 		FireworkDamageAPI.addFirework(f);
-		Bukkit.getServer().getScheduler().scheduleSyncDelayedTask(plugin, new Runnable() {
-			public void run() {
-				f.detonate();
-			}
-		}, 2);
+		Bukkit.getServer().getScheduler().scheduleSyncDelayedTask(plugin, f::detonate, 2);
 	}
-
+	
 	public static String getEnchantmentName(Enchantment en) {
-		HashMap<String, String> enchants = new HashMap<String, String>();
+		HashMap<String, String> enchants = new HashMap<>();
 		enchants.put("ARROW_DAMAGE", "Power");
 		enchants.put("ARROW_FIRE", "Flame");
 		enchants.put("ARROW_INFINITE", "Infinity");
@@ -368,7 +378,7 @@ public class Methods {
 		}
 		return enchants.get(en.getName());
 	}
-
+	
 	public static ItemStack addGlow(ItemStack item, boolean glowing) {
 		if(Version.getCurrentVersion().comparedTo(Version.v1_8_R1) >= 0) {
 			if(glowing) {
@@ -387,7 +397,7 @@ public class Methods {
 		}
 		return item;
 	}
-
+	
 	public static Color getColor(String color) {
 		if(color.equalsIgnoreCase("AQUA")) return Color.AQUA;
 		if(color.equalsIgnoreCase("BLACK")) return Color.BLACK;
@@ -408,7 +418,7 @@ public class Methods {
 		if(color.equalsIgnoreCase("YELLOW")) return Color.YELLOW;
 		return Color.WHITE;
 	}
-
+	
 	public static boolean isSimilar(ItemStack one, ItemStack two) {
 		if(one.getType() == two.getType()) {
 			if(one.hasItemMeta()) {
@@ -432,5 +442,5 @@ public class Methods {
 		}
 		return false;
 	}
-
+	
 }
