@@ -17,6 +17,7 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerJoinEvent;
+import org.bukkit.inventory.ItemStack;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.scheduler.BukkitRunnable;
 
@@ -148,12 +149,13 @@ public class Main extends JavaPlugin implements Listener {
 							if(!Methods.isOnline(sender, name)) return true;
 						}
 						Player player = Bukkit.getPlayer(name);
-						if(args.length >= 5) {
-							player.getInventory().addItem(voucher.buildItem(args[4], amount));
+						ItemStack item = args.length >= 5 ? voucher.buildItem(args[4], amount) : voucher.buildItem(amount);
+						if(Methods.isInventoryFull(player)) {
+							player.getWorld().dropItem(player.getLocation(), item);
 						}else {
-							player.getInventory().addItem(voucher.buildItem(amount));
+							player.getInventory().addItem(item);
+							player.updateInventory();
 						}
-						player.updateInventory();
 						HashMap<String, String> placeholders = new HashMap<>();
 						placeholders.put("%Player%", player.getName());
 						placeholders.put("%player%", player.getName());
@@ -185,12 +187,13 @@ public class Main extends JavaPlugin implements Listener {
 							amount = Integer.parseInt(args[2]);
 						}
 						for(Player player : Bukkit.getServer().getOnlinePlayers()) {
-							if(args.length >= 4) {
-								player.getInventory().addItem(voucher.buildItem(args[3], amount));
+							ItemStack item = args.length >= 5 ? voucher.buildItem(args[4], amount) : voucher.buildItem(amount);
+							if(Methods.isInventoryFull(player)) {
+								player.getWorld().dropItem(player.getLocation(), item);
 							}else {
-								player.getInventory().addItem(voucher.buildItem(amount));
+								player.getInventory().addItem(item);
+								player.updateInventory();
 							}
-							player.updateInventory();
 						}
 						HashMap<String, String> placeholders = new HashMap<>();
 						placeholders.put("%Voucher%", voucher.getName());
