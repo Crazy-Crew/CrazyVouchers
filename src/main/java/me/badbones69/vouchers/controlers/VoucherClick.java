@@ -143,7 +143,7 @@ public class VoucherClick implements Listener {
 			.replaceAll("%Z%", player.getLocation().getBlockZ() + "").replaceAll("%z%", player.getLocation().getBlockZ() + ""));
 		}
 		for(ItemStack it : voucher.getItems()) {
-			if(!Methods.isInvFull(player)) {
+			if(!Methods.isInventoryFull(player)) {
 				player.getInventory().addItem(it);
 			}else {
 				player.getWorld().dropItem(player.getLocation(), it);
