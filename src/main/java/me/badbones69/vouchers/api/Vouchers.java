@@ -60,7 +60,7 @@ public class Vouchers {
 							}
 						}else if(item.getItemMeta().getDisplayName().equals(voucher.buildItem().getItemMeta().getDisplayName())) {
 							int line = 0;
-							Boolean sameLore = true;
+							boolean sameLore = true;
 							ItemStack voucherItem = voucher.buildItem();
 							for(String lore : item.getItemMeta().getLore()) {
 								if(!lore.equals(voucherItem.getItemMeta().getLore().get(line))) {

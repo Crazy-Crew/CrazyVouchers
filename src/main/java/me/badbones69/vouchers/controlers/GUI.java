@@ -2,6 +2,7 @@ package me.badbones69.vouchers.controlers;
 
 import me.badbones69.vouchers.Methods;
 import me.badbones69.vouchers.api.Vouchers;
+import me.badbones69.vouchers.api.enums.Version;
 import me.badbones69.vouchers.api.objects.ItemBuilder;
 import me.badbones69.vouchers.api.objects.Voucher;
 import org.bukkit.Bukkit;
@@ -130,10 +131,11 @@ public class GUI implements Listener {
 	}
 	
 	private static void setDefaultItems(Player player, Inventory inv) {
+		boolean isNew = Version.getCurrentVersion() == Version.v1_13_R2;
 		for(int i : Arrays.asList(0, 1, 2, 3, 4, 5, 6, 7, 8, 45, 46, 47, 49, 51, 52, 53)) {
 			inv.setItem(i, new ItemBuilder()
-			.setMaterial(Material.STAINED_GLASS_PANE)
-			.setMetaData((short) 11)
+			.setMaterial(isNew ? Material.BLUE_STAINED_GLASS_PANE : Material.matchMaterial("STAINED_GLASS_PANE"))
+			.setMetaData(isNew ? 0 : (short) 11)
 			.setName(" ")
 			.build());
 		}
@@ -141,8 +143,8 @@ public class GUI implements Listener {
 		int maxPage = getMaxPage();
 		if(page == 1) {
 			inv.setItem(48, new ItemBuilder()
-			.setMaterial(Material.STAINED_GLASS_PANE)
-			.setMetaData((short) 7)
+			.setMaterial(isNew ? Material.GRAY_STAINED_GLASS_PANE : Material.matchMaterial("STAINED_GLASS_PANE"))
+			.setMetaData(isNew ? 0 : (short) 7)
 			.setName(" ")
 			.build());
 		}else {
@@ -154,8 +156,8 @@ public class GUI implements Listener {
 		}
 		if(page == maxPage) {
 			inv.setItem(50, new ItemBuilder()
-			.setMaterial(Material.STAINED_GLASS_PANE)
-			.setMetaData((short) 7)
+			.setMaterial(isNew ? Material.GRAY_STAINED_GLASS_PANE : Material.matchMaterial("STAINED_GLASS_PANE"))
+			.setMetaData(isNew ? 0 : (short) 7)
 			.setName(" ")
 			.build());
 		}else {

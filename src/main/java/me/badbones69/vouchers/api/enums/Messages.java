@@ -25,6 +25,7 @@ public enum Messages {
 	HIT_LIMIT("Hit-Limit", "&cYou have hit your limit for using this voucher."),
 	TWO_STEP_AUTHENTICATION("Two-Step-Authentication", "&7Right click again to confirm that you want to use this voucher."),
 	HAS_BLACKLIST_PERMISSION("Has-Blacklist-Permission", "&cSorry but you can not use this voucher because you have a black-listed permission."),
+	NOT_IN_WHITELISTED_WORLD("Not-In-Whitelisted-World", "&cYou can not use that voucher here as you are not in a whitelisted world for this voucher."),
 	HELP("Help",
 	Arrays.asList(
 	"&8- &6/Voucher Help &3Lists all the commands for vouchers.",
@@ -33,7 +34,7 @@ public enum Messages {
 	"&8- &6/Voucher Give <Type> [Amount] [Player] [Arguments] &3Gives a player a voucher.",
 	"&8- &6/Voucher GiveAll <Type> [Amount] [Arguments] &3Gives all players a voucher.",
 	"&8- &6/Voucher Open [Page] &3Opens a GUI so you can get vouchers easy.",
-	"&8- &6/Voucher Reload &3Reloadeds the config.yml."));
+	"&8- &6/Voucher Reload &3Reloaded the configuration files."));
 	
 	private String path;
 	private String defaultMessage;
