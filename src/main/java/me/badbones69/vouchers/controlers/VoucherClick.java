@@ -87,26 +87,28 @@ public class VoucherClick implements Listener {
 	}
 	
 	private boolean passesPermissionChecks(Player player, Voucher voucher, ItemStack item) {
-		Boolean checker = true;
-		String argument = Vouchers.getArgument(item, voucher);
 		if(!player.isOp()) {
+			String argument = Vouchers.getArgument(item, voucher);
 			if(!player.hasPermission(voucher.getWhiteListPermission().toLowerCase().replaceAll("%arg%", argument != null ? argument : "%arg%")) && voucher.useWhiteListPermissions()) {
 				player.sendMessage(Messages.NO_PERMISSION_TO_VOUCHER.getMessage());
-				checker = false;
+				return false;
 			}
-			if(checker) {
-				if(voucher.useBlackListPermissions()) {
-					for(String permission : voucher.getBlackListPermissions()) {
-						if(player.hasPermission(permission.toLowerCase().replaceAll("%arg%", argument != null ? argument : "%arg%"))) {
-							player.sendMessage(Methods.color(Methods.getPrefix() + voucher.getBlackListMessage()));
-							checker = false;
-							break;
-						}
+			if(voucher.useBlackListPermissions()) {
+				for(String permission : voucher.getBlackListPermissions()) {
+					if(player.hasPermission(permission.toLowerCase().replaceAll("%arg%", argument != null ? argument : "%arg%"))) {
+						player.sendMessage(Methods.color(Methods.getPrefix() + voucher.getBlackListMessage()));
+						return false;
 					}
 				}
 			}
+			if(voucher.usesWhitelistWorlds()) {
+				if(!voucher.getWhitelistWorlds().contains(player.getWorld().getName().toLowerCase())) {
+					player.sendMessage(Methods.color(Methods.getPrefix() + voucher.getWhitelistWorldMessage()));
+					return false;
+				}
+			}
 		}
-		return checker;
+		return true;
 	}
 	
 	private void voucherClick(Player player, ItemStack item, Voucher voucher) {
@@ -125,22 +127,26 @@ public class VoucherClick implements Listener {
 			.replaceAll("%Z%", player.getLocation().getBlockZ() + "").replaceAll("%z%", player.getLocation().getBlockZ() + ""));
 		}
 		if(voucher.getRandomCoammnds().size() >= 1) {// Picks a random command from the Random-Commands list.
-			Bukkit.dispatchCommand(Bukkit.getConsoleSender(), voucher.getRandomCoammnds().get(new Random().nextInt(voucher.getRandomCoammnds().size()))
-			.replaceAll("%Player%", name).replaceAll("%player%", name)
-			.replaceAll("%Arg%", argument).replaceAll("%arg%", argument)
-			.replaceAll("%World%", player.getWorld().getName()).replaceAll("%world%", player.getWorld().getName())
-			.replaceAll("%X%", player.getLocation().getBlockX() + "").replaceAll("%x%", player.getLocation().getBlockX() + "")
-			.replaceAll("%Y%", player.getLocation().getBlockY() + "").replaceAll("%y%", player.getLocation().getBlockY() + "")
-			.replaceAll("%Z%", player.getLocation().getBlockZ() + "").replaceAll("%z%", player.getLocation().getBlockZ() + ""));
+			for(String command : voucher.getRandomCoammnds().get(new Random().nextInt(voucher.getRandomCoammnds().size())).getCommands()) {
+				Bukkit.dispatchCommand(Bukkit.getConsoleSender(), command
+				.replaceAll("%Player%", name).replaceAll("%player%", name)
+				.replaceAll("%Arg%", argument).replaceAll("%arg%", argument)
+				.replaceAll("%World%", player.getWorld().getName()).replaceAll("%world%", player.getWorld().getName())
+				.replaceAll("%X%", player.getLocation().getBlockX() + "").replaceAll("%x%", player.getLocation().getBlockX() + "")
+				.replaceAll("%Y%", player.getLocation().getBlockY() + "").replaceAll("%y%", player.getLocation().getBlockY() + "")
+				.replaceAll("%Z%", player.getLocation().getBlockZ() + "").replaceAll("%z%", player.getLocation().getBlockZ() + ""));
+			}
 		}
 		if(voucher.getChanceCommands().size() >= 1) {// Picks a command based on the chance system of the Chance-Commands list.
-			Bukkit.dispatchCommand(Bukkit.getConsoleSender(), voucher.getChanceCommands().get(new Random().nextInt(voucher.getChanceCommands().size()))
-			.replaceAll("%Player%", name).replaceAll("%player%", name)
-			.replaceAll("%Arg%", argument).replaceAll("%arg%", argument)
-			.replaceAll("%World%", player.getWorld().getName()).replaceAll("%world%", player.getWorld().getName())
-			.replaceAll("%X%", player.getLocation().getBlockX() + "").replaceAll("%x%", player.getLocation().getBlockX() + "")
-			.replaceAll("%Y%", player.getLocation().getBlockY() + "").replaceAll("%y%", player.getLocation().getBlockY() + "")
-			.replaceAll("%Z%", player.getLocation().getBlockZ() + "").replaceAll("%z%", player.getLocation().getBlockZ() + ""));
+			for(String command : voucher.getChanceCommands().get(new Random().nextInt(voucher.getChanceCommands().size())).getCommands()) {
+				Bukkit.dispatchCommand(Bukkit.getConsoleSender(), command
+				.replaceAll("%Player%", name).replaceAll("%player%", name)
+				.replaceAll("%Arg%", argument).replaceAll("%arg%", argument)
+				.replaceAll("%World%", player.getWorld().getName()).replaceAll("%world%", player.getWorld().getName())
+				.replaceAll("%X%", player.getLocation().getBlockX() + "").replaceAll("%x%", player.getLocation().getBlockX() + "")
+				.replaceAll("%Y%", player.getLocation().getBlockY() + "").replaceAll("%y%", player.getLocation().getBlockY() + "")
+				.replaceAll("%Z%", player.getLocation().getBlockZ() + "").replaceAll("%z%", player.getLocation().getBlockZ() + ""));
+			}
 		}
 		for(ItemStack it : voucher.getItems()) {
 			if(!Methods.isInventoryFull(player)) {
@@ -160,6 +166,7 @@ public class VoucherClick implements Listener {
 		if(!voucher.getVoucherUsedMessage().equals("")) {
 			player.sendMessage(Methods.getPrefix() + Methods.color(voucher.getVoucherUsedMessage()
 			.replaceAll("%Player%", name).replaceAll("%player%", name)
+			.replaceAll("%Prefix%", Methods.getPrefix()).replaceAll("%prefix%", Methods.getPrefix())
 			.replaceAll("%Arg%", argument).replaceAll("%arg%", argument)
 			.replaceAll("%World%", player.getWorld().getName()).replaceAll("%world%", player.getWorld().getName())
 			.replaceAll("%X%", player.getLocation().getBlockX() + "").replaceAll("%x%", player.getLocation().getBlockX() + "")

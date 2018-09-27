@@ -21,6 +21,7 @@ import java.io.BufferedReader;
 import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.URL;
+import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
@@ -88,8 +89,8 @@ public class Methods {
 	
 	public static ItemStack makeItem(String itemString) {
 		String id = "1";
-		Short itemMetaData = 0;
-		Integer amount = 1;
+		short itemMetaData = 0;
+		int amount = 1;
 		String name = "";
 		List<String> lore = new ArrayList<>();
 		HashMap<Enchantment, Integer> enchantments = new HashMap<>();
@@ -303,7 +304,7 @@ public class Methods {
 			HttpURLConnection c = (HttpURLConnection) new URL("http://www.spigotmc.org/api/general.php").openConnection();
 			c.setDoOutput(true);
 			c.setRequestMethod("POST");
-			c.getOutputStream().write(("key=98BE0FE67F88AB82B4C197FAF1DC3B69206EFDCC4D3B80FC83A00037510B99B4&resource=13654").getBytes("UTF-8"));
+			c.getOutputStream().write(("key=98BE0FE67F88AB82B4C197FAF1DC3B69206EFDCC4D3B80FC83A00037510B99B4&resource=13654").getBytes(StandardCharsets.UTF_8));
 			String oldVersion = plugin.getDescription().getVersion();
 			String newVersion = new BufferedReader(new InputStreamReader(c.getInputStream())).readLine().replaceAll("[a-zA-Z ]", "");
 			if(!newVersion.equals(oldVersion)) {
@@ -318,7 +319,7 @@ public class Methods {
 			HttpURLConnection c = (HttpURLConnection) new URL("http://www.spigotmc.org/api/general.php").openConnection();
 			c.setDoOutput(true);
 			c.setRequestMethod("POST");
-			c.getOutputStream().write(("key=98BE0FE67F88AB82B4C197FAF1DC3B69206EFDCC4D3B80FC83A00037510B99B4&resource=13654").getBytes("UTF-8"));
+			c.getOutputStream().write(("key=98BE0FE67F88AB82B4C197FAF1DC3B69206EFDCC4D3B80FC83A00037510B99B4&resource=13654").getBytes(StandardCharsets.UTF_8));
 			String oldVersion = plugin.getDescription().getVersion();
 			String newVersion = new BufferedReader(new InputStreamReader(c.getInputStream())).readLine().replaceAll("[a-zA-Z ]", "");
 			if(!newVersion.equals(oldVersion)) {

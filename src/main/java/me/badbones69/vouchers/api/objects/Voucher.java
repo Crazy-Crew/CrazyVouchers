@@ -12,6 +12,7 @@ import org.bukkit.inventory.ItemStack;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 public class Voucher {
 	
@@ -22,23 +23,26 @@ public class Voucher {
 	private String itemName;
 	private Boolean itemGlow;
 	private String usedMessage;
-	private Boolean whitelistToggle;
-	private String whitelistNode;
-	private Boolean blacklistToggle;
-	private String blacklistMessage;
+	private Boolean whitelistPermissionToggle;
+	private String whitelistPermissionNode;
+	private Boolean blacklistPermissionsToggle;
+	private String blacklistPermissionMessage;
 	private Boolean limiterToggle;
 	private Integer limiterLimit;
 	private Boolean twostepAuthentication;
 	private Boolean soundToggle;
+	private Boolean whitelistWorldsToggle;
+	private String whitelistWorldMessage;
 	private List<Sound> sounds = new ArrayList<>();
 	private Boolean fireworkToggle;
 	private List<Color> fireworkColors = new ArrayList<>();
 	private List<String> itemLore;
 	private List<String> commands = new ArrayList<>();
-	private List<String> randomCoammnds = new ArrayList<>();
-	private List<String> chanceCommands = new ArrayList<>();
+	private List<VoucherCommand> randomCoammnds = new ArrayList<>();
+	private List<VoucherCommand> chanceCommands = new ArrayList<>();
 	private List<String> blacklistPermissions = new ArrayList<>();
 	private List<ItemStack> items = new ArrayList<>();
+	private List<String> whitelistWorlds = new ArrayList<>();
 	
 	public Voucher(String name) {
 		this.name = name;
@@ -71,16 +75,17 @@ public class Voucher {
 			this.commands = config.getStringList(path + "Commands");
 		}
 		if(config.contains(path + "Random-Commands")) {
-			this.randomCoammnds = config.getStringList(path + "Random-Commands");
+			for(String commands : config.getStringList(path + "Random-Commands")) {
+				this.randomCoammnds.add(new VoucherCommand(commands));
+			}
 		}
 		if(config.contains(path + "Chance-Commands")) {
 			for(String line : config.getStringList(path + "Chance-Commands")) {
 				try {
 					String[] split = line.split(" ");
-					String command = line.substring(split[0].length() + 1);
-					int chance = Integer.parseInt(line.replace(" " + command, ""));
-					for(int i = 1; i <= chance; i++) {
-						chanceCommands.add(command);
+					VoucherCommand voucherCommand = new VoucherCommand(line.substring(split[0].length() + 1));
+					for(int i = 1; i <= Integer.parseInt(split[0]); i++) {
+						chanceCommands.add(voucherCommand);
 					}
 				}catch(Exception e) {
 					System.out.println("[Vouchers] An issue occerted when trying to use chance commands.");
@@ -99,21 +104,21 @@ public class Voucher {
 			this.usedMessage = "";
 		}
 		if(config.contains(path + "Options.Permission.Whitelist-Permission")) {
-			this.whitelistToggle = config.getBoolean(path + "Options.Permission.Whitelist-Permission.Toggle");
-			this.whitelistNode = config.getString(path + "Options.Permission.Whitelist-Permission.Node").toLowerCase();
+			this.whitelistPermissionToggle = config.getBoolean(path + "Options.Permission.Whitelist-Permission.Toggle");
+			this.whitelistPermissionNode = config.getString(path + "Options.Permission.Whitelist-Permission.Node").toLowerCase();
 		}else {
-			this.whitelistToggle = false;
+			this.whitelistPermissionToggle = false;
 		}
 		if(config.contains(path + "Options.Permission.Blacklist-Permissions")) {
-			this.blacklistToggle = config.getBoolean(path + "Options.Permission.Blacklist-Permissions.Toggle");
+			this.blacklistPermissionsToggle = config.getBoolean(path + "Options.Permission.Blacklist-Permissions.Toggle");
 			if(config.contains(path + "Options.Permission.Blacklist-Permissions.Message")) {
-				this.blacklistMessage = config.getString(path + "Options.Permission.Blacklist-Permissions.Message");
+				this.blacklistPermissionMessage = config.getString(path + "Options.Permission.Blacklist-Permissions.Message");
 			}else {
-				this.blacklistMessage = Messages.HAS_BLACKLIST_PERMISSION.getMessageNoPrefix();
+				this.blacklistPermissionMessage = Messages.HAS_BLACKLIST_PERMISSION.getMessageNoPrefix();
 			}
 			this.blacklistPermissions = config.getStringList(path + "Options.Permission.Blacklist-Permissions.Permissions");
 		}else {
-			this.blacklistToggle = false;
+			this.blacklistPermissionsToggle = false;
 		}
 		if(config.contains(path + "Options.Limiter")) {
 			this.limiterToggle = config.getBoolean(path + "Options.Limiter.Toggle");
@@ -140,6 +145,17 @@ public class Voucher {
 			}
 		}else {
 			this.fireworkToggle = false;
+		}
+		if(config.contains(path + "Options.Whitelist-Worlds.Toggle")) {
+			this.whitelistWorlds.addAll(config.getStringList(path + "Options.Whitelist-Worlds.Worlds").stream().map(String::toLowerCase).collect(Collectors.toList()));
+			if(config.contains(path + "Options.Whitelist-Worlds.Message")) {
+				this.whitelistWorldMessage = config.getString(path + "Options.Whitelist-Worlds.Message");
+			}else {
+				this.whitelistWorldMessage = Messages.NOT_IN_WHITELISTED_WORLD.getMessageNoPrefix();
+			}
+			this.whitelistWorldsToggle = !this.whitelistWorlds.isEmpty() && config.getBoolean(path + "Options.Whitelist-Worlds.Toggle");
+		}else {
+			this.whitelistWorldsToggle = false;
 		}
 	}
 	
@@ -217,15 +233,15 @@ public class Voucher {
 	}
 	
 	public Boolean useWhiteListPermissions() {
-		return whitelistToggle;
+		return whitelistPermissionToggle;
 	}
 	
 	public String getWhiteListPermission() {
-		return "voucher." + whitelistNode;
+		return "voucher." + whitelistPermissionNode;
 	}
 	
 	public Boolean useBlackListPermissions() {
-		return blacklistToggle;
+		return blacklistPermissionsToggle;
 	}
 	
 	public List<String> getBlackListPermissions() {
@@ -233,7 +249,7 @@ public class Voucher {
 	}
 	
 	public String getBlackListMessage() {
-		return blacklistMessage;
+		return blacklistPermissionMessage;
 	}
 	
 	public Boolean useLimiter() {
@@ -268,16 +284,28 @@ public class Voucher {
 		return commands;
 	}
 	
-	public List<String> getRandomCoammnds() {
+	public List<VoucherCommand> getRandomCoammnds() {
 		return randomCoammnds;
 	}
 	
-	public List<String> getChanceCommands() {
+	public List<VoucherCommand> getChanceCommands() {
 		return chanceCommands;
 	}
 	
 	public List<ItemStack> getItems() {
 		return items;
+	}
+	
+	public Boolean usesWhitelistWorlds() {
+		return whitelistWorldsToggle;
+	}
+	
+	public List<String> getWhitelistWorlds() {
+		return whitelistWorlds;
+	}
+	
+	public String getWhitelistWorldMessage() {
+		return whitelistWorldMessage;
 	}
 	
 }
