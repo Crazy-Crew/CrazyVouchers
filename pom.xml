@@ -6,7 +6,7 @@
 
     <groupId>me.badbones69</groupId>
     <artifactId>Vouchers</artifactId>
-    <version>1.7.2</version>
+    <version>1.7.3</version>
 
     <repositories>
         <repository>
@@ -19,7 +19,7 @@
         <dependency>
             <groupId>org.spigotmc</groupId>
             <artifactId>spigot</artifactId>
-            <version>1.13.1-R0.1-SNAPSHOT</version>
+            <version>1.13.2-R0.1-SNAPSHOT</version>
             <scope>provided</scope>
         </dependency>
     </dependencies>
@@ -63,9 +63,9 @@
                             <include>me.badbones69:*</include>
                         </includes>
                     </artifactSet>
-                    <!--<finalName>${project.artifactId}[v${project.version}]</finalName>-->
-                    <!--<outputFile>/Users/badbones/Desktop/Stuff/Server/plugins/${project.artifactId}[v${project.version}].jar</outputFile>-->
-                    <outputFile>/Users/badbones/Plugins/Public Plugins/Vouchers/${project.artifactId}[v${project.version}].jar</outputFile>
+                    <!--<finalName>Vouchers[v${project.version}]</finalName>-->
+                    <outputFile>/Users/badbones/Desktop/Stuff/Server/plugins/${project.artifactId}[v${project.version}].jar</outputFile>
+                    <!--<outputFile>/Users/badbones/Plugins/Public Plugins/Vouchers/${project.artifactId}[v${project.version}].jar</outputFile>-->
                 </configuration>
                 <executions>
                     <execution>

@@ -1,6 +1,7 @@
 package me.badbones69.vouchers.api.objects;
 
 import de.tr7zw.itemnbtapi.NBTItem;
+import me.badbones69.vouchers.api.enums.Version;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.enchantments.Enchantment;
@@ -9,6 +10,7 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 
@@ -397,25 +399,44 @@ public class ItemBuilder {
 	 * @return The result of all the info that was given to the builder as an ItemStack.
 	 */
 	public ItemStack build() {
-		ItemStack item = referenceItem != null ? referenceItem : new ItemStack(material, amount, metaData);
-		ItemMeta itemMeta = item.getItemMeta();
-		itemMeta.setDisplayName(getUpdatedName());
-		itemMeta.setLore(getUpdatedLore());
-		itemMeta.addItemFlags(flags.toArray(new ItemFlag[0]));
-		item.setItemMeta(itemMeta);
-		item.addUnsafeEnchantments(enchantments);
-		if(unbreakable) {
-			NBTItem nbt = new NBTItem(item);
-			nbt.setBoolean("Unbreakable", true);
-			nbt.setInteger("HideFlags", 4);
-			return nbt.getItem();
+		if(referenceItem == null && material == null) {
+			ItemStack item;
+			if(Version.getCurrentVersion().isNewer(Version.v1_12_R1)) {//Is 1.13+
+				item = new ItemStack(Material.RED_TERRACOTTA);
+			}else {//Is 1.12.2 down.
+				item = new ItemStack(Material.matchMaterial("159"), 1, (short) 14);
+			}
+			ItemMeta itemMeta = item.getItemMeta();
+			itemMeta.setDisplayName(color("&4&lERROR"));
+			itemMeta.setLore(Arrays.asList(
+			color("&cMaterial Name/ID not found for item named &c" + getName()),
+			color(""),
+			color("&7Possible Issues:"),
+			color("&7(&e*&7) &7Material name is &e&n1.13+&7 when using a &e&n1.12.2-&7 server."),
+			color("&7(&e*&7) &7Material name is spelt incorrectly.")));
+			item.setItemMeta(itemMeta);
+			return item;
+		}else {
+			ItemStack item = referenceItem != null ? referenceItem : new ItemStack(material, amount, metaData);
+			ItemMeta itemMeta = item.getItemMeta();
+			itemMeta.setDisplayName(getUpdatedName());
+			itemMeta.setLore(getUpdatedLore());
+			itemMeta.addItemFlags(flags.toArray(new ItemFlag[0]));
+			item.setItemMeta(itemMeta);
+			item.addUnsafeEnchantments(enchantments);
+			if(unbreakable) {
+				NBTItem nbt = new NBTItem(item);
+				nbt.setBoolean("Unbreakable", true);
+				nbt.setInteger("HideFlags", 4);
+				return nbt.getItem();
+			}
+			return item;
 		}
-		return item;
 	}
 	
 	/**
 	 * Sets the converted item as a reference to try and save NBT tags and stuff.
-	 * @param referenceItem The item that is being referenced. 
+	 * @param referenceItem The item that is being referenced.
 	 * @return The ItemBuilder with updated info.
 	 */
 	private ItemBuilder setReferenceItem(ItemStack referenceItem) {
