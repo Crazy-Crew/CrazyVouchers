@@ -90,20 +90,20 @@ public class VoucherClick implements Listener {
 		if(!player.isOp()) {
 			String argument = Vouchers.getArgument(item, voucher);
 			if(!player.hasPermission(voucher.getWhiteListPermission().toLowerCase().replaceAll("%arg%", argument != null ? argument : "%arg%")) && voucher.useWhiteListPermissions()) {
-				player.sendMessage(Messages.NO_PERMISSION_TO_VOUCHER.getMessage());
+				player.sendMessage(Messages.NO_PERMISSION_TO_VOUCHER.getMessage().replaceAll("%arg%", argument != null ? argument : "%arg%"));
 				return false;
 			}
 			if(voucher.useBlackListPermissions()) {
 				for(String permission : voucher.getBlackListPermissions()) {
 					if(player.hasPermission(permission.toLowerCase().replaceAll("%arg%", argument != null ? argument : "%arg%"))) {
-						player.sendMessage(Methods.color(Methods.getPrefix() + voucher.getBlackListMessage()));
+						player.sendMessage(Methods.color(Methods.getPrefix() + voucher.getBlackListMessage().replaceAll("%arg%", argument != null ? argument : "%arg%")));
 						return false;
 					}
 				}
 			}
 			if(voucher.usesWhitelistWorlds()) {
 				if(!voucher.getWhitelistWorlds().contains(player.getWorld().getName().toLowerCase())) {
-					player.sendMessage(Methods.color(Methods.getPrefix() + voucher.getWhitelistWorldMessage()));
+					player.sendMessage(Methods.color(Methods.getPrefix() + voucher.getWhitelistWorldMessage().replaceAll("%arg%", argument != null ? argument : "%arg%")));
 					return false;
 				}
 			}
