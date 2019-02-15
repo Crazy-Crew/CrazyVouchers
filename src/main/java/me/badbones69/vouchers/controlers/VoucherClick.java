@@ -5,6 +5,7 @@ import me.badbones69.vouchers.api.FileManager.Files;
 import me.badbones69.vouchers.api.Vouchers;
 import me.badbones69.vouchers.api.enums.Messages;
 import me.badbones69.vouchers.api.enums.Version;
+import me.badbones69.vouchers.api.events.RedeemVoucherEvent;
 import me.badbones69.vouchers.api.objects.Voucher;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
@@ -41,9 +42,10 @@ public class VoucherClick implements Listener {
 				Voucher voucher = Vouchers.getVoucherFromItem(item);
 				if(voucher != null) {
 					e.setCancelled(true);
-					if(passesPermissionChecks(player, voucher, item)) {
+					String argument = Vouchers.getArgument(item, voucher);
+					if(passesPermissionChecks(player, item, voucher, argument)) {
 						String uuid = player.getUniqueId().toString();
-						if(!player.hasPermission("Voucher.Bypass")) {
+						if(!player.hasPermission("voucher.bypass")) {
 							if(voucher.useLimiter()) {
 								if(data.contains("Players." + uuid)) {
 									if(data.contains("Players." + uuid + ".Vouchers." + voucher.getName())) {
@@ -69,8 +71,12 @@ public class VoucherClick implements Listener {
 								return;
 							}
 						}
-						voucherClick(player, item, voucher);
 						twoAuth.remove(player);
+						RedeemVoucherEvent event = new RedeemVoucherEvent(player, voucher, argument);
+						Bukkit.getPluginManager().callEvent(event);
+						if(!event.isCancelled()) {
+							voucherClick(player, item, voucher, argument);
+						}
 					}
 				}
 			}
@@ -86,9 +92,8 @@ public class VoucherClick implements Listener {
 		}
 	}
 	
-	private boolean passesPermissionChecks(Player player, Voucher voucher, ItemStack item) {
+	private boolean passesPermissionChecks(Player player, ItemStack item, Voucher voucher, String argument) {
 		if(!player.isOp()) {
-			String argument = Vouchers.getArgument(item, voucher);
 			if(!player.hasPermission(voucher.getWhiteListPermission().toLowerCase().replaceAll("%arg%", argument != null ? argument : "%arg%")) && voucher.useWhiteListPermissions()) {
 				player.sendMessage(Messages.NO_PERMISSION_TO_VOUCHER.getMessage().replaceAll("%arg%", argument != null ? argument : "%arg%"));
 				return false;
@@ -111,9 +116,8 @@ public class VoucherClick implements Listener {
 		return true;
 	}
 	
-	private void voucherClick(Player player, ItemStack item, Voucher voucher) {
+	private void voucherClick(Player player, ItemStack item, Voucher voucher, String argument) {
 		String name = player.getName();
-		String argument = Vouchers.getArgument(item, voucher);
 		if(argument == null) {
 			argument = "";
 		}
