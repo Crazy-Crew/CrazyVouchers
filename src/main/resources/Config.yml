@@ -51,7 +51,7 @@ Vouchers: #Where you make your vouchers.
       Sound: #The sound options.
         Toggle: true #Toggle on or off if a sound is played.
         Sounds: #The sound that is played. Make sure the sound works with your minecraft version.
-          - 'CLICK'
+          - 'UI_BUTTON_CLICK'
       Firework: #The firework options
         Toggle: true #Toggle if the firework goes off.
         Colors: 'Green, Lime' #The colors of the firework.
@@ -88,7 +88,7 @@ Vouchers: #Where you make your vouchers.
       Sound:
         Toggle: true
         Sounds:
-          - 'CLICK'
+          - 'UI_BUTTON_CLICK'
       Firework:
         Toggle: true
         Colors: 'Black, Gray, Red'
@@ -128,7 +128,7 @@ Vouchers: #Where you make your vouchers.
       Sound:
         Toggle: true
         Sounds:
-          - 'CLICK'
+          - 'UI_BUTTON_CLICK'
       Firework:
         Toggle: true
         Colors: 'Black, Gray, Aqua'
