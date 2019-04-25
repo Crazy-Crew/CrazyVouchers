@@ -4,7 +4,7 @@ import me.badbones69.vouchers.api.FileManager.Files;
 import me.badbones69.vouchers.api.enums.Messages;
 import me.badbones69.vouchers.api.enums.Version;
 import me.badbones69.vouchers.api.objects.ItemBuilder;
-import me.badbones69.vouchers.controlers.FireworkDamageAPI;
+import me.badbones69.vouchers.controllers.FireworkDamageAPI;
 import org.bukkit.*;
 import org.bukkit.command.CommandSender;
 import org.bukkit.configuration.file.FileConfiguration;

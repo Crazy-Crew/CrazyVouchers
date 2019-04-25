@@ -1,4 +1,4 @@
-package me.badbones69.vouchers.controlers;
+package me.badbones69.vouchers.controllers;
 
 import me.badbones69.vouchers.api.enums.Version;
 import org.bukkit.entity.Entity;
