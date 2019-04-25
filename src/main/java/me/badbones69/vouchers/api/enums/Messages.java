@@ -20,6 +20,7 @@ public enum Messages {
 	NOT_A_VOUCHER("Not-A-Voucher", "&cThat is not a Voucher Type."),
 	NOT_A_PLAYER("Not-A-Player", "&cYou must be a player to use this command."),
 	CODE_UNAVAILABLE("Code-Unavailable", "&cThe Voucher code &6%Arg% &cis incorrect or unavailable at this time."),
+	CODE_USED("Code-Used", "&cThe voucher code &6%code% &chas already been used."),
 	GIVEN_A_VOUCHER("Given-A-Voucher", "&3You have just given &6%Player% &3a &6%Voucher% &3voucher."),
 	GIVEN_ALL_PLAYERS_VOUCHER("Given-All-Players-Voucher", "&3You have just given all players a &6%Voucher% &3voucher."),
 	HIT_LIMIT("Hit-Limit", "&cYou have hit your limit for using this voucher."),
@@ -152,7 +153,6 @@ public enum Messages {
 		Boolean saveFile = false;
 		for(Messages message : values()) {
 			if(!messages.contains("Messages." + message.getPath())) {
-				System.out.println(message.getPath());
 				saveFile = true;
 				if(message.getDefaultMessage() != null) {
 					messages.set("Messages." + message.getPath(), message.getDefaultMessage());

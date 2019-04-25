@@ -7,7 +7,6 @@ import me.badbones69.vouchers.api.objects.ItemBuilder;
 import me.badbones69.vouchers.controllers.FireworkDamageAPI;
 import org.bukkit.*;
 import org.bukkit.command.CommandSender;
-import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.enchantments.Enchantment;
 import org.bukkit.entity.Firework;
 import org.bukkit.entity.Player;
@@ -26,7 +25,6 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
-import java.util.logging.Level;
 
 public class Methods {
 	
@@ -145,7 +143,7 @@ public class Methods {
 	}
 	
 	public static boolean hasPermission(Player player, String perm) {
-		if(!player.hasPermission("Voucher." + perm)) {
+		if(!player.hasPermission("voucher." + perm)) {
 			player.sendMessage(Messages.NO_PERMISSION.getMessage());
 			return false;
 		}
@@ -155,7 +153,7 @@ public class Methods {
 	public static boolean hasPermission(CommandSender sender, String perm) {
 		if(sender instanceof Player) {
 			Player player = (Player) sender;
-			if(!player.hasPermission("Voucher." + perm)) {
+			if(!player.hasPermission("voucher." + perm)) {
 				player.sendMessage(Messages.NO_PERMISSION.getMessage());
 				return false;
 			}else {
@@ -163,139 +161,6 @@ public class Methods {
 			}
 		}else {
 			return true;
-		}
-	}
-	
-	public static boolean isRealCode(Player player, String code) {
-		FileConfiguration Code = Files.VOUCHER_CODES.getFile();
-		if(Code.contains("Codes")) {
-			for(String C : Code.getConfigurationSection("Codes").getKeys(false)) {
-				boolean toggle = false;
-				if(Code.contains("Codes." + C + ".CaseSensitive")) {
-					toggle = Code.getBoolean("Codes." + C + ".CaseSensitive");
-				}
-				if((toggle && C.equals(code)) || (!toggle && C.equalsIgnoreCase(code))) {
-					return true;
-				}
-			}
-		}
-		HashMap<String, String> placeholders = new HashMap<>();
-		placeholders.put("%Arg%", code);
-		placeholders.put("%arg%", code);
-		player.sendMessage(Messages.CODE_UNAVAILABLE.getMessage(placeholders));
-		return false;
-	}
-	
-	public static boolean isCodeEnabled(Player player, String code) {
-		if(Files.VOUCHER_CODES.getFile().contains("Codes")) {
-			for(String C : Files.VOUCHER_CODES.getFile().getConfigurationSection("Codes").getKeys(false)) {
-				if(C.equalsIgnoreCase(code)) {
-					if(Files.VOUCHER_CODES.getFile().getBoolean("Codes." + C + ".Enabled/Disabled")) {
-						return true;
-					}
-				}
-			}
-		}
-		HashMap<String, String> placeholders = new HashMap<>();
-		placeholders.put("%Arg%", code);
-		placeholders.put("%arg%", code);
-		player.sendMessage(Messages.CODE_UNAVAILABLE.getMessage(placeholders));
-		return false;
-	}
-	
-	public static boolean hasCodePerm(Player player, String code) {
-		if(Files.VOUCHER_CODES.getFile().contains("Codes")) {
-			for(String C : Files.VOUCHER_CODES.getFile().getConfigurationSection("Codes").getKeys(false)) {
-				if(C.equalsIgnoreCase(code)) {
-					if(Files.VOUCHER_CODES.getFile().getBoolean("Codes." + C + ".Permission-Toggle")) {
-						if(player.hasPermission("Voucher." + Files.VOUCHER_CODES.getFile().getString("Codes." + C + ".Permission-Node"))) {
-							return true;
-						}
-					}else {
-						return true;
-					}
-				}
-			}
-		}
-		HashMap<String, String> placeholders = new HashMap<>();
-		placeholders.put("%Arg%", code);
-		placeholders.put("%arg%", code);
-		player.sendMessage(Messages.CODE_UNAVAILABLE.getMessage(placeholders));
-		return false;
-	}
-	
-	public static void codeRedeem(Player player, String code) {
-		FileConfiguration voucherCodes = Files.VOUCHER_CODES.getFile();
-		FileConfiguration dataFile = Files.DATA.getFile();
-		if(voucherCodes.contains("Codes")) {
-			for(String C : voucherCodes.getConfigurationSection("Codes").getKeys(false)) {
-				if(C.equalsIgnoreCase(code)) {
-					String uuid = player.getUniqueId() + "";
-					if(dataFile.contains("Players." + uuid)) {
-						dataFile.set("Players." + uuid + ".UserName", player.getName());
-						Files.DATA.saveFile();
-						if(dataFile.contains("Players." + uuid + ".Codes." + C)) {
-							if(dataFile.getString("Players." + uuid + ".Codes." + C).equalsIgnoreCase("Used")) {
-								player.sendMessage(color("&cYou have used that code already."));
-								return;
-							}
-						}
-					}
-					HashMap<String, String> placeholders = new HashMap<>();
-					placeholders.put("%Arg%", code);
-					placeholders.put("%arg%", code);
-					if(voucherCodes.getInt("Codes." + C + ".CodesLeft") < 1) {
-						player.sendMessage(Messages.CODE_UNAVAILABLE.getMessage(placeholders));
-						return;
-					}
-					if(voucherCodes.getBoolean("Codes." + C + ".Limited")) {
-						if(voucherCodes.getInt("Codes." + C + ".CodesLeft") <= 0) {
-							player.sendMessage(Messages.CODE_UNAVAILABLE.getMessage(placeholders));
-							return;
-						}else {
-							voucherCodes.set("Codes." + C + ".CodesLeft", (voucherCodes.getInt("Codes." + C + ".CodesLeft") - 1));
-						}
-					}
-					if(voucherCodes.contains("Codes." + C + ".Commands")) {
-						for(String cmd : voucherCodes.getStringList("Codes." + C + ".Commands")) {
-							cmd = cmd.replace("%player%", player.getName()).replace("%Player%", player.getName());
-							Bukkit.dispatchCommand(Bukkit.getConsoleSender(), cmd);
-						}
-					}
-					if(voucherCodes.contains("Codes." + C + ".Messages")) {
-						for(String msg : voucherCodes.getStringList("Codes." + C + ".Messages")) {
-							msg = msg.replace("%player%", player.getName()).replace("%Player%", player.getName());
-							msg = msg.replace("%voucherCodes%", C).replace("%code%", C);
-							player.sendMessage(color(msg));
-						}
-					}
-					if(voucherCodes.contains("Codes." + C + ".BroadCasts")) {
-						for(String msg : voucherCodes.getStringList("Codes." + C + ".BroadCasts")) {
-							msg = msg.replace("%player%", player.getName()).replace("%Player%", player.getName());
-							Bukkit.broadcastMessage(color(msg));
-						}
-					}
-					if(voucherCodes.contains("Codes." + C + ".SoundToggle") && voucherCodes.contains("Codes." + C + ".Sound")) {
-						if(voucherCodes.getBoolean("Codes." + C + ".SoundToggle")) {
-							String sound = voucherCodes.getString("Codes." + C + ".Sound");
-							try {
-								player.playSound(player.getLocation(), Sound.valueOf(sound), 1, 1);
-							}catch(Exception e) {
-								Bukkit.getLogger().log(Level.WARNING, "[Vouchers]>> The voucher " + C + "'s sound that you set to " + sound + " is not a sound. " + "Please go to the config and set a correct sound or turn the sound off in the SoundToggle setting.");
-								for(Player p : Bukkit.getServer().getOnlinePlayers()) {
-									if(p.isOp()) {
-										p.sendMessage(color("&4&l[Vouchers]>> &cThe voucher &6" + C + "'s &csound that you set to &6" + sound + " &cis not a sound. " + "&cPlease go to the config and set a correct sound or turn the sound off in the SoundToggle setting."));
-									}
-								}
-							}
-						}
-					}
-					dataFile.set("Players." + uuid + ".UserName", player.getName());
-					dataFile.set("Players." + uuid + ".Codes." + C, "Used");
-					Files.DATA.saveFile();
-					Files.VOUCHER_CODES.saveFile();
-				}
-			}
 		}
 	}
 	

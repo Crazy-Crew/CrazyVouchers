@@ -4,6 +4,7 @@ import de.tr7zw.itemnbtapi.NBTItem;
 import me.badbones69.vouchers.Methods;
 import me.badbones69.vouchers.api.FileManager.Files;
 import me.badbones69.vouchers.api.objects.Voucher;
+import me.badbones69.vouchers.api.objects.VoucherCode;
 import org.bukkit.inventory.ItemStack;
 
 import java.util.ArrayList;
@@ -12,16 +13,25 @@ import java.util.List;
 public class Vouchers {
 	
 	private static ArrayList<Voucher> vouchers = new ArrayList<>();
+	private static ArrayList<VoucherCode> voucherCodes = new ArrayList<>();
 	
 	public static void load() {
 		vouchers.clear();
+		voucherCodes.clear();
 		for(String voucherName : Files.CONFIG.getFile().getConfigurationSection("Vouchers").getKeys(false)) {
 			vouchers.add(new Voucher(voucherName));
+		}
+		for(String voucherName : Files.VOUCHER_CODES.getFile().getConfigurationSection("Voucher-Codes").getKeys(false)) {
+			voucherCodes.add(new VoucherCode(voucherName));
 		}
 	}
 	
 	public static ArrayList<Voucher> getVouchers() {
 		return vouchers;
+	}
+	
+	public static ArrayList<VoucherCode> getVoucherCodes() {
+		return voucherCodes;
 	}
 	
 	public static Voucher getVoucher(String voucherName) {
@@ -37,6 +47,32 @@ public class Vouchers {
 		for(Voucher voucher : getVouchers()) {
 			if(voucher.getName().equalsIgnoreCase(voucherName)) {
 				return true;
+			}
+		}
+		return false;
+	}
+	
+	public static VoucherCode getVoucherCode(String voucherName) {
+		for(VoucherCode voucher : getVoucherCodes()) {
+			if(voucher.getCode().equalsIgnoreCase(voucherName)) {
+				return voucher;
+			}
+		}
+		return null;
+	}
+	
+	public static Boolean isVoucherCode(String voucherCode) {
+		for(VoucherCode voucher : getVoucherCodes()) {
+			if(voucher.isEnabled()) {
+				if(voucher.isCaseSensitive()) {
+					if(voucher.getCode().equals(voucherCode)) {
+						return true;
+					}
+				}else {
+					if(voucher.getCode().equalsIgnoreCase(voucherCode)) {
+						return true;
+					}
+				}
 			}
 		}
 		return false;
@@ -94,12 +130,12 @@ public class Vouchers {
 			//Using the old method to check for old vouchers or vouchers given without nbt tags.
 			String itemName = item.getItemMeta().getDisplayName();
 			List<String> itemLore = item.getItemMeta().getLore();
-			String voucherName = voucher.buildItem("%Arg%").getItemMeta().getDisplayName();
+			String voucherName = voucher.buildItem("%arg%").getItemMeta().getDisplayName();
 			List<String> voucherLore = voucher.buildItem().getItemMeta().getLore();
 			String argument = "";
 			int line = 0;
-			if(voucherName.contains("%Arg%")) {
-				String[] b = voucherName.split("%Arg%");
+			if(voucherName.contains("%arg%")) {
+				String[] b = voucherName.split("%arg%");
 				if(b.length >= 1) argument = itemName.replace(b[0], "");
 				if(b.length >= 2) argument = argument.replace(b[1], "");
 				if(itemName.equalsIgnoreCase(voucher.buildItem(argument).getItemMeta().getDisplayName())) {
@@ -109,8 +145,8 @@ public class Vouchers {
 			if(itemLore.size() == voucherLore.size()) {
 				for(String lore : voucherLore) {
 					String itemLine = itemLore.get(line);
-					if(lore.contains("%Arg%")) {
-						String[] b = lore.split("%Arg%");
+					if(lore.contains("%arg%")) {
+						String[] b = lore.split("%arg%");
 						if(!itemLine.startsWith(b[0])) {
 							break;
 						}
