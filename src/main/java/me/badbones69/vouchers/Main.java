@@ -146,14 +146,14 @@ public class Main extends JavaPlugin implements Listener {
 							FileConfiguration data = Files.DATA.getFile();
 							String uuid = player.getUniqueId().toString();
 							//Checking if the player has used the code before.
-							//							if(data.contains("Players." + uuid)) {
-							//								if(data.contains("Players." + uuid + ".Codes." + voucherCode.getName())) {
-							//									if(data.getString("Players." + uuid + ".Codes." + voucherCode.getName()).equalsIgnoreCase("used")) {
-							//										player.sendMessage(Messages.CODE_USED.getMessage(placeholders));
-							//										return true;
-							//									}
-							//								}
-							//							}
+							if(data.contains("Players." + uuid)) {
+								if(data.contains("Players." + uuid + ".Codes." + voucherCode.getName())) {
+									if(data.getString("Players." + uuid + ".Codes." + voucherCode.getName()).equalsIgnoreCase("used")) {
+										player.sendMessage(Messages.CODE_USED.getMessage(placeholders));
+										return true;
+									}
+								}
+							}
 							//Checking the limit of the code.
 							if(voucherCode.useLimiter()) {
 								if(data.contains("Voucher-Limit." + voucherCode.getName())) {
