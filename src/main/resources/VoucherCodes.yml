@@ -1,18 +1,49 @@
-Codes:
-  IamAVoucherCode: #The Voucher Code.
-    Enabled/Disabled: True
-    CaseSensitive: False #Toggle on Case Sensitive code.
-    Commands: #Commands run when used. Delete if you don't want to use any commands.
-      - 'Give %Player% stone 23'
-    Messages: #The message given to a player when they redeem the code. Delete if you don't want to use a message.
-      - '&5Congrads on redeeming the code %Code% %Player%.'
-    BroadCasts: #The broadcast when the voucher is used. Delete if you don't want to use a broadcast.
-      - '&6&l%Player% &3has just used the code IAmAVoucherCode!!!'
-    Limited: False #If false then anyone can use it. If true then only a specified amount can use it.
-    CodesLeft: 10 #The amount of times the code can be used.
-    Permission-Toggle: True #If the it checks if the Player has permission to use the Voucher.
-    Permission-Node: IAmAVoucherPerm #The Voucher's Perm Voucher.<VoucherPerm>
-    SoundToggle: True #Turn on and off the sound when the code is used.
-    #1.8 sounds are found here: http://docs.codelanx.com/Bukkit/1.8/org/bukkit/Sound.html
-    #1.9 sounds are found here: https://hub.spigotmc.org/javadocs/bukkit/org/bukkit/Sound.html
-    Sound: 'UI_BUTTON_CLICK' #This is a 1.9 sound. Make sure to change it to CLICK if you are on 1.8. Delete if you dont want a sound.
+###################################
+#             Items: Options
+# Item: <ID:MD> - You can choose the item with its id and meta data.
+# Amount: <Number> - Choose how many of the item you get.
+# Name: <Name> - The display name that goes on the item.
+# Lore: <Line 1>,<Line 2>,<Line 3>,<Line 4> - The lore that will go under the enchantments. Split lines with a ','
+# <Enchantment>:<Level> - Choose the enchantment you want to add to the item. You can use the in-game names of the enchantment if you want. Replace the spaces in the name with a "_".
+###########################################################
+#                    Sound Options                        #
+# 1.8 and lower players use these sounds: http://docs.codelanx.com/Bukkit/1.8/org/bukkit/Sound.html
+# 1.9 and up players use these sounds: https://hub.spigotmc.org/javadocs/spigot/org/bukkit/Sound.html
+###################################################################
+#                         Firework Colors:                        #
+#      Aqua, Black, Blue, Fuchsia, Gray, Green, Lime, Maroon,     #
+#  Navy, Olive, Orange, Purple, Red, Silver, Teal, White, Yellow  #
+###################################################################
+Voucher-Codes: #Where you make your vouchers.
+  Starter-Money: #The name of the voucher.
+    Code: 'startermoney' #The code the player has to use to redeem it.
+    Commands: #The commands that are run when redeemed.
+      - 'eco give %player% 10000'
+    Options:
+      Enabled: true #If the code is currently available.
+      Case-Sensitive: false #If the code has to be case sensitive or not.
+      Message: '&7You have been given $10,000.' #The message sent to the player when redeemed. Set to '' if no message needs sent.
+      Whitelist-Worlds: #This allows you to make it so some vouchers can only be used some worlds.
+        Toggle: false #True if you wish to use this feature.
+        Message: '&cYou can not use that voucher here as you are not in a whitelisted world for this voucher.' #The message sent to the user that tried to use it in a non whitelisted world.
+        Worlds: #List of worlds you want the voucher to be used in.
+          - 'world'
+      Permission: #Permission options.
+        Whitelist-Permission: #The player needs this permission to use it.
+          Toggle: false #Toggle the permission on or off.
+          Node: 'startermoney' #The permission node. Permission the player needs would be "voucher.<node>" replace "<node>" with your Node: option.
+        Blacklist-Permissions: #If the player has any of these permissions then they can't use the voucher.
+          Toggle: false #Toggle if it checks for black listed permissions.
+          Message: '&cYou have a blacklisted permission and can''t use this voucher.' #The message that is sent to the player if they have a blacklisted message. Use %permission% if you wise to show the permission they need.
+          Permissions: #List all the blacklisted permissions here.
+            - 'voucher.blacklist.startermoney'
+      Limiter: #Limiter options.
+        Toggle: false #Toggle on or off the limiter.
+        Limit: 10 #The limit of how many time it may be used.
+      Sound: #The sound options.
+        Toggle: true #Toggle on or off if a sound is played.
+        Sounds: #The sound that is played. Make sure the sound works with your minecraft version.
+          - 'UI_BUTTON_CLICK'
+      Firework: #The firework options
+        Toggle: true #Toggle if the firework goes off.
+        Colors: 'Green, Lime' #The colors of the firework.
