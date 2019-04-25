@@ -1,5 +1,6 @@
 package me.badbones69.vouchers.api;
 
+import me.badbones69.vouchers.api.enums.Version;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.plugin.Plugin;
@@ -47,8 +48,17 @@ public class FileManager {
 			if(log) System.out.println(prefix + "Loading the " + file.getFileName());
 			if(!newFile.exists()) {
 				try {
+					String fileLocation = file.getFileLocation();
+					//Switch between 1.12.2- and 1.13+ config version.
+					if(file == Files.CONFIG) {
+						if(Version.getCurrentVersion().isOlder(Version.v1_13_R2)) {
+							fileLocation = "Config1.12.2-Down.yml";
+						}else {
+							fileLocation = "Config1.13-Up.yml";
+						}
+					}
 					File serverFile = new File(plugin.getDataFolder(), "/" + file.getFileLocation());
-					InputStream jarFile = getClass().getResourceAsStream("/" + file.getFileLocation());
+					InputStream jarFile = getClass().getResourceAsStream("/" + fileLocation);
 					copyFile(jarFile, serverFile);
 				}catch(Exception e) {
 					if(log) System.out.println(prefix + "Failed to load " + file.getFileName());
