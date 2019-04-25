@@ -1,6 +1,5 @@
 package me.badbones69.vouchers;
 
-import com.massivestats.MassiveStats;
 import me.badbones69.vouchers.api.FileManager;
 import me.badbones69.vouchers.api.FileManager.Files;
 import me.badbones69.vouchers.api.Vouchers;
@@ -10,6 +9,7 @@ import me.badbones69.vouchers.api.objects.Voucher;
 import me.badbones69.vouchers.controlers.FireworkDamageAPI;
 import me.badbones69.vouchers.controlers.GUI;
 import me.badbones69.vouchers.controlers.VoucherClick;
+import me.badbones69.vouchers.controllers.Metrics;
 import org.bukkit.Bukkit;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
@@ -43,14 +43,8 @@ public class Main extends JavaPlugin implements Listener {
 			}
 		}catch(Exception e) {
 		}
+		new Metrics(this);
 		Vouchers.load();
-		try {
-			MassiveStats massiveStats = new MassiveStats(this);
-			if(Files.CONFIG.getFile().contains("Settings.Updater")) {
-				massiveStats.setListenerDisabled(!Files.CONFIG.getFile().getBoolean("Settings.Updater"));
-			}
-		}catch(Exception e) {
-		}
 	}
 	
 	public boolean onCommand(CommandSender sender, Command cmd, String commandLable, String[] args) {
