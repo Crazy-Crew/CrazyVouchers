@@ -260,17 +260,20 @@ public class Main extends JavaPlugin implements Listener {
 							if(!Methods.isOnline(sender, name)) return true;
 						}
 						Player player = Bukkit.getPlayer(name);
-						String argument = args[4];
-						//Gives a random number as the argument.
-						// /Voucher give test 1 %player% %random%:1-1000
-						if(argument.startsWith("%random%:")) {
-							argument = argument.replace("%random%:", "");
-							try {
-								int min = Integer.parseInt(argument.split("-")[0]);
-								int max = Integer.parseInt(argument.split("-")[1]);
-								argument += pickNumber(min, max) + " ";
-							}catch(Exception e) {
-								argument += "1";
+						String argument = "";
+						if(args.length >= 5) {
+							argument = args[4];
+							//Gives a random number as the argument.
+							// /Voucher give test 1 %player% %random%:1-1000
+							if(argument.startsWith("%random%:")) {
+								argument = argument.replace("%random%:", "");
+								try {
+									int min = Integer.parseInt(argument.split("-")[0]);
+									int max = Integer.parseInt(argument.split("-")[1]);
+									argument += pickNumber(min, max) + " ";
+								}catch(Exception e) {
+									argument += "1";
+								}
 							}
 						}
 						ItemStack item = args.length >= 5 ? voucher.buildItem(argument, amount) : voucher.buildItem(amount);
@@ -310,8 +313,24 @@ public class Main extends JavaPlugin implements Listener {
 							if(!Methods.isInt(sender, args[2])) return true;
 							amount = Integer.parseInt(args[2]);
 						}
+						String argument = "";
+						if(args.length >= 4) {
+							argument = args[3];
+							//Gives a random number as the argument.
+							// /Voucher give test 1 %player% %random%:1-1000
+							if(argument.startsWith("%random%:")) {
+								argument = argument.replace("%random%:", "");
+								try {
+									int min = Integer.parseInt(argument.split("-")[0]);
+									int max = Integer.parseInt(argument.split("-")[1]);
+									argument += pickNumber(min, max) + " ";
+								}catch(Exception e) {
+									argument += "1";
+								}
+							}
+						}
+						ItemStack item = args.length >= 4 ? voucher.buildItem(argument, amount) : voucher.buildItem(amount);
 						for(Player player : Bukkit.getServer().getOnlinePlayers()) {
-							ItemStack item = args.length >= 5 ? voucher.buildItem(args[4], amount) : voucher.buildItem(amount);
 							if(Methods.isInventoryFull(player)) {
 								player.getWorld().dropItem(player.getLocation(), item);
 							}else {
