@@ -81,7 +81,7 @@ public class Main extends JavaPlugin implements Listener {
 					for(String vo : Files.CONFIG.getFile().getConfigurationSection("Vouchers").getKeys(false)) {
 						voucher += Methods.color("&a" + vo + "&8, ");
 					}
-					for(String co : Files.VOUCHER_CODES.getFile().getConfigurationSection("Codes").getKeys(false)) {
+					for(String co : Files.VOUCHER_CODES.getFile().getConfigurationSection("Voucher-Codes").getKeys(false)) {
 						codes += Methods.color("&a" + co + "&8, ");
 					}
 					voucher = voucher.substring(0, voucher.length() - 2);
