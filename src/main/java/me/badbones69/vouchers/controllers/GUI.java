@@ -48,7 +48,7 @@ public class GUI implements Listener {
 		Player player = (Player) e.getWhoClicked();
 		ItemStack item = e.getCurrentItem();
 		if(inv != null) {
-			if(inv.getName().equals(inventoryName)) {
+			if(e.getView().getTitle().equals(inventoryName)) {
 				e.setCancelled(true);
 				if(e.getRawSlot() < 54) {
 					if(e.getCurrentItem() != null) {
