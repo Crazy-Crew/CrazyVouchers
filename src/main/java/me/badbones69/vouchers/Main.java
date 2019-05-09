@@ -175,7 +175,8 @@ public class Main extends JavaPlugin implements Listener {
 								data.set("Players." + uuid + ".Codes." + voucherCode.getName(), "used");
 								Files.DATA.saveFile();
 								for(String command : voucherCode.getCommands()) {
-									Bukkit.dispatchCommand(Bukkit.getConsoleSender(), command.replaceAll("%Player%", name).replaceAll("%player%", name)
+									Bukkit.dispatchCommand(Bukkit.getConsoleSender(), command
+									.replaceAll("%Player%", name).replaceAll("%player%", name)
 									.replaceAll("%World%", player.getWorld().getName()).replaceAll("%world%", player.getWorld().getName())
 									.replaceAll("%X%", player.getLocation().getBlockX() + "").replaceAll("%x%", player.getLocation().getBlockX() + "")
 									.replaceAll("%Y%", player.getLocation().getBlockY() + "").replaceAll("%y%", player.getLocation().getBlockY() + "")
