@@ -1,9 +1,9 @@
 package me.badbones69.vouchers.api.objects;
 
-import de.tr7zw.itemnbtapi.NBTItem;
 import me.badbones69.vouchers.Methods;
 import me.badbones69.vouchers.api.FileManager.Files;
 import me.badbones69.vouchers.api.enums.Messages;
+import me.badbones69.vouchers.api.itemnbtapi.NBTItem;
 import org.bukkit.Color;
 import org.bukkit.Material;
 import org.bukkit.Sound;
