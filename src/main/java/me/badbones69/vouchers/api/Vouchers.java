@@ -21,8 +21,10 @@ public class Vouchers {
 		for(String voucherName : Files.CONFIG.getFile().getConfigurationSection("Vouchers").getKeys(false)) {
 			vouchers.add(new Voucher(voucherName));
 		}
-		for(String voucherName : Files.VOUCHER_CODES.getFile().getConfigurationSection("Voucher-Codes").getKeys(false)) {
-			voucherCodes.add(new VoucherCode(voucherName));
+		if(Files.VOUCHER_CODES.getFile().contains("Voucher-Codes")) {
+			for(String voucherName : Files.VOUCHER_CODES.getFile().getConfigurationSection("Voucher-Codes").getKeys(false)) {
+				voucherCodes.add(new VoucherCode(voucherName));
+			}
 		}
 	}
 	
