@@ -82,7 +82,7 @@ public class Voucher {
 				this.randomCoammnds.add(new VoucherCommand(commands));
 			}
 		}
-		if(config.contains(path + "Chance-Commands")) {
+		if(config.contains(path + "Chance-Commands")) {// - '%chance% %command%, %command%, %command%, ... etc'
 			for(String line : config.getStringList(path + "Chance-Commands")) {
 				try {
 					String[] split = line.split(" ");
