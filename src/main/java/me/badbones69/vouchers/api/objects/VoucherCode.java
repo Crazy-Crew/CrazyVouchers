@@ -22,13 +22,16 @@ public class VoucherCode {
 	private Integer limit;
 	private String message;
 	private List<String> commands = new ArrayList<>();
+	private Boolean whitelistPermissionToggle;
+	private String whitelistPermissionNode;
+	private List<String> whitelistCommands = new ArrayList<>();
 	private Boolean whitelistWorldsToggle;
 	private String whitelistWorldMessage;
 	private List<String> whitelistWorlds = new ArrayList<>();
-	private Boolean whitelistPermissionToggle;
-	private String whitelistPermissionNode;
+	private List<String> whitelistWorldCommands = new ArrayList<>();
 	private Boolean blacklistPermissionsToggle;
 	private String blacklistPermissionMessage;
+	private List<String> blacklistCommands = new ArrayList<>();
 	private List<String> blacklistPermissions = new ArrayList<>();
 	private Boolean limiterToggle;
 	private Integer limiterLimit;
@@ -84,8 +87,21 @@ public class VoucherCode {
 		if(config.contains(path + "Options.Permission.Whitelist-Permission")) {
 			this.whitelistPermissionToggle = config.getBoolean(path + "Options.Permission.Whitelist-Permission.Toggle");
 			this.whitelistPermissionNode = config.getString(path + "Options.Permission.Whitelist-Permission.Node").toLowerCase();
+			this.whitelistCommands = config.getStringList(path + "Options.Permission.Whitelist-Permission.Commands");
 		}else {
 			this.whitelistPermissionToggle = false;
+		}
+		if(config.contains(path + "Options.Whitelist-Worlds.Toggle")) {
+			this.whitelistWorlds.addAll(config.getStringList(path + "Options.Whitelist-Worlds.Worlds").stream().map(String::toLowerCase).collect(Collectors.toList()));
+			if(config.contains(path + "Options.Whitelist-Worlds.Message")) {
+				this.whitelistWorldMessage = config.getString(path + "Options.Whitelist-Worlds.Message");
+			}else {
+				this.whitelistWorldMessage = Messages.NOT_IN_WHITELISTED_WORLD.getMessageNoPrefix();
+			}
+			this.whitelistWorldCommands = config.getStringList(path + "Options.Whitelist-Worlds.Commands");
+			this.whitelistWorldsToggle = !this.whitelistWorlds.isEmpty() && config.getBoolean(path + "Options.Whitelist-Worlds.Toggle");
+		}else {
+			this.whitelistWorldsToggle = false;
 		}
 		if(config.contains(path + "Options.Permission.Blacklist-Permissions")) {
 			this.blacklistPermissionsToggle = config.getBoolean(path + "Options.Permission.Blacklist-Permissions.Toggle");
@@ -95,6 +111,7 @@ public class VoucherCode {
 				this.blacklistPermissionMessage = Messages.HAS_BLACKLIST_PERMISSION.getMessageNoPrefix();
 			}
 			this.blacklistPermissions = config.getStringList(path + "Options.Permission.Blacklist-Permissions.Permissions");
+			this.blacklistCommands = config.getStringList(path + "Options.Permission.Blacklist-Permissions.Commands");
 		}else {
 			this.blacklistPermissionsToggle = false;
 		}
@@ -123,17 +140,6 @@ public class VoucherCode {
 		}else {
 			this.fireworkToggle = false;
 		}
-		if(config.contains(path + "Options.Whitelist-Worlds.Toggle")) {
-			this.whitelistWorlds.addAll(config.getStringList(path + "Options.Whitelist-Worlds.Worlds").stream().map(String::toLowerCase).collect(Collectors.toList()));
-			if(config.contains(path + "Options.Whitelist-Worlds.Message")) {
-				this.whitelistWorldMessage = config.getString(path + "Options.Whitelist-Worlds.Message");
-			}else {
-				this.whitelistWorldMessage = Messages.NOT_IN_WHITELISTED_WORLD.getMessageNoPrefix();
-			}
-			this.whitelistWorldsToggle = !this.whitelistWorlds.isEmpty() && config.getBoolean(path + "Options.Whitelist-Worlds.Toggle");
-		}else {
-			this.whitelistWorldsToggle = false;
-		}
 	}
 	
 	public String getName() {
@@ -160,6 +166,18 @@ public class VoucherCode {
 		return commands;
 	}
 	
+	public Boolean useWhitelistPermission() {
+		return whitelistPermissionToggle;
+	}
+	
+	public String getWhitelistPermission() {
+		return "voucher." + whitelistPermissionNode;
+	}
+	
+	public List<String> getWhitelistCommands() {
+		return whitelistCommands;
+	}
+	
 	public Boolean useWhitelistWorlds() {
 		return whitelistWorldsToggle;
 	}
@@ -172,16 +190,12 @@ public class VoucherCode {
 		return whitelistWorlds;
 	}
 	
-	public Boolean useWhitelistPermission() {
-		return whitelistPermissionToggle;
-	}
-	
-	public String getWhitelistPermission() {
-		return "voucher." + whitelistPermissionNode;
-	}
-	
 	public Boolean useBlacklistPermissions() {
 		return blacklistPermissionsToggle;
+	}
+	
+	public List<String> getWhitelistWorldCommands() {
+		return whitelistWorldCommands;
 	}
 	
 	public String getBlacklistMessage() {
@@ -190,6 +204,10 @@ public class VoucherCode {
 	
 	public List<String> getBlacklistPermissions() {
 		return blacklistPermissions;
+	}
+	
+	public List<String> getBlacklistCommands() {
+		return blacklistCommands;
 	}
 	
 	public Boolean useLimiter() {

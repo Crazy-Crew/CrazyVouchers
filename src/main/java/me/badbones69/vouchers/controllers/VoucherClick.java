@@ -97,23 +97,49 @@ public class VoucherClick implements Listener {
 			if(!player.hasPermission(voucher.getWhiteListPermission().toLowerCase().replaceAll("%arg%", argument != null ? argument : "%arg%")) && voucher.useWhiteListPermissions()) {
 				player.sendMessage(Messages.NO_PERMISSION_TO_VOUCHER.getMessage().replaceAll("%arg%", argument != null ? argument : "%arg%")
 				.replaceAll("%Player%", player.getName()).replaceAll("%player%", player.getName()));
+				for(String command : voucher.getWhitelistCommands()) {
+					Bukkit.dispatchCommand(Bukkit.getConsoleSender(), command
+					.replaceAll("%Player%", player.getName()).replaceAll("%player%", player.getName())
+					.replaceAll("%Arg%", argument).replaceAll("%arg%", argument)
+					.replaceAll("%World%", player.getWorld().getName()).replaceAll("%world%", player.getWorld().getName())
+					.replaceAll("%X%", player.getLocation().getBlockX() + "").replaceAll("%x%", player.getLocation().getBlockX() + "")
+					.replaceAll("%Y%", player.getLocation().getBlockY() + "").replaceAll("%y%", player.getLocation().getBlockY() + "")
+					.replaceAll("%Z%", player.getLocation().getBlockZ() + "").replaceAll("%z%", player.getLocation().getBlockZ() + ""));
+				}
 				return false;
 			}
+			if(voucher.usesWhitelistWorlds()) {
+				if(!voucher.getWhitelistWorlds().contains(player.getWorld().getName().toLowerCase())) {
 					player.sendMessage(Methods.color(Methods.getPrefix() + voucher.getWhitelistWorldMessage().replaceAll("%arg%", argument != null ? argument : "%arg%")
 					.replaceAll("%Player%", player.getName()).replaceAll("%player%", player.getName())));
+					for(String command : voucher.getWhitelistWorldCommands()) {
+						Bukkit.dispatchCommand(Bukkit.getConsoleSender(), command
+						.replaceAll("%Player%", player.getName()).replaceAll("%player%", player.getName())
+						.replaceAll("%Arg%", argument).replaceAll("%arg%", argument)
+						.replaceAll("%World%", player.getWorld().getName()).replaceAll("%world%", player.getWorld().getName())
+						.replaceAll("%X%", player.getLocation().getBlockX() + "").replaceAll("%x%", player.getLocation().getBlockX() + "")
+						.replaceAll("%Y%", player.getLocation().getBlockY() + "").replaceAll("%y%", player.getLocation().getBlockY() + "")
+						.replaceAll("%Z%", player.getLocation().getBlockZ() + "").replaceAll("%z%", player.getLocation().getBlockZ() + ""));
+					}
+					return false;
+				}
+			}
 			if(voucher.useBlackListPermissions()) {
 				for(String permission : voucher.getBlackListPermissions()) {
 					if(player.hasPermission(permission.toLowerCase().replaceAll("%arg%", argument != null ? argument : "%arg%"))) {
 						player.sendMessage(Methods.color(Methods.getPrefix() + voucher.getBlackListMessage().replaceAll("%arg%", argument != null ? argument : "%arg%")
 						.replaceAll("%Player%", player.getName()).replaceAll("%player%", player.getName())));
+						for(String command : voucher.getBlacklistCommands()) {
+							Bukkit.dispatchCommand(Bukkit.getConsoleSender(), command
+							.replaceAll("%Player%", player.getName()).replaceAll("%player%", player.getName())
+							.replaceAll("%Arg%", argument).replaceAll("%arg%", argument)
+							.replaceAll("%World%", player.getWorld().getName()).replaceAll("%world%", player.getWorld().getName())
+							.replaceAll("%X%", player.getLocation().getBlockX() + "").replaceAll("%x%", player.getLocation().getBlockX() + "")
+							.replaceAll("%Y%", player.getLocation().getBlockY() + "").replaceAll("%y%", player.getLocation().getBlockY() + "")
+							.replaceAll("%Z%", player.getLocation().getBlockZ() + "").replaceAll("%z%", player.getLocation().getBlockZ() + ""));
+						}
 						return false;
 					}
-				}
-			}
-			if(voucher.usesWhitelistWorlds()) {
-				if(!voucher.getWhitelistWorlds().contains(player.getWorld().getName().toLowerCase())) {
-					player.sendMessage(Methods.color(Methods.getPrefix() + voucher.getWhitelistWorldMessage().replaceAll("%arg%", argument != null ? argument : "%arg%")));
-					return false;
 				}
 			}
 		}

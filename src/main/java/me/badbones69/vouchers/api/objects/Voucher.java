@@ -25,14 +25,19 @@ public class Voucher {
 	private String usedMessage;
 	private Boolean whitelistPermissionToggle;
 	private String whitelistPermissionNode;
+	private List<String> whitelistCommands = new ArrayList<>();
+	private Boolean whitelistWorldsToggle;
+	private String whitelistWorldMessage;
+	private List<String> whitelistWorlds = new ArrayList<>();
+	private List<String> whitelistWorldCommands = new ArrayList<>();
 	private Boolean blacklistPermissionsToggle;
 	private String blacklistPermissionMessage;
+	private List<String> blacklistCommands = new ArrayList<>();
+	private List<String> blacklistPermissions = new ArrayList<>();
 	private Boolean limiterToggle;
 	private Integer limiterLimit;
 	private Boolean twostepAuthentication;
 	private Boolean soundToggle;
-	private Boolean whitelistWorldsToggle;
-	private String whitelistWorldMessage;
 	private List<Sound> sounds = new ArrayList<>();
 	private Boolean fireworkToggle;
 	private List<Color> fireworkColors = new ArrayList<>();
@@ -40,9 +45,7 @@ public class Voucher {
 	private List<String> commands = new ArrayList<>();
 	private List<VoucherCommand> randomCoammnds = new ArrayList<>();
 	private List<VoucherCommand> chanceCommands = new ArrayList<>();
-	private List<String> blacklistPermissions = new ArrayList<>();
 	private List<ItemStack> items = new ArrayList<>();
-	private List<String> whitelistWorlds = new ArrayList<>();
 	
 	public Voucher(String name) {
 		this.name = name;
@@ -106,8 +109,21 @@ public class Voucher {
 		if(config.contains(path + "Options.Permission.Whitelist-Permission")) {
 			this.whitelistPermissionToggle = config.getBoolean(path + "Options.Permission.Whitelist-Permission.Toggle");
 			this.whitelistPermissionNode = config.getString(path + "Options.Permission.Whitelist-Permission.Node").toLowerCase();
+			this.whitelistCommands = config.getStringList(path + "Options.Permission.Whitelist-Permission.Commands");
 		}else {
 			this.whitelistPermissionToggle = false;
+		}
+		if(config.contains(path + "Options.Whitelist-Worlds.Toggle")) {
+			this.whitelistWorlds.addAll(config.getStringList(path + "Options.Whitelist-Worlds.Worlds").stream().map(String::toLowerCase).collect(Collectors.toList()));
+			if(config.contains(path + "Options.Whitelist-Worlds.Message")) {
+				this.whitelistWorldMessage = config.getString(path + "Options.Whitelist-Worlds.Message");
+			}else {
+				this.whitelistWorldMessage = Messages.NOT_IN_WHITELISTED_WORLD.getMessageNoPrefix();
+			}
+			this.whitelistWorldCommands = config.getStringList(path + "Options.Whitelist-Worlds.Commands");
+			this.whitelistWorldsToggle = !this.whitelistWorlds.isEmpty() && config.getBoolean(path + "Options.Whitelist-Worlds.Toggle");
+		}else {
+			this.whitelistWorldsToggle = false;
 		}
 		if(config.contains(path + "Options.Permission.Blacklist-Permissions")) {
 			this.blacklistPermissionsToggle = config.getBoolean(path + "Options.Permission.Blacklist-Permissions.Toggle");
@@ -117,6 +133,7 @@ public class Voucher {
 				this.blacklistPermissionMessage = Messages.HAS_BLACKLIST_PERMISSION.getMessageNoPrefix();
 			}
 			this.blacklistPermissions = config.getStringList(path + "Options.Permission.Blacklist-Permissions.Permissions");
+			this.blacklistCommands = config.getStringList(path + "Options.Permission.Blacklist-Permissions.Commands");
 		}else {
 			this.blacklistPermissionsToggle = false;
 		}
@@ -145,17 +162,6 @@ public class Voucher {
 			}
 		}else {
 			this.fireworkToggle = false;
-		}
-		if(config.contains(path + "Options.Whitelist-Worlds.Toggle")) {
-			this.whitelistWorlds.addAll(config.getStringList(path + "Options.Whitelist-Worlds.Worlds").stream().map(String::toLowerCase).collect(Collectors.toList()));
-			if(config.contains(path + "Options.Whitelist-Worlds.Message")) {
-				this.whitelistWorldMessage = config.getString(path + "Options.Whitelist-Worlds.Message");
-			}else {
-				this.whitelistWorldMessage = Messages.NOT_IN_WHITELISTED_WORLD.getMessageNoPrefix();
-			}
-			this.whitelistWorldsToggle = !this.whitelistWorlds.isEmpty() && config.getBoolean(path + "Options.Whitelist-Worlds.Toggle");
-		}else {
-			this.whitelistWorldsToggle = false;
 		}
 	}
 	
@@ -240,6 +246,26 @@ public class Voucher {
 		return "voucher." + whitelistPermissionNode;
 	}
 	
+	public List<String> getWhitelistCommands() {
+		return whitelistCommands;
+	}
+	
+	public Boolean usesWhitelistWorlds() {
+		return whitelistWorldsToggle;
+	}
+	
+	public List<String> getWhitelistWorlds() {
+		return whitelistWorlds;
+	}
+	
+	public String getWhitelistWorldMessage() {
+		return whitelistWorldMessage;
+	}
+	
+	public List<String> getWhitelistWorldCommands() {
+		return whitelistWorldCommands;
+	}
+	
 	public Boolean useBlackListPermissions() {
 		return blacklistPermissionsToggle;
 	}
@@ -250,6 +276,10 @@ public class Voucher {
 	
 	public String getBlackListMessage() {
 		return blacklistPermissionMessage;
+	}
+	
+	public List<String> getBlacklistCommands() {
+		return blacklistCommands;
 	}
 	
 	public Boolean useLimiter() {
@@ -294,18 +324,6 @@ public class Voucher {
 	
 	public List<ItemStack> getItems() {
 		return items;
-	}
-	
-	public Boolean usesWhitelistWorlds() {
-		return whitelistWorldsToggle;
-	}
-	
-	public List<String> getWhitelistWorlds() {
-		return whitelistWorlds;
-	}
-	
-	public String getWhitelistWorldMessage() {
-		return whitelistWorldMessage;
 	}
 	
 }

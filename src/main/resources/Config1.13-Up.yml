@@ -34,15 +34,18 @@ Vouchers: #Where you make your vouchers.
         Message: '&cYou can not use that voucher here as you are not in a whitelisted world for this voucher.' #The message sent to the user that tried to use it in a non whitelisted world.
         Worlds: #List of worlds you want the voucher to be used in.
           - 'world'
+        Commands: [] #Run commands if the player doesn't have the permission.
       Permission: #Permission options.
         Whitelist-Permission: #The player needs this permission to use it.
           Toggle: false #Toggle the permission on or off.
           Node: 'money' #The permission node.
+          Commands: [] #Run commands if the player doesn't have the permission.
         Blacklist-Permissions: #If the player has any of these permissions then they can't use the voucher.
           Toggle: false #Toggle if it checks for black listed permissions.
           Message: '&cYou have a blacklisted permission and can''t use this voucher.' #The message that is sent to the player if they have a blacklisted message. Use %permission% if you wise to show the permission they need.
           Permissions: #List all the blacklisted permissions here.
             - 'voucher.blacklist.money'
+          Commands: [] #Run commands if the player doesn't have the permission.
       Limiter: #Limiter options.
         Toggle: false #Toggle on or off the limiter.
         Limit: 10 #The limit of how many time it may be used.
@@ -71,15 +74,18 @@ Vouchers: #Where you make your vouchers.
         Message: '&cYou can not use that voucher here as you are not in a whitelisted world for this voucher.'
         Worlds:
           - 'world'
+        Commands: []
       Permission:
         Whitelist-Permission:
           Toggle: false
           Node: 'rankup'
+          Commands: []
         Blacklist-Permissions:
           Toggle: false
           Message: '&cYou already have this rank and can''t use this voucher.'
           Permissions:
             - 'voucher.blacklist.rankup'
+          Commands: []
       Limiter:
         Toggle: false
         Limit: 10
@@ -111,15 +117,18 @@ Vouchers: #Where you make your vouchers.
         Message: '&cYou can not use that voucher here as you are not in a whitelisted world for this voucher.'
         Worlds:
           - 'world'
+        Commands: []
       Permission:
         Whitelist-Permission:
           Toggle: false
           Node: 'gset'
+          Commands: []
         Blacklist-Permissions:
           Toggle: false
           Message: '&cYou have a blacklisted permission and can''t use this voucher.'
           Permissions:
             - 'voucher.blacklist.gset'
+          Commands: []
       Limiter:
         Toggle: false
         Limit: 10

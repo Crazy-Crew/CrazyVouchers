@@ -114,6 +114,7 @@ public class Main extends JavaPlugin implements Listener {
 							return true;
 						}
 						Player player = (Player) sender;
+						String name = player.getName();
 						HashMap<String, String> placeholders = new HashMap<>();
 						placeholders.put("%Arg%", code);
 						placeholders.put("%arg%", code);
@@ -125,6 +126,14 @@ public class Main extends JavaPlugin implements Listener {
 									if(!player.hasPermission(voucherCode.getWhitelistPermission())) {
 										player.sendMessage(Messages.NO_PERMISSION_TO_VOUCHER.getMessage().replace("%arg%", voucherCode.getWhitelistPermission())
 										.replaceAll("%Player%", player.getName()).replaceAll("%player%", player.getName()));
+										for(String command : voucherCode.getWhitelistCommands()) {
+											Bukkit.dispatchCommand(Bukkit.getConsoleSender(), command
+											.replaceAll("%Player%", name).replaceAll("%player%", name)
+											.replaceAll("%World%", player.getWorld().getName()).replaceAll("%world%", player.getWorld().getName())
+											.replaceAll("%X%", player.getLocation().getBlockX() + "").replaceAll("%x%", player.getLocation().getBlockX() + "")
+											.replaceAll("%Y%", player.getLocation().getBlockY() + "").replaceAll("%y%", player.getLocation().getBlockY() + "")
+											.replaceAll("%Z%", player.getLocation().getBlockZ() + "").replaceAll("%z%", player.getLocation().getBlockZ() + ""));
+										}
 										return true;
 									}
 								}
@@ -132,6 +141,14 @@ public class Main extends JavaPlugin implements Listener {
 									if(voucherCode.getWhitelistWorlds().contains(player.getWorld().getName().toLowerCase())) {
 										player.sendMessage(voucherCode.getWhitelistWorldMessage()
 										.replaceAll("%Player%", player.getName()).replaceAll("%player%", player.getName()));
+										for(String command : voucherCode.getWhitelistWorldCommands()) {
+											Bukkit.dispatchCommand(Bukkit.getConsoleSender(), command
+											.replaceAll("%Player%", name).replaceAll("%player%", name)
+											.replaceAll("%World%", player.getWorld().getName()).replaceAll("%world%", player.getWorld().getName())
+											.replaceAll("%X%", player.getLocation().getBlockX() + "").replaceAll("%x%", player.getLocation().getBlockX() + "")
+											.replaceAll("%Y%", player.getLocation().getBlockY() + "").replaceAll("%y%", player.getLocation().getBlockY() + "")
+											.replaceAll("%Z%", player.getLocation().getBlockZ() + "").replaceAll("%z%", player.getLocation().getBlockZ() + ""));
+										}
 										return true;
 									}
 								}
@@ -140,6 +157,14 @@ public class Main extends JavaPlugin implements Listener {
 										if(player.hasPermission(permission.toLowerCase())) {
 											player.sendMessage(Methods.color(Methods.getPrefix() + voucherCode.getBlacklistMessage()
 											.replaceAll("%Player%", player.getName()).replaceAll("%player%", player.getName())));
+											for(String command : voucherCode.getBlacklistCommands()) {
+												Bukkit.dispatchCommand(Bukkit.getConsoleSender(), command
+												.replaceAll("%Player%", name).replaceAll("%player%", name)
+												.replaceAll("%World%", player.getWorld().getName()).replaceAll("%world%", player.getWorld().getName())
+												.replaceAll("%X%", player.getLocation().getBlockX() + "").replaceAll("%x%", player.getLocation().getBlockX() + "")
+												.replaceAll("%Y%", player.getLocation().getBlockY() + "").replaceAll("%y%", player.getLocation().getBlockY() + "")
+												.replaceAll("%Z%", player.getLocation().getBlockZ() + "").replaceAll("%z%", player.getLocation().getBlockZ() + ""));
+											}
 											return true;
 										}
 									}
@@ -174,7 +199,6 @@ public class Main extends JavaPlugin implements Listener {
 							RedeemVoucherCodeEvent event = new RedeemVoucherCodeEvent(player, voucherCode);
 							Bukkit.getPluginManager().callEvent(event);
 							if(!event.isCancelled()) {
-								String name = player.getName();
 								data.set("Players." + uuid + ".Codes." + voucherCode.getName(), "used");
 								Files.DATA.saveFile();
 								for(String command : voucherCode.getCommands()) {
