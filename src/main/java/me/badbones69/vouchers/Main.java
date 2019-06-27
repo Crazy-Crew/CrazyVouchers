@@ -123,20 +123,23 @@ public class Main extends JavaPlugin implements Listener {
 							if(!player.isOp() && !player.hasPermission("voucher.bypass")) {
 								if(voucherCode.useWhitelistPermission()) {
 									if(!player.hasPermission(voucherCode.getWhitelistPermission())) {
-										player.sendMessage(Messages.NO_PERMISSION_TO_VOUCHER.getMessage().replace("%arg%", voucherCode.getWhitelistPermission()));
+										player.sendMessage(Messages.NO_PERMISSION_TO_VOUCHER.getMessage().replace("%arg%", voucherCode.getWhitelistPermission())
+										.replaceAll("%Player%", player.getName()).replaceAll("%player%", player.getName()));
 										return true;
 									}
 								}
 								if(voucherCode.useWhitelistWorlds()) {
 									if(voucherCode.getWhitelistWorlds().contains(player.getWorld().getName().toLowerCase())) {
-										player.sendMessage(voucherCode.getWhitelistWorldMessage());
+										player.sendMessage(voucherCode.getWhitelistWorldMessage()
+										.replaceAll("%Player%", player.getName()).replaceAll("%player%", player.getName()));
 										return true;
 									}
 								}
 								if(voucherCode.useBlacklistPermissions()) {
 									for(String permission : voucherCode.getBlacklistPermissions()) {
 										if(player.hasPermission(permission.toLowerCase())) {
-											player.sendMessage(Methods.color(Methods.getPrefix() + voucherCode.getBlacklistMessage()));
+											player.sendMessage(Methods.color(Methods.getPrefix() + voucherCode.getBlacklistMessage()
+											.replaceAll("%Player%", player.getName()).replaceAll("%player%", player.getName())));
 											return true;
 										}
 									}

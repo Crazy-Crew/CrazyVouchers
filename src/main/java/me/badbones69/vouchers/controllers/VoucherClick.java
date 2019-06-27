@@ -95,13 +95,17 @@ public class VoucherClick implements Listener {
 	private boolean passesPermissionChecks(Player player, ItemStack item, Voucher voucher, String argument) {
 		if(!player.isOp()) {
 			if(!player.hasPermission(voucher.getWhiteListPermission().toLowerCase().replaceAll("%arg%", argument != null ? argument : "%arg%")) && voucher.useWhiteListPermissions()) {
-				player.sendMessage(Messages.NO_PERMISSION_TO_VOUCHER.getMessage().replaceAll("%arg%", argument != null ? argument : "%arg%"));
+				player.sendMessage(Messages.NO_PERMISSION_TO_VOUCHER.getMessage().replaceAll("%arg%", argument != null ? argument : "%arg%")
+				.replaceAll("%Player%", player.getName()).replaceAll("%player%", player.getName()));
 				return false;
 			}
+					player.sendMessage(Methods.color(Methods.getPrefix() + voucher.getWhitelistWorldMessage().replaceAll("%arg%", argument != null ? argument : "%arg%")
+					.replaceAll("%Player%", player.getName()).replaceAll("%player%", player.getName())));
 			if(voucher.useBlackListPermissions()) {
 				for(String permission : voucher.getBlackListPermissions()) {
 					if(player.hasPermission(permission.toLowerCase().replaceAll("%arg%", argument != null ? argument : "%arg%"))) {
-						player.sendMessage(Methods.color(Methods.getPrefix() + voucher.getBlackListMessage().replaceAll("%arg%", argument != null ? argument : "%arg%")));
+						player.sendMessage(Methods.color(Methods.getPrefix() + voucher.getBlackListMessage().replaceAll("%arg%", argument != null ? argument : "%arg%")
+						.replaceAll("%Player%", player.getName()).replaceAll("%player%", player.getName())));
 						return false;
 					}
 				}
