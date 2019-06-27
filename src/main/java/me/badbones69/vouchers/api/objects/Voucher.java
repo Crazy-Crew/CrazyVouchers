@@ -88,7 +88,7 @@ public class Voucher {
 						chanceCommands.add(voucherCommand);
 					}
 				}catch(Exception e) {
-					System.out.println("[Vouchers] An issue occerted when trying to use chance commands.");
+					System.out.println("[Vouchers] An issue occurred when trying to use chance commands.");
 					e.printStackTrace();
 				}
 			}
