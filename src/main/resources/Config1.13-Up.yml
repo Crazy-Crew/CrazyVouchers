@@ -1,6 +1,6 @@
 ###################################
 #             Items: Options
-# Item: <ID:MD> - You can choose the item with its id and meta data.
+# Item: <ID:MD/Item Name> - You can choose the item with its id and meta data.
 # Amount: <Number> - Choose how many of the item you get.
 # Name: <Name> - The display name that goes on the item.
 # Lore: <Line 1>,<Line 2>,<Line 3>,<Line 4> - The lore that will go under the enchantments. Split lines with a ','
@@ -21,40 +21,37 @@ Vouchers: #Where you make your vouchers.
   Money: #The name of the voucher.
     Item: 'PAPER' #The item the voucher is.
     Name: '&8&l>&7&l>&aMoney Voucher&7&l<&8&l<' #The item name.
-    Lore: #The item lore
+    Lore: #The item's lore
       - '&7Use this voucher to gain &a$%Arg%&7.'
       - '&7&l(&6&l!&7&l) &7Right click to redeem.'
     Glowing: false #Toggle if the item will have a glowing effect or not.
-    Commands: #The commands that are run when redeemed.
+    Commands: #The commands that are ran when redeemed.
       - 'eco give %Player% %Arg%'
     Options: #The options
       Message: '&7You have just earned $%Arg%.' #The message sent to the player when redeemed. Set to '' if no message needs sent.
-      Whitelist-Worlds: #This allows you to make it so some vouchers can only be used some worlds.
+      Whitelist-Worlds: #This allows you to make it so some vouchers can only be used in specific worlds.
         Toggle: false #True if you wish to use this feature.
         Message: '&cYou can not use that voucher here as you are not in a whitelisted world for this voucher.' #The message sent to the user that tried to use it in a non whitelisted world.
         Worlds: #List of worlds you want the voucher to be used in.
           - 'world'
-        Commands: [] #Run commands if the player doesn't have the permission.
       Permission: #Permission options.
         Whitelist-Permission: #The player needs this permission to use it.
           Toggle: false #Toggle the permission on or off.
           Node: 'money' #The permission node.
-          Commands: [] #Run commands if the player doesn't have the permission.
         Blacklist-Permissions: #If the player has any of these permissions then they can't use the voucher.
-          Toggle: false #Toggle if it checks for black listed permissions.
+          Toggle: false #Toggle if it checks for blacklisted permissions.
           Message: '&cYou have a blacklisted permission and can''t use this voucher.' #The message that is sent to the player if they have a blacklisted message. Use %permission% if you wise to show the permission they need.
           Permissions: #List all the blacklisted permissions here.
             - 'voucher.blacklist.money'
-          Commands: [] #Run commands if the player doesn't have the permission.
       Limiter: #Limiter options.
         Toggle: false #Toggle on or off the limiter.
-        Limit: 10 #The limit of how many time it may be used.
+        Limit: 10 #The limit of how many times it may be used.
       Two-Step-Authentication: #This is for when the player right clicks the voucher. It tells them to click again to confirm.
         Toggle: false #Toggle this option on or off.
       Sound: #The sound options.
         Toggle: true #Toggle on or off if a sound is played.
         Sounds: #The sound that is played. Make sure the sound works with your minecraft version.
-          - 'UI_BUTTON_CLICK'
+          - 'CLICK'
       Firework: #The firework options
         Toggle: true #Toggle if the firework goes off.
         Colors: 'Green, Lime' #The colors of the firework.
@@ -68,24 +65,21 @@ Vouchers: #Where you make your vouchers.
     Commands:
       - 'pex user %Player% group set %Arg%'
     Options:
-      Message: '&7Congratulation, you have just ranked up to &6%Arg%&7.'
+      Message: '&7Congratulations, you have just ranked up to &6%Arg%&7.'
       Whitelist-Worlds:
         Toggle: false
         Message: '&cYou can not use that voucher here as you are not in a whitelisted world for this voucher.'
         Worlds:
           - 'world'
-        Commands: []
       Permission:
         Whitelist-Permission:
           Toggle: false
           Node: 'rankup'
-          Commands: []
         Blacklist-Permissions:
           Toggle: false
           Message: '&cYou already have this rank and can''t use this voucher.'
           Permissions:
             - 'voucher.blacklist.rankup'
-          Commands: []
       Limiter:
         Toggle: false
         Limit: 10
@@ -94,7 +88,7 @@ Vouchers: #Where you make your vouchers.
       Sound:
         Toggle: true
         Sounds:
-          - 'UI_BUTTON_CLICK'
+          - 'CLICK'
       Firework:
         Toggle: true
         Colors: 'Black, Gray, Red'
@@ -111,24 +105,21 @@ Vouchers: #Where you make your vouchers.
       - 'Item:DIAMOND_LEGGINGS, Amount:1, Name:&bGod Leggings, Protection:4, Unbreaking:3, Thorns:3'
       - 'Item:DIAMOND_BOOTS, Amount:1, Name:&bGod Boots, Protection:4, Depth_Strider:3, Unbreaking:3, Thorns:3'
     Options:
-      Message: '&7Congratulation, you have your self a new God-Set.'
+      Message: '&7Congratulations, you have your self a new God-Set.'
       Whitelist-Worlds:
         Toggle: false
         Message: '&cYou can not use that voucher here as you are not in a whitelisted world for this voucher.'
         Worlds:
           - 'world'
-        Commands: []
       Permission:
         Whitelist-Permission:
           Toggle: false
           Node: 'gset'
-          Commands: []
         Blacklist-Permissions:
           Toggle: false
           Message: '&cYou have a blacklisted permission and can''t use this voucher.'
           Permissions:
             - 'voucher.blacklist.gset'
-          Commands: []
       Limiter:
         Toggle: false
         Limit: 10
@@ -137,7 +128,7 @@ Vouchers: #Where you make your vouchers.
       Sound:
         Toggle: true
         Sounds:
-          - 'UI_BUTTON_CLICK'
+          - 'CLICK'
       Firework:
         Toggle: true
         Colors: 'Black, Gray, Aqua'
@@ -180,7 +171,7 @@ Vouchers: #Where you make your vouchers.
       - '&7&l(&6&l!&7&l) &7Right click to redeem.'
     Glowing: false
     #Chance Command Layout: - '<Chance> <Command goes after>'
-    Chance-Commands: #Picks a prizes based on a chance system. Chance-System wiki:
+    Chance-Commands: #Picks a prizes based on a chance system. Chance-System wiki: https://github.com/badbones69/Vouchers/wiki/Chance-System-Wiki
       - '45 eco give %Player% 100'
       - '25 eco give %Player% 1000'
       - '15 eco give %Player% 10000'
