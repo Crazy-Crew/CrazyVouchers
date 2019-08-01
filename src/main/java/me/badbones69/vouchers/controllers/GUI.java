@@ -131,7 +131,7 @@ public class GUI implements Listener {
 	}
 	
 	private static void setDefaultItems(Player player, Inventory inv) {
-		boolean isNew = Version.getCurrentVersion() == Version.v1_13_R2;
+		boolean isNew = Version.getCurrentVersion().isNewer(Version.v1_12_R1);
 		for(int i : Arrays.asList(0, 1, 2, 3, 4, 5, 6, 7, 8, 45, 46, 47, 49, 51, 52, 53)) {
 			inv.setItem(i, new ItemBuilder()
 			.setMaterial(isNew ? Material.BLUE_STAINED_GLASS_PANE : Material.matchMaterial("STAINED_GLASS_PANE"))
