@@ -33,7 +33,7 @@ public class VoucherClick implements Listener {
 		Action action = e.getAction();
 		FileConfiguration data = Files.DATA.getFile();
 		if(item != null && item.getType() != Material.AIR) {
-			if(Version.getCurrentVersion().getVersionInteger() >= Version.v1_9_R1.getVersionInteger()) {
+			if(Version.getCurrentVersion().isNewer(Version.v1_8_R3)) {
 				if(e.getHand() != EquipmentSlot.HAND) {
 					return;
 				}
@@ -83,9 +83,8 @@ public class VoucherClick implements Listener {
 		}
 	}
 	
-	@SuppressWarnings("deprecation")
 	private ItemStack getItemInHand(Player player) {
-		if(Version.getCurrentVersion().getVersionInteger() >= Version.v1_9_R1.getVersionInteger()) {
+		if(Version.getCurrentVersion().isNewer(Version.v1_8_R3)) {
 			return player.getInventory().getItemInMainHand();
 		}else {
 			return player.getItemInHand();

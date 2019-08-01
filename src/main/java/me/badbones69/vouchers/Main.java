@@ -43,7 +43,7 @@ public class Main extends JavaPlugin implements Listener {
 		Bukkit.getServer().getPluginManager().registerEvents(new VoucherClick(), this);
 		Bukkit.getServer().getPluginManager().registerEvents(new GUI(), this);
 		try {
-			if(Version.getCurrentVersion().comparedTo(Version.v1_11_R1) >= 0) {
+			if(Version.getCurrentVersion().isNewer(Version.v1_10_R1)) {
 				Bukkit.getServer().getPluginManager().registerEvents(new FireworkDamageAPI(this), this);
 			}
 		}catch(Exception e) {

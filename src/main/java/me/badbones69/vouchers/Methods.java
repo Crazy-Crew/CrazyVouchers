@@ -205,7 +205,7 @@ public class Methods {
 		fm.setPower(0);
 		f.setFireworkMeta(fm);
 		FireworkDamageAPI.addFirework(f);
-		Bukkit.getServer().getScheduler().scheduleSyncDelayedTask(plugin, f::detonate, 2);
+		Bukkit.getServer().getScheduler().scheduleSyncDelayedTask(plugin, f :: detonate, 2);
 	}
 	
 	public static String getEnchantmentName(Enchantment en) {
@@ -246,7 +246,7 @@ public class Methods {
 	}
 	
 	public static ItemStack addGlow(ItemStack item, boolean glowing) {
-		if(Version.getCurrentVersion().comparedTo(Version.v1_8_R1) >= 0) {
+		if(Version.getCurrentVersion().isNewer(Version.v1_7_R3)) {
 			if(glowing) {
 				if(item != null) {
 					if(item.hasItemMeta()) {
