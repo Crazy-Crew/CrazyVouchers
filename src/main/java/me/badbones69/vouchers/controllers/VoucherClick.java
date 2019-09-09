@@ -206,14 +206,11 @@ public class VoucherClick implements Listener {
 			.replaceAll("%Y%", player.getLocation().getBlockY() + "").replaceAll("%y%", player.getLocation().getBlockY() + "")
 			.replaceAll("%Z%", player.getLocation().getBlockZ() + "").replaceAll("%z%", player.getLocation().getBlockZ() + "")));
 		}
-		int amount = 0;
-		if(Files.DATA.getFile().contains("Players." + player.getUniqueId() + ".Vouchers." + voucher.getName())) {
-			amount = Files.DATA.getFile().getInt("Players." + player.getUniqueId() + ".Vouchers." + voucher.getName());
+		if(voucher.useLimiter()) {
+			Files.DATA.getFile().set("Players." + player.getUniqueId() + ".UserName", player.getName());
+			Files.DATA.getFile().set("Players." + player.getUniqueId() + ".Vouchers." + voucher.getName(), Files.DATA.getFile().getInt("Players." + player.getUniqueId() + ".Vouchers." + voucher.getName()) + 1);
+			Files.DATA.saveFile();
 		}
-		amount++;
-		Files.DATA.getFile().set("Players." + player.getUniqueId() + ".UserName", player.getName());
-		Files.DATA.getFile().set("Players." + player.getUniqueId() + ".Vouchers." + voucher.getName(), amount);
-		Files.DATA.saveFile();
 	}
 	
 }
