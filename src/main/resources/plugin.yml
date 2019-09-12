@@ -4,6 +4,6 @@ version: ${project.version}
 api-version: 1.13
 description:  Make Custom Vouchers just for your server!
 commands:
-  Voucher:
+  Vouchers:
     description: Give yourself a Voucher!
-    aliases: [vouch]
+    aliases: [voucher, vouch]
