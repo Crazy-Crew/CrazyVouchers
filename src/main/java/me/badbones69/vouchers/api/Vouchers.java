@@ -5,7 +5,9 @@ import me.badbones69.vouchers.api.FileManager.Files;
 import me.badbones69.vouchers.api.itemnbtapi.NBTItem;
 import me.badbones69.vouchers.api.objects.Voucher;
 import me.badbones69.vouchers.api.objects.VoucherCode;
+import org.bukkit.Bukkit;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.plugin.Plugin;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -81,9 +83,12 @@ public class Vouchers {
 	}
 	
 	public static Voucher getVoucherFromItem(ItemStack item) {
-		NBTItem nbt = new NBTItem(item);
-		if(nbt.hasKey("voucher")) {
-			return getVoucher(nbt.getString("voucher"));
+		try {
+			NBTItem nbt = new NBTItem(item);
+			if(nbt.hasKey("voucher")) {
+				return getVoucher(nbt.getString("voucher"));
+			}
+		}catch(Exception e) {
 		}
 		try {
 			if(item.hasItemMeta()) {
