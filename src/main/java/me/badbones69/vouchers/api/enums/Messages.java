@@ -51,106 +51,17 @@ public enum Messages {
 		this.defaultListMessage = defaultListMessage;
 	}
 	
-	public String getMessage() {
-		if(isList()) {
-			if(exists()) {
-				return Methods.color(convertList(Files.MESSAGES.getFile().getStringList("Messages." + path)));
-			}else {
-				return Methods.color(convertList(getDefaultListMessage()));
-			}
-		}else {
-			if(exists()) {
-				return Methods.getPrefix(Files.MESSAGES.getFile().getString("Messages." + path));
-			}else {
-				return Methods.getPrefix(getDefaultMessage());
-			}
-		}
-	}
-	
-	public String getMessage(HashMap<String, String> placeholders) {
-		String message;
-		if(isList()) {
-			if(exists()) {
-				message = Methods.color(convertList(Files.MESSAGES.getFile().getStringList("Messages." + path), placeholders));
-			}else {
-				message = Methods.color(convertList(getDefaultListMessage(), placeholders));
-			}
-		}else {
-			if(exists()) {
-				message = Methods.getPrefix(Files.MESSAGES.getFile().getString("Messages." + path));
-			}else {
-				message = Methods.getPrefix(getDefaultMessage());
-			}
-			for(String ph : placeholders.keySet()) {
-				if(message.contains(ph)) {
-					message = message.replaceAll(ph, placeholders.get(ph));
-				}
-			}
-		}
-		return message;
-	}
-	
-	public String getMessageNoPrefix() {
-		if(isList()) {
-			if(exists()) {
-				return Methods.color(convertList(Files.MESSAGES.getFile().getStringList("Messages." + path)));
-			}else {
-				return Methods.color(convertList(getDefaultListMessage()));
-			}
-		}else {
-			if(exists()) {
-				return Methods.color(Files.MESSAGES.getFile().getString("Messages." + path));
-			}else {
-				return Methods.color(getDefaultMessage());
-			}
-		}
-	}
-	
-	public String getMessageNoPrefix(HashMap<String, String> placeholders) {
-		String message;
-		if(isList()) {
-			if(exists()) {
-				message = Methods.color(convertList(Files.MESSAGES.getFile().getStringList("Messages." + path), placeholders));
-			}else {
-				message = Methods.color(convertList(getDefaultListMessage(), placeholders));
-			}
-		}else {
-			if(exists()) {
-				message = Methods.color(Files.MESSAGES.getFile().getString("Messages." + path));
-			}else {
-				message = Methods.color(getDefaultMessage());
-			}
-			for(String ph : placeholders.keySet()) {
-				if(message.contains(ph)) {
-					message = message.replaceAll(ph, placeholders.get(ph));
-				}
-			}
-		}
-		return message;
-	}
-	
 	public static String convertList(List<String> list) {
 		String message = "";
-		for(String m : list) {
-			message += Methods.color(m) + "\n";
-		}
-		return message;
-	}
-	
-	public static String convertList(List<String> list, HashMap<String, String> placeholders) {
-		String message = "";
-		for(String m : list) {
-			message += Methods.color(m) + "\n";
-		}
-		for(String ph : placeholders.keySet()) {
-			message = Methods.color(message.replaceAll(ph, placeholders.get(ph)));
+		for(String line : list) {
+			message += Methods.color(line) + "\n";
 		}
 		return message;
 	}
 	
 	public static void addMissingMessages() {
 		FileConfiguration messages = Files.MESSAGES.getFile();
-		Boolean saveFile = false;
+		boolean saveFile = false;
 		for(Messages message : values()) {
 			if(!messages.contains("Messages." + message.getPath())) {
 				saveFile = true;
@@ -166,11 +77,75 @@ public enum Messages {
 		}
 	}
 	
-	private Boolean exists() {
+	public String getMessage() {
+		return getMessage(true);
+	}
+	
+	public String getMessage(String placeholder, String replacement) {
+		HashMap<String, String> placeholders = new HashMap<>();
+		placeholders.put(placeholder, replacement);
+		return getMessage(placeholders, true);
+	}
+	
+	public String getMessage(HashMap<String, String> placeholders) {
+		return getMessage(placeholders, true);
+	}
+	
+	public String getMessageNoPrefix() {
+		return getMessage(false);
+	}
+	
+	public String getMessageNoPrefix(String placeholder, String replacement) {
+		HashMap<String, String> placeholders = new HashMap<>();
+		placeholders.put(placeholder, replacement);
+		return getMessage(placeholders, false);
+	}
+	
+	public String getMessageNoPrefix(HashMap<String, String> placeholders) {
+		return getMessage(placeholders, false);
+	}
+	
+	private String getMessage(boolean prefix) {
+		return getMessage(new HashMap<>(), prefix);
+	}
+	
+	private String getMessage(HashMap<String, String> placeholders, boolean prefix) {
+		String message;
+		boolean isList = isList();
+		boolean exists = exists();
+		if(isList) {
+			if(exists) {
+				message = Methods.color(convertList(Files.MESSAGES.getFile().getStringList("Messages." + path)));
+			}else {
+				message = Methods.color(convertList(getDefaultListMessage()));
+			}
+		}else {
+			if(exists) {
+				message = Methods.color(Files.MESSAGES.getFile().getString("Messages." + path));
+			}else {
+				message = Methods.color(getDefaultMessage());
+			}
+		}
+		for(String placeholder : placeholders.keySet()) {
+			message = message.replaceAll(placeholder, placeholders.get(placeholder))
+			.replaceAll(placeholder.toLowerCase(), placeholders.get(placeholder));
+		}
+		if(isList) {//Don't want to add a prefix to a list of messages.
+			return Methods.color(message);
+		}else {//If the message isn't a list.
+			if(prefix) {//If the message needs a prefix.
+				return Methods.getPrefix(message);
+			}else {//If the message doesn't need a prefix.
+				return Methods.color(message);
+			}
+		}
+	}
+	
+	private boolean exists() {
 		return Files.MESSAGES.getFile().contains("Messages." + path);
 	}
 	
-	private Boolean isList() {
+	private boolean isList() {
 		if(Files.MESSAGES.getFile().contains("Messages." + path)) {
 			return !Files.MESSAGES.getFile().getStringList("Messages." + path).isEmpty();
 		}else {
@@ -189,5 +164,4 @@ public enum Messages {
 	private List<String> getDefaultListMessage() {
 		return defaultListMessage;
 	}
-	
 }

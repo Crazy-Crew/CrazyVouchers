@@ -114,7 +114,7 @@ public class Voucher {
 			this.whitelistPermissionToggle = false;
 		}
 		if(config.contains(path + "Options.Whitelist-Worlds.Toggle")) {
-			this.whitelistWorlds.addAll(config.getStringList(path + "Options.Whitelist-Worlds.Worlds").stream().map(String::toLowerCase).collect(Collectors.toList()));
+			this.whitelistWorlds.addAll(config.getStringList(path + "Options.Whitelist-Worlds.Worlds").stream().map(String :: toLowerCase).collect(Collectors.toList()));
 			if(config.contains(path + "Options.Whitelist-Worlds.Message")) {
 				this.whitelistWorldMessage = config.getString(path + "Options.Whitelist-Worlds.Message");
 			}else {

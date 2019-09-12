@@ -167,4 +167,8 @@ public class Vouchers {
 		return null;
 	}
 	
+	public static Plugin getPlugin() {
+		return Bukkit.getPluginManager().getPlugin("Vouchers");
+	}
+	
 }

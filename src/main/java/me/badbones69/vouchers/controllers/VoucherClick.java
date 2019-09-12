@@ -197,7 +197,7 @@ public class VoucherClick implements Listener {
 			Methods.fireWork(player.getLocation(), voucher.getFireworkColors());
 		}
 		if(!voucher.getVoucherUsedMessage().equals("")) {
-			player.sendMessage(Methods.getPrefix() + Methods.color(voucher.getVoucherUsedMessage()
+			player.sendMessage(Methods.getPrefix(voucher.getVoucherUsedMessage()
 			.replaceAll("%Player%", name).replaceAll("%player%", name)
 			.replaceAll("%Prefix%", Methods.getPrefix()).replaceAll("%prefix%", Methods.getPrefix())
 			.replaceAll("%Arg%", argument).replaceAll("%arg%", argument)
