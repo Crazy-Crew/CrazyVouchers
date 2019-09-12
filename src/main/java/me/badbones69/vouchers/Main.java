@@ -5,6 +5,7 @@ import me.badbones69.vouchers.api.FileManager.Files;
 import me.badbones69.vouchers.api.Vouchers;
 import me.badbones69.vouchers.api.enums.Version;
 import me.badbones69.vouchers.commands.VoucherCommands;
+import me.badbones69.vouchers.commands.VoucherTab;
 import me.badbones69.vouchers.controllers.FireworkDamageAPI;
 import me.badbones69.vouchers.controllers.GUI;
 import me.badbones69.vouchers.controllers.Metrics;
@@ -32,6 +33,7 @@ public class Main extends JavaPlugin implements Listener {
 		Bukkit.getServer().getPluginManager().registerEvents(new VoucherClick(), this);
 		Bukkit.getServer().getPluginManager().registerEvents(new GUI(), this);
 		getCommand("vouchers").setExecutor(new VoucherCommands());
+		getCommand("vouchers").setTabCompleter(new VoucherTab());
 		try {
 			if(Version.getCurrentVersion().isNewer(Version.v1_10_R1)) {
 				Bukkit.getServer().getPluginManager().registerEvents(new FireworkDamageAPI(this), this);

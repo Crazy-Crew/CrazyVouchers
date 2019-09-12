@@ -102,7 +102,7 @@ public class GUI implements Listener {
 		setPage(player, getPage(player) - 1);
 	}
 	
-	private static int getMaxPage() {
+	public static int getMaxPage() {
 		int maxPage = 1;
 		int amount = Vouchers.getVouchers().size();
 		for(; amount > 36; amount -= 45, maxPage++) ;
