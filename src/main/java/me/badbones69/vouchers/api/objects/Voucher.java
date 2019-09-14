@@ -47,6 +47,43 @@ public class Voucher {
 	private List<VoucherCommand> chanceCommands = new ArrayList<>();
 	private List<ItemStack> items = new ArrayList<>();
 	
+	/**
+	 * This is just used for imputing fake vouchers.
+	 * @param number Fake Voucher Number.
+	 */
+	public Voucher(int number) {
+		this.name = number + "";
+		this.usesArgs = false;
+		this.itemMaterial = Material.STONE;
+		this.itemMetaData = 0;
+		this.itemName = number + "";
+		this.itemGlow = false;
+		this.usedMessage = "";
+		this.whitelistPermissionToggle = false;
+		this.whitelistPermissionNode = "whitelistPermissionNode";
+		this.whitelistCommands = new ArrayList<>();
+		this.whitelistWorldsToggle = false;
+		this.whitelistWorldMessage = "";
+		this.whitelistWorlds = new ArrayList<>();
+		this.whitelistWorldCommands = new ArrayList<>();
+		this.blacklistPermissionsToggle = false;
+		this.blacklistPermissionMessage = "blacklistPermissionMessage";
+		this.blacklistCommands = new ArrayList<>();
+		this.blacklistPermissions = new ArrayList<>();
+		this.limiterToggle = false;
+		this.limiterLimit = 0;
+		this.twostepAuthentication = false;
+		this.soundToggle = false;
+		this.sounds = new ArrayList<>();
+		this.fireworkToggle = false;
+		this.fireworkColors = new ArrayList<>();
+		this.itemLore = new ArrayList<>();
+		this.commands = new ArrayList<>();
+		this.randomCoammnds = new ArrayList<>();
+		this.chanceCommands = new ArrayList<>();
+		this.items = new ArrayList<>();
+	}
+	
 	public Voucher(String name) {
 		this.name = name;
 		this.usesArgs = false;

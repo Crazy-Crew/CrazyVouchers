@@ -20,6 +20,8 @@ public class Vouchers {
 	public static void load() {
 		vouchers.clear();
 		voucherCodes.clear();
+		//Used for when wanting to put in fake vouchers.
+		//for(int i = 1; i <= 400; i++) vouchers.add(new Voucher(i));
 		for(String voucherName : Files.CONFIG.getFile().getConfigurationSection("Vouchers").getKeys(false)) {
 			vouchers.add(new Voucher(voucherName));
 		}
