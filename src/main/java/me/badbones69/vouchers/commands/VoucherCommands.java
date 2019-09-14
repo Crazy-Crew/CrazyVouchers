@@ -68,13 +68,15 @@ public class VoucherCommands implements CommandExecutor {
 						String vouchers = "";
 						String codes = "";
 						for(Voucher voucher : Vouchers.getVouchers()) {
-							vouchers += Methods.color("&a" + voucher.getName() + "&8, ");
+							vouchers += "&a" + voucher.getName() + "&8, ";
 						}
 						for(VoucherCode code : Vouchers.getVoucherCodes()) {
-							codes += Methods.color("&a" + code.getCode() + "&8, ");
+							codes += "&a" + code.getCode() + "&8, ";
 						}
-						sender.sendMessage(Methods.color("&e&lVouchers:&f " + vouchers.substring(0, vouchers.length() - 2)));
-						sender.sendMessage(Methods.color("&e&lVoucher Codes:&f " + codes.substring(0, codes.length() - 2)));
+						vouchers = vouchers.isEmpty() ? "&cNone" : vouchers.substring(0, vouchers.length() - 2);
+						codes = codes.isEmpty() ? "&cNone" : codes.substring(0, codes.length() - 2);
+						sender.sendMessage(Methods.color("&e&lVouchers:&f " + vouchers));
+						sender.sendMessage(Methods.color("&e&lVoucher Codes:&f " + codes));
 					}
 					return true;
 				case "redeem":
