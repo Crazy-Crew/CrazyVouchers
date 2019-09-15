@@ -23,7 +23,7 @@ public class VoucherCode {
 	private String message;
 	private List<String> commands;
 	private Boolean whitelistPermissionToggle;
-	private String whitelistPermissionNode;
+	private List<String> whitelistPermissions = new ArrayList<>();
 	private List<String> whitelistCommands = new ArrayList<>();
 	private Boolean whitelistWorldsToggle;
 	private String whitelistWorldMessage;
@@ -76,7 +76,10 @@ public class VoucherCode {
 		}
 		if(config.contains(path + "Options.Permission.Whitelist-Permission")) {
 			this.whitelistPermissionToggle = config.getBoolean(path + "Options.Permission.Whitelist-Permission.Toggle");
-			this.whitelistPermissionNode = config.getString(path + "Options.Permission.Whitelist-Permission.Node").toLowerCase();
+			if(config.contains(path + "Options.Permission.Whitelist-Permission.Node")) {
+				whitelistPermissions.add("voucher." + config.getString(path + "Options.Permission.Whitelist-Permission.Node").toLowerCase());
+			}
+			whitelistPermissions.addAll(config.getStringList(path + "Options.Permission.Whitelist-Permission.Permissions").stream().map(String :: toLowerCase).collect(Collectors.toList()));
 			this.whitelistCommands = config.getStringList(path + "Options.Permission.Whitelist-Permission.Commands");
 		}else {
 			this.whitelistPermissionToggle = false;
@@ -156,12 +159,12 @@ public class VoucherCode {
 		return commands;
 	}
 	
-	public Boolean useWhitelistPermission() {
+	public Boolean useWhiteListPermissions() {
 		return whitelistPermissionToggle;
 	}
 	
-	public String getWhitelistPermission() {
-		return "voucher." + whitelistPermissionNode;
+	public List<String> getWhitelistPermissions() {
+		return whitelistPermissions;
 	}
 	
 	public List<String> getWhitelistCommands() {

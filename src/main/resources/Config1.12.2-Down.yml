@@ -38,7 +38,8 @@ Vouchers: #Where you make your vouchers.
       Permission: #Permission options.
         Whitelist-Permission: #The player needs this permission to use it.
           Toggle: false #Toggle the permission on or off.
-          Node: 'money' #The permission node.
+          Permissions: #List of permissions the player needs.
+            - 'voucher.money'
           Commands: [] #Run commands if the player doesn't have the permission.
         Blacklist-Permissions: #If the player has any of these permissions then they can't use the voucher.
           Toggle: false #Toggle if it checks for blacklisted permissions.
@@ -78,7 +79,8 @@ Vouchers: #Where you make your vouchers.
       Permission:
         Whitelist-Permission:
           Toggle: false
-          Node: 'rankup'
+          Permissions:
+            - 'voucher.rankup'
           Commands: []
         Blacklist-Permissions:
           Toggle: false
@@ -121,7 +123,8 @@ Vouchers: #Where you make your vouchers.
       Permission:
         Whitelist-Permission:
           Toggle: false
-          Node: 'gset'
+          Permissions:
+            - 'voucher.gset'
           Commands: []
         Blacklist-Permissions:
           Toggle: false

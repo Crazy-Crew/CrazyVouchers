@@ -32,7 +32,8 @@ Voucher-Codes: #Where you make your vouchers.
       Permission: #Permission options.
         Whitelist-Permission: #The player needs this permission to use it.
           Toggle: false #Toggle the permission on or off.
-          Node: 'startermoney' #The permission node. Permission the player needs would be "voucher.<node>" replace "<node>" with your Node: option.
+          Permissions: #List of permissions the player needs.
+            - 'voucher.startermoney'
           Commands: [] #Run commands if the player doesn't have the permission.
         Blacklist-Permissions: #If the player has any of these permissions then they can't use the voucher.
           Toggle: false #Toggle if it checks for black listed permissions.

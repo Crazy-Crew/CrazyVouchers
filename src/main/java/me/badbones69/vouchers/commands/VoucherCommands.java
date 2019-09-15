@@ -100,13 +100,15 @@ public class VoucherCommands implements CommandExecutor {
 								VoucherCode voucherCode = Vouchers.getVoucherCode(code);
 								//Checking the permissions of the code.
 								if(!player.isOp() && !player.hasPermission("voucher.bypass")) {
-									if(voucherCode.useWhitelistPermission()) {
-										if(!player.hasPermission(voucherCode.getWhitelistPermission())) {
-											player.sendMessage(Messages.NO_PERMISSION_TO_VOUCHER.getMessage(placeholders));
-											for(String command : voucherCode.getWhitelistCommands()) {
-												Bukkit.dispatchCommand(Bukkit.getConsoleSender(), Messages.replacePlaceholders(placeholders, command));
+									if(voucherCode.useWhiteListPermissions()) {
+										for(String permission : voucherCode.getWhitelistPermissions()) {
+											if(!player.hasPermission(permission)) {
+												player.sendMessage(Messages.NO_PERMISSION_TO_VOUCHER.getMessage(placeholders));
+												for(String command : voucherCode.getWhitelistCommands()) {
+													Bukkit.dispatchCommand(Bukkit.getConsoleSender(), Messages.replacePlaceholders(placeholders, command));
+												}
+												return true;
 											}
-											return true;
 										}
 									}
 									if(voucherCode.useWhitelistWorlds()) {

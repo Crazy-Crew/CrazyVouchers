@@ -93,14 +93,24 @@ public class VoucherClick implements Listener {
 	
 	private boolean passesPermissionChecks(Player player, ItemStack item, Voucher voucher, String argument) {
 		if(!player.isOp()) {
-			if(!player.hasPermission(voucher.getWhiteListPermission().toLowerCase().replaceAll("%arg%", argument != null ? argument : "%arg%")) && voucher.useWhiteListPermissions()) {
-				player.sendMessage(Messages.NO_PERMISSION_TO_VOUCHER.getMessage().replaceAll("%arg%", argument != null ? argument : "%arg%")
-				.replaceAll("%Player%", player.getName()).replaceAll("%player%", player.getName()));
+			HashMap<String, String> placeholders = new HashMap<>();
+			placeholders.put("%Arg%", argument != null ? argument : "%arg%");
+			placeholders.put("%Player%", player.getName());
+			placeholders.put("%World%", player.getWorld().getName());
+			placeholders.put("%X%", player.getLocation().getBlockX() + "");
+			placeholders.put("%Y%", player.getLocation().getBlockY() + "");
+			placeholders.put("%Z%", player.getLocation().getBlockZ() + "");
+			if(voucher.useWhiteListPermissions()) {
+				for(String permission : voucher.getWhitelistPermissions()) {
+					if(!player.hasPermission(permission.toLowerCase().replaceAll("%arg%", argument != null ? argument : "%arg%"))) {
+						player.sendMessage(Messages.NO_PERMISSION_TO_VOUCHER.getMessage(placeholders));
 						for(String command : voucher.getWhitelistCommands()) {
 							Bukkit.dispatchCommand(Bukkit.getConsoleSender(), Messages.replacePlaceholders(placeholders, command));
 						}
 						return false;
 					}
+				}
+			}
 			if(voucher.usesWhitelistWorlds()) {
 				if(!voucher.getWhitelistWorlds().contains(player.getWorld().getName().toLowerCase())) {
 					player.sendMessage(Methods.getPrefix(Messages.replacePlaceholders(placeholders, voucher.getWhitelistWorldMessage())));
