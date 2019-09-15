@@ -38,7 +38,7 @@ public class ItemBuilder {
 	private HashMap<String, String> lorePlaceholders;
 	
 	/**
-	 * The inishal starting point for making an item.
+	 * The initial starting point for making an item.
 	 */
 	public ItemBuilder() {
 		this.material = Material.STONE;
@@ -115,7 +115,7 @@ public class ItemBuilder {
 	}
 	
 	/**
-	 * Get the metadata(Item Durrability) of the builder.
+	 * Get the metadata(Item Durability) of the builder.
 	 * @return The metadata as a short.
 	 */
 	public Short getMetaData() {
@@ -154,7 +154,7 @@ public class ItemBuilder {
 	
 	/**
 	 * Set the placeholders for the name of the item.
-	 * @param placeholders The palceholders that will be used.
+	 * @param placeholders The placeholders that will be used.
 	 * @return The ItemBuilder with updated info.
 	 */
 	public ItemBuilder setNamePlaceholders(HashMap<String, String> placeholders) {
@@ -189,8 +189,9 @@ public class ItemBuilder {
 	 */
 	public String getUpdatedName() {
 		String newName = name;
-		for(String placeholder : lorePlaceholders.keySet()) {
-			newName = newName.replace(placeholder, lorePlaceholders.get(placeholder));
+		for(String placeholder : namePlaceholders.keySet()) {
+			newName = newName.replaceAll(placeholder, namePlaceholders.get(placeholder))
+			.replaceAll(placeholder.toLowerCase(), namePlaceholders.get(placeholder));
 		}
 		return newName;
 	}
@@ -243,7 +244,7 @@ public class ItemBuilder {
 	/**
 	 * Add a placeholder to the lore of the item.
 	 * @param placeholder The placeholder you wish to replace.
-	 * @param argument The arument that will replace the placeholder.
+	 * @param argument The argument that will replace the placeholder.
 	 * @return The ItemBuilder with updated info.
 	 */
 	public ItemBuilder addLorePlaceholder(String placeholder, String argument) {
@@ -253,7 +254,7 @@ public class ItemBuilder {
 	
 	/**
 	 * Remove a placeholder from the lore.
-	 * @param placeholder The palceholder you wish to remove.
+	 * @param placeholder The placeholder you wish to remove.
 	 * @return The ItemBuilder with updated info.
 	 */
 	public ItemBuilder removeLorePlaceholder(String placeholder) {
@@ -269,7 +270,8 @@ public class ItemBuilder {
 		List<String> newLore = new ArrayList<>();
 		for(String i : lore) {
 			for(String placeholder : lorePlaceholders.keySet()) {
-				i = i.replace(placeholder, lorePlaceholders.get(placeholder));
+				i = i.replaceAll(placeholder, lorePlaceholders.get(placeholder))
+				.replaceAll(placeholder.toLowerCase(), lorePlaceholders.get(placeholder));
 			}
 			newLore.add(i);
 		}

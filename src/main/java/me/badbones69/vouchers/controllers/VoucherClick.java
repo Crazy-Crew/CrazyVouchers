@@ -96,29 +96,16 @@ public class VoucherClick implements Listener {
 			if(!player.hasPermission(voucher.getWhiteListPermission().toLowerCase().replaceAll("%arg%", argument != null ? argument : "%arg%")) && voucher.useWhiteListPermissions()) {
 				player.sendMessage(Messages.NO_PERMISSION_TO_VOUCHER.getMessage().replaceAll("%arg%", argument != null ? argument : "%arg%")
 				.replaceAll("%Player%", player.getName()).replaceAll("%player%", player.getName()));
-				for(String command : voucher.getWhitelistCommands()) {
-					Bukkit.dispatchCommand(Bukkit.getConsoleSender(), command
-					.replaceAll("%Player%", player.getName()).replaceAll("%player%", player.getName())
-					.replaceAll("%Arg%", argument).replaceAll("%arg%", argument)
-					.replaceAll("%World%", player.getWorld().getName()).replaceAll("%world%", player.getWorld().getName())
-					.replaceAll("%X%", player.getLocation().getBlockX() + "").replaceAll("%x%", player.getLocation().getBlockX() + "")
-					.replaceAll("%Y%", player.getLocation().getBlockY() + "").replaceAll("%y%", player.getLocation().getBlockY() + "")
-					.replaceAll("%Z%", player.getLocation().getBlockZ() + "").replaceAll("%z%", player.getLocation().getBlockZ() + ""));
-				}
-				return false;
-			}
+						for(String command : voucher.getWhitelistCommands()) {
+							Bukkit.dispatchCommand(Bukkit.getConsoleSender(), Messages.replacePlaceholders(placeholders, command));
+						}
+						return false;
+					}
 			if(voucher.usesWhitelistWorlds()) {
 				if(!voucher.getWhitelistWorlds().contains(player.getWorld().getName().toLowerCase())) {
-					player.sendMessage(Methods.color(Methods.getPrefix() + voucher.getWhitelistWorldMessage().replaceAll("%arg%", argument != null ? argument : "%arg%")
-					.replaceAll("%Player%", player.getName()).replaceAll("%player%", player.getName())));
+					player.sendMessage(Methods.getPrefix(Messages.replacePlaceholders(placeholders, voucher.getWhitelistWorldMessage())));
 					for(String command : voucher.getWhitelistWorldCommands()) {
-						Bukkit.dispatchCommand(Bukkit.getConsoleSender(), command
-						.replaceAll("%Player%", player.getName()).replaceAll("%player%", player.getName())
-						.replaceAll("%Arg%", argument).replaceAll("%arg%", argument)
-						.replaceAll("%World%", player.getWorld().getName()).replaceAll("%world%", player.getWorld().getName())
-						.replaceAll("%X%", player.getLocation().getBlockX() + "").replaceAll("%x%", player.getLocation().getBlockX() + "")
-						.replaceAll("%Y%", player.getLocation().getBlockY() + "").replaceAll("%y%", player.getLocation().getBlockY() + "")
-						.replaceAll("%Z%", player.getLocation().getBlockZ() + "").replaceAll("%z%", player.getLocation().getBlockZ() + ""));
+						Bukkit.dispatchCommand(Bukkit.getConsoleSender(), Messages.replacePlaceholders(placeholders, command));
 					}
 					return false;
 				}
@@ -126,16 +113,9 @@ public class VoucherClick implements Listener {
 			if(voucher.useBlackListPermissions()) {
 				for(String permission : voucher.getBlackListPermissions()) {
 					if(player.hasPermission(permission.toLowerCase().replaceAll("%arg%", argument != null ? argument : "%arg%"))) {
-						player.sendMessage(Methods.color(Methods.getPrefix() + voucher.getBlackListMessage().replaceAll("%arg%", argument != null ? argument : "%arg%")
-						.replaceAll("%Player%", player.getName()).replaceAll("%player%", player.getName())));
+						player.sendMessage(Methods.getPrefix(Messages.replacePlaceholders(placeholders, voucher.getBlackListMessage())));
 						for(String command : voucher.getBlacklistCommands()) {
-							Bukkit.dispatchCommand(Bukkit.getConsoleSender(), command
-							.replaceAll("%Player%", player.getName()).replaceAll("%player%", player.getName())
-							.replaceAll("%Arg%", argument).replaceAll("%arg%", argument)
-							.replaceAll("%World%", player.getWorld().getName()).replaceAll("%world%", player.getWorld().getName())
-							.replaceAll("%X%", player.getLocation().getBlockX() + "").replaceAll("%x%", player.getLocation().getBlockX() + "")
-							.replaceAll("%Y%", player.getLocation().getBlockY() + "").replaceAll("%y%", player.getLocation().getBlockY() + "")
-							.replaceAll("%Z%", player.getLocation().getBlockZ() + "").replaceAll("%z%", player.getLocation().getBlockZ() + ""));
+							Bukkit.dispatchCommand(Bukkit.getConsoleSender(), Messages.replacePlaceholders(placeholders, command));
 						}
 						return false;
 					}
@@ -147,38 +127,25 @@ public class VoucherClick implements Listener {
 	
 	private void voucherClick(Player player, ItemStack item, Voucher voucher, String argument) {
 		String name = player.getName();
-		if(argument == null) {
-			argument = "";
-		}
 		Methods.removeItem(item, player);
-		for(String cmd : voucher.getCommands()) {
-			Bukkit.dispatchCommand(Bukkit.getConsoleSender(), cmd.replaceAll("%Player%", name).replaceAll("%player%", name)
-			.replaceAll("%Arg%", argument).replaceAll("%arg%", argument)
-			.replaceAll("%World%", player.getWorld().getName()).replaceAll("%world%", player.getWorld().getName())
-			.replaceAll("%X%", player.getLocation().getBlockX() + "").replaceAll("%x%", player.getLocation().getBlockX() + "")
-			.replaceAll("%Y%", player.getLocation().getBlockY() + "").replaceAll("%y%", player.getLocation().getBlockY() + "")
-			.replaceAll("%Z%", player.getLocation().getBlockZ() + "").replaceAll("%z%", player.getLocation().getBlockZ() + ""));
+		HashMap<String, String> placeholders = new HashMap<>();
+		placeholders.put("%Arg%", argument != null ? argument : "%arg%");
+		placeholders.put("%Player%", player.getName());
+		placeholders.put("%World%", player.getWorld().getName());
+		placeholders.put("%X%", player.getLocation().getBlockX() + "");
+		placeholders.put("%Y%", player.getLocation().getBlockY() + "");
+		placeholders.put("%Z%", player.getLocation().getBlockZ() + "");
+		for(String command : voucher.getCommands()) {
+			Bukkit.dispatchCommand(Bukkit.getConsoleSender(), Messages.replacePlaceholders(placeholders, command));
 		}
 		if(voucher.getRandomCoammnds().size() >= 1) {// Picks a random command from the Random-Commands list.
 			for(String command : voucher.getRandomCoammnds().get(new Random().nextInt(voucher.getRandomCoammnds().size())).getCommands()) {
-				Bukkit.dispatchCommand(Bukkit.getConsoleSender(), command
-				.replaceAll("%Player%", name).replaceAll("%player%", name)
-				.replaceAll("%Arg%", argument).replaceAll("%arg%", argument)
-				.replaceAll("%World%", player.getWorld().getName()).replaceAll("%world%", player.getWorld().getName())
-				.replaceAll("%X%", player.getLocation().getBlockX() + "").replaceAll("%x%", player.getLocation().getBlockX() + "")
-				.replaceAll("%Y%", player.getLocation().getBlockY() + "").replaceAll("%y%", player.getLocation().getBlockY() + "")
-				.replaceAll("%Z%", player.getLocation().getBlockZ() + "").replaceAll("%z%", player.getLocation().getBlockZ() + ""));
+				Bukkit.dispatchCommand(Bukkit.getConsoleSender(), Messages.replacePlaceholders(placeholders, command));
 			}
 		}
 		if(voucher.getChanceCommands().size() >= 1) {// Picks a command based on the chance system of the Chance-Commands list.
 			for(String command : voucher.getChanceCommands().get(new Random().nextInt(voucher.getChanceCommands().size())).getCommands()) {
-				Bukkit.dispatchCommand(Bukkit.getConsoleSender(), command
-				.replaceAll("%Player%", name).replaceAll("%player%", name)
-				.replaceAll("%Arg%", argument).replaceAll("%arg%", argument)
-				.replaceAll("%World%", player.getWorld().getName()).replaceAll("%world%", player.getWorld().getName())
-				.replaceAll("%X%", player.getLocation().getBlockX() + "").replaceAll("%x%", player.getLocation().getBlockX() + "")
-				.replaceAll("%Y%", player.getLocation().getBlockY() + "").replaceAll("%y%", player.getLocation().getBlockY() + "")
-				.replaceAll("%Z%", player.getLocation().getBlockZ() + "").replaceAll("%z%", player.getLocation().getBlockZ() + ""));
+				Bukkit.dispatchCommand(Bukkit.getConsoleSender(), Messages.replacePlaceholders(placeholders, command));
 			}
 		}
 		for(ItemStack it : voucher.getItems()) {
@@ -197,14 +164,7 @@ public class VoucherClick implements Listener {
 			Methods.fireWork(player.getLocation(), voucher.getFireworkColors());
 		}
 		if(!voucher.getVoucherUsedMessage().equals("")) {
-			player.sendMessage(Methods.getPrefix(voucher.getVoucherUsedMessage()
-			.replaceAll("%Player%", name).replaceAll("%player%", name)
-			.replaceAll("%Prefix%", Methods.getPrefix()).replaceAll("%prefix%", Methods.getPrefix())
-			.replaceAll("%Arg%", argument).replaceAll("%arg%", argument)
-			.replaceAll("%World%", player.getWorld().getName()).replaceAll("%world%", player.getWorld().getName())
-			.replaceAll("%X%", player.getLocation().getBlockX() + "").replaceAll("%x%", player.getLocation().getBlockX() + "")
-			.replaceAll("%Y%", player.getLocation().getBlockY() + "").replaceAll("%y%", player.getLocation().getBlockY() + "")
-			.replaceAll("%Z%", player.getLocation().getBlockZ() + "").replaceAll("%z%", player.getLocation().getBlockZ() + "")));
+			player.sendMessage(Methods.getPrefix(Messages.replacePlaceholders(placeholders, voucher.getVoucherUsedMessage())));
 		}
 		if(voucher.useLimiter()) {
 			Files.DATA.getFile().set("Players." + player.getUniqueId() + ".UserName", player.getName());

@@ -60,28 +60,15 @@ public class Voucher {
 		this.itemGlow = false;
 		this.usedMessage = "";
 		this.whitelistPermissionToggle = false;
-		this.whitelistPermissionNode = "whitelistPermissionNode";
-		this.whitelistCommands = new ArrayList<>();
 		this.whitelistWorldsToggle = false;
 		this.whitelistWorldMessage = "";
-		this.whitelistWorlds = new ArrayList<>();
-		this.whitelistWorldCommands = new ArrayList<>();
 		this.blacklistPermissionsToggle = false;
 		this.blacklistPermissionMessage = "blacklistPermissionMessage";
-		this.blacklistCommands = new ArrayList<>();
-		this.blacklistPermissions = new ArrayList<>();
 		this.limiterToggle = false;
 		this.limiterLimit = 0;
 		this.twostepAuthentication = false;
 		this.soundToggle = false;
-		this.sounds = new ArrayList<>();
 		this.fireworkToggle = false;
-		this.fireworkColors = new ArrayList<>();
-		this.itemLore = new ArrayList<>();
-		this.commands = new ArrayList<>();
-		this.randomCoammnds = new ArrayList<>();
-		this.chanceCommands = new ArrayList<>();
-		this.items = new ArrayList<>();
 	}
 	
 	public Voucher(String name) {
@@ -111,19 +98,14 @@ public class Voucher {
 			}
 		}
 		this.itemGlow = config.contains(path + "Glowing") && config.getBoolean(path + "Glowing");
-		if(config.contains(path + "Commands")) {
-			this.commands = config.getStringList(path + "Commands");
+		this.commands = config.getStringList(path + "Commands");
+		for(String commands : config.getStringList(path + "Random-Commands")) {
+			this.randomCoammnds.add(new VoucherCommand(commands));
 		}
-		if(config.contains(path + "Random-Commands")) {
-			for(String commands : config.getStringList(path + "Random-Commands")) {
-				this.randomCoammnds.add(new VoucherCommand(commands));
-			}
-		}
-		if(config.contains(path + "Chance-Commands")) {// - '%chance% %command%, %command%, %command%, ... etc'
-			for(String line : config.getStringList(path + "Chance-Commands")) {
-				try {
-					String[] split = line.split(" ");
-					VoucherCommand voucherCommand = new VoucherCommand(line.substring(split[0].length() + 1));
+		for(String line : config.getStringList(path + "Chance-Commands")) {// - '%chance% %command%, %command%, %command%, ... etc'
+			try {
+				String[] split = line.split(" ");
+				VoucherCommand voucherCommand = new VoucherCommand(line.substring(split[0].length() + 1));
 					for(int i = 1; i <= Integer.parseInt(split[0]); i++) {
 						chanceCommands.add(voucherCommand);
 					}
@@ -131,18 +113,11 @@ public class Voucher {
 					System.out.println("[Vouchers] An issue occurred when trying to use chance commands.");
 					e.printStackTrace();
 				}
-			}
 		}
-		if(config.contains(path + "Items")) {
-			for(String itemString : config.getStringList(path + "Items")) {
+		for(String itemString : config.getStringList(path + "Items")) {
 				this.items.add(Methods.makeItem(itemString));
 			}
-		}
-		if(config.contains(path + "Options.Message")) {
-			this.usedMessage = config.getString(path + "Options.Message");
-		}else {
-			this.usedMessage = "";
-		}
+		this.usedMessage = config.getString(path + "Options.Message", "");
 		if(config.contains(path + "Options.Permission.Whitelist-Permission")) {
 			this.whitelistPermissionToggle = config.getBoolean(path + "Options.Permission.Whitelist-Permission.Toggle");
 			this.whitelistPermissionNode = config.getString(path + "Options.Permission.Whitelist-Permission.Node").toLowerCase();
@@ -241,9 +216,7 @@ public class Voucher {
 		.setMetaData(itemMetaData)
 		.setName(itemName)
 		.setLore(itemLore)
-		.addLorePlaceholder("%arg%", argument)
 		.addLorePlaceholder("%Arg%", argument)
-		.addNamePlaceholder("%arg%", argument)
 		.addNamePlaceholder("%Arg%", argument)
 		.build(), itemGlow);
 		NBTItem nbt = new NBTItem(item);
@@ -260,9 +233,7 @@ public class Voucher {
 		.setAmount(amount)
 		.setName(itemName)
 		.setLore(itemLore)
-		.addLorePlaceholder("%arg%", argument)
 		.addLorePlaceholder("%Arg%", argument)
-		.addNamePlaceholder("%arg%", argument)
 		.addNamePlaceholder("%Arg%", argument)
 		.build(), itemGlow);
 		NBTItem nbt = new NBTItem(item);

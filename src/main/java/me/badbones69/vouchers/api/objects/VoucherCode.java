@@ -21,7 +21,7 @@ public class VoucherCode {
 	private Boolean limited;
 	private Integer limit;
 	private String message;
-	private List<String> commands = new ArrayList<>();
+	private List<String> commands;
 	private Boolean whitelistPermissionToggle;
 	private String whitelistPermissionNode;
 	private List<String> whitelistCommands = new ArrayList<>();
@@ -48,35 +48,25 @@ public class VoucherCode {
 		FileConfiguration config = Files.VOUCHER_CODES.getFile();
 		String path = "Voucher-Codes." + name + ".";
 		this.enabled = config.getBoolean(path + "Options.Enabled");
-		if(config.contains(path + "Code")) {
-			this.code = config.getString(path + "Code");
+		this.code = config.getString(path + "Code", "");
+		this.commands = config.getStringList(path + "Commands");
+		for(String commands : config.getStringList(path + "Random-Commands")) {
+			this.randomCoammnds.add(new VoucherCommand(commands));
 		}
-		if(config.contains(path + "Commands")) {
-			this.commands = config.getStringList(path + "Commands");
-		}
-		if(config.contains(path + "Random-Commands")) {
-			for(String commands : config.getStringList(path + "Random-Commands")) {
-				this.randomCoammnds.add(new VoucherCommand(commands));
-			}
-		}
-		if(config.contains(path + "Chance-Commands")) {
-			for(String line : config.getStringList(path + "Chance-Commands")) {
-				try {
-					String[] split = line.split(" ");
-					VoucherCommand voucherCommand = new VoucherCommand(line.substring(split[0].length() + 1));
-					for(int i = 1; i <= Integer.parseInt(split[0]); i++) {
-						chanceCommands.add(voucherCommand);
-					}
-				}catch(Exception e) {
-					System.out.println("[Vouchers] An issue occurred when trying to use chance commands.");
-					e.printStackTrace();
+		for(String line : config.getStringList(path + "Chance-Commands")) {
+			try {
+				String[] split = line.split(" ");
+				VoucherCommand voucherCommand = new VoucherCommand(line.substring(split[0].length() + 1));
+				for(int i = 1; i <= Integer.parseInt(split[0]); i++) {
+					chanceCommands.add(voucherCommand);
 				}
+			}catch(Exception e) {
+				System.out.println("[Vouchers] An issue occurred when trying to use chance commands.");
+				e.printStackTrace();
 			}
 		}
-		if(config.contains(path + "Items")) {
-			for(String itemString : config.getStringList(path + "Items")) {
-				this.items.add(Methods.makeItem(itemString));
-			}
+		for(String itemString : config.getStringList(path + "Items")) {
+			this.items.add(Methods.makeItem(itemString));
 		}
 		this.caseSensitive = config.getBoolean(path + "Options.Case-Sensitive");
 		if(config.contains(path + "Options.Message")) {
@@ -92,7 +82,7 @@ public class VoucherCode {
 			this.whitelistPermissionToggle = false;
 		}
 		if(config.contains(path + "Options.Whitelist-Worlds.Toggle")) {
-			this.whitelistWorlds.addAll(config.getStringList(path + "Options.Whitelist-Worlds.Worlds").stream().map(String::toLowerCase).collect(Collectors.toList()));
+			this.whitelistWorlds.addAll(config.getStringList(path + "Options.Whitelist-Worlds.Worlds").stream().map(String :: toLowerCase).collect(Collectors.toList()));
 			if(config.contains(path + "Options.Whitelist-Worlds.Message")) {
 				this.whitelistWorldMessage = config.getString(path + "Options.Whitelist-Worlds.Message");
 			}else {

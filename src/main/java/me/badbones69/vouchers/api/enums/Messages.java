@@ -105,6 +105,14 @@ public enum Messages {
 		return getMessage(placeholders, false);
 	}
 	
+	public static String replacePlaceholders(HashMap<String, String> placeholders, String message) {
+		for(String placeholder : placeholders.keySet()) {
+			message = message.replaceAll(placeholder, placeholders.get(placeholder))
+			.replaceAll(placeholder.toLowerCase(), placeholders.get(placeholder));
+		}
+		return message;
+	}
+	
 	private String getMessage(boolean prefix) {
 		return getMessage(new HashMap<>(), prefix);
 	}
@@ -164,4 +172,5 @@ public enum Messages {
 	private List<String> getDefaultListMessage() {
 		return defaultListMessage;
 	}
+	
 }

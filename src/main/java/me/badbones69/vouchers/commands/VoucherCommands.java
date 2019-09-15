@@ -104,16 +104,16 @@ public class VoucherCommands implements CommandExecutor {
 										if(!player.hasPermission(voucherCode.getWhitelistPermission())) {
 											player.sendMessage(Messages.NO_PERMISSION_TO_VOUCHER.getMessage(placeholders));
 											for(String command : voucherCode.getWhitelistCommands()) {
-												Bukkit.dispatchCommand(Bukkit.getConsoleSender(), replacePlaceholders(placeholders, command));
+												Bukkit.dispatchCommand(Bukkit.getConsoleSender(), Messages.replacePlaceholders(placeholders, command));
 											}
 											return true;
 										}
 									}
 									if(voucherCode.useWhitelistWorlds()) {
 										if(voucherCode.getWhitelistWorlds().contains(player.getWorld().getName().toLowerCase())) {
-											player.sendMessage(Methods.getPrefix(replacePlaceholders(placeholders, voucherCode.getWhitelistWorldMessage())));
+											player.sendMessage(Methods.getPrefix(Messages.replacePlaceholders(placeholders, voucherCode.getWhitelistWorldMessage())));
 											for(String command : voucherCode.getWhitelistWorldCommands()) {
-												Bukkit.dispatchCommand(Bukkit.getConsoleSender(), replacePlaceholders(placeholders, command));
+												Bukkit.dispatchCommand(Bukkit.getConsoleSender(), Messages.replacePlaceholders(placeholders, command));
 											}
 											return true;
 										}
@@ -121,9 +121,9 @@ public class VoucherCommands implements CommandExecutor {
 									if(voucherCode.useBlacklistPermissions()) {
 										for(String permission : voucherCode.getBlacklistPermissions()) {
 											if(player.hasPermission(permission.toLowerCase())) {
-												player.sendMessage(Methods.getPrefix(replacePlaceholders(placeholders, voucherCode.getBlacklistMessage())));
+												player.sendMessage(Methods.getPrefix(Messages.replacePlaceholders(placeholders, voucherCode.getBlacklistMessage())));
 												for(String command : voucherCode.getBlacklistCommands()) {
-													Bukkit.dispatchCommand(Bukkit.getConsoleSender(), replacePlaceholders(placeholders, command));
+													Bukkit.dispatchCommand(Bukkit.getConsoleSender(), Messages.replacePlaceholders(placeholders, command));
 												}
 												return true;
 											}
@@ -162,16 +162,16 @@ public class VoucherCommands implements CommandExecutor {
 									data.set("Players." + uuid + ".Codes." + voucherCode.getName(), "used");
 									Files.DATA.saveFile();
 									for(String command : voucherCode.getCommands()) {
-										Bukkit.dispatchCommand(Bukkit.getConsoleSender(), replacePlaceholders(placeholders, command));
+										Bukkit.dispatchCommand(Bukkit.getConsoleSender(), Messages.replacePlaceholders(placeholders, command));
 									}
 									if(voucherCode.getRandomCoammnds().size() >= 1) {// Picks a random command from the Random-Commands list.
 										for(String command : voucherCode.getRandomCoammnds().get(new Random().nextInt(voucherCode.getRandomCoammnds().size())).getCommands()) {
-											Bukkit.dispatchCommand(Bukkit.getConsoleSender(), replacePlaceholders(placeholders, command));
+											Bukkit.dispatchCommand(Bukkit.getConsoleSender(), Messages.replacePlaceholders(placeholders, command));
 										}
 									}
 									if(voucherCode.getChanceCommands().size() >= 1) {// Picks a command based on the chance system of the Chance-Commands list.
 										for(String command : voucherCode.getChanceCommands().get(new Random().nextInt(voucherCode.getChanceCommands().size())).getCommands()) {
-											Bukkit.dispatchCommand(Bukkit.getConsoleSender(), replacePlaceholders(placeholders, command));
+											Bukkit.dispatchCommand(Bukkit.getConsoleSender(), Messages.replacePlaceholders(placeholders, command));
 										}
 									}
 									for(ItemStack it : voucherCode.getItems()) {
@@ -190,7 +190,7 @@ public class VoucherCommands implements CommandExecutor {
 										Methods.fireWork(player.getLocation(), voucherCode.getFireworkColors());
 									}
 									if(!voucherCode.getMessage().equals("")) {
-										player.sendMessage(Methods.color(replacePlaceholders(placeholders, voucherCode.getMessage())));
+										player.sendMessage(Methods.color(Messages.replacePlaceholders(placeholders, voucherCode.getMessage())));
 									}
 								}
 							}else {
@@ -318,14 +318,6 @@ public class VoucherCommands implements CommandExecutor {
 					return true;
 			}
 		}
-	}
-	
-	private String replacePlaceholders(HashMap<String, String> placeholders, String message) {
-		for(String placeholder : placeholders.keySet()) {
-			message = message.replaceAll(placeholder, placeholders.get(placeholder))
-			.replaceAll(placeholder.toLowerCase(), placeholders.get(placeholder));
-		}
-		return message;
 	}
 	
 	private Integer pickNumber(int min, int max) {
