@@ -10,7 +10,7 @@ import java.util.List;
 
 public enum Messages {
 	
-	RELOAD("Reload-Config", "&7You have just reloaded the Config.yml"),
+	RELOAD("Config-Reload", "&7You have just reloaded the Config.yml"),
 	INVENTORY_FULL("Inventory-Full", "&cYour inventory is to full. Please open up some space to buy that."),
 	PLAYERS_ONLY("Reload", "&cOnly players can use this command."),
 	NO_PERMISSION("No-Permission", "&cYou do not have permission to use that command!"),
