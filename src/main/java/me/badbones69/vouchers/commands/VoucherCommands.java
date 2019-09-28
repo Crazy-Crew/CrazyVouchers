@@ -75,8 +75,8 @@ public class VoucherCommands implements CommandExecutor {
 						}
 						vouchers = vouchers.isEmpty() ? "&cNone" : vouchers.substring(0, vouchers.length() - 2);
 						codes = codes.isEmpty() ? "&cNone" : codes.substring(0, codes.length() - 2);
-						sender.sendMessage(Methods.color("&e&lVouchers:&f " + vouchers));
-						sender.sendMessage(Methods.color("&e&lVoucher Codes:&f " + codes));
+						sender.sendMessage(Methods.color("&e&lVouchers #" + Vouchers.getVouchers().size() + ":&f " + vouchers));
+						sender.sendMessage(Methods.color("&e&lVoucher Codes #" + Vouchers.getVoucherCodes().size() + ":&f " + codes));
 					}
 					return true;
 				case "redeem":
