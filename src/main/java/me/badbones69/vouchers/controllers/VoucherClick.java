@@ -16,6 +16,7 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.Action;
 import org.bukkit.event.player.PlayerInteractEvent;
+import org.bukkit.event.player.PlayerItemConsumeEvent;
 import org.bukkit.inventory.EquipmentSlot;
 import org.bukkit.inventory.ItemStack;
 
@@ -31,7 +32,6 @@ public class VoucherClick implements Listener {
 		ItemStack item = getItemInHand(e.getPlayer());
 		Player player = e.getPlayer();
 		Action action = e.getAction();
-		FileConfiguration data = Files.DATA.getFile();
 		if(item != null && item.getType() != Material.AIR) {
 			if(Version.getCurrentVersion().isNewer(Version.v1_8_R3)) {
 				if(e.getHand() != EquipmentSlot.HAND) {
@@ -40,45 +40,67 @@ public class VoucherClick implements Listener {
 			}
 			if(action == Action.RIGHT_CLICK_BLOCK || action == Action.RIGHT_CLICK_AIR) {
 				Voucher voucher = Vouchers.getVoucherFromItem(item);
-				if(voucher != null) {
+				if(voucher != null && !voucher.isEdible()) {
 					e.setCancelled(true);
-					String argument = Vouchers.getArgument(item, voucher);
-					if(passesPermissionChecks(player, item, voucher, argument)) {
-						String uuid = player.getUniqueId().toString();
-						if(!player.hasPermission("voucher.bypass")) {
-							if(voucher.useLimiter()) {
-								if(data.contains("Players." + uuid)) {
-									if(data.contains("Players." + uuid + ".Vouchers." + voucher.getName())) {
-										int amount = data.getInt("Players." + uuid + ".Vouchers." + voucher.getName());
-										if(amount >= voucher.getLimiterLimit()) {
-											player.sendMessage(Messages.HIT_LIMIT.getMessage());
-											return;
-										}
-									}
-								}
-							}
-						}
-						if(voucher.useTwoStepAuthentication()) {
-							if(twoAuth.containsKey(player)) {
-								if(!twoAuth.get(player).equalsIgnoreCase(voucher.getName())) {
-									player.sendMessage(Messages.TWO_STEP_AUTHENTICATION.getMessage());
-									twoAuth.put(player, voucher.getName());
-									return;
-								}
-							}else {
-								player.sendMessage(Messages.TWO_STEP_AUTHENTICATION.getMessage());
-								twoAuth.put(player, voucher.getName());
+					useVoucher(player, voucher, item);
+				}
+			}
+		}
+	}
+	
+	@EventHandler
+	public void onItemConsume(PlayerItemConsumeEvent e) {
+		ItemStack item = e.getItem();
+		Voucher voucher = Vouchers.getVoucherFromItem(item);
+		if(voucher != null && voucher.isEdible()) {
+			Player player = e.getPlayer();
+			e.setCancelled(true);
+			if(item.getAmount() > 1) {
+				player.sendMessage(Messages.UNSTACK_ITEM.getMessage());
+			}else {
+				useVoucher(player, voucher, item);
+			}
+		}
+	}
+	
+	private void useVoucher(Player player, Voucher voucher, ItemStack item) {
+		FileConfiguration data = Files.DATA.getFile();
+		String argument = Vouchers.getArgument(item, voucher);
+		if(passesPermissionChecks(player, item, voucher, argument)) {
+			String uuid = player.getUniqueId().toString();
+			if(!player.hasPermission("voucher.bypass")) {
+				if(voucher.useLimiter()) {
+					if(data.contains("Players." + uuid)) {
+						if(data.contains("Players." + uuid + ".Vouchers." + voucher.getName())) {
+							int amount = data.getInt("Players." + uuid + ".Vouchers." + voucher.getName());
+							if(amount >= voucher.getLimiterLimit()) {
+								player.sendMessage(Messages.HIT_LIMIT.getMessage());
 								return;
 							}
 						}
-						twoAuth.remove(player);
-						RedeemVoucherEvent event = new RedeemVoucherEvent(player, voucher, argument);
-						Bukkit.getPluginManager().callEvent(event);
-						if(!event.isCancelled()) {
-							voucherClick(player, item, voucher, argument);
-						}
 					}
 				}
+			}
+			if(!voucher.isEdible()) {
+				if(voucher.useTwoStepAuthentication() && !voucher.isEdible()) {
+					if(twoAuth.containsKey(player)) {
+						if(!twoAuth.get(player).equalsIgnoreCase(voucher.getName())) {
+							player.sendMessage(Messages.TWO_STEP_AUTHENTICATION.getMessage());
+							twoAuth.put(player, voucher.getName());
+							return;
+						}
+					}else {
+						player.sendMessage(Messages.TWO_STEP_AUTHENTICATION.getMessage());
+						twoAuth.put(player, voucher.getName());
+						return;
+					}
+				}
+			}
+			twoAuth.remove(player);
+			RedeemVoucherEvent event = new RedeemVoucherEvent(player, voucher, argument);
+			Bukkit.getPluginManager().callEvent(event);
+			if(!event.isCancelled()) {
+				voucherClick(player, item, voucher, argument);
 			}
 		}
 	}

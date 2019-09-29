@@ -41,6 +41,7 @@ public class Voucher {
 	private List<Sound> sounds = new ArrayList<>();
 	private Boolean fireworkToggle;
 	private List<Color> fireworkColors = new ArrayList<>();
+	private boolean isEdible;
 	private List<String> itemLore;
 	private List<String> commands = new ArrayList<>();
 	private List<VoucherCommand> randomCoammnds = new ArrayList<>();
@@ -69,6 +70,7 @@ public class Voucher {
 		this.twostepAuthentication = false;
 		this.soundToggle = false;
 		this.fireworkToggle = false;
+		this.isEdible = false;
 	}
 	
 	public Voucher(String name) {
@@ -177,6 +179,14 @@ public class Voucher {
 			}
 		}else {
 			this.fireworkToggle = false;
+		}
+		if(config.getBoolean(path + "Options.Is-Edible")) {
+			this.isEdible = itemMaterial.isEdible();
+			switch(itemMaterial) {
+				case MILK_BUCKET:
+				case POTION:
+					this.isEdible = true;
+			}
 		}
 	}
 	
@@ -335,6 +345,10 @@ public class Voucher {
 	
 	public List<ItemStack> getItems() {
 		return items;
+	}
+	
+	public boolean isEdible() {
+		return isEdible;
 	}
 	
 }

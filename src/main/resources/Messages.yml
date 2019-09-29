@@ -15,6 +15,7 @@ Messages:
   Two-Step-Authentication: '&7Right click again to confirm that you want to use this voucher.'
   Has-Blacklist-Permission: '&cSorry but you can not use this voucher because you have a black-listed permission.'
   Not-In-Whitelisted-World: '&cYou can not use that voucher here as you are not in a whitelisted world for this voucher.'
+  Unstack-Item: '&cYou need to unstack that item before you can use it.'
   Help:
     - '&8- &6/Voucher help &3Lists all the commands for vouchers.'
     - '&8- &6/Voucher list &3Lists all available types of vouchers and codes.'

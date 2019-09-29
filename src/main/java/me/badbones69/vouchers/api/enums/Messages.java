@@ -27,6 +27,7 @@ public enum Messages {
 	TWO_STEP_AUTHENTICATION("Two-Step-Authentication", "&7Right click again to confirm that you want to use this voucher."),
 	HAS_BLACKLIST_PERMISSION("Has-Blacklist-Permission", "&cSorry but you can not use this voucher because you have a black-listed permission."),
 	NOT_IN_WHITELISTED_WORLD("Not-In-Whitelisted-World", "&cYou can not use that voucher here as you are not in a whitelisted world for this voucher."),
+	UNSTACK_ITEM("Unstack-Item", "&cYou need to unstack that item before you can use it."),
 	HELP("Help",
 	Arrays.asList(
 	"&8- &6/Voucher Help &3Lists all the commands for vouchers.",

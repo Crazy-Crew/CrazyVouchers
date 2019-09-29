@@ -33,8 +33,7 @@ public class Methods {
 	public static void removeItem(ItemStack item, Player player) {
 		if(item.getAmount() <= 1) {
 			player.getInventory().removeItem(item);
-		}
-		if(item.getAmount() > 1) {
+		}else if(item.getAmount() > 1) {
 			item.setAmount(item.getAmount() - 1);
 		}
 	}
