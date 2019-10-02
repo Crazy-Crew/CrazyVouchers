@@ -6,7 +6,12 @@
 
     <groupId>me.badbones69</groupId>
     <artifactId>Vouchers</artifactId>
-    <version>1.8</version>
+    <version>1.8.1</version>
+
+    <properties>
+        <!--This is used to show the build number for jenkins.-->
+        <build.number/>
+    </properties>
 
     <repositories>
         <repository>
