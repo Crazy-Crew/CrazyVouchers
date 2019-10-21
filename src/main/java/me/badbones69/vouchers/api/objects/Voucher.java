@@ -172,11 +172,11 @@ public class Voucher {
 		}else {
 			this.soundToggle = false;
 		}
-		if(config.contains(path + "Options.Firework")) {
-			this.fireworkToggle = config.getBoolean(path + "Options.Firework.Toggle");
-			for(String color : config.getString(path + "Options.Firework.Colors").split(", ")) {
+		if(config.getBoolean(path + "Options.Firework.Toggle")) {
+			for(String color : config.getString(path + "Options.Firework.Colors", "").split(", ")) {
 				this.fireworkColors.add(Methods.getColor(color));
 			}
+			this.fireworkToggle = !fireworkColors.isEmpty();
 		}else {
 			this.fireworkToggle = false;
 		}
