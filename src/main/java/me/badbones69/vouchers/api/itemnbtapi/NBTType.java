@@ -1,5 +1,12 @@
 package me.badbones69.vouchers.api.itemnbtapi;
 
+/**
+ * Enum of all NBT Types Minecraft contains
+ *
+ * @author tr7zw
+ *
+ */
+@SuppressWarnings("javadoc")
 public enum NBTType {
 	NBTTagEnd(0),
 	NBTTagByte(1),
@@ -20,10 +27,17 @@ public enum NBTType {
 	
 	private final int id;
 	
+	/**
+	 * @return Id used by Minecraft internally
+	 */
 	public int getId() {
 		return id;
 	}
 	
+	/**
+	 * @param id Internal Minecraft id
+	 * @return Enum representing the id, NBTTagEnd for invalide ids
+	 */
 	public static NBTType valueOf(int id) {
 		for(NBTType t : values())
 			if(t.getId() == id)
