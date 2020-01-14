@@ -26,6 +26,7 @@ public class Voucher {
     private Boolean whitelistPermissionToggle;
     private List<String> whitelistPermissions = new ArrayList<>();
     private List<String> whitelistCommands = new ArrayList<>();
+    private String whitelistPermissionMessage;
     private Boolean whitelistWorldsToggle;
     private String whitelistWorldMessage;
     private List<String> whitelistWorlds = new ArrayList<>();
@@ -61,6 +62,7 @@ public class Voucher {
         this.itemGlow = false;
         this.usedMessage = "";
         this.whitelistPermissionToggle = false;
+        this.whitelistPermissionMessage = "";
         this.whitelistWorldsToggle = false;
         this.whitelistWorldMessage = "";
         this.blacklistPermissionsToggle = false;
@@ -127,6 +129,7 @@ public class Voucher {
             }
             whitelistPermissions.addAll(config.getStringList(path + "Options.Permission.Whitelist-Permission.Permissions").stream().map(String :: toLowerCase).collect(Collectors.toList()));
             this.whitelistCommands = config.getStringList(path + "Options.Permission.Whitelist-Permission.Commands");
+            this.whitelistPermissionMessage = config.contains(path + "Options.Permission.Whitelist-Permission.Message") ? config.getString(path + "Options.Permission.Whitelist-Permission.Message") : Messages.NO_PERMISSION_TO_VOUCHER.getMessageNoPrefix();
         } else {
             this.whitelistPermissionToggle = false;
         }
@@ -269,6 +272,10 @@ public class Voucher {
     
     public List<String> getWhitelistCommands() {
         return whitelistCommands;
+    }
+    
+    public String getWhitelistPermissionMessage() {
+        return whitelistPermissionMessage;
     }
     
     public Boolean usesWhitelistWorlds() {

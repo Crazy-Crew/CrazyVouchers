@@ -125,7 +125,7 @@ public class VoucherClick implements Listener {
             if (voucher.useWhiteListPermissions()) {
                 for (String permission : voucher.getWhitelistPermissions()) {
                     if (!player.hasPermission(permission.toLowerCase().replaceAll("%arg%", argument != null ? argument : "%arg%"))) {
-                        player.sendMessage(Messages.NO_PERMISSION_TO_VOUCHER.getMessage(placeholders));
+                        player.sendMessage(Methods.getPrefix(Messages.replacePlaceholders(placeholders, voucher.getWhitelistPermissionMessage())));
                         for (String command : voucher.getWhitelistCommands()) {
                             Bukkit.dispatchCommand(Bukkit.getConsoleSender(), Messages.replacePlaceholders(placeholders, command));
                         }

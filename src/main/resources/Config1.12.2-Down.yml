@@ -38,6 +38,7 @@ Vouchers: #Where you make your vouchers.
       Permission: #Permission options.
         Whitelist-Permission: #The player needs this permission to use it.
           Toggle: false #Toggle the permission on or off.
+          Message: '&cYou do not have permission to use that voucher.'
           Permissions: #List of permissions the player needs.
             - 'voucher.money'
           Commands: [] #Run commands if the player doesn't have the permission.
