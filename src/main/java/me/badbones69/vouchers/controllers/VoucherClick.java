@@ -13,8 +13,10 @@ import org.bukkit.Sound;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
+import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.Action;
+import org.bukkit.event.player.PlayerInteractEntityEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.event.player.PlayerItemConsumeEvent;
 import org.bukkit.inventory.EquipmentSlot;
@@ -59,6 +61,17 @@ public class VoucherClick implements Listener {
                 player.sendMessage(Messages.UNSTACK_ITEM.getMessage());
             } else {
                 useVoucher(player, voucher, item);
+            }
+        }
+    }
+    
+    @EventHandler(priority = EventPriority.LOW)
+    public void onArmorStandClick(PlayerInteractEntityEvent e) {
+        if (Version.getCurrentVersion().isNewer(Version.v1_8_R3)) {
+            if (e.getHand() == EquipmentSlot.HAND) {
+                if (Vouchers.getVoucherFromItem(getItemInHand(e.getPlayer())) != null) {
+                    e.setCancelled(true);
+                }
             }
         }
     }
