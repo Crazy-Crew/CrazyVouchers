@@ -5,7 +5,6 @@ import me.badbones69.vouchers.api.FileManager.Files;
 import me.badbones69.vouchers.api.enums.Messages;
 import me.badbones69.vouchers.api.itemnbtapi.NBTItem;
 import org.bukkit.Color;
-import org.bukkit.Material;
 import org.bukkit.Sound;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.inventory.ItemStack;
@@ -18,8 +17,7 @@ public class Voucher {
     
     private String name;
     private Boolean usesArgs;
-    private Material itemMaterial;
-    private Short itemMetaData;
+    private String itemMaterial;
     private String itemName;
     private Boolean itemGlow;
     private List<String> itemFlags = new ArrayList<>();
@@ -57,8 +55,7 @@ public class Voucher {
     public Voucher(int number) {
         this.name = number + "";
         this.usesArgs = false;
-        this.itemMaterial = Material.STONE;
-        this.itemMetaData = 0;
+        this.itemMaterial = "STONE";
         this.itemName = number + "";
         this.itemGlow = false;
         this.usedMessage = "";
@@ -81,14 +78,7 @@ public class Voucher {
         this.usesArgs = false;
         FileConfiguration config = Files.CONFIG.getFile();
         String path = "Vouchers." + name + ".";
-        String id = config.getString(path + "Item");
-        itemMetaData = 0;
-        if (id.contains(":")) {
-            String[] b = id.split(":");
-            id = b[0];
-            itemMetaData = Short.parseShort(b[1]);
-        }
-        itemMaterial = Material.matchMaterial(id);
+        this.itemMaterial = config.getString(path + "Item");
         this.itemName = config.getString(path + "Name");
         this.itemLore = config.getStringList(path + "Lore");
         if (this.itemName.toLowerCase().contains("%arg%")) {
@@ -186,10 +176,10 @@ public class Voucher {
             this.fireworkToggle = false;
         }
         if (config.getBoolean(path + "Options.Is-Edible")) {
-            this.isEdible = itemMaterial.isEdible();
+            this.isEdible = new ItemBuilder().setMaterial(itemMaterial).build().getType().isEdible();
             switch (itemMaterial) {
-                case MILK_BUCKET:
-                case POTION:
+                case "MILK_BUCKET":
+                case "POTION":
                     this.isEdible = true;
             }
         }
@@ -210,7 +200,6 @@ public class Voucher {
     public ItemStack buildItem(int amount) {
         ItemStack item = Methods.addGlow(new ItemBuilder()
         .setMaterial(itemMaterial)
-        .setMetaData(itemMetaData)
         .setAmount(amount)
         .setName(itemName)
         .setLore(itemLore)
@@ -228,7 +217,6 @@ public class Voucher {
     public ItemStack buildItem(String argument, int amount) {
         ItemStack item = Methods.addGlow(new ItemBuilder()
         .setMaterial(itemMaterial)
-        .setMetaData(itemMetaData)
         .setAmount(amount)
         .setName(itemName)
         .setLore(itemLore)
