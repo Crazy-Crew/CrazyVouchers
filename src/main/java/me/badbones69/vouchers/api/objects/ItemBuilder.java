@@ -100,7 +100,7 @@ public class ItemBuilder {
      * @return The ItemBuilder with updated info.
      */
     public ItemBuilder setMaterial(String string) {
-        Short metaData = 0;
+        short metaData = 0;
         if (string.contains(":")) {
             String[] b = string.split(":");
             string = b[0];
@@ -315,6 +315,19 @@ public class ItemBuilder {
     }
     
     /**
+     * Add a flag to the item in the builder.
+     * @param flagString The name of the flag you wish to add.
+     * @return The ItemBuilder with updated info.
+     */
+    public ItemBuilder addFlags(String flagString) {
+        ItemFlag flag = getFlag(flagString);
+        if (flag != null) {
+            this.flags.add(flag);
+        }
+        return this;
+    }
+    
+    /**
      * Remove a flag that is on the item in the builder.
      * @param flag The flag you wish to remove from the builder.
      * @return The ItemBuilder with updated info.
@@ -332,6 +345,22 @@ public class ItemBuilder {
     public ItemBuilder setFlags(List<ItemFlag> flags) {
         if (flags != null) {
             this.flags = flags;
+        }
+        return this;
+    }
+    
+    /**
+     * Set the flags that will be on the item in the builder.
+     * @param flagStrings The flag names as string you wish to add to the item in the builder.
+     * @return The ItemBuilder with updated info.
+     */
+    public ItemBuilder setFlagsFromStrings(List<String> flagStrings) {
+        flags.clear();
+        for (String flagString : flagStrings) {
+            ItemFlag flag = getFlag(flagString);
+            if (flag != null) {
+                flags.add(flag);
+            }
         }
         return this;
     }
@@ -448,6 +477,15 @@ public class ItemBuilder {
     
     private String color(String msg) {
         return ChatColor.translateAlternateColorCodes('&', msg);
+    }
+    
+    private ItemFlag getFlag(String flagString) {
+        for (ItemFlag flag : ItemFlag.values()) {
+            if (flag.name().equalsIgnoreCase(flagString)) {
+                return flag;
+            }
+        }
+        return null;
     }
     
 }

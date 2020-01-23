@@ -22,6 +22,7 @@ public class Voucher {
     private Short itemMetaData;
     private String itemName;
     private Boolean itemGlow;
+    private List<String> itemFlags = new ArrayList<>();
     private String usedMessage;
     private Boolean whitelistPermissionToggle;
     private List<String> whitelistPermissions = new ArrayList<>();
@@ -102,6 +103,7 @@ public class Voucher {
             }
         }
         this.itemGlow = config.contains(path + "Glowing") && config.getBoolean(path + "Glowing");
+        itemFlags.addAll(config.getStringList(path + "Flags"));
         this.commands = config.getStringList(path + "Commands");
         for (String commands : config.getStringList(path + "Random-Commands")) {
             this.randomCoammnds.add(new VoucherCommand(commands));
@@ -212,6 +214,7 @@ public class Voucher {
         .setAmount(amount)
         .setName(itemName)
         .setLore(itemLore)
+        .setFlagsFromStrings(itemFlags)
         .build(), itemGlow);
         NBTItem nbt = new NBTItem(item);
         nbt.setString("voucher", name);
@@ -231,6 +234,7 @@ public class Voucher {
         .setLore(itemLore)
         .addLorePlaceholder("%Arg%", argument)
         .addNamePlaceholder("%Arg%", argument)
+        .setFlagsFromStrings(itemFlags)
         .build(), itemGlow);
         NBTItem nbt = new NBTItem(item);
         nbt.setString("voucher", name);
