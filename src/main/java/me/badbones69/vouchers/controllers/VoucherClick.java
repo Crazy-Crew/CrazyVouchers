@@ -138,7 +138,7 @@ public class VoucherClick implements Listener {
             if (voucher.useWhiteListPermissions()) {
                 for (String permission : voucher.getWhitelistPermissions()) {
                     if (!player.hasPermission(permission.toLowerCase().replaceAll("%arg%", argument != null ? argument : "%arg%"))) {
-                        player.sendMessage(Methods.getPrefix(Messages.replacePlaceholders(placeholders, voucher.getWhitelistPermissionMessage())));
+                        player.sendMessage(Messages.replacePlaceholders(placeholders, voucher.getWhitelistPermissionMessage()));
                         for (String command : voucher.getWhitelistCommands()) {
                             Bukkit.dispatchCommand(Bukkit.getConsoleSender(), Messages.replacePlaceholders(placeholders, command));
                         }
@@ -148,7 +148,7 @@ public class VoucherClick implements Listener {
             }
             if (voucher.usesWhitelistWorlds()) {
                 if (!voucher.getWhitelistWorlds().contains(player.getWorld().getName().toLowerCase())) {
-                    player.sendMessage(Methods.getPrefix(Messages.replacePlaceholders(placeholders, voucher.getWhitelistWorldMessage())));
+                    player.sendMessage(Messages.replacePlaceholders(placeholders, voucher.getWhitelistWorldMessage()));
                     for (String command : voucher.getWhitelistWorldCommands()) {
                         Bukkit.dispatchCommand(Bukkit.getConsoleSender(), Messages.replacePlaceholders(placeholders, command));
                     }
@@ -158,7 +158,7 @@ public class VoucherClick implements Listener {
             if (voucher.useBlackListPermissions()) {
                 for (String permission : voucher.getBlackListPermissions()) {
                     if (player.hasPermission(permission.toLowerCase().replaceAll("%arg%", argument != null ? argument : "%arg%"))) {
-                        player.sendMessage(Methods.getPrefix(Messages.replacePlaceholders(placeholders, voucher.getBlackListMessage())));
+                        player.sendMessage(Messages.replacePlaceholders(placeholders, voucher.getBlackListMessage()));
                         for (String command : voucher.getBlacklistCommands()) {
                             Bukkit.dispatchCommand(Bukkit.getConsoleSender(), Messages.replacePlaceholders(placeholders, command));
                         }

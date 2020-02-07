@@ -4,6 +4,7 @@ import me.badbones69.vouchers.Methods;
 import me.badbones69.vouchers.api.FileManager.Files;
 import org.bukkit.configuration.file.FileConfiguration;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
@@ -112,6 +113,17 @@ public enum Messages {
             .replaceAll(placeholder.toLowerCase(), placeholders.get(placeholder));
         }
         return message;
+    }
+    
+    public static List<String> replacePlaceholders(HashMap<String, String> placeholders, List<String> messageList) {
+        List<String> newMessageList = new ArrayList<>();
+        for (String message : messageList) {
+            for (String placeholder : placeholders.keySet()) {
+                newMessageList.add(message.replaceAll(placeholder, placeholders.get(placeholder))
+                .replaceAll(placeholder.toLowerCase(), placeholders.get(placeholder)));
+            }
+        }
+        return newMessageList;
     }
     
     private String getMessage(boolean prefix) {

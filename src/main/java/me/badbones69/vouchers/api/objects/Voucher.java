@@ -113,7 +113,7 @@ public class Voucher {
         for (String itemString : config.getStringList(path + "Items")) {
             this.items.add(Methods.makeItem(itemString));
         }
-        this.usedMessage = config.getString(path + "Options.Message", "");
+        this.usedMessage = getMessage(path + "Options.Message");
         if (config.contains(path + "Options.Permission.Whitelist-Permission")) {
             this.whitelistPermissionToggle = config.getBoolean(path + "Options.Permission.Whitelist-Permission.Toggle");
             if (config.contains(path + "Options.Permission.Whitelist-Permission.Node")) {
@@ -121,14 +121,14 @@ public class Voucher {
             }
             whitelistPermissions.addAll(config.getStringList(path + "Options.Permission.Whitelist-Permission.Permissions").stream().map(String :: toLowerCase).collect(Collectors.toList()));
             this.whitelistCommands = config.getStringList(path + "Options.Permission.Whitelist-Permission.Commands");
-            this.whitelistPermissionMessage = config.contains(path + "Options.Permission.Whitelist-Permission.Message") ? config.getString(path + "Options.Permission.Whitelist-Permission.Message") : Messages.NO_PERMISSION_TO_VOUCHER.getMessageNoPrefix();
+            this.whitelistPermissionMessage = config.contains(path + "Options.Permission.Whitelist-Permission.Message") ? getMessage(path + "Options.Permission.Whitelist-Permission.Message") : Messages.NO_PERMISSION_TO_VOUCHER.getMessageNoPrefix();
         } else {
             this.whitelistPermissionToggle = false;
         }
         if (config.contains(path + "Options.Whitelist-Worlds.Toggle")) {
             this.whitelistWorlds.addAll(config.getStringList(path + "Options.Whitelist-Worlds.Worlds").stream().map(String :: toLowerCase).collect(Collectors.toList()));
             if (config.contains(path + "Options.Whitelist-Worlds.Message")) {
-                this.whitelistWorldMessage = config.getString(path + "Options.Whitelist-Worlds.Message");
+                this.whitelistWorldMessage = getMessage(path + "Options.Whitelist-Worlds.Message");
             } else {
                 this.whitelistWorldMessage = Messages.NOT_IN_WHITELISTED_WORLD.getMessageNoPrefix();
             }
@@ -140,7 +140,7 @@ public class Voucher {
         if (config.contains(path + "Options.Permission.Blacklist-Permissions")) {
             this.blacklistPermissionsToggle = config.getBoolean(path + "Options.Permission.Blacklist-Permissions.Toggle");
             if (config.contains(path + "Options.Permission.Blacklist-Permissions.Message")) {
-                this.blacklistPermissionMessage = config.getString(path + "Options.Permission.Blacklist-Permissions.Message");
+                this.blacklistPermissionMessage = getMessage(path + "Options.Permission.Blacklist-Permissions.Message");
             } else {
                 this.blacklistPermissionMessage = Messages.HAS_BLACKLIST_PERMISSION.getMessageNoPrefix();
             }
@@ -328,6 +328,25 @@ public class Voucher {
     
     public boolean isEdible() {
         return isEdible;
+    }
+    
+    private String getMessage(String path) {
+        FileConfiguration config = Files.CONFIG.getFile();
+        String messageString;
+        if (isList(path)) {
+            messageString = Methods.color(Messages.convertList(config.getStringList(path)));
+        } else {
+            messageString = Methods.getPrefix(config.getString(path));
+        }
+        return messageString;
+    }
+    
+    private boolean isList(String path) {
+        if (Files.CONFIG.getFile().contains(path)) {
+            return !Files.CONFIG.getFile().getStringList(path).isEmpty();
+        } else {
+            return false;
+        }
     }
     
 }
