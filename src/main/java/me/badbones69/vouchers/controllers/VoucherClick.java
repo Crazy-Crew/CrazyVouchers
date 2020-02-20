@@ -35,10 +35,8 @@ public class VoucherClick implements Listener {
         Player player = e.getPlayer();
         Action action = e.getAction();
         if (item != null && item.getType() != Material.AIR) {
-            if (Version.getCurrentVersion().isNewer(Version.v1_8_R3)) {
-                if (e.getHand() != EquipmentSlot.HAND) {
-                    return;
-                }
+            if (Version.getCurrentVersion().isNewer(Version.v1_8_R3) && e.getHand() != EquipmentSlot.HAND) {
+                return;
             }
             if (action == Action.RIGHT_CLICK_BLOCK || action == Action.RIGHT_CLICK_AIR) {
                 Voucher voucher = Vouchers.getVoucherFromItem(item);
@@ -67,12 +65,8 @@ public class VoucherClick implements Listener {
     
     @EventHandler(priority = EventPriority.LOW)
     public void onArmorStandClick(PlayerInteractEntityEvent e) {
-        if (Version.getCurrentVersion().isNewer(Version.v1_8_R3)) {
-            if (e.getHand() == EquipmentSlot.HAND) {
-                if (Vouchers.getVoucherFromItem(getItemInHand(e.getPlayer())) != null) {
-                    e.setCancelled(true);
-                }
-            }
+        if (Version.getCurrentVersion().isNewer(Version.v1_8_R3) && e.getHand() == EquipmentSlot.HAND && Vouchers.getVoucherFromItem(getItemInHand(e.getPlayer())) != null) {
+            e.setCancelled(true);
         }
     }
     
@@ -81,32 +75,24 @@ public class VoucherClick implements Listener {
         String argument = Vouchers.getArgument(item, voucher);
         if (passesPermissionChecks(player, item, voucher, argument)) {
             String uuid = player.getUniqueId().toString();
-            if (!player.hasPermission("voucher.bypass")) {
-                if (voucher.useLimiter()) {
-                    if (data.contains("Players." + uuid)) {
-                        if (data.contains("Players." + uuid + ".Vouchers." + voucher.getName())) {
-                            int amount = data.getInt("Players." + uuid + ".Vouchers." + voucher.getName());
-                            if (amount >= voucher.getLimiterLimit()) {
-                                player.sendMessage(Messages.HIT_LIMIT.getMessage());
-                                return;
-                            }
-                        }
-                    }
+            if (!player.hasPermission("voucher.bypass") && voucher.useLimiter() && data.contains("Players." + uuid + ".Vouchers." + voucher.getName())) {
+                int amount = data.getInt("Players." + uuid + ".Vouchers." + voucher.getName());
+                if (amount >= voucher.getLimiterLimit()) {
+                    player.sendMessage(Messages.HIT_LIMIT.getMessage());
+                    return;
                 }
             }
-            if (!voucher.isEdible()) {
-                if (voucher.useTwoStepAuthentication() && !voucher.isEdible()) {
-                    if (twoAuth.containsKey(player)) {
-                        if (!twoAuth.get(player).equalsIgnoreCase(voucher.getName())) {
-                            player.sendMessage(Messages.TWO_STEP_AUTHENTICATION.getMessage());
-                            twoAuth.put(player, voucher.getName());
-                            return;
-                        }
-                    } else {
+            if (!voucher.isEdible() && voucher.useTwoStepAuthentication()) {
+                if (twoAuth.containsKey(player)) {
+                    if (!twoAuth.get(player).equalsIgnoreCase(voucher.getName())) {
                         player.sendMessage(Messages.TWO_STEP_AUTHENTICATION.getMessage());
                         twoAuth.put(player, voucher.getName());
                         return;
                     }
+                } else {
+                    player.sendMessage(Messages.TWO_STEP_AUTHENTICATION.getMessage());
+                    twoAuth.put(player, voucher.getName());
+                    return;
                 }
             }
             twoAuth.remove(player);
@@ -118,6 +104,7 @@ public class VoucherClick implements Listener {
         }
     }
     
+    @SuppressWarnings({"deprecation", "squid:CallToDeprecatedMethod"})
     private ItemStack getItemInHand(Player player) {
         if (Version.getCurrentVersion().isNewer(Version.v1_8_R3)) {
             return player.getInventory().getItemInMainHand();
@@ -137,7 +124,7 @@ public class VoucherClick implements Listener {
             placeholders.put("%Z%", player.getLocation().getBlockZ() + "");
             if (voucher.useWhiteListPermissions()) {
                 for (String permission : voucher.getWhitelistPermissions()) {
-                    if (!player.hasPermission(permission.toLowerCase().replaceAll("%arg%", argument != null ? argument : "%arg%"))) {
+                    if (!player.hasPermission(permission.toLowerCase().replace("%arg%", argument != null ? argument : "%arg%"))) {
                         player.sendMessage(Messages.replacePlaceholders(placeholders, voucher.getWhitelistPermissionMessage()));
                         for (String command : voucher.getWhitelistCommands()) {
                             Bukkit.dispatchCommand(Bukkit.getConsoleSender(), Messages.replacePlaceholders(placeholders, command));
@@ -146,18 +133,16 @@ public class VoucherClick implements Listener {
                     }
                 }
             }
-            if (voucher.usesWhitelistWorlds()) {
-                if (!voucher.getWhitelistWorlds().contains(player.getWorld().getName().toLowerCase())) {
-                    player.sendMessage(Messages.replacePlaceholders(placeholders, voucher.getWhitelistWorldMessage()));
-                    for (String command : voucher.getWhitelistWorldCommands()) {
-                        Bukkit.dispatchCommand(Bukkit.getConsoleSender(), Messages.replacePlaceholders(placeholders, command));
-                    }
-                    return false;
+            if (voucher.usesWhitelistWorlds() && !voucher.getWhitelistWorlds().contains(player.getWorld().getName().toLowerCase())) {
+                player.sendMessage(Messages.replacePlaceholders(placeholders, voucher.getWhitelistWorldMessage()));
+                for (String command : voucher.getWhitelistWorldCommands()) {
+                    Bukkit.dispatchCommand(Bukkit.getConsoleSender(), Messages.replacePlaceholders(placeholders, command));
                 }
+                return false;
             }
             if (voucher.useBlackListPermissions()) {
                 for (String permission : voucher.getBlackListPermissions()) {
-                    if (player.hasPermission(permission.toLowerCase().replaceAll("%arg%", argument != null ? argument : "%arg%"))) {
+                    if (player.hasPermission(permission.toLowerCase().replace("%arg%", argument != null ? argument : "%arg%"))) {
                         player.sendMessage(Messages.replacePlaceholders(placeholders, voucher.getBlackListMessage()));
                         for (String command : voucher.getBlacklistCommands()) {
                             Bukkit.dispatchCommand(Bukkit.getConsoleSender(), Messages.replacePlaceholders(placeholders, command));
@@ -171,7 +156,6 @@ public class VoucherClick implements Listener {
     }
     
     private void voucherClick(Player player, ItemStack item, Voucher voucher, String argument) {
-        String name = player.getName();
         Methods.removeItem(item, player);
         HashMap<String, String> placeholders = new HashMap<>();
         placeholders.put("%Arg%", argument != null ? argument : "%arg%");
@@ -183,12 +167,12 @@ public class VoucherClick implements Listener {
         for (String command : voucher.getCommands()) {
             Bukkit.dispatchCommand(Bukkit.getConsoleSender(), Messages.replacePlaceholders(placeholders, command));
         }
-        if (voucher.getRandomCoammnds().size() >= 1) {// Picks a random command from the Random-Commands list.
+        if (!voucher.getRandomCoammnds().isEmpty()) {// Picks a random command from the Random-Commands list.
             for (String command : voucher.getRandomCoammnds().get(new Random().nextInt(voucher.getRandomCoammnds().size())).getCommands()) {
                 Bukkit.dispatchCommand(Bukkit.getConsoleSender(), Messages.replacePlaceholders(placeholders, command));
             }
         }
-        if (voucher.getChanceCommands().size() >= 1) {// Picks a command based on the chance system of the Chance-Commands list.
+        if (!voucher.getChanceCommands().isEmpty()) {// Picks a command based on the chance system of the Chance-Commands list.
             for (String command : voucher.getChanceCommands().get(new Random().nextInt(voucher.getChanceCommands().size())).getCommands()) {
                 Bukkit.dispatchCommand(Bukkit.getConsoleSender(), Messages.replacePlaceholders(placeholders, command));
             }
