@@ -208,7 +208,7 @@ public class VoucherClick implements Listener {
         if (voucher.useFirework()) {
             Methods.fireWork(player.getLocation(), voucher.getFireworkColors());
         }
-        if (!voucher.getVoucherUsedMessage().equals("")) {
+        if (!voucher.getVoucherUsedMessage().isEmpty()) {
             player.sendMessage(Methods.getPrefix(Messages.replacePlaceholders(placeholders, voucher.getVoucherUsedMessage())));
         }
         if (voucher.useLimiter()) {

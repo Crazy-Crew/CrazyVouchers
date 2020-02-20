@@ -336,7 +336,7 @@ public class Voucher {
         if (isList(path)) {
             messageString = Methods.color(Messages.convertList(config.getStringList(path)));
         } else {
-            messageString = Methods.getPrefix(config.getString(path));
+            messageString = Methods.getPrefix(config.getString(path, ""));
         }
         return messageString;
     }
