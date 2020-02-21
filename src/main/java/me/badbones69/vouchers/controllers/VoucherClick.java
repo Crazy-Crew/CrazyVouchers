@@ -193,7 +193,7 @@ public class VoucherClick implements Listener {
             Methods.fireWork(player.getLocation(), voucher.getFireworkColors());
         }
         if (!voucher.getVoucherUsedMessage().isEmpty()) {
-            player.sendMessage(Methods.getPrefix(Messages.replacePlaceholders(placeholders, voucher.getVoucherUsedMessage())));
+            player.sendMessage(Messages.replacePlaceholders(placeholders, voucher.getVoucherUsedMessage()));
         }
         if (voucher.useLimiter()) {
             Files.DATA.getFile().set("Players." + player.getUniqueId() + ".UserName", player.getName());
