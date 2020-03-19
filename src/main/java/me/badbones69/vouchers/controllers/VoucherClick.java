@@ -35,7 +35,7 @@ public class VoucherClick implements Listener {
         Player player = e.getPlayer();
         Action action = e.getAction();
         if (item != null && item.getType() != Material.AIR) {
-            if (Version.getCurrentVersion().isNewer(Version.v1_8_R3) && e.getHand() != EquipmentSlot.HAND) {
+            if (Version.isNewer(Version.v1_8_R3) && e.getHand() != EquipmentSlot.HAND) {
                 return;
             }
             if (action == Action.RIGHT_CLICK_BLOCK || action == Action.RIGHT_CLICK_AIR) {
@@ -65,7 +65,7 @@ public class VoucherClick implements Listener {
     
     @EventHandler(priority = EventPriority.LOW)
     public void onArmorStandClick(PlayerInteractEntityEvent e) {
-        if (Version.getCurrentVersion().isNewer(Version.v1_8_R3) && e.getHand() == EquipmentSlot.HAND && Vouchers.getVoucherFromItem(getItemInHand(e.getPlayer())) != null) {
+        if (Version.isNewer(Version.v1_8_R3) && e.getHand() == EquipmentSlot.HAND && Vouchers.getVoucherFromItem(getItemInHand(e.getPlayer())) != null) {
             e.setCancelled(true);
         }
     }
@@ -106,7 +106,7 @@ public class VoucherClick implements Listener {
     
     @SuppressWarnings({"deprecation", "squid:CallToDeprecatedMethod"})
     private ItemStack getItemInHand(Player player) {
-        if (Version.getCurrentVersion().isNewer(Version.v1_8_R3)) {
+        if (Version.isNewer(Version.v1_8_R3)) {
             return player.getInventory().getItemInMainHand();
         } else {
             return player.getItemInHand();

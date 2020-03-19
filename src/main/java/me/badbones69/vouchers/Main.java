@@ -35,7 +35,7 @@ public class Main extends JavaPlugin implements Listener {
         getCommand("vouchers").setExecutor(new VoucherCommands());
         getCommand("vouchers").setTabCompleter(new VoucherTab());
         try {
-            if (Version.getCurrentVersion().isNewer(Version.v1_10_R1)) {
+            if (Version.isNewer(Version.v1_10_R1)) {
                 Bukkit.getServer().getPluginManager().registerEvents(new FireworkDamageAPI(this), this);
             }
         } catch (Exception e) {

@@ -123,7 +123,7 @@ public class Methods {
         }
         return new ItemBuilder()
         .setMaterial(Material.matchMaterial(id))
-        .setMetaData(itemMetaData)
+        .setDamage(itemMetaData)
         .setAmount(amount)
         .setName(name)
         .setLore(lore)
@@ -245,7 +245,7 @@ public class Methods {
     }
     
     public static ItemStack addGlow(ItemStack item, boolean glowing) {
-        if (Version.getCurrentVersion().isNewer(Version.v1_7_R3)) {
+        if (Version.isNewer(Version.v1_7_R3)) {
             if (glowing) {
                 if (item != null) {
                     if (item.hasItemMeta()) {
