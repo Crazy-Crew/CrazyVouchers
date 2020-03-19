@@ -106,7 +106,7 @@ public class ItemBuilder {
             string = b[0];
             metaData = Short.parseShort(b[1]);
         }
-        Material material = Material.getMaterial(string);
+        Material material = Material.matchMaterial(string);
         if (material != null) {
             this.material = material;
             this.metaData = metaData;
