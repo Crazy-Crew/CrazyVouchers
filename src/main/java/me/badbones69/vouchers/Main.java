@@ -15,12 +15,14 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerJoinEvent;
+import org.bukkit.plugin.PluginManager;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.scheduler.BukkitRunnable;
 
 public class Main extends JavaPlugin implements Listener {
     
     private FileManager fileManager = FileManager.getInstance();
+    private PluginManager pm = Bukkit.getServer().getPluginManager();
     
     @Override
     public void onEnable() {
@@ -29,14 +31,14 @@ public class Main extends JavaPlugin implements Listener {
             Files.DATA.getFile().set("Players.Clear", null);
             Files.DATA.saveFile();
         }
-        Bukkit.getServer().getPluginManager().registerEvents(this, this);
-        Bukkit.getServer().getPluginManager().registerEvents(new VoucherClick(), this);
-        Bukkit.getServer().getPluginManager().registerEvents(new GUI(), this);
+        pm.registerEvents(this, this);
+        pm.registerEvents(new VoucherClick(), this);
+        pm.registerEvents(new GUI(), this);
         getCommand("vouchers").setExecutor(new VoucherCommands());
         getCommand("vouchers").setTabCompleter(new VoucherTab());
         try {
             if (Version.isNewer(Version.v1_10_R1)) {
-                Bukkit.getServer().getPluginManager().registerEvents(new FireworkDamageAPI(this), this);
+                pm.registerEvents(new FireworkDamageAPI(this), this);
             }
         } catch (Exception e) {
         }
@@ -51,7 +53,7 @@ public class Main extends JavaPlugin implements Listener {
             @Override
             public void run() {
                 if (player.getName().equals("BadBones69")) {
-                    player.sendMessage(Methods.color("&8[&bVouchers&8]: " + "&7This server is running your Vouchers Plugin. " + "&7It is running version &av" + Bukkit.getServer().getPluginManager().getPlugin("Vouchers").getDescription().getVersion() + "&7."));
+                    player.sendMessage(Methods.color("&8[&bVouchers&8]: " + "&7This server is running your Vouchers Plugin. " + "&7It is running version &av" + getDescription().getVersion() + "&7."));
                 }
                 if (player.isOp()) {
                     if (Files.CONFIG.getFile().contains("Settings.Updater")) {
