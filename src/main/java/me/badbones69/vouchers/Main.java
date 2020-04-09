@@ -22,7 +22,6 @@ import org.bukkit.scheduler.BukkitRunnable;
 public class Main extends JavaPlugin implements Listener {
     
     private FileManager fileManager = FileManager.getInstance();
-    private PluginManager pm = Bukkit.getServer().getPluginManager();
     
     @Override
     public void onEnable() {
@@ -31,6 +30,7 @@ public class Main extends JavaPlugin implements Listener {
             Files.DATA.getFile().set("Players.Clear", null);
             Files.DATA.saveFile();
         }
+        PluginManager pm = Bukkit.getServer().getPluginManager();
         pm.registerEvents(this, this);
         pm.registerEvents(new VoucherClick(), this);
         pm.registerEvents(new GUI(), this);
