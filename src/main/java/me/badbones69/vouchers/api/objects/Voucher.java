@@ -17,10 +17,8 @@ public class Voucher {
     
     private String name;
     private Boolean usesArgs;
-    private String itemMaterial;
-    private String itemName;
-    private Boolean itemGlow;
-    private List<String> itemFlags = new ArrayList<>();
+    private ItemBuilder itemBuilder;
+    private boolean glowing;
     private String usedMessage;
     private Boolean whitelistPermissionToggle;
     private List<String> whitelistPermissions = new ArrayList<>();
@@ -42,7 +40,6 @@ public class Voucher {
     private Boolean fireworkToggle;
     private List<Color> fireworkColors = new ArrayList<>();
     private boolean isEdible;
-    private List<String> itemLore;
     private List<String> commands = new ArrayList<>();
     private List<VoucherCommand> randomCoammnds = new ArrayList<>();
     private List<VoucherCommand> chanceCommands = new ArrayList<>();
@@ -55,9 +52,7 @@ public class Voucher {
     public Voucher(int number) {
         this.name = number + "";
         this.usesArgs = false;
-        this.itemMaterial = "STONE";
-        this.itemName = number + "";
-        this.itemGlow = false;
+        itemBuilder = new ItemBuilder().setMaterial("Stone").setName(number + "");
         this.usedMessage = "";
         this.whitelistPermissionToggle = false;
         this.whitelistPermissionMessage = "";
@@ -78,22 +73,24 @@ public class Voucher {
         this.usesArgs = false;
         FileConfiguration config = Files.CONFIG.getFile();
         String path = "Vouchers." + name + ".";
-        this.itemMaterial = config.getString(path + "Item");
-        this.itemName = config.getString(path + "Name");
-        this.itemLore = config.getStringList(path + "Lore");
-        if (this.itemName.toLowerCase().contains("%arg%")) {
+        itemBuilder = new ItemBuilder()
+        .setMaterial(config.getString(path + "Item", "Stone"))
+        .setName(config.getString(path + "Name", ""))
+        .setLore(config.getStringList(path + "Lore"))
+        .setPlayer(config.getString(path + "Player"))
+        .setFlagsFromStrings(config.getStringList(path + "Flags"));
+        this.glowing = config.getBoolean(path + "Glowing");
+        if (itemBuilder.getName().toLowerCase().contains("%arg%")) {
             this.usesArgs = true;
         }
         if (!usesArgs) {
-            for (String lore : this.itemLore) {
+            for (String lore : itemBuilder.getLore()) {
                 if (lore.toLowerCase().contains("%arg%")) {
                     this.usesArgs = true;
                     break;
                 }
             }
         }
-        this.itemGlow = config.contains(path + "Glowing") && config.getBoolean(path + "Glowing");
-        itemFlags.addAll(config.getStringList(path + "Flags"));
         this.commands = config.getStringList(path + "Commands");
         for (String commands : config.getStringList(path + "Random-Commands")) {
             this.randomCoammnds.add(new VoucherCommand(commands));
@@ -176,8 +173,8 @@ public class Voucher {
             this.fireworkToggle = false;
         }
         if (config.getBoolean(path + "Options.Is-Edible")) {
-            this.isEdible = new ItemBuilder().setMaterial(itemMaterial).build().getType().isEdible();
-            switch (itemMaterial) {
+            this.isEdible = itemBuilder.build().getType().isEdible();
+            switch (itemBuilder.getMaterial().toString()) {
                 case "MILK_BUCKET":
                 case "POTION":
                     this.isEdible = true;
@@ -198,13 +195,7 @@ public class Voucher {
     }
     
     public ItemStack buildItem(int amount) {
-        ItemStack item = Methods.addGlow(new ItemBuilder()
-        .setMaterial(itemMaterial)
-        .setAmount(amount)
-        .setName(itemName)
-        .setLore(itemLore)
-        .setFlagsFromStrings(itemFlags)
-        .build(), itemGlow);
+        ItemStack item = Methods.addGlow(itemBuilder.build(), glowing);
         NBTItem nbt = new NBTItem(item);
         nbt.setString("voucher", name);
         return nbt.getItem();
@@ -215,15 +206,10 @@ public class Voucher {
     }
     
     public ItemStack buildItem(String argument, int amount) {
-        ItemStack item = Methods.addGlow(new ItemBuilder()
-        .setMaterial(itemMaterial)
-        .setAmount(amount)
-        .setName(itemName)
-        .setLore(itemLore)
+        ItemStack item = Methods.addGlow(itemBuilder
         .addLorePlaceholder("%Arg%", argument)
         .addNamePlaceholder("%Arg%", argument)
-        .setFlagsFromStrings(itemFlags)
-        .build(), itemGlow);
+        .build(), glowing);
         NBTItem nbt = new NBTItem(item);
         nbt.setString("voucher", name);
         nbt.setString("argument", argument);
