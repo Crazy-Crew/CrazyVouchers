@@ -24,6 +24,7 @@ Vouchers: #Where you make your vouchers.
     Lore: #The item's lore
       - '&7Use this voucher to gain &a$%Arg%&7.'
       - '&7&l(&6&l!&7&l) &7Right click to redeem.'
+    Player: '' #Set the Item: to SKULL_ITEM:3 and use this to set the skin on the player head. Can use Name/Hash/URL
     Glowing: false #Toggle if the item will have a glowing effect or not.
     Commands: #The commands that are ran when redeemed.
       - 'eco give %Player% %Arg%'
@@ -66,6 +67,7 @@ Vouchers: #Where you make your vouchers.
     Lore:
       - '&7Use this voucher to rank up to &c%Arg%&7.'
       - '&7&l(&6&l!&7&l) &7Right click to redeem.'
+    Player: ''
     Glowing: false
     Commands:
       - 'pex user %Player% group set %Arg%'
@@ -107,6 +109,7 @@ Vouchers: #Where you make your vouchers.
     Lore:
       - '&7Use this voucher to get a god set.'
       - '&7&l(&6&l!&7&l) &7Right click to redeem.'
+    Player: ''
     Glowing: true
     Items:
       - 'Item:310, Amount:1, Name:&bGod Helmet, Protection:4, Respiration:1, Aqua_Affinity:3, Unbreaking:3, Thorns:3'
@@ -158,6 +161,7 @@ Vouchers: #Where you make your vouchers.
       - '&6&l#5: &a$1,000,000'
       - ''
       - '&7&l(&6&l!&7&l) &7Right click to redeem.'
+    Player: ''
     Glowing: false
     Random-Commands: #Picks a random prize. There is no chance system for this only a random prize.
       - 'eco give %Player% 100'
@@ -182,6 +186,7 @@ Vouchers: #Where you make your vouchers.
       - '&6&l#5: &a$1,000,000 &c5%'
       - ''
       - '&7&l(&6&l!&7&l) &7Right click to redeem.'
+    Player: ''
     Glowing: false
     #Chance Command Layout: - '<Chance> <Command goes after>'
     Chance-Commands: #Picks a prizes based on a chance system. Chance-System wiki: https://github.com/badbones69/Vouchers/wiki/Chance-System-Wiki
