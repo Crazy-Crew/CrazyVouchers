@@ -195,7 +195,7 @@ public class Voucher {
     }
     
     public ItemStack buildItem(int amount) {
-        ItemStack item = Methods.addGlow(itemBuilder.build(), glowing);
+        ItemStack item = Methods.addGlow(itemBuilder.setAmount(amount).build(), glowing);
         NBTItem nbt = new NBTItem(item);
         nbt.setString("voucher", name);
         return nbt.getItem();
@@ -206,7 +206,7 @@ public class Voucher {
     }
     
     public ItemStack buildItem(String argument, int amount) {
-        ItemStack item = Methods.addGlow(itemBuilder
+        ItemStack item = Methods.addGlow(itemBuilder.setAmount(amount)
         .addLorePlaceholder("%Arg%", argument)
         .addNamePlaceholder("%Arg%", argument)
         .build(), glowing);
