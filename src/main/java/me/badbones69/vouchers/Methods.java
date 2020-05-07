@@ -46,20 +46,8 @@ public class Methods {
         return color(Files.CONFIG.getFile().getString("Settings.Prefix") + message);
     }
     
-    public static String Args(String arg) {
-        arg = ChatColor.stripColor(arg);
-        arg = arg.replace("&l", "");
-        arg = arg.replace("", "");
-        arg = arg.replaceAll("(&([a-f0-9]))", "");
-        return arg;
-    }
-    
     public static String color(String msg) {
         return ChatColor.translateAlternateColorCodes('&', msg);
-    }
-    
-    public static String removeColor(String msg) {
-        return ChatColor.stripColor(msg);
     }
     
     public static boolean isInt(String s) {
