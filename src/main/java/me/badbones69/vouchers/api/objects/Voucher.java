@@ -43,7 +43,7 @@ public class Voucher {
     private List<String> commands = new ArrayList<>();
     private List<VoucherCommand> randomCoammnds = new ArrayList<>();
     private List<VoucherCommand> chanceCommands = new ArrayList<>();
-    private List<ItemStack> items = new ArrayList<>();
+    private List<ItemBuilder> items = new ArrayList<>();
     
     /**
      * This is just used for imputing fake vouchers.
@@ -108,7 +108,7 @@ public class Voucher {
             }
         }
         for (String itemString : config.getStringList(path + "Items")) {
-            this.items.add(Methods.makeItem(itemString));
+            this.items.add(ItemBuilder.convertString(itemString));
         }
         this.usedMessage = getMessage(path + "Options.Message");
         if (config.contains(path + "Options.Permission.Whitelist-Permission")) {
@@ -308,7 +308,7 @@ public class Voucher {
         return chanceCommands;
     }
     
-    public List<ItemStack> getItems() {
+    public List<ItemBuilder> getItems() {
         return items;
     }
     
@@ -329,11 +329,7 @@ public class Voucher {
     }
     
     private boolean isList(String path) {
-        if (Files.CONFIG.getFile().contains(path)) {
-            return !Files.CONFIG.getFile().getStringList(path).isEmpty();
-        } else {
-            return false;
-        }
+        return Files.CONFIG.getFile().contains(path) && !Files.CONFIG.getFile().getStringList(path).isEmpty();
     }
     
 }

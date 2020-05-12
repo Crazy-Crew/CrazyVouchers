@@ -6,6 +6,7 @@ import me.badbones69.vouchers.api.FileManager.Files;
 import me.badbones69.vouchers.api.Vouchers;
 import me.badbones69.vouchers.api.enums.Messages;
 import me.badbones69.vouchers.api.events.RedeemVoucherCodeEvent;
+import me.badbones69.vouchers.api.objects.ItemBuilder;
 import me.badbones69.vouchers.api.objects.Voucher;
 import me.badbones69.vouchers.api.objects.VoucherCode;
 import me.badbones69.vouchers.controllers.GUI;
@@ -176,11 +177,11 @@ public class VoucherCommands implements CommandExecutor {
                                             Bukkit.dispatchCommand(Bukkit.getConsoleSender(), Messages.replacePlaceholders(placeholders, command));
                                         }
                                     }
-                                    for (ItemStack it : voucherCode.getItems()) {
+                                    for (ItemBuilder itemBuilder : voucherCode.getItems()) {
                                         if (!Methods.isInventoryFull(player)) {
-                                            player.getInventory().addItem(it);
+                                            player.getInventory().addItem(itemBuilder.build());
                                         } else {
-                                            player.getWorld().dropItem(player.getLocation(), it);
+                                            player.getWorld().dropItem(player.getLocation(), itemBuilder.build());
                                         }
                                     }
                                     if (voucherCode.useSounds()) {

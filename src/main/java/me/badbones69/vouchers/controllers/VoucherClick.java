@@ -6,6 +6,7 @@ import me.badbones69.vouchers.api.Vouchers;
 import me.badbones69.vouchers.api.enums.Messages;
 import me.badbones69.vouchers.api.enums.Version;
 import me.badbones69.vouchers.api.events.RedeemVoucherEvent;
+import me.badbones69.vouchers.api.objects.ItemBuilder;
 import me.badbones69.vouchers.api.objects.Voucher;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
@@ -180,11 +181,11 @@ public class VoucherClick implements Listener {
                 Bukkit.dispatchCommand(Bukkit.getConsoleSender(), Messages.replacePlaceholders(placeholders, usesRandom(command) ? replaceRandom(voucher, command) : command));
             }
         }
-        for (ItemStack itemStack : voucher.getItems()) {
+        for (ItemBuilder itemBuilder : voucher.getItems()) {
             if (!Methods.isInventoryFull(player)) {
-                player.getInventory().addItem(itemStack);
+                player.getInventory().addItem(itemBuilder.build());
             } else {
-                player.getWorld().dropItem(player.getLocation(), itemStack);
+                player.getWorld().dropItem(player.getLocation(), itemBuilder.build());
             }
         }
         if (voucher.playSounds()) {

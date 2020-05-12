@@ -3,7 +3,6 @@ package me.badbones69.vouchers;
 import me.badbones69.vouchers.api.FileManager.Files;
 import me.badbones69.vouchers.api.enums.Messages;
 import me.badbones69.vouchers.api.enums.Version;
-import me.badbones69.vouchers.api.objects.ItemBuilder;
 import me.badbones69.vouchers.controllers.FireworkDamageAPI;
 import org.bukkit.*;
 import org.bukkit.command.CommandSender;
@@ -21,8 +20,6 @@ import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.nio.charset.StandardCharsets;
-import java.util.ArrayList;
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 
@@ -36,10 +33,6 @@ public class Methods {
         } else if (item.getAmount() > 1) {
             item.setAmount(item.getAmount() - 1);
         }
-    }
-    
-    public static String getPrefix() {
-        return color(Files.CONFIG.getFile().getString("Settings.Prefix"));
     }
     
     public static String getPrefix(String message) {
@@ -70,53 +63,6 @@ public class Methods {
             return false;
         }
         return true;
-    }
-    
-    public static ItemStack makeItem(String itemString) {
-        String id = "1";
-        short itemMetaData = 0;
-        int amount = 1;
-        String name = "";
-        List<String> lore = new ArrayList<>();
-        HashMap<Enchantment, Integer> enchantments = new HashMap<>();
-        for (String d : itemString.split(", ")) {
-            if (d.startsWith("Item:")) {
-                id = d.replace("Item:", "");
-            } else if (d.startsWith("Amount:")) {
-                if (isInt(d.replace("Amount:", ""))) {
-                    amount = Integer.parseInt(d.replace("Amount:", ""));
-                }
-            } else if (d.startsWith("Name:")) {
-                name = d.replace("Name:", "");
-            } else if (d.startsWith("Lore:")) {
-                d = d.replace("Lore:", "");
-                if (d.contains(",")) {
-                    Collections.addAll(lore, d.split(","));
-                } else {
-                    lore.add(d);
-                }
-            }
-            for (Enchantment ench : Enchantment.values()) {
-                if (d.startsWith(ench.getName() + ":") || d.startsWith(getEnchantmentName(ench) + ":")) {
-                    String[] breakdown = d.split(":");
-                    int lvl = Integer.parseInt(breakdown[1]);
-                    enchantments.put(ench, lvl);
-                }
-            }
-        }
-        if (id.contains(":")) {
-            String[] b = id.split(":");
-            id = b[0];
-            itemMetaData = Short.parseShort(b[1]);
-        }
-        return new ItemBuilder()
-        .setMaterial(Material.matchMaterial(id))
-        .setDamage(itemMetaData)
-        .setAmount(amount)
-        .setName(name)
-        .setLore(lore)
-        .setEnchantments(enchantments)
-        .build();
     }
     
     public static boolean isOnline(CommandSender sender, String name) {
@@ -193,43 +139,6 @@ public class Methods {
         f.setFireworkMeta(fm);
         FireworkDamageAPI.addFirework(f);
         Bukkit.getServer().getScheduler().scheduleSyncDelayedTask(plugin, f :: detonate, 2);
-    }
-    
-    public static String getEnchantmentName(Enchantment en) {
-        HashMap<String, String> enchants = new HashMap<>();
-        enchants.put("ARROW_DAMAGE", "Power");
-        enchants.put("ARROW_FIRE", "Flame");
-        enchants.put("ARROW_INFINITE", "Infinity");
-        enchants.put("ARROW_KNOCKBACK", "Punch");
-        enchants.put("DAMAGE_ALL", "Sharpness");
-        enchants.put("DAMAGE_ARTHROPODS", "Bane_Of_Arthropods");
-        enchants.put("DAMAGE_UNDEAD", "Smite");
-        enchants.put("DEPTH_STRIDER", "Depth_Strider");
-        enchants.put("DIG_SPEED", "Efficiency");
-        enchants.put("DURABILITY", "Unbreaking");
-        enchants.put("FIRE_ASPECT", "Fire_Aspect");
-        enchants.put("KNOCKBACK", "KnockBack");
-        enchants.put("LOOT_BONUS_BLOCKS", "Fortune");
-        enchants.put("LOOT_BONUS_MOBS", "Looting");
-        enchants.put("LUCK", "Luck_Of_The_Sea");
-        enchants.put("LURE", "Lure");
-        enchants.put("OXYGEN", "Respiration");
-        enchants.put("PROTECTION_ENVIRONMENTAL", "Protection");
-        enchants.put("PROTECTION_EXPLOSIONS", "Blast_Protection");
-        enchants.put("PROTECTION_FALL", "Feather_Falling");
-        enchants.put("PROTECTION_FIRE", "Fire_Protection");
-        enchants.put("PROTECTION_PROJECTILE", "Projectile_Protection");
-        enchants.put("SILK_TOUCH", "Silk_Touch");
-        enchants.put("THORNS", "Thorns");
-        enchants.put("WATER_WORKER", "Aqua_Affinity");
-        enchants.put("BINDING_CURSE", "Curse_Of_Binding");
-        enchants.put("MENDING", "Mending");
-        enchants.put("FROST_WALKER", "Frost_Walker");
-        enchants.put("VANISHING_CURSE", "Curse_Of_Vanishing");
-        if (enchants.get(en.getName()) == null) {
-            return "None Found";
-        }
-        return enchants.get(en.getName());
     }
     
     public static ItemStack addGlow(ItemStack item, boolean glowing) {

@@ -41,7 +41,7 @@ public class VoucherCode {
     private List<Color> fireworkColors = new ArrayList<>();
     private List<VoucherCommand> randomCoammnds = new ArrayList<>();
     private List<VoucherCommand> chanceCommands = new ArrayList<>();
-    private List<ItemStack> items = new ArrayList<>();
+    private List<ItemBuilder> items = new ArrayList<>();
     
     public VoucherCode(String name) {
         this.name = name;
@@ -66,7 +66,7 @@ public class VoucherCode {
             }
         }
         for (String itemString : config.getStringList(path + "Items")) {
-            this.items.add(Methods.makeItem(itemString));
+            this.items.add(ItemBuilder.convertString(itemString));
         }
         this.caseSensitive = config.getBoolean(path + "Options.Case-Sensitive");
         if (config.contains(path + "Options.Message")) {
@@ -235,7 +235,7 @@ public class VoucherCode {
         return chanceCommands;
     }
     
-    public List<ItemStack> getItems() {
+    public List<ItemBuilder> getItems() {
         return items;
     }
     
