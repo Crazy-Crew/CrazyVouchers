@@ -233,7 +233,7 @@ public class VoucherClick implements Listener {
     private long pickNumber(long min, long max) {
         try {
             // new Random() does not have a nextLong(long bound) method.
-            return ThreadLocalRandom.current().nextLong((max + 1) - min);
+            return min + ThreadLocalRandom.current().nextLong(max - min);
         } catch (IllegalArgumentException e) {
             return min;
         }
