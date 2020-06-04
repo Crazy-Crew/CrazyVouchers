@@ -232,19 +232,9 @@ public class VoucherCommands implements CommandExecutor {
                             Player player = Bukkit.getPlayer(name);
                             String argument = "";
                             if (args.length >= 5) {
-                                argument = args[4];
                                 //Gives a random number as the argument.
                                 // /Voucher give test 1 %player% %random%:1-1000
-                                if (argument.startsWith("%random%:")) {
-                                    argument = argument.replace("%random%:", "");
-                                    try {
-                                        int min = Integer.parseInt(argument.split("-")[0]);
-                                        int max = Integer.parseInt(argument.split("-")[1]);
-                                        argument += pickNumber(min, max) + " ";
-                                    } catch (Exception e) {
-                                        argument += "1";
-                                    }
-                                }
+                                argument = Vouchers.replaceRandom(args[4]);
                             }
                             ItemStack item = args.length >= 5 ? voucher.buildItem(argument, amount) : voucher.buildItem(amount);
                             if (Methods.isInventoryFull(player)) {
@@ -284,19 +274,9 @@ public class VoucherCommands implements CommandExecutor {
                             }
                             String argument = "";
                             if (args.length >= 4) {
-                                argument = args[3];
                                 //Gives a random number as the argument.
                                 // /Voucher give test 1 %player% %random%:1-1000
-                                if (argument.startsWith("%random%:")) {
-                                    argument = argument.replace("%random%:", "");
-                                    try {
-                                        int min = Integer.parseInt(argument.split("-")[0]);
-                                        int max = Integer.parseInt(argument.split("-")[1]);
-                                        argument += pickNumber(min, max) + " ";
-                                    } catch (Exception e) {
-                                        argument += "1";
-                                    }
-                                }
+                                argument = Vouchers.replaceRandom(args[3]);
                             }
                             ItemStack item = args.length >= 4 ? voucher.buildItem(argument, amount) : voucher.buildItem(amount);
                             for (Player player : Bukkit.getServer().getOnlinePlayers()) {
@@ -321,11 +301,6 @@ public class VoucherCommands implements CommandExecutor {
                     return true;
             }
         }
-    }
-    
-    private Integer pickNumber(int min, int max) {
-        max++;
-        return min + new Random().nextInt(max - min);
     }
     
 }

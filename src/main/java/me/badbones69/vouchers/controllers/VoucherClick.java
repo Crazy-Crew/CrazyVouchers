@@ -25,7 +25,6 @@ import org.bukkit.inventory.ItemStack;
 
 import java.util.HashMap;
 import java.util.Random;
-import java.util.concurrent.ThreadLocalRandom;
 
 public class VoucherClick implements Listener {
     
@@ -169,16 +168,16 @@ public class VoucherClick implements Listener {
         placeholders.put("%Y%", player.getLocation().getBlockY() + "");
         placeholders.put("%Z%", player.getLocation().getBlockZ() + "");
         for (String command : voucher.getCommands()) {
-            Bukkit.dispatchCommand(Bukkit.getConsoleSender(), Messages.replacePlaceholders(placeholders, usesRandom(command) ? replaceRandom(voucher, command) : command));
+            Bukkit.dispatchCommand(Bukkit.getConsoleSender(), Messages.replacePlaceholders(placeholders, Vouchers.replaceRandom(command)));
         }
         if (!voucher.getRandomCoammnds().isEmpty()) {// Picks a random command from the Random-Commands list.
             for (String command : voucher.getRandomCoammnds().get(new Random().nextInt(voucher.getRandomCoammnds().size())).getCommands()) {
-                Bukkit.dispatchCommand(Bukkit.getConsoleSender(), Messages.replacePlaceholders(placeholders, usesRandom(command) ? replaceRandom(voucher, command) : command));
+                Bukkit.dispatchCommand(Bukkit.getConsoleSender(), Messages.replacePlaceholders(placeholders, Vouchers.replaceRandom(command)));
             }
         }
         if (!voucher.getChanceCommands().isEmpty()) {// Picks a command based on the chance system of the Chance-Commands list.
             for (String command : voucher.getChanceCommands().get(new Random().nextInt(voucher.getChanceCommands().size())).getCommands()) {
-                Bukkit.dispatchCommand(Bukkit.getConsoleSender(), Messages.replacePlaceholders(placeholders, usesRandom(command) ? replaceRandom(voucher, command) : command));
+                Bukkit.dispatchCommand(Bukkit.getConsoleSender(), Messages.replacePlaceholders(placeholders, Vouchers.replaceRandom(command)));
             }
         }
         for (ItemBuilder itemBuilder : voucher.getItems()) {
@@ -203,39 +202,6 @@ public class VoucherClick implements Listener {
             Files.DATA.getFile().set("Players." + player.getUniqueId() + ".UserName", player.getName());
             Files.DATA.getFile().set("Players." + player.getUniqueId() + ".Vouchers." + voucher.getName(), Files.DATA.getFile().getInt("Players." + player.getUniqueId() + ".Vouchers." + voucher.getName()) + 1);
             Files.DATA.saveFile();
-        }
-    }
-    
-    private boolean usesRandom(String command) {
-        return command.contains("%random%:");
-    }
-    
-    private String replaceRandom(Voucher voucher, String command) {
-        String cmd = command;
-        command = "";
-        for (String word : cmd.split(" ")) {
-            if (word.startsWith("%random%:")) {
-                word = word.replace("%random%:", "");
-                try {
-                    long min = Long.parseLong(word.split("-")[0]);
-                    long max = Long.parseLong(word.split("-")[1]);
-                    command += pickNumber(min, max) + " ";
-                } catch (Exception e) {
-                    command += "1 ";
-                }
-            } else {
-                command += word + " ";
-            }
-        }
-        return command.substring(0, command.length() - 1);
-    }
-    
-    private long pickNumber(long min, long max) {
-        try {
-            // new Random() does not have a nextLong(long bound) method.
-            return min + ThreadLocalRandom.current().nextLong(max - min);
-        } catch (IllegalArgumentException e) {
-            return min;
         }
     }
     

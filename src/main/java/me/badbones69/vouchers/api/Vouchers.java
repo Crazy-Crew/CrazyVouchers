@@ -11,6 +11,7 @@ import org.bukkit.plugin.Plugin;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.ThreadLocalRandom;
 
 public class Vouchers {
     
@@ -176,6 +177,42 @@ public class Vouchers {
     
     public static Plugin getPlugin() {
         return Bukkit.getPluginManager().getPlugin("Vouchers");
+    }
+    
+    public static String replaceRandom(String string) {
+        String newString = string;
+        if (usesRandom(string)) {
+            string = "";
+            for (String word : newString.split(" ")) {
+                if (word.toLowerCase().startsWith("%random%:")) {
+                    word = word.toLowerCase().replace("%random%:", "");
+                    try {
+                        long min = Long.parseLong(word.split("-")[0]);
+                        long max = Long.parseLong(word.split("-")[1]);
+                        string += pickNumber(min, max) + " ";
+                    } catch (Exception e) {
+                        string += "1 ";
+                    }
+                } else {
+                    string += word + " ";
+                }
+            }
+            newString = string.substring(0, string.length() - 1);
+        }
+        return newString;
+    }
+    
+    private static boolean usesRandom(String string) {
+        return string.toLowerCase().contains("%random%:");
+    }
+    
+    private static long pickNumber(long min, long max) {
+        try {
+            // new Random() does not have a nextLong(long bound) method.
+            return min + ThreadLocalRandom.current().nextLong(max - min);
+        } catch (IllegalArgumentException e) {
+            return min;
+        }
     }
     
 }
