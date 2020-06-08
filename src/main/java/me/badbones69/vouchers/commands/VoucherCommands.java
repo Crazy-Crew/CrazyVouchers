@@ -106,7 +106,7 @@ public class VoucherCommands implements CommandExecutor {
                                             if (!player.hasPermission(permission)) {
                                                 player.sendMessage(Messages.NO_PERMISSION_TO_VOUCHER.getMessage(placeholders));
                                                 for (String command : voucherCode.getWhitelistCommands()) {
-                                                    Bukkit.dispatchCommand(Bukkit.getConsoleSender(), Messages.replacePlaceholders(placeholders, command));
+                                                    Bukkit.dispatchCommand(Bukkit.getConsoleSender(), Messages.replacePlaceholders(placeholders, Vouchers.replaceRandom(command)));
                                                 }
                                                 return true;
                                             }
@@ -116,7 +116,7 @@ public class VoucherCommands implements CommandExecutor {
                                         if (voucherCode.getWhitelistWorlds().contains(player.getWorld().getName().toLowerCase())) {
                                             player.sendMessage(Methods.getPrefix(Messages.replacePlaceholders(placeholders, voucherCode.getWhitelistWorldMessage())));
                                             for (String command : voucherCode.getWhitelistWorldCommands()) {
-                                                Bukkit.dispatchCommand(Bukkit.getConsoleSender(), Messages.replacePlaceholders(placeholders, command));
+                                                Bukkit.dispatchCommand(Bukkit.getConsoleSender(), Messages.replacePlaceholders(placeholders, Vouchers.replaceRandom(command)));
                                             }
                                             return true;
                                         }
@@ -126,7 +126,7 @@ public class VoucherCommands implements CommandExecutor {
                                             if (player.hasPermission(permission.toLowerCase())) {
                                                 player.sendMessage(Methods.getPrefix(Messages.replacePlaceholders(placeholders, voucherCode.getBlacklistMessage())));
                                                 for (String command : voucherCode.getBlacklistCommands()) {
-                                                    Bukkit.dispatchCommand(Bukkit.getConsoleSender(), Messages.replacePlaceholders(placeholders, command));
+                                                    Bukkit.dispatchCommand(Bukkit.getConsoleSender(), Messages.replacePlaceholders(placeholders, Vouchers.replaceRandom(command)));
                                                 }
                                                 return true;
                                             }
@@ -165,16 +165,16 @@ public class VoucherCommands implements CommandExecutor {
                                     data.set("Players." + uuid + ".Codes." + voucherCode.getName(), "used");
                                     Files.DATA.saveFile();
                                     for (String command : voucherCode.getCommands()) {
-                                        Bukkit.dispatchCommand(Bukkit.getConsoleSender(), Messages.replacePlaceholders(placeholders, command));
+                                        Bukkit.dispatchCommand(Bukkit.getConsoleSender(), Messages.replacePlaceholders(placeholders, Vouchers.replaceRandom(command)));
                                     }
                                     if (voucherCode.getRandomCoammnds().size() >= 1) {// Picks a random command from the Random-Commands list.
                                         for (String command : voucherCode.getRandomCoammnds().get(new Random().nextInt(voucherCode.getRandomCoammnds().size())).getCommands()) {
-                                            Bukkit.dispatchCommand(Bukkit.getConsoleSender(), Messages.replacePlaceholders(placeholders, command));
+                                            Bukkit.dispatchCommand(Bukkit.getConsoleSender(), Messages.replacePlaceholders(placeholders, Vouchers.replaceRandom(command)));
                                         }
                                     }
                                     if (voucherCode.getChanceCommands().size() >= 1) {// Picks a command based on the chance system of the Chance-Commands list.
                                         for (String command : voucherCode.getChanceCommands().get(new Random().nextInt(voucherCode.getChanceCommands().size())).getCommands()) {
-                                            Bukkit.dispatchCommand(Bukkit.getConsoleSender(), Messages.replacePlaceholders(placeholders, command));
+                                            Bukkit.dispatchCommand(Bukkit.getConsoleSender(), Messages.replacePlaceholders(placeholders, Vouchers.replaceRandom(command)));
                                         }
                                     }
                                     for (ItemBuilder itemBuilder : voucherCode.getItems()) {
