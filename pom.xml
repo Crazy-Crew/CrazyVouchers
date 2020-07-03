@@ -18,20 +18,25 @@
             <id>spigot-repo</id>
             <url>https://hub.spigotmc.org/nexus/content/repositories/snapshots/</url>
         </repository>
+        <!-- NBT-API -->
+        <repository>
+            <id>codemc-repo</id>
+            <url>https://repo.codemc.org/repository/maven-public/</url>
+            <layout>default</layout>
+        </repository>
     </repositories>
 
     <dependencies>
         <dependency>
             <groupId>org.spigotmc</groupId>
             <artifactId>spigot-api</artifactId>
-            <version>1.15.2-R0.1-SNAPSHOT</version>
+            <version>1.16.1-R0.1-SNAPSHOT</version>
             <scope>provided</scope>
         </dependency>
         <dependency>
-            <groupId>org.spigotmc</groupId>
-            <artifactId>spigot-api</artifactId>
-            <version>1.15.2-R0.1-SNAPSHOT</version>
-            <classifier>javadoc</classifier>
+            <groupId>de.tr7zw</groupId>
+            <artifactId>item-nbt-api</artifactId>
+            <version>2.4.2-SNAPSHOT</version>
         </dependency>
     </dependencies>
 
@@ -59,11 +64,6 @@
                 <artifactId>maven-shade-plugin</artifactId>
                 <version>3.2.1</version>
                 <configuration>
-                    <artifactSet>
-                        <includes>
-                            <include>me.badbones69:*</include>
-                        </includes>
-                    </artifactSet>
                     <!--                    <outputFile>/Users/badbones/Desktop/Minecraft/Server/plugins/${project.name}[v${project.version}].jar</outputFile>-->
                 </configuration>
                 <executions>

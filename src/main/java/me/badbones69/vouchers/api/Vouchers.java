@@ -1,7 +1,7 @@
 package me.badbones69.vouchers.api;
 
+import de.tr7zw.changeme.nbtapi.NBTItem;
 import me.badbones69.vouchers.api.FileManager.Files;
-import me.badbones69.vouchers.api.itemnbtapi.NBTItem;
 import me.badbones69.vouchers.api.objects.Voucher;
 import me.badbones69.vouchers.api.objects.VoucherCode;
 import org.bukkit.Bukkit;

@@ -68,4 +68,8 @@ public class Main extends JavaPlugin implements Listener {
         }.runTaskLaterAsynchronously(this, 20);
     }
     
+    private String check = "\nUser ID: %%__USER__%%"
+    + "\nResource ID: %%__RESOURCE__%%"
+    + "\nDownload ID: %%__NONCE__%%";
+    
 }
