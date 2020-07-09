@@ -6,7 +6,7 @@
 
     <groupId>me.badbones69</groupId>
     <artifactId>Vouchers</artifactId>
-    <version>1.8.14</version>
+    <version>1.8.15</version>
 
     <properties>
         <!--This is used to show the build number for jenkins.-->
@@ -36,7 +36,7 @@
         <dependency>
             <groupId>de.tr7zw</groupId>
             <artifactId>item-nbt-api</artifactId>
-            <version>2.4.2-SNAPSHOT</version>
+            <version>2.4.1</version>
         </dependency>
     </dependencies>
 
@@ -64,6 +64,12 @@
                 <artifactId>maven-shade-plugin</artifactId>
                 <version>3.2.1</version>
                 <configuration>
+                    <relocations>
+                        <relocation>
+                            <pattern>de.tr7zw.changeme.nbtapi</pattern>
+                            <shadedPattern>me.badbones69.vouchers.nbtapi</shadedPattern>
+                        </relocation>
+                    </relocations>
                     <!--                    <outputFile>/Users/badbones/Desktop/Minecraft/Server/plugins/${project.name}[v${project.version}].jar</outputFile>-->
                 </configuration>
                 <executions>
