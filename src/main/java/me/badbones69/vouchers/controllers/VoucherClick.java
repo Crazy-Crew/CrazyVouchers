@@ -4,6 +4,7 @@ import me.badbones69.vouchers.Methods;
 import me.badbones69.vouchers.api.FileManager.Files;
 import me.badbones69.vouchers.api.Vouchers;
 import me.badbones69.vouchers.api.enums.Messages;
+import me.badbones69.vouchers.api.enums.Support;
 import me.badbones69.vouchers.api.enums.Version;
 import me.badbones69.vouchers.api.events.RedeemVoucherEvent;
 import me.badbones69.vouchers.api.objects.ItemBuilder;
@@ -168,15 +169,18 @@ public class VoucherClick implements Listener {
         placeholders.put("%Y%", player.getLocation().getBlockY() + "");
         placeholders.put("%Z%", player.getLocation().getBlockZ() + "");
         for (String command : voucher.getCommands()) {
+            command = replacePlaceholders(command, player);
             Bukkit.dispatchCommand(Bukkit.getConsoleSender(), Messages.replacePlaceholders(placeholders, Vouchers.replaceRandom(command)));
         }
         if (!voucher.getRandomCoammnds().isEmpty()) {// Picks a random command from the Random-Commands list.
             for (String command : voucher.getRandomCoammnds().get(new Random().nextInt(voucher.getRandomCoammnds().size())).getCommands()) {
+                command = replacePlaceholders(command, player);
                 Bukkit.dispatchCommand(Bukkit.getConsoleSender(), Messages.replacePlaceholders(placeholders, Vouchers.replaceRandom(command)));
             }
         }
         if (!voucher.getChanceCommands().isEmpty()) {// Picks a command based on the chance system of the Chance-Commands list.
             for (String command : voucher.getChanceCommands().get(new Random().nextInt(voucher.getChanceCommands().size())).getCommands()) {
+                command = replacePlaceholders(command, player);
                 Bukkit.dispatchCommand(Bukkit.getConsoleSender(), Messages.replacePlaceholders(placeholders, Vouchers.replaceRandom(command)));
             }
         }
@@ -196,13 +200,23 @@ public class VoucherClick implements Listener {
             Methods.fireWork(player.getLocation(), voucher.getFireworkColors());
         }
         if (!voucher.getVoucherUsedMessage().isEmpty()) {
-            player.sendMessage(Messages.replacePlaceholders(placeholders, voucher.getVoucherUsedMessage()));
+            String message = replacePlaceholders(voucher.getVoucherUsedMessage(), player);
+            player.sendMessage(Messages.replacePlaceholders(placeholders, message));
         }
         if (voucher.useLimiter()) {
             Files.DATA.getFile().set("Players." + player.getUniqueId() + ".UserName", player.getName());
             Files.DATA.getFile().set("Players." + player.getUniqueId() + ".Vouchers." + voucher.getName(), Files.DATA.getFile().getInt("Players." + player.getUniqueId() + ".Vouchers." + voucher.getName()) + 1);
             Files.DATA.saveFile();
         }
+    }
+    
+    private String replacePlaceholders(String string, Player player) {
+        if (Support.PLACEHOLDERAPI.isPluginLoaded()) {
+            string = me.clip.placeholderapi.PlaceholderAPI.setPlaceholders(player, string);
+        } else if (Support.MVDWPLACEHOLDERAPI.isPluginLoaded()) {
+            string = be.maximvdw.placeholderapi.PlaceholderAPI.replacePlaceholders(player, string);
+        }
+        return string;
     }
     
 }
