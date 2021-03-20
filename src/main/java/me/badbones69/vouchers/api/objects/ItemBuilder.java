@@ -23,6 +23,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
+import java.util.regex.Matcher;
 import java.util.stream.Collectors;
 
 /**
@@ -35,7 +36,7 @@ import java.util.stream.Collectors;
  *
  */
 public class ItemBuilder {
-    
+
     private NBTItem nbtItem;
     private Material material;
     private int damage;
@@ -942,9 +943,18 @@ public class ItemBuilder {
     private boolean useNewMaterial() {
         return Version.isNewer(Version.v1_12_R1);
     }
-    
-    private String color(String msg) {
-        return ChatColor.translateAlternateColorCodes('&', msg);
+
+    public static String color(String message) {
+        if (Version.isNewer(Version.v1_15_R1)) {
+            Matcher matcher = Methods.HEX_PATTERN.matcher(message);
+            StringBuffer buffer = new StringBuffer();
+
+            while (matcher.find()) {
+                matcher.appendReplacement(buffer, net.md_5.bungee.api.ChatColor.of(matcher.group()).toString());
+            }
+            return ChatColor.translateAlternateColorCodes('&', matcher.appendTail(buffer).toString());
+        }
+        return ChatColor.translateAlternateColorCodes('&', message);
     }
     
     private ItemStack hideFlags(ItemStack item) {
