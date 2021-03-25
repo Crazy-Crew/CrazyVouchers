@@ -36,7 +36,7 @@ import java.util.stream.Collectors;
  *
  */
 public class ItemBuilder {
-
+    
     private NBTItem nbtItem;
     private Material material;
     private int damage;
@@ -67,6 +67,8 @@ public class ItemBuilder {
     private HashMap<String, String> namePlaceholders;
     private HashMap<String, String> lorePlaceholders;
     private List<ItemFlag> itemFlags;
+    
+    public final static java.util.regex.Pattern HEX_PATTERN = java.util.regex.Pattern.compile("#[a-fA-F0-9]{6}");
     
     /**
      * The initial starting point for making an item.
@@ -943,12 +945,11 @@ public class ItemBuilder {
     private boolean useNewMaterial() {
         return Version.isNewer(Version.v1_12_R1);
     }
-
+    
     public static String color(String message) {
         if (Version.isNewer(Version.v1_15_R1)) {
-            Matcher matcher = Methods.HEX_PATTERN.matcher(message);
+            Matcher matcher = HEX_PATTERN.matcher(message);
             StringBuffer buffer = new StringBuffer();
-
             while (matcher.find()) {
                 matcher.appendReplacement(buffer, net.md_5.bungee.api.ChatColor.of(matcher.group()).toString());
             }

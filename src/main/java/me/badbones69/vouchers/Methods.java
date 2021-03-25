@@ -14,6 +14,7 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.FireworkMeta;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.plugin.Plugin;
+
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
@@ -27,7 +28,7 @@ import java.util.regex.Pattern;
 public class Methods {
     
     public static Plugin plugin = Bukkit.getServer().getPluginManager().getPlugin("Vouchers");
-
+    
     public final static Pattern HEX_PATTERN = Pattern.compile("#[a-fA-F0-9]{6}");
     
     public static void removeItem(ItemStack item, Player player) {
@@ -41,12 +42,11 @@ public class Methods {
     public static String getPrefix(String message) {
         return color(Files.CONFIG.getFile().getString("Settings.Prefix") + message);
     }
-
+    
     public static String color(String message) {
         if (Version.isNewer(Version.v1_15_R1)) {
             Matcher matcher = HEX_PATTERN.matcher(message);
             StringBuffer buffer = new StringBuffer();
-
             while (matcher.find()) {
                 matcher.appendReplacement(buffer, net.md_5.bungee.api.ChatColor.of(matcher.group()).toString());
             }
