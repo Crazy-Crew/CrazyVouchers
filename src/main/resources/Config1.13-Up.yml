@@ -13,7 +13,7 @@
 #      Aqua, Black, Blue, Fuchsia, Gray, Green, Lime, Maroon,     #
 #  Navy, Olive, Orange, Purple, Red, Silver, Teal, White, Yellow  #
 ###################################################################
-Settings: #Settings
+Settings: #Settings - Hex Color support does work, Please use #FFFFFF format!
   Prefix: '&7[&6Vouchers&7]: ' #The prefix before messages.
   Updater: true
 Vouchers: #Where you make your vouchers.

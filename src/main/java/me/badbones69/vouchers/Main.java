@@ -17,7 +17,6 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.plugin.PluginManager;
 import org.bukkit.plugin.java.JavaPlugin;
-import org.bukkit.scheduler.BukkitRunnable;
 
 public class Main extends JavaPlugin implements Listener {
     
@@ -40,8 +39,7 @@ public class Main extends JavaPlugin implements Listener {
             if (Version.isNewer(Version.v1_10_R1)) {
                 pm.registerEvents(new FireworkDamageAPI(this), this);
             }
-        } catch (Exception e) {
-        }
+        } catch (Exception e) { }
         new Metrics(this);
         Vouchers.load();
     }
@@ -49,27 +47,21 @@ public class Main extends JavaPlugin implements Listener {
     @EventHandler
     public void onPlayerJoin(PlayerJoinEvent e) {
         final Player player = e.getPlayer();
-        new BukkitRunnable() {
-            @Override
-            public void run() {
-                if (player.getName().equals("BadBones69")) {
-                    player.sendMessage(Methods.color("&8[&bVouchers&8]: " + "&7This server is running your Vouchers Plugin. " + "&7It is running version &av" + getDescription().getVersion() + "&7."));
+        if (player.getName().equals("BadBones69")) {
+            player.sendMessage(Methods.color("&8[&bVouchers&8]: " + "&7This server is running your Vouchers Plugin. " + "&7It is running version &av" + getDescription().getVersion() + "&7."));
+        }
+
+        if (player.isOp()) {
+            if (Files.CONFIG.getFile().contains("Settings.Updater")) {
+                if (Files.CONFIG.getFile().getBoolean("Settings.Updater")) {
+                    Methods.hasUpdate(player);
                 }
-                if (player.isOp()) {
-                    if (Files.CONFIG.getFile().contains("Settings.Updater")) {
-                        if (Files.CONFIG.getFile().getBoolean("Settings.Updater")) {
-                            Methods.hasUpdate(player);
-                        }
-                    } else {
-                        Methods.hasUpdate(player);
-                    }
-                }
+            } else {
+                Methods.hasUpdate(player);
             }
-        }.runTaskLaterAsynchronously(this, 20);
+        }
     }
     
-    private String check = "\nUser ID: %%__USER__%%"
-    + "\nResource ID: %%__RESOURCE__%%"
-    + "\nDownload ID: %%__NONCE__%%";
+    //private String check = "\nUser ID: %%__USER__%%" + "\nResource ID: %%__RESOURCE__%%" + "\nDownload ID: %%__NONCE__%%";
     
 }
