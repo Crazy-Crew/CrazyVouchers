@@ -212,9 +212,7 @@ public class VoucherClick implements Listener {
     
     private String replacePlaceholders(String string, Player player) {
         if (Support.PLACEHOLDERAPI.isPluginLoaded()) {
-            string = me.clip.placeholderapi.PlaceholderAPI.setPlaceholders(player, string);
-        } else if (Support.MVDWPLACEHOLDERAPI.isPluginLoaded()) {
-            string = be.maximvdw.placeholderapi.PlaceholderAPI.replacePlaceholders(player, string);
+            return me.clip.placeholderapi.PlaceholderAPI.setPlaceholders(player, string);
         }
         return string;
     }
