@@ -2,7 +2,7 @@ package me.badbones69.vouchers;
 
 import me.badbones69.vouchers.api.FileManager;
 import me.badbones69.vouchers.api.FileManager.Files;
-import me.badbones69.vouchers.api.Vouchers;
+import me.badbones69.vouchers.api.VouchersManager;
 import me.badbones69.vouchers.api.enums.Version;
 import me.badbones69.vouchers.commands.VoucherCommands;
 import me.badbones69.vouchers.commands.VoucherTab;
@@ -18,7 +18,7 @@ import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.plugin.PluginManager;
 import org.bukkit.plugin.java.JavaPlugin;
 
-public class Main extends JavaPlugin implements Listener {
+public class Vouchers extends JavaPlugin implements Listener {
     
     private final FileManager fileManager = FileManager.getInstance();
     
@@ -46,7 +46,7 @@ public class Main extends JavaPlugin implements Listener {
         } catch (Exception ignored) { }
         new Metrics(this);
 
-        Vouchers.load();
+        VouchersManager.load();
     }
     
     @EventHandler

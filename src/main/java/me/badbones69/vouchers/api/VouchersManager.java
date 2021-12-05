@@ -11,7 +11,7 @@ import org.bukkit.plugin.Plugin;
 import java.util.ArrayList;
 import java.util.concurrent.ThreadLocalRandom;
 
-public class Vouchers {
+public class VouchersManager {
     
     private static ArrayList<Voucher> vouchers = new ArrayList<>();
     private static ArrayList<VoucherCode> voucherCodes = new ArrayList<>();

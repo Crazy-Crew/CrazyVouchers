@@ -1,7 +1,7 @@
 package me.badbones69.vouchers.controllers;
 
 import me.badbones69.vouchers.Methods;
-import me.badbones69.vouchers.api.Vouchers;
+import me.badbones69.vouchers.api.VouchersManager;
 import me.badbones69.vouchers.api.enums.Version;
 import me.badbones69.vouchers.api.objects.ItemBuilder;
 import me.badbones69.vouchers.api.objects.Voucher;
@@ -65,7 +65,7 @@ public class GUI implements Listener {
                                 }
                             }
                         }
-                        for (Voucher voucher : Vouchers.getVouchers()) {
+                        for (Voucher voucher : VouchersManager.getVouchers()) {
                             if (Methods.isSimilar(item, voucher.buildItem())) {
                                 player.getInventory().addItem(item);
                                 return;
@@ -104,13 +104,13 @@ public class GUI implements Listener {
     
     public static int getMaxPage() {
         int maxPage = 1;
-        int amount = Vouchers.getVouchers().size();
+        int amount = VouchersManager.getVouchers().size();
         for (; amount > 36; amount -= 36, maxPage++) ;
         return maxPage;
     }
     
     private static List<Voucher> getPageVouchers(Integer page) {
-        List<Voucher> list = Vouchers.getVouchers();
+        List<Voucher> list = VouchersManager.getVouchers();
         List<Voucher> vouchers = new ArrayList<>();
         if (page <= 0) page = 1;
         int max = 36;

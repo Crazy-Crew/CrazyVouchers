@@ -2,7 +2,7 @@ package me.badbones69.vouchers.controllers;
 
 import me.badbones69.vouchers.Methods;
 import me.badbones69.vouchers.api.FileManager.Files;
-import me.badbones69.vouchers.api.Vouchers;
+import me.badbones69.vouchers.api.VouchersManager;
 import me.badbones69.vouchers.api.enums.Messages;
 import me.badbones69.vouchers.api.enums.Support;
 import me.badbones69.vouchers.api.enums.Version;
@@ -43,7 +43,7 @@ public class VoucherClick implements Listener {
                 return;
             }
             if (action == Action.RIGHT_CLICK_BLOCK || action == Action.RIGHT_CLICK_AIR) {
-                Voucher voucher = Vouchers.getVoucherFromItem(item);
+                Voucher voucher = VouchersManager.getVoucherFromItem(item);
                 if (voucher != null && !voucher.isEdible()) {
                     e.setCancelled(true);
                     useVoucher(player, voucher, item);
@@ -55,7 +55,7 @@ public class VoucherClick implements Listener {
     @EventHandler
     public void onItemConsume(PlayerItemConsumeEvent e) {
         ItemStack item = e.getItem();
-        Voucher voucher = Vouchers.getVoucherFromItem(item);
+        Voucher voucher = VouchersManager.getVoucherFromItem(item);
         if (voucher != null && voucher.isEdible()) {
             Player player = e.getPlayer();
             e.setCancelled(true);
@@ -69,14 +69,14 @@ public class VoucherClick implements Listener {
     
     @EventHandler(priority = EventPriority.LOW)
     public void onArmorStandClick(PlayerInteractEntityEvent e) {
-        if (Version.isNewer(Version.v1_8_R3) && e.getHand() == EquipmentSlot.HAND && Vouchers.getVoucherFromItem(getItemInHand(e.getPlayer())) != null) {
+        if (Version.isNewer(Version.v1_8_R3) && e.getHand() == EquipmentSlot.HAND && VouchersManager.getVoucherFromItem(getItemInHand(e.getPlayer())) != null) {
             e.setCancelled(true);
         }
     }
     
     private void useVoucher(Player player, Voucher voucher, ItemStack item) {
         FileConfiguration data = Files.DATA.getFile();
-        String argument = Vouchers.getArgument(item, voucher);
+        String argument = VouchersManager.getArgument(item, voucher);
         if (passesPermissionChecks(player, item, voucher, argument)) {
             String uuid = player.getUniqueId().toString();
             if (!player.hasPermission("voucher.bypass") && voucher.useLimiter() && data.contains("Players." + uuid + ".Vouchers." + voucher.getName())) {
@@ -170,18 +170,18 @@ public class VoucherClick implements Listener {
         placeholders.put("%Z%", player.getLocation().getBlockZ() + "");
         for (String command : voucher.getCommands()) {
             command = replacePlaceholders(command, player);
-            Bukkit.dispatchCommand(Bukkit.getConsoleSender(), Messages.replacePlaceholders(placeholders, Vouchers.replaceRandom(command)));
+            Bukkit.dispatchCommand(Bukkit.getConsoleSender(), Messages.replacePlaceholders(placeholders, VouchersManager.replaceRandom(command)));
         }
         if (!voucher.getRandomCoammnds().isEmpty()) {// Picks a random command from the Random-Commands list.
             for (String command : voucher.getRandomCoammnds().get(new Random().nextInt(voucher.getRandomCoammnds().size())).getCommands()) {
                 command = replacePlaceholders(command, player);
-                Bukkit.dispatchCommand(Bukkit.getConsoleSender(), Messages.replacePlaceholders(placeholders, Vouchers.replaceRandom(command)));
+                Bukkit.dispatchCommand(Bukkit.getConsoleSender(), Messages.replacePlaceholders(placeholders, VouchersManager.replaceRandom(command)));
             }
         }
         if (!voucher.getChanceCommands().isEmpty()) {// Picks a command based on the chance system of the Chance-Commands list.
             for (String command : voucher.getChanceCommands().get(new Random().nextInt(voucher.getChanceCommands().size())).getCommands()) {
                 command = replacePlaceholders(command, player);
-                Bukkit.dispatchCommand(Bukkit.getConsoleSender(), Messages.replacePlaceholders(placeholders, Vouchers.replaceRandom(command)));
+                Bukkit.dispatchCommand(Bukkit.getConsoleSender(), Messages.replacePlaceholders(placeholders, VouchersManager.replaceRandom(command)));
             }
         }
         for (ItemBuilder itemBuilder : voucher.getItems()) {

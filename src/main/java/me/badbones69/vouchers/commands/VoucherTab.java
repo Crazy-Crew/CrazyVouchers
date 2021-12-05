@@ -1,6 +1,6 @@
 package me.badbones69.vouchers.commands;
 
-import me.badbones69.vouchers.api.Vouchers;
+import me.badbones69.vouchers.api.VouchersManager;
 import me.badbones69.vouchers.controllers.GUI;
 import org.bukkit.Bukkit;
 import org.bukkit.command.Command;
@@ -30,14 +30,14 @@ public class VoucherTab implements TabCompleter {
             switch (args[0].toLowerCase()) {
                 case "redeem":
                     //Only want admins to be able to see all the voucher codes.
-                    if (hasPermission(sender, "admin")) Vouchers.getVoucherCodes().forEach(voucherCode -> completions.add(voucherCode.getCode()));
+                    if (hasPermission(sender, "admin")) VouchersManager.getVoucherCodes().forEach(voucherCode -> completions.add(voucherCode.getCode()));
                     break;
                 case "open":
                     for (int i = 1; i <= GUI.getMaxPage(); i++) completions.add(i + "");
                     break;
                 case "give":
                 case "giveall":
-                    Vouchers.getVouchers().forEach(voucher -> completions.add(voucher.getName()));
+                    VouchersManager.getVouchers().forEach(voucher -> completions.add(voucher.getName()));
                     break;
             }
             return StringUtil.copyPartialMatches(args[1], completions, new ArrayList<>());
