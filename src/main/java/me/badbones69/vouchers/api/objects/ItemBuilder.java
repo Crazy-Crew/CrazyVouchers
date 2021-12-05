@@ -18,7 +18,6 @@ import org.bukkit.inventory.meta.*;
 import org.bukkit.potion.PotionData;
 import org.bukkit.potion.PotionEffectType;
 import org.bukkit.potion.PotionType;
-
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;

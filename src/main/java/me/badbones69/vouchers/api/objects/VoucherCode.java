@@ -61,7 +61,7 @@ public class VoucherCode {
                     chanceCommands.add(voucherCommand);
                 }
             } catch (Exception e) {
-                Bukkit.getLogger().info("[Vouchers] An issue occurred when trying to use chance commands.");
+                Bukkit.getLogger().info("An issue occurred when trying to use chance commands.");
                 e.printStackTrace();
             }
         }
@@ -227,7 +227,7 @@ public class VoucherCode {
         return fireworkColors;
     }
     
-    public List<VoucherCommand> getRandomCoammnds() {
+    public List<VoucherCommand> getRandomCommands() {
         return randomCoammnds;
     }
     

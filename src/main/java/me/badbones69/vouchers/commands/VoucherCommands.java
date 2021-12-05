@@ -164,8 +164,8 @@ public class VoucherCommands implements CommandExecutor {
                                     for (String command : voucherCode.getCommands()) {
                                         Bukkit.dispatchCommand(Bukkit.getConsoleSender(), Messages.replacePlaceholders(placeholders, Vouchers.replaceRandom(command)));
                                     }
-                                    if (voucherCode.getRandomCoammnds().size() >= 1) {// Picks a random command from the Random-Commands list.
-                                        for (String command : voucherCode.getRandomCoammnds().get(new Random().nextInt(voucherCode.getRandomCoammnds().size())).getCommands()) {
+                                    if (voucherCode.getRandomCommands().size() >= 1) {// Picks a random command from the Random-Commands list.
+                                        for (String command : voucherCode.getRandomCommands().get(new Random().nextInt(voucherCode.getRandomCommands().size())).getCommands()) {
                                             Bukkit.dispatchCommand(Bukkit.getConsoleSender(), Messages.replacePlaceholders(placeholders, Vouchers.replaceRandom(command)));
                                         }
                                     }

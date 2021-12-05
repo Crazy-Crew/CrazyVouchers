@@ -104,7 +104,7 @@ public class Voucher {
                     chanceCommands.add(voucherCommand);
                 }
             } catch (Exception e) {
-                Bukkit.getLogger().info("[Vouchers] An issue occurred when trying to use chance commands.");
+                Bukkit.getLogger().info("An issue occurred when trying to use chance commands.");
                 e.printStackTrace();
             }
         }
@@ -159,8 +159,7 @@ public class Voucher {
             for (String sound : config.getStringList(path + "Options.Sound.Sounds")) {
                 try {
                     this.sounds.add(Sound.valueOf(sound));
-                } catch (Exception e) {
-                }
+                } catch (Exception e) {}
             }
         } else {
             this.soundToggle = false;
@@ -176,9 +175,7 @@ public class Voucher {
         if (config.getBoolean(path + "Options.Is-Edible")) {
             this.isEdible = itemBuilder.build().getType().isEdible();
             switch (itemBuilder.getMaterial().toString()) {
-                case "MILK_BUCKET":
-                case "POTION":
-                    this.isEdible = true;
+                case "MILK_BUCKET", "POTION" -> this.isEdible = true;
             }
         }
     }
@@ -332,5 +329,4 @@ public class Voucher {
     private boolean isList(String path) {
         return Files.CONFIG.getFile().contains(path) && !Files.CONFIG.getFile().getStringList(path).isEmpty();
     }
-    
 }
