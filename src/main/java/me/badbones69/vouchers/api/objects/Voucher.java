@@ -4,6 +4,7 @@ import de.tr7zw.changeme.nbtapi.NBTItem;
 import me.badbones69.vouchers.Methods;
 import me.badbones69.vouchers.api.FileManager.Files;
 import me.badbones69.vouchers.api.enums.Messages;
+import org.bukkit.Bukkit;
 import org.bukkit.Color;
 import org.bukkit.Sound;
 import org.bukkit.configuration.file.FileConfiguration;
@@ -103,7 +104,7 @@ public class Voucher {
                     chanceCommands.add(voucherCommand);
                 }
             } catch (Exception e) {
-                System.out.println("[Vouchers] An issue occurred when trying to use chance commands.");
+                Bukkit.getLogger().info("[Vouchers] An issue occurred when trying to use chance commands.");
                 e.printStackTrace();
             }
         }

@@ -40,10 +40,7 @@ public class VoucherCommands implements CommandExecutor {
                     return true;
                 case "reload":
                     if (Methods.hasPermission(sender, "admin")) {
-                        Files.CONFIG.relaodFile();
-                        Files.DATA.relaodFile();
-                        Files.MESSAGES.relaodFile();
-                        Files.VOUCHER_CODES.relaodFile();
+                        FileManager.getInstance().reloadAllFiles();
                         fileManager.setup(Vouchers.getPlugin());
                         if (!Files.DATA.getFile().contains("Players")) {
                             Files.DATA.getFile().set("Players.Clear", null);

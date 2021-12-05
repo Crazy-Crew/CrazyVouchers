@@ -20,37 +20,38 @@ import org.bukkit.plugin.java.JavaPlugin;
 
 public class Main extends JavaPlugin implements Listener {
     
-    private FileManager fileManager = FileManager.getInstance();
+    private final FileManager fileManager = FileManager.getInstance();
     
     @Override
     public void onEnable() {
         fileManager.logInfo(true).setup(this);
+
         if (!Files.DATA.getFile().contains("Players")) {
             Files.DATA.getFile().set("Players.Clear", null);
             Files.DATA.saveFile();
         }
+
         PluginManager pm = Bukkit.getServer().getPluginManager();
         pm.registerEvents(this, this);
         pm.registerEvents(new VoucherClick(), this);
         pm.registerEvents(new GUI(), this);
+
         getCommand("vouchers").setExecutor(new VoucherCommands());
         getCommand("vouchers").setTabCompleter(new VoucherTab());
+
         try {
             if (Version.isNewer(Version.v1_10_R1)) {
                 pm.registerEvents(new FireworkDamageAPI(this), this);
             }
-        } catch (Exception e) { }
+        } catch (Exception ignored) { }
         new Metrics(this);
+
         Vouchers.load();
     }
     
     @EventHandler
     public void onPlayerJoin(PlayerJoinEvent e) {
         final Player player = e.getPlayer();
-        if (player.getName().equals("BadBones69")) {
-            player.sendMessage(Methods.color("&8[&bVouchers&8]: " + "&7This server is running your Vouchers Plugin. " + "&7It is running version &av" + getDescription().getVersion() + "&7."));
-        }
-
         if (player.isOp()) {
             if (Files.CONFIG.getFile().contains("Settings.Updater")) {
                 if (Files.CONFIG.getFile().getBoolean("Settings.Updater")) {
@@ -61,7 +62,4 @@ public class Main extends JavaPlugin implements Listener {
             }
         }
     }
-    
-    //private String check = "\nUser ID: %%__USER__%%" + "\nResource ID: %%__RESOURCE__%%" + "\nDownload ID: %%__NONCE__%%";
-    
 }
