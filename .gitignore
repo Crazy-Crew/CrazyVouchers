@@ -3,3 +3,12 @@
 gradle
 gradlew.bat
 gradlew
+.DS_Store
+
+dependency-reduced-pom.xml
+
+target/classes/
+
+target/
+
+*.iml
