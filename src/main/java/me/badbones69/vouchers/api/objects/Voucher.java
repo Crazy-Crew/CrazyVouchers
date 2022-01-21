@@ -159,7 +159,8 @@ public class Voucher {
             for (String sound : config.getStringList(path + "Options.Sound.Sounds")) {
                 try {
                     this.sounds.add(Sound.valueOf(sound));
-                } catch (Exception e) {}
+                } catch (Exception e) {
+                }
             }
         } else {
             this.soundToggle = false;
@@ -329,4 +330,5 @@ public class Voucher {
     private boolean isList(String path) {
         return Files.CONFIG.getFile().contains(path) && !Files.CONFIG.getFile().getStringList(path).isEmpty();
     }
+    
 }

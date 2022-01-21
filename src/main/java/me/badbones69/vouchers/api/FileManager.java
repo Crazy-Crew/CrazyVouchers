@@ -344,7 +344,7 @@ public class FileManager {
         private Plugin plugin;
         private String fileName;
         private String homeFolder;
-
+        
         private FileConfiguration file;
         
         /**
@@ -459,5 +459,7 @@ public class FileManager {
             }
             return false;
         }
+        
     }
+    
 }
