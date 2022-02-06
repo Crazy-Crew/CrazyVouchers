@@ -24,21 +24,21 @@ public class Vouchers extends JavaPlugin implements Listener {
     
     @Override
     public void onEnable() {
+        if (Version.isOlder(Version.v1_18_R1)) {
+            checkVersion();
+            return;
+        }
         fileManager.logInfo(true).setup(this);
-        
         if (!Files.DATA.getFile().contains("Players")) {
             Files.DATA.getFile().set("Players.Clear", null);
             Files.DATA.saveFile();
         }
-        
         PluginManager pm = Bukkit.getServer().getPluginManager();
         pm.registerEvents(this, this);
         pm.registerEvents(new VoucherClick(), this);
         pm.registerEvents(new GUI(), this);
-        
         getCommand("vouchers").setExecutor(new VoucherCommands());
         getCommand("vouchers").setTabCompleter(new VoucherTab());
-        
         try {
             if (Version.isNewer(Version.v1_10_R1)) {
                 pm.registerEvents(new FireworkDamageAPI(this), this);
@@ -46,7 +46,6 @@ public class Vouchers extends JavaPlugin implements Listener {
         } catch (Exception ignored) {
         }
         new Metrics(this);
-        
         VouchersManager.load();
     }
     
@@ -62,6 +61,19 @@ public class Vouchers extends JavaPlugin implements Listener {
                 Methods.hasUpdate(player);
             }
         }
+    }
+    
+    private void checkVersion() {
+        getLogger().warning("============= Vouchers =============");
+        getLogger().info(" ");
+        getLogger().warning("Plugin Disabled: This server is running on an unsupported version and Vouchers does not support those versions. "
+        + "Please check the spigot page for more information about lower Minecraft versions.");
+        getLogger().info(" ");
+        getLogger().warning("Support Discord: https://discord.com/invite/MCuz8JG/");
+        getLogger().warning("Version Integer: " + Version.getCurrentVersion().getVersionInteger());
+        getLogger().info(" ");
+        getLogger().warning("============= Vouchers =============");
+        Bukkit.getPluginManager().disablePlugin(this);
     }
     
 }
