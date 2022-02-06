@@ -25,10 +25,10 @@ Vouchers: #Where you make your vouchers.
       - '&7&l(&6&l!&7&l) &7Right click to redeem.'
     Player: '' #Set the Item: to PLAYER_HEAD and use this to set the skin on the player head. Can use Name/Hash/URL
     Glowing: false #Toggle if the item will have a glowing effect or not.
-    Commands: #The commands that are ran when redeemed.
+    Commands: #The commands that are run when redeemed.
       - 'eco give %Player% %Arg%'
     Options: #The options
-      Message: '&7You have just earned $%Arg%.' #The message sent to the player when redeemed. Set to '' if no message needs sent.
+      Message: '&7You have just earned $%Arg%.' #The message sent to the player when redeemed. Set to '' if no message needs to be sent.
       Whitelist-Worlds: #This allows you to make it so some vouchers can only be used in specific worlds.
         Toggle: false #True if you wish to use this feature.
         Message: '&cYou can not use that voucher here as you are not in a whitelisted world for this voucher.' #The message sent to the user that tried to use it in a non whitelisted world.
@@ -48,7 +48,7 @@ Vouchers: #Where you make your vouchers.
       Limiter: #Limiter options.
         Toggle: false #Toggle on or off the limiter.
         Limit: 10 #The limit of how many times it may be used.
-      Two-Step-Authentication: #This is for when the player right clicks the voucher. It tells them to click again to confirm.
+      Two-Step-Authentication: #This is for when the player right-clicks the voucher. It tells them to click again to confirm.
         Toggle: false #Toggle this option on or off.
       Sound: #The sound options.
         Toggle: true #Toggle on or off if a sound is played.

@@ -24,5 +24,7 @@ tasks {
     shadowJar {
         archiveFileName.set("${rootProject.name}[v${version}].jar")
         relocate("de.tr7zw.changeme.nbtapi", "me.badbones69.libs.nbtapi")
+        relocate("org.bstats", "me.badbones69.libs.bstats")
+        destinationDirectory.set(file("/Users/badbones/Desktop/Minecraft/Server/plugins"))
     }
 }

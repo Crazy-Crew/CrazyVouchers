@@ -176,7 +176,7 @@ public class FileManager {
      */
     public CustomFile getFile(String name) {
         for (CustomFile file : customFiles) {
-            if (file.getName().toLowerCase().equalsIgnoreCase(name.toLowerCase())) {
+            if (file.getName().equalsIgnoreCase(name)) {
                 return file;
             }
         }

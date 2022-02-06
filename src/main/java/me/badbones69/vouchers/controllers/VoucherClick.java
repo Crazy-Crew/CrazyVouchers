@@ -31,7 +31,7 @@ public class VoucherClick implements Listener {
     
     private HashMap<Player, String> twoAuth = new HashMap<>();
     
-    //This must run as highest so it doesn't cause other plugins to check
+    //This must run as highest, so it doesn't cause other plugins to check
     //the items that were added to the players inventory and replaced the item in the player's hand.
     @EventHandler(priority = EventPriority.HIGHEST)
     public void onVoucherClick(PlayerInteractEvent e) {

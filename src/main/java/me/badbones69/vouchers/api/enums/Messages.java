@@ -39,7 +39,7 @@ public enum Messages {
     "&8- &6/Voucher Open [Page] &3Opens a GUI so you can get vouchers easy.",
     "&8- &6/Voucher Reload &3Reloaded the configuration files."));
     
-    private String path;
+    private final String path;
     private String defaultMessage;
     private List<String> defaultListMessage;
     

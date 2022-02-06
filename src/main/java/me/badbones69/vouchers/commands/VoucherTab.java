@@ -43,10 +43,7 @@ public class VoucherTab implements TabCompleter {
             return StringUtil.copyPartialMatches(args[1], completions, new ArrayList<>());
         } else if (args.length == 3) {// /voucher arg0 arg1
             switch (args[0].toLowerCase()) {
-                case "give":
-                case "giveall":
-                    completions.addAll(Arrays.asList("1", "2", "3", "4", "5", "10", "32", "64"));
-                    break;
+                case "give", "giveall" -> completions.addAll(Arrays.asList("1", "2", "3", "4", "5", "10", "32", "64"));
             }
             return StringUtil.copyPartialMatches(args[2], completions, new ArrayList<>());
         } else if (args.length == 4) {// /voucher arg0 arg1 arg2

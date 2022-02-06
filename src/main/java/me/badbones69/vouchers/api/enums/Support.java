@@ -7,7 +7,7 @@ public enum Support {
     PLACEHOLDERAPI("PlaceholderAPI"),
     MVDWPLACEHOLDERAPI("MVdWPlaceholderAPI");
     
-    private String name;
+    private final String name;
     
     private Support(String name) {
         this.name = name;

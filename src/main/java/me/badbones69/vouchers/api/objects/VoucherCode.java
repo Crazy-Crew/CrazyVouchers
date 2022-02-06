@@ -10,7 +10,6 @@ import org.bukkit.configuration.file.FileConfiguration;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.stream.Collectors;
 
 public class VoucherCode {
     
@@ -79,13 +78,13 @@ public class VoucherCode {
             if (config.contains(path + "Options.Permission.Whitelist-Permission.Node")) {
                 whitelistPermissions.add("voucher." + config.getString(path + "Options.Permission.Whitelist-Permission.Node").toLowerCase());
             }
-            whitelistPermissions.addAll(config.getStringList(path + "Options.Permission.Whitelist-Permission.Permissions").stream().map(String :: toLowerCase).collect(Collectors.toList()));
+            whitelistPermissions.addAll(config.getStringList(path + "Options.Permission.Whitelist-Permission.Permissions").stream().map(String :: toLowerCase).toList());
             this.whitelistCommands = config.getStringList(path + "Options.Permission.Whitelist-Permission.Commands");
         } else {
             this.whitelistPermissionToggle = false;
         }
         if (config.contains(path + "Options.Whitelist-Worlds.Toggle")) {
-            this.whitelistWorlds.addAll(config.getStringList(path + "Options.Whitelist-Worlds.Worlds").stream().map(String :: toLowerCase).collect(Collectors.toList()));
+            this.whitelistWorlds.addAll(config.getStringList(path + "Options.Whitelist-Worlds.Worlds").stream().map(String :: toLowerCase).toList());
             if (config.contains(path + "Options.Whitelist-Worlds.Message")) {
                 this.whitelistWorldMessage = config.getString(path + "Options.Whitelist-Worlds.Message");
             } else {

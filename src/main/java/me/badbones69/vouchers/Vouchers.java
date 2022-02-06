@@ -8,8 +8,8 @@ import me.badbones69.vouchers.commands.VoucherCommands;
 import me.badbones69.vouchers.commands.VoucherTab;
 import me.badbones69.vouchers.controllers.FireworkDamageAPI;
 import me.badbones69.vouchers.controllers.GUI;
-import me.badbones69.vouchers.controllers.Metrics;
 import me.badbones69.vouchers.controllers.VoucherClick;
+import org.bstats.bukkit.Metrics;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
@@ -45,7 +45,7 @@ public class Vouchers extends JavaPlugin implements Listener {
             }
         } catch (Exception ignored) {
         }
-        new Metrics(this);
+        new Metrics(this, 4536);
         VouchersManager.load();
     }
     

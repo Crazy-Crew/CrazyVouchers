@@ -46,7 +46,7 @@ public class Methods {
     public static String color(String message) {
         if (Version.isNewer(Version.v1_15_R1)) {
             Matcher matcher = HEX_PATTERN.matcher(message);
-            StringBuffer buffer = new StringBuffer();
+            StringBuilder buffer = new StringBuilder();
             while (matcher.find()) {
                 matcher.appendReplacement(buffer, net.md_5.bungee.api.ChatColor.of(matcher.group()).toString());
             }
@@ -105,8 +105,7 @@ public class Methods {
     }
     
     public static boolean hasPermission(CommandSender sender, String perm) {
-        if (sender instanceof Player) {
-            Player player = (Player) sender;
+        if (sender instanceof Player player) {
             if (!player.hasPermission("voucher." + perm)) {
                 player.sendMessage(Messages.NO_PERMISSION.getMessage());
                 return false;

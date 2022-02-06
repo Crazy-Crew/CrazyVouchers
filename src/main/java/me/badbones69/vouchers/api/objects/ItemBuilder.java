@@ -28,7 +28,7 @@ import java.util.stream.Collectors;
 
 /**
  *
- * The ItemBuilder is designed to make creating items easier by creating an easy to use Builder.
+ * The ItemBuilder is designed to make creating items easier by creating an easy-to-use Builder.
  * This will allow you to covert an existing ItemStack into an ItemBuilder to allow you to edit
  * an existing ItemStack or make a new ItemStack from scratch.
  *
@@ -329,28 +329,13 @@ public class ItemBuilder {
             }
         }
         switch (this.material.name()) {
-            case "PLAYER_HEAD":
-            case "SKULL_ITEM":
-                this.isHead = true;
-                break;
-            case "POTION":
-            case "SPLASH_POTION":
-                this.isPotion = true;
-                break;
-            case "LEATHER_HELMET":
-            case "LEATHER_CHESTPLATE":
-            case "LEATHER_LEGGINGS":
-            case "LEATHER_BOOTS":
-                this.isLeatherArmor = true;
-                break;
-            case "BANNER":
-                this.isBanner = true;
-                break;
-            case "SHIELD":
-                this.isShield = true;
-                break;
+            case "PLAYER_HEAD", "SKULL_ITEM" -> this.isHead = true;
+            case "POTION", "SPLASH_POTION" -> this.isPotion = true;
+            case "LEATHER_HELMET", "LEATHER_CHESTPLATE", "LEATHER_LEGGINGS", "LEATHER_BOOTS" -> this.isLeatherArmor = true;
+            case "BANNER" -> this.isBanner = true;
+            case "SHIELD" -> this.isShield = true;
         }
-        //1.13+ added different banner names and so this is quicker then listing every banner color.
+        //1.13+ added different banner names and so this is quicker than listing every banner color.
         if (this.material.name().contains("BANNER")) {
             this.isBanner = true;
         }
@@ -358,8 +343,8 @@ public class ItemBuilder {
     }
     
     /**
-     * Get the damage of the item.
-     * @return The damage of the item as an int.
+     * Get the damage to the item.
+     * @return The damage to the item as an int.
      */
     public int getDamage() {
         return damage;
@@ -693,8 +678,8 @@ public class ItemBuilder {
     }
     
     /**
-     * Check if the hash is a url or a Base64.
-     * @return True if it is a url and false if it is a Base64.
+     * Check if the hash is an url or a Base64.
+     * @return True if it is an url and false if it is a Base64.
      */
     public boolean isURL() {
         return isURL;
@@ -949,7 +934,7 @@ public class ItemBuilder {
     public static String color(String message) {
         if (Version.isNewer(Version.v1_15_R1)) {
             Matcher matcher = HEX_PATTERN.matcher(message);
-            StringBuffer buffer = new StringBuffer();
+            StringBuilder buffer = new StringBuilder();
             while (matcher.find()) {
                 matcher.appendReplacement(buffer, net.md_5.bungee.api.ChatColor.of(matcher.group()).toString());
             }
