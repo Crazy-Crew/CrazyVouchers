@@ -4,7 +4,7 @@ plugins {
 }
 
 group = "me.badbones69"
-version = "1.9.1"
+version = "1.9.2"
 
 repositories {
     mavenCentral()
@@ -14,17 +14,26 @@ repositories {
 }
 
 dependencies {
-    compileOnly("org.spigotmc:spigot-api:1.18.1-R0.1-SNAPSHOT")
+    compileOnly("org.spigotmc:spigot-api:1.18.2-R0.1-SNAPSHOT")
     compileOnly("me.clip:placeholderapi:2.10.10")
 
-    implementation("de.tr7zw:item-nbt-api:2.9.0-SNAPSHOT")
+    implementation("de.tr7zw:item-nbt-api:2.9.2")
+
+    implementation("org.bstats:bstats-bukkit:3.0.0")
 }
 
 tasks {
     shadowJar {
         archiveFileName.set("${rootProject.name}[v${version}].jar")
-        relocate("de.tr7zw.changeme.nbtapi", "me.badbones69.libs.nbtapi")
+        relocate("de.tr7zw", "me.badbones69.libs.nbtapi")
         relocate("org.bstats", "me.badbones69.libs.bstats")
-        destinationDirectory.set(file("/Users/badbones/Desktop/Minecraft/Server/plugins"))
+    }
+
+    processResources {
+        filesMatching("plugin.yml") {
+            expand(
+                "version" to rootProject.version
+            )
+        }
     }
 }
