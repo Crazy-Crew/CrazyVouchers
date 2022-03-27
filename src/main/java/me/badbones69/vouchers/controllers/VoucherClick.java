@@ -25,7 +25,7 @@ import org.bukkit.inventory.EquipmentSlot;
 import org.bukkit.inventory.ItemStack;
 
 import java.util.HashMap;
-import java.util.Random;
+import java.util.concurrent.ThreadLocalRandom;
 
 public class VoucherClick implements Listener {
     
@@ -173,13 +173,13 @@ public class VoucherClick implements Listener {
             Bukkit.dispatchCommand(Bukkit.getConsoleSender(), Messages.replacePlaceholders(placeholders, VouchersManager.replaceRandom(command)));
         }
         if (!voucher.getRandomCoammnds().isEmpty()) {// Picks a random command from the Random-Commands list.
-            for (String command : voucher.getRandomCoammnds().get(new Random().nextInt(voucher.getRandomCoammnds().size())).getCommands()) {
+            for (String command : voucher.getRandomCoammnds().get(getRandom(voucher.getRandomCoammnds().size())).getCommands()) {
                 command = replacePlaceholders(command, player);
                 Bukkit.dispatchCommand(Bukkit.getConsoleSender(), Messages.replacePlaceholders(placeholders, VouchersManager.replaceRandom(command)));
             }
         }
         if (!voucher.getChanceCommands().isEmpty()) {// Picks a command based on the chance system of the Chance-Commands list.
-            for (String command : voucher.getChanceCommands().get(new Random().nextInt(voucher.getChanceCommands().size())).getCommands()) {
+            for (String command : voucher.getChanceCommands().get(getRandom(voucher.getChanceCommands().size())).getCommands()) {
                 command = replacePlaceholders(command, player);
                 Bukkit.dispatchCommand(Bukkit.getConsoleSender(), Messages.replacePlaceholders(placeholders, VouchersManager.replaceRandom(command)));
             }
@@ -215,6 +215,10 @@ public class VoucherClick implements Listener {
             return me.clip.placeholderapi.PlaceholderAPI.setPlaceholders(player, string);
         }
         return string;
+    }
+    
+    private int getRandom(int max) {
+        return ThreadLocalRandom.current().nextInt(max);
     }
     
 }
