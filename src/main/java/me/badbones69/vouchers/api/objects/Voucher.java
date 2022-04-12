@@ -47,6 +47,7 @@ public class Voucher {
     
     /**
      * This is just used for imputing fake vouchers.
+     *
      * @param number Fake Voucher Number.
      */
     public Voucher(int number) {
@@ -77,7 +78,7 @@ public class Voucher {
         .setMaterial(config.getString(path + "Item", "Stone"))
         .setName(config.getString(path + "Name", ""))
         .setLore(config.getStringList(path + "Lore"))
-        .setPlayer(config.getString(path + "Player"))
+        .setPlayerName(config.getString(path + "Player"))
         .setFlagsFromStrings(config.getStringList(path + "Flags"));
         this.glowing = config.getBoolean(path + "Glowing");
         if (itemBuilder.getName().toLowerCase().contains("%arg%")) {
