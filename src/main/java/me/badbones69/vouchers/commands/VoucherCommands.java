@@ -245,7 +245,7 @@ public class VoucherCommands implements CommandExecutor {
                             HashMap<String, String> placeholders = new HashMap<>();
                             placeholders.put("%Player%", player.getName());
                             placeholders.put("%Voucher%", voucher.getName());
-                            sender.sendMessage(Messages.GIVEN_A_VOUCHER.getMessage(placeholders));
+                            if (!Messages.GIVEN_A_VOUCHER.isBlank()) sender.sendMessage(Messages.GIVEN_A_VOUCHER.getMessage(placeholders));
                             return true;
                         }
                         sender.sendMessage(Methods.getPrefix("&c/voucher give <type> [amount] [player] [arguments]"));

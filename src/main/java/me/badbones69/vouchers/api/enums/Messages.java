@@ -126,6 +126,13 @@ public enum Messages {
         return newMessageList;
     }
     
+    //check if message is blank
+    //if message is blank return true
+    //if message is not blank return false
+    public boolean isBlank() {
+        return getMessage(false).equals("");
+    }
+    
     private String getMessage(boolean prefix) {
         return getMessage(new HashMap<>(), prefix);
     }
