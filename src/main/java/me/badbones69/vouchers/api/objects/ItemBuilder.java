@@ -450,14 +450,14 @@ public class ItemBuilder {
                 String modelData = metaData.split("#")[1];
                 if (isInt(modelData)) { // Value is a number.
                     this.useCustomModelData = true;
-                    this.customModelData = Integer.parseInt(modelData);
+                    this.customModelData = convertInt(modelData);
                 }
             }
             
             metaData = metaData.replace("#" + customModelData, "");
             
             if (isInt(metaData)) { // Value is durability.
-                this.damage = Integer.parseInt(metaData);
+                this.damage = convertInt(metaData);
             } else { // Value is something else.
                 this.potionType = getPotionType(PotionEffectType.getByName(metaData));
                 this.potionColor = getColor(metaData);
@@ -470,7 +470,7 @@ public class ItemBuilder {
             
             if (isInt(b[1])) { // Value is a number.
                 this.useCustomModelData = true;
-                this.customModelData = Integer.parseInt(b[1]);
+                this.customModelData = convertInt(b[1]);
             }
         }
         
@@ -939,13 +939,7 @@ public class ItemBuilder {
                         itemBuilder.setName(value);
                         break;
                     case "amount":
-                        
-                        try {
-                            itemBuilder.setAmount(Integer.parseInt(value));
-                        } catch (NumberFormatException e) {
-                            itemBuilder.setAmount(1);
-                        }
-                        
+                        itemBuilder.setAmount(convertInt(value));
                         break;
                     case "lore":
                         itemBuilder.setLore(Arrays.asList(value.split(",")));
@@ -962,21 +956,15 @@ public class ItemBuilder {
                         break;
                     default:
                         Enchantment enchantment = getEnchantment(option);
-                        
                         if (enchantment != null && enchantment.getName() != null) {
-                            try {
-                                itemBuilder.addEnchantments(enchantment, Integer.parseInt(value));
-                            } catch (NumberFormatException e) {
-                                itemBuilder.addEnchantments(enchantment, 1);
-                            }
+                            itemBuilder.addEnchantments(enchantment, convertInt(value));
                             break;
                         }
                         
-                        for (ItemFlag itemFlag : ItemFlag.values()) {
-                            if (itemFlag.name().equalsIgnoreCase(option)) {
-                                itemBuilder.addItemFlag(itemFlag);
-                                break;
-                            }
+                        ItemFlag flag = getFlag(option);
+                        if (flag != null) {
+                            itemBuilder.addItemFlag(flag);
+                            break;
                         }
                         
                         try {
@@ -1032,10 +1020,8 @@ public class ItemBuilder {
         if (glowing) {
             try {
                 if (item != null) {
-                    if (item.hasItemMeta()) {
-                        if (item.getItemMeta().hasEnchants()) {
-                            return;
-                        }
+                    if (item.hasItemMeta() && item.getItemMeta().hasEnchants()) {
+                        return;
                     }
                     item.addUnsafeEnchantment(Enchantment.LUCK, 1);
                     ItemMeta meta = item.getItemMeta();
@@ -1240,15 +1226,6 @@ public class ItemBuilder {
         return enchantments;
     }
     
-    private boolean isInt(String s) {
-        try {
-            Integer.parseInt(s);
-        } catch (NumberFormatException nfe) {
-            return false;
-        }
-        return true;
-    }
-    
     private final java.util.regex.Pattern HEX_PATTERN = java.util.regex.Pattern.compile("#[a-fA-F0-9]{6}");
     
     private String color(String message) {
@@ -1263,7 +1240,24 @@ public class ItemBuilder {
         return ChatColor.translateAlternateColorCodes('&', message);
     }
     
-    private ItemFlag getFlag(String flagString) {
+    private static boolean isInt(String s) {
+        try {
+            Integer.parseInt(s);
+        } catch (NumberFormatException nfe) {
+            return false;
+        }
+        return true;
+    }
+    
+    private static int convertInt(String s) {
+        return convertInt(s, 1);
+    }
+    
+    private static int convertInt(String s, int defaultValue) {
+        return isInt(s) ? Integer.parseInt(s) : defaultValue;
+    }
+    
+    private static ItemFlag getFlag(String flagString) {
         for (ItemFlag flag : ItemFlag.values()) {
             if (flag.name().equalsIgnoreCase(flagString)) {
                 return flag;
