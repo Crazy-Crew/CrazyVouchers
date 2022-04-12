@@ -737,6 +737,23 @@ public class ItemBuilder {
         return this;
     }
     
+    /**
+     * Set the flags that will be on the item in the builder.
+     *
+     * @param flagStrings The flag names as string you wish to add to the item in the builder.
+     * @return The ItemBuilder with updated info.
+     */
+    public ItemBuilder setFlagsFromStrings(List<String> flagStrings) {
+        itemFlags.clear();
+        for (String flagString : flagStrings) {
+            ItemFlag flag = getFlag(flagString);
+            if (flag != null) {
+                itemFlags.add(flag);
+            }
+        }
+        return this;
+    }
+    
     // Used for multiple Item Flags
     public ItemBuilder addItemFlags(List<String> flagStrings) {
         for (String flagString : flagStrings) {
@@ -747,6 +764,20 @@ public class ItemBuilder {
                 }
             } catch (Exception ignored) {
             }
+        }
+        return this;
+    }
+    
+    /**
+     * Add a flag to the item in the builder.
+     *
+     * @param flagString The name of the flag you wish to add.
+     * @return The ItemBuilder with updated info.
+     */
+    public ItemBuilder addFlags(String flagString) {
+        ItemFlag flag = getFlag(flagString);
+        if (flag != null) {
+            itemFlags.add(flag);
         }
         return this;
     }
@@ -1230,6 +1261,15 @@ public class ItemBuilder {
             return ChatColor.translateAlternateColorCodes('&', matcher.appendTail(buffer).toString());
         }
         return ChatColor.translateAlternateColorCodes('&', message);
+    }
+    
+    private ItemFlag getFlag(String flagString) {
+        for (ItemFlag flag : ItemFlag.values()) {
+            if (flag.name().equalsIgnoreCase(flagString)) {
+                return flag;
+            }
+        }
+        return null;
     }
     
 }
