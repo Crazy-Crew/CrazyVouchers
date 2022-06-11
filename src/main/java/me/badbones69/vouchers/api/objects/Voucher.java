@@ -12,6 +12,7 @@ import org.bukkit.inventory.ItemStack;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 public class Voucher {
     
@@ -117,14 +118,14 @@ public class Voucher {
             if (config.contains(path + "Options.Permission.Whitelist-Permission.Node")) {
                 whitelistPermissions.add("voucher." + config.getString(path + "Options.Permission.Whitelist-Permission.Node").toLowerCase());
             }
-            whitelistPermissions.addAll(config.getStringList(path + "Options.Permission.Whitelist-Permission.Permissions").stream().map(String :: toLowerCase).toList());
+            whitelistPermissions.addAll(config.getStringList(path + "Options.Permission.Whitelist-Permission.Permissions").stream().map(String :: toLowerCase).collect(Collectors.toList()));
             this.whitelistCommands = config.getStringList(path + "Options.Permission.Whitelist-Permission.Commands");
             this.whitelistPermissionMessage = config.contains(path + "Options.Permission.Whitelist-Permission.Message") ? getMessage(path + "Options.Permission.Whitelist-Permission.Message") : Messages.NO_PERMISSION_TO_VOUCHER.getMessageNoPrefix();
         } else {
             this.whitelistPermissionToggle = false;
         }
         if (config.contains(path + "Options.Whitelist-Worlds.Toggle")) {
-            this.whitelistWorlds.addAll(config.getStringList(path + "Options.Whitelist-Worlds.Worlds").stream().map(String :: toLowerCase).toList());
+            this.whitelistWorlds.addAll(config.getStringList(path + "Options.Whitelist-Worlds.Worlds").stream().map(String :: toLowerCase).collect(Collectors.toList()));
             if (config.contains(path + "Options.Whitelist-Worlds.Message")) {
                 this.whitelistWorldMessage = getMessage(path + "Options.Whitelist-Worlds.Message");
             } else {
@@ -176,7 +177,9 @@ public class Voucher {
         if (config.getBoolean(path + "Options.Is-Edible")) {
             this.isEdible = itemBuilder.build().getType().isEdible();
             switch (itemBuilder.getMaterial().toString()) {
-                case "MILK_BUCKET", "POTION" -> this.isEdible = true;
+                case "MILK_BUCKET":
+                case "POTION":
+                    this.isEdible = true;
             }
         }
     }

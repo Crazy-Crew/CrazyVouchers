@@ -18,13 +18,14 @@ public enum Version {
     v1_17_R1(1171),
     v1_18_R1(1181),
     v1_18_R2(1182),
+    v1_19(1191),
     TOO_NEW(-2);
     
     private static Version currentVersion;
     private static Version latest;
     private final int versionInteger;
     
-    private Version(int versionInteger) {
+    Version(int versionInteger) {
         this.versionInteger = versionInteger;
     }
     

@@ -1,10 +1,10 @@
 plugins {
     java
-    id("com.github.johnrengelman.shadow") version "7.0.0"
+    id("com.github.johnrengelman.shadow") version "7.1.2"
 }
 
-group = "me.badbones69"
-version = "1.9.1"
+rootProject.group = "me.badbones69"
+rootProject.version = "1.9.1"
 
 repositories {
     mavenCentral()
@@ -14,17 +14,18 @@ repositories {
 }
 
 dependencies {
-    compileOnly("org.spigotmc:spigot-api:1.18.2-R0.1-SNAPSHOT")
+    compileOnly("org.spigotmc:spigot-api:1.19-R0.1-SNAPSHOT")
     compileOnly("me.clip:placeholderapi:2.10.10")
 
-    implementation("de.tr7zw:item-nbt-api:2.9.2")
+    implementation("de.tr7zw:nbt-data-api:2.10.0-SNAPSHOT")
 
     implementation("org.bstats:bstats-bukkit:3.0.0")
 }
 
 tasks {
     shadowJar {
-        archiveFileName.set("${rootProject.name}[v${version}].jar")
+        archiveFileName.set("${rootProject.name}[v${rootProject.version}].jar")
+
         relocate("de.tr7zw", "me.badbones69.libs.nbtapi")
         relocate("org.bstats", "me.badbones69.libs.bstats")
     }
@@ -36,4 +37,11 @@ tasks {
             )
         }
     }
+}
+
+tasks.compileJava {
+    options.encoding = "UTF-8"
+
+    targetCompatibility = "8"
+    sourceCompatibility = "8"
 }

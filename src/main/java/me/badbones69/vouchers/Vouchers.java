@@ -24,10 +24,10 @@ public class Vouchers extends JavaPlugin implements Listener {
     
     @Override
     public void onEnable() {
-        if (Version.isOlder(Version.v1_18_R1)) {
-            checkVersion();
-            return;
-        }
+        //if (Version.isOlder(Version.v1_18_R1)) {
+            //checkVersion();
+            //return;
+        //}
         fileManager.logInfo(true).setup(this);
         if (!Files.DATA.getFile().contains("Players")) {
             Files.DATA.getFile().set("Players.Clear", null);

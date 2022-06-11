@@ -23,9 +23,9 @@ import java.util.HashMap;
 import java.util.Random;
 
 public class VoucherCommands implements CommandExecutor {
-    
+
     private FileManager fileManager = FileManager.getInstance();
-    
+
     @Override
     public boolean onCommand(CommandSender sender, Command cmd, String commandLable, String[] args) {
         if (args.length == 0) {
@@ -33,13 +33,12 @@ public class VoucherCommands implements CommandExecutor {
             return true;
         } else {
             switch (args[0].toLowerCase()) {
-                case "help" -> {
+                case "help":
                     if (Methods.hasPermission(sender, "access")) {
                         sender.sendMessage(Messages.HELP.getMessageNoPrefix());
                     }
                     return true;
-                }
-                case "reload" -> {
+                case "reload":
                     if (Methods.hasPermission(sender, "admin")) {
                         FileManager.getInstance().reloadAllFiles();
                         fileManager.setup(VouchersManager.getPlugin());
@@ -51,8 +50,8 @@ public class VoucherCommands implements CommandExecutor {
                         sender.sendMessage(Messages.RELOAD.getMessage());
                     }
                     return true;
-                }
-                case "open", "admin" -> {
+                case "open":
+                case "admin":
                     if (Methods.hasPermission(sender, "admin")) {
                         int page = 1;
                         if (args.length >= 2) {
@@ -61,8 +60,8 @@ public class VoucherCommands implements CommandExecutor {
                         GUI.openGUI((Player) sender, page);
                     }
                     return true;
-                }
-                case "types", "list" -> {
+                case "types":
+                case "list":
                     if (Methods.hasPermission(sender, "admin")) {
                         String vouchers = "";
                         String codes = "";
@@ -78,15 +77,15 @@ public class VoucherCommands implements CommandExecutor {
                         sender.sendMessage(Methods.color("&e&lVoucher Codes #" + VouchersManager.getVoucherCodes().size() + ":&f " + codes));
                     }
                     return true;
-                }
-                case "redeem" -> {
+                case "redeem":
                     if (Methods.hasPermission(sender, "redeem")) {
                         if (args.length >= 2) {
                             String code = args[1];
-                            if (!(sender instanceof Player player)) {
+                            if (!(sender instanceof Player)) {
                                 sender.sendMessage(Messages.NOT_A_PLAYER.getMessage());
                                 return true;
                             }
+                            Player player = (Player) sender;
                             String name = player.getName();
                             HashMap<String, String> placeholders = new HashMap<>();
                             placeholders.put("%Arg%", code);
@@ -203,8 +202,7 @@ public class VoucherCommands implements CommandExecutor {
                         sender.sendMessage(Methods.getPrefix("&c/voucher redeem <code>"));
                     }
                     return true;
-                }
-                case "give" -> {// /Voucher 0Give 1<Type> 2[Amount] 3[Player] 4[Arguments]
+                case "give": // /Voucher 0Give 1<Type> 2[Amount] 3[Player] 4[Arguments]
                     if (Methods.hasPermission(sender, "admin")) {
                         if (args.length == 1) {
                             if (!(sender instanceof Player)) {
@@ -245,15 +243,15 @@ public class VoucherCommands implements CommandExecutor {
                             HashMap<String, String> placeholders = new HashMap<>();
                             placeholders.put("%Player%", player.getName());
                             placeholders.put("%Voucher%", voucher.getName());
-                            if (!Messages.GIVEN_A_VOUCHER.isBlank()) sender.sendMessage(Messages.GIVEN_A_VOUCHER.getMessage(placeholders));
+                            if (!Messages.GIVEN_A_VOUCHER.isBlank())
+                                sender.sendMessage(Messages.GIVEN_A_VOUCHER.getMessage(placeholders));
                             return true;
                         }
                         sender.sendMessage(Methods.getPrefix("&c/voucher give <type> [amount] [player] [arguments]"));
                         return true;
                     }
                     return true;
-                }
-                case "giveall" -> {// /Voucher 0GiveAll 1<Type> 2[Amount] 3[Arguments]
+                case "giveall": // /Voucher 0GiveAll 1<Type> 2[Amount] 3[Arguments]
                     if (Methods.hasPermission(sender, "admin")) {
                         if (args.length == 1) {
                             if (!(sender instanceof Player)) {
@@ -296,13 +294,10 @@ public class VoucherCommands implements CommandExecutor {
                         return true;
                     }
                     return true;
-                }
-                default -> {
+                default:
                     sender.sendMessage(Methods.getPrefix("&cPlease do /voucher help for more information."));
                     return true;
-                }
             }
         }
     }
-    
 }
