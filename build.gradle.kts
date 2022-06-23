@@ -30,7 +30,7 @@ dependencies {
 
 tasks {
     shadowJar {
-        archiveFileName.set("${rootProject.name}[v${rootProject.version}].jar")
+        archiveFileName.set("${rootProject.name}-${rootProject.version}.jar")
 
         listOf(
             "de.tr7zw",
@@ -41,7 +41,8 @@ tasks {
     }
 
     compileJava {
-        options.release.set(8)
+        targetCompatibility = "8"
+        sourceCompatibility = "8"
     }
 
     processResources {
