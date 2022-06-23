@@ -1,7 +1,7 @@
-package me.badbones69.vouchers.api.enums;
+package com.badbones69.vouchers.api.enums;
 
-import me.badbones69.vouchers.Methods;
-import me.badbones69.vouchers.api.FileManager.Files;
+import com.badbones69.vouchers.Methods;
+import com.badbones69.vouchers.api.FileManager.Files;
 import org.bukkit.configuration.file.FileConfiguration;
 
 import java.util.ArrayList;

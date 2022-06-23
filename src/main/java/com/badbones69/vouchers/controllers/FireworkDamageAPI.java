@@ -1,6 +1,6 @@
-package me.badbones69.vouchers.controllers;
+package com.badbones69.vouchers.controllers;
 
-import me.badbones69.vouchers.api.enums.Version;
+import com.badbones69.vouchers.api.enums.Version;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.EntityType;
 import org.bukkit.event.EventHandler;

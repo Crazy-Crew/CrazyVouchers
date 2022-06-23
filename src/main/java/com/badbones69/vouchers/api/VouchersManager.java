@@ -1,9 +1,8 @@
-package me.badbones69.vouchers.api;
+package com.badbones69.vouchers.api;
 
+import com.badbones69.vouchers.api.objects.Voucher;
 import de.tr7zw.changeme.nbtapi.NBTItem;
-import me.badbones69.vouchers.api.FileManager.Files;
-import me.badbones69.vouchers.api.objects.Voucher;
-import me.badbones69.vouchers.api.objects.VoucherCode;
+import com.badbones69.vouchers.api.objects.VoucherCode;
 import org.bukkit.Bukkit;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.plugin.Plugin;
@@ -21,11 +20,11 @@ public class VouchersManager {
         voucherCodes.clear();
         //Used for when wanting to put in fake vouchers.
         //for(int i = 1; i <= 400; i++) vouchers.add(new Voucher(i));
-        for (String voucherName : Files.CONFIG.getFile().getConfigurationSection("Vouchers").getKeys(false)) {
+        for (String voucherName : FileManager.Files.CONFIG.getFile().getConfigurationSection("Vouchers").getKeys(false)) {
             vouchers.add(new Voucher(voucherName));
         }
-        if (Files.VOUCHER_CODES.getFile().contains("Voucher-Codes")) {
-            for (String voucherName : Files.VOUCHER_CODES.getFile().getConfigurationSection("Voucher-Codes").getKeys(false)) {
+        if (FileManager.Files.VOUCHER_CODES.getFile().contains("Voucher-Codes")) {
+            for (String voucherName : FileManager.Files.VOUCHER_CODES.getFile().getConfigurationSection("Voucher-Codes").getKeys(false)) {
                 voucherCodes.add(new VoucherCode(voucherName));
             }
         }

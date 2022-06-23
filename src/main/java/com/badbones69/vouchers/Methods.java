@@ -1,9 +1,9 @@
-package me.badbones69.vouchers;
+package com.badbones69.vouchers;
 
-import me.badbones69.vouchers.api.FileManager.Files;
-import me.badbones69.vouchers.api.enums.Messages;
-import me.badbones69.vouchers.api.enums.Version;
-import me.badbones69.vouchers.controllers.FireworkDamageAPI;
+import com.badbones69.vouchers.api.enums.Version;
+import com.badbones69.vouchers.api.FileManager.Files;
+import com.badbones69.vouchers.api.enums.Messages;
+import com.badbones69.vouchers.controllers.FireworkDamageAPI;
 import org.bukkit.*;
 import org.bukkit.command.CommandSender;
 import org.bukkit.enchantments.Enchantment;

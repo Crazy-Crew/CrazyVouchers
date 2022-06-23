@@ -1,4 +1,4 @@
-package me.badbones69.vouchers.api.objects;
+package com.badbones69.vouchers.api.objects;
 
 import org.bukkit.Bukkit;
 import org.bukkit.Material;

@@ -1,4 +1,4 @@
-package me.badbones69.vouchers.api.enums;
+package com.badbones69.vouchers.api.enums;
 
 import org.bukkit.Bukkit;
 

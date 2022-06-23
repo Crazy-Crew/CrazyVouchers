@@ -1,6 +1,6 @@
-package me.badbones69.vouchers.api;
+package com.badbones69.vouchers.api;
 
-import me.badbones69.vouchers.api.enums.Version;
+import com.badbones69.vouchers.api.enums.Version;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.plugin.Plugin;

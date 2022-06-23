@@ -1,10 +1,10 @@
-package me.badbones69.vouchers.controllers;
+package com.badbones69.vouchers.controllers;
 
-import me.badbones69.vouchers.Methods;
-import me.badbones69.vouchers.api.VouchersManager;
-import me.badbones69.vouchers.api.enums.Version;
-import me.badbones69.vouchers.api.objects.ItemBuilder;
-import me.badbones69.vouchers.api.objects.Voucher;
+import com.badbones69.vouchers.api.objects.Voucher;
+import com.badbones69.vouchers.Methods;
+import com.badbones69.vouchers.api.VouchersManager;
+import com.badbones69.vouchers.api.enums.Version;
+import com.badbones69.vouchers.api.objects.ItemBuilder;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;

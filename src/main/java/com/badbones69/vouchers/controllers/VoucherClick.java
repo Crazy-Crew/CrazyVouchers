@@ -1,14 +1,14 @@
-package me.badbones69.vouchers.controllers;
+package com.badbones69.vouchers.controllers;
 
-import me.badbones69.vouchers.Methods;
-import me.badbones69.vouchers.api.FileManager.Files;
-import me.badbones69.vouchers.api.VouchersManager;
-import me.badbones69.vouchers.api.enums.Messages;
-import me.badbones69.vouchers.api.enums.Support;
-import me.badbones69.vouchers.api.enums.Version;
-import me.badbones69.vouchers.api.events.RedeemVoucherEvent;
-import me.badbones69.vouchers.api.objects.ItemBuilder;
-import me.badbones69.vouchers.api.objects.Voucher;
+import com.badbones69.vouchers.Methods;
+import com.badbones69.vouchers.api.FileManager;
+import com.badbones69.vouchers.api.VouchersManager;
+import com.badbones69.vouchers.api.enums.Messages;
+import com.badbones69.vouchers.api.enums.Version;
+import com.badbones69.vouchers.api.objects.ItemBuilder;
+import com.badbones69.vouchers.api.objects.Voucher;
+import com.badbones69.vouchers.api.enums.Support;
+import com.badbones69.vouchers.api.events.RedeemVoucherEvent;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.Sound;
@@ -75,7 +75,7 @@ public class VoucherClick implements Listener {
     }
     
     private void useVoucher(Player player, Voucher voucher, ItemStack item) {
-        FileConfiguration data = Files.DATA.getFile();
+        FileConfiguration data = FileManager.Files.DATA.getFile();
         String argument = VouchersManager.getArgument(item, voucher);
         if (passesPermissionChecks(player, item, voucher, argument)) {
             String uuid = player.getUniqueId().toString();
@@ -204,9 +204,9 @@ public class VoucherClick implements Listener {
             player.sendMessage(Messages.replacePlaceholders(placeholders, message));
         }
         if (voucher.useLimiter()) {
-            Files.DATA.getFile().set("Players." + player.getUniqueId() + ".UserName", player.getName());
-            Files.DATA.getFile().set("Players." + player.getUniqueId() + ".Vouchers." + voucher.getName(), Files.DATA.getFile().getInt("Players." + player.getUniqueId() + ".Vouchers." + voucher.getName()) + 1);
-            Files.DATA.saveFile();
+            FileManager.Files.DATA.getFile().set("Players." + player.getUniqueId() + ".UserName", player.getName());
+            FileManager.Files.DATA.getFile().set("Players." + player.getUniqueId() + ".Vouchers." + voucher.getName(), FileManager.Files.DATA.getFile().getInt("Players." + player.getUniqueId() + ".Vouchers." + voucher.getName()) + 1);
+            FileManager.Files.DATA.saveFile();
         }
     }
     
