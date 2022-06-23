@@ -5,7 +5,7 @@ plugins {
 }
 
 group = "com.badbones69.vouchers"
-version = "<1.8-1.19>-1.9.3"
+version = "1.9.3"
 description = "Make Custom Vouchers just for your server!"
 
 repositories {
@@ -30,7 +30,7 @@ dependencies {
 
 tasks {
     shadowJar {
-        archiveFileName.set("${rootProject.name}-${rootProject.version}.jar")
+        archiveFileName.set("${rootProject.name}-[1.8-1.19]-${rootProject.version}.jar")
 
         listOf(
             "de.tr7zw",
