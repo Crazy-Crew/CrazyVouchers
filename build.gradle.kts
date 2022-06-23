@@ -1,20 +1,26 @@
 plugins {
     java
+
     id("com.github.johnrengelman.shadow") version "7.1.2"
 }
 
-rootProject.group = "me.badbones69"
-rootProject.version = "1.9.2"
+group = "com.badbones69.vouchers"
+version = "1.8-1.19-1.9.2"
+description = "Make Custom Vouchers just for your server!"
 
 repositories {
     mavenCentral()
+
     maven("https://repo.codemc.org/repository/maven-public/")
+
     maven("https://hub.spigotmc.org/nexus/content/repositories/snapshots/")
+
     maven("https://repo.extendedclip.com/content/repositories/placeholderapi/")
 }
 
 dependencies {
     compileOnly("org.spigotmc:spigot-api:1.19-R0.1-SNAPSHOT")
+
     compileOnly("me.clip:placeholderapi:2.10.10")
 
     implementation("de.tr7zw:nbt-data-api:2.10.0-SNAPSHOT")
@@ -26,22 +32,26 @@ tasks {
     shadowJar {
         archiveFileName.set("${rootProject.name}[v${rootProject.version}].jar")
 
-        relocate("de.tr7zw", "me.badbones69.libs.nbtapi")
-        relocate("org.bstats", "me.badbones69.libs.bstats")
+        listOf(
+            "de.tr7zw",
+            "org.bstats"
+        ).forEach {
+            relocate(it, "${rootProject.group}.plugin.lib.$it")
+        }
+    }
+
+    compileJava {
+        options.release.set(8)
     }
 
     processResources {
         filesMatching("plugin.yml") {
             expand(
-                "version" to rootProject.version
+                "name" to rootProject.name,
+                "group" to project.group,
+                "version" to project.version,
+                "description" to project.description
             )
         }
     }
-}
-
-tasks.compileJava {
-    options.encoding = "UTF-8"
-
-    targetCompatibility = "8"
-    sourceCompatibility = "8"
 }

@@ -1,8 +1,9 @@
 name: Vouchers
-main: me.badbones69.vouchers.Vouchers
+main: "${group}.Vouchers"
 version: ${version}
 api-version: 1.18
-description: Make Custom Vouchers just for your server!
+description: ${description}
+
 commands:
   Vouchers:
     description: Give yourself a Voucher!
