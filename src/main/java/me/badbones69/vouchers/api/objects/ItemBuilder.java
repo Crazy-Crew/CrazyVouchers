@@ -715,6 +715,12 @@ public class ItemBuilder {
      */
     public ItemBuilder setPlayerName(String playerName) {
         this.player = playerName;
+
+        if (player != null && player.length() > 16) {
+            this.isHash = true;
+            this.isURL = player.startsWith("http");
+        }
+
         return this;
     }
     

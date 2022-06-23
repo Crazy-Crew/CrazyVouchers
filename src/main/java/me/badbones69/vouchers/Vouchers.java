@@ -24,27 +24,26 @@ public class Vouchers extends JavaPlugin implements Listener {
     
     @Override
     public void onEnable() {
-        //if (Version.isOlder(Version.v1_18_R1)) {
-            //checkVersion();
-            //return;
-        //}
+
         fileManager.logInfo(true).setup(this);
         if (!Files.DATA.getFile().contains("Players")) {
             Files.DATA.getFile().set("Players.Clear", null);
             Files.DATA.saveFile();
         }
+
         PluginManager pm = Bukkit.getServer().getPluginManager();
         pm.registerEvents(this, this);
         pm.registerEvents(new VoucherClick(), this);
         pm.registerEvents(new GUI(), this);
         getCommand("vouchers").setExecutor(new VoucherCommands());
         getCommand("vouchers").setTabCompleter(new VoucherTab());
+
         try {
             if (Version.isNewer(Version.v1_10_R1)) {
                 pm.registerEvents(new FireworkDamageAPI(this), this);
             }
-        } catch (Exception ignored) {
-        }
+        } catch (Exception ignored) {}
+
         new Metrics(this, 4536);
         VouchersManager.load();
     }
