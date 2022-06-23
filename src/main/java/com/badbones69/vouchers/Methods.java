@@ -14,12 +14,6 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.FireworkMeta;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.plugin.Plugin;
-
-import java.io.BufferedReader;
-import java.io.InputStreamReader;
-import java.net.HttpURLConnection;
-import java.net.URL;
-import java.nio.charset.StandardCharsets;
 import java.util.HashMap;
 import java.util.List;
 import java.util.regex.Matcher;
@@ -42,11 +36,11 @@ public class Methods {
     public static String getPrefix(String message) {
         return color(Files.CONFIG.getFile().getString("Settings.Prefix") + message);
     }
-    
+
     public static String color(String message) {
         if (Version.isNewer(Version.v1_15_R1)) {
             Matcher matcher = HEX_PATTERN.matcher(message);
-            StringBuilder buffer = new StringBuilder();
+            StringBuffer buffer = new StringBuffer();
             while (matcher.find()) {
                 matcher.appendReplacement(buffer, net.md_5.bungee.api.ChatColor.of(matcher.group()).toString());
             }
@@ -54,15 +48,6 @@ public class Methods {
         }
         return ChatColor.translateAlternateColorCodes('&', message);
     }
-
-    /*public static ArrayList<String> colorizeList(List<String> input) {
-        ArrayList<String> ret = new ArrayList<>();
-        for (String line : input) {
-            ret.add(color(line));
-        }
-        return ret;
-    }
-     */
     
     public static boolean isInt(String s) {
         try {
@@ -118,36 +103,6 @@ public class Methods {
         }
     }
     
-    public static void hasUpdate() {
-        try {
-            HttpURLConnection c = (HttpURLConnection) new URL("http://www.spigotmc.org/api/general.php").openConnection();
-            c.setDoOutput(true);
-            c.setRequestMethod("POST");
-            c.getOutputStream().write(("key=98BE0FE67F88AB82B4C197FAF1DC3B69206EFDCC4D3B80FC83A00037510B99B4&resource=13654").getBytes(StandardCharsets.UTF_8));
-            String oldVersion = plugin.getDescription().getVersion();
-            String newVersion = new BufferedReader(new InputStreamReader(c.getInputStream())).readLine().replaceAll("[a-zA-Z ]", "");
-            if (!newVersion.equals(oldVersion)) {
-                Bukkit.getConsoleSender().sendMessage(color("&8[&bVouchers&8]: " + "&cYour server is running &7v" + oldVersion + "&c and the newest is &7v" + newVersion + "&c."));
-            }
-        } catch (Exception e) {
-        }
-    }
-    
-    public static void hasUpdate(Player player) {
-        try {
-            HttpURLConnection c = (HttpURLConnection) new URL("http://www.spigotmc.org/api/general.php").openConnection();
-            c.setDoOutput(true);
-            c.setRequestMethod("POST");
-            c.getOutputStream().write(("key=98BE0FE67F88AB82B4C197FAF1DC3B69206EFDCC4D3B80FC83A00037510B99B4&resource=13654").getBytes(StandardCharsets.UTF_8));
-            String oldVersion = plugin.getDescription().getVersion();
-            String newVersion = new BufferedReader(new InputStreamReader(c.getInputStream())).readLine().replaceAll("[a-zA-Z ]", "");
-            if (!newVersion.equals(oldVersion)) {
-                player.sendMessage(color("&8[&bVouchers&8]: " + "&cYour server is running &7v" + oldVersion + "&c and the newest is &7v" + newVersion + "&c."));
-            }
-        } catch (Exception e) {
-        }
-    }
-    
     public static boolean isInventoryFull(Player player) {
         return player.getInventory().firstEmpty() == -1;
     }
@@ -171,6 +126,7 @@ public class Methods {
                             return item;
                         }
                     }
+
                     item.addUnsafeEnchantment(Enchantment.LUCK, 1);
                     ItemMeta meta = item.getItemMeta();
                     meta.addItemFlags(ItemFlag.HIDE_ENCHANTS);

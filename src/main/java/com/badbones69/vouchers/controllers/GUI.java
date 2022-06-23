@@ -18,8 +18,8 @@ import java.util.*;
 
 public class GUI implements Listener {
     
-    private static String inventoryName = Methods.color("&8&l&nVouchers");
-    private static HashMap<UUID, Integer> playerPage = new HashMap<>();
+    private static final String inventoryName = Methods.color("&8&l&nVouchers");
+    private static final HashMap<UUID, Integer> playerPage = new HashMap<>();
     
     public static void openGUI(Player player) {
         int page = getPage(player);
@@ -65,6 +65,7 @@ public class GUI implements Listener {
                                 }
                             }
                         }
+
                         for (Voucher voucher : VouchersManager.getVouchers()) {
                             if (Methods.isSimilar(item, voucher.buildItem())) {
                                 player.getInventory().addItem(item);
@@ -91,6 +92,7 @@ public class GUI implements Listener {
         } else if (pageNumber >= max) {
             pageNumber = max;
         }
+
         playerPage.put(player.getUniqueId(), pageNumber);
     }
     
@@ -119,6 +121,7 @@ public class GUI implements Listener {
         for (; index < endIndex; index++) {
             if (index < list.size()) vouchers.add(list.get(index));
         }
+
         for (; vouchers.size() == 0; page--) {
             if (page <= 0) break;
             index = page * max - max;
@@ -127,11 +130,13 @@ public class GUI implements Listener {
                 if (index < list.size()) vouchers.add(list.get(index));
             }
         }
+
         return vouchers;
     }
     
     private static void setDefaultItems(Player player, Inventory inv) {
         boolean isNew = Version.isNewer(Version.v1_12_R1);
+
         for (int i : Arrays.asList(0, 1, 2, 3, 4, 5, 6, 7, 8, 45, 46, 47, 49, 51, 52, 53)) {
             inv.setItem(i, new ItemBuilder()
             .setMaterial(isNew ? Material.BLUE_STAINED_GLASS_PANE : Material.matchMaterial("STAINED_GLASS_PANE"))
@@ -139,8 +144,10 @@ public class GUI implements Listener {
             .setName(" ")
             .build());
         }
+
         int page = getPage(player);
         int maxPage = getMaxPage();
+
         if (page == 1) {
             inv.setItem(48, new ItemBuilder()
             .setMaterial(isNew ? Material.GRAY_STAINED_GLASS_PANE : Material.matchMaterial("STAINED_GLASS_PANE"))

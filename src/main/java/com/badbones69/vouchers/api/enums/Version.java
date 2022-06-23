@@ -37,15 +37,18 @@ public enum Version {
         if (currentVersion == null) {
             String ver = Bukkit.getServer().getClass().getPackage().getName();
             int v = Integer.parseInt(ver.substring(ver.lastIndexOf('.') + 1).replace("_", "").replace("R", "").replace("v", ""));
+
             for (Version version : values()) {
                 if (version.getVersionInteger() == v) {
                     currentVersion = version;
                     break;
                 }
             }
+
             if (v > Version.getLatestVersion().getVersionInteger()) {
                 currentVersion = Version.getLatestVersion();
             }
+
             if (currentVersion == null) {
                 currentVersion = Version.TOO_NEW;
             }
@@ -89,11 +92,11 @@ public enum Version {
         int result = -1;
         int current = this.getVersionInteger();
         int check = version.getVersionInteger();
-        if (current > check || check == -2) {// check is newer then current
+        if (current > check || check == -2) { // check is newer then current
             result = 1;
-        } else if (current == check) {// check is the same as current
+        } else if (current == check) { // check is the same as current
             result = 0;
-        } else if (check == -1) {// check is older then current
+        } else if (check == -1) { // check is older then current
             result = -1;
         }
         return result;

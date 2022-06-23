@@ -4,7 +4,6 @@ import com.badbones69.vouchers.api.enums.Version;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.plugin.Plugin;
-
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
@@ -16,13 +15,13 @@ public class FileManager {
     
     private Plugin plugin;
     private Boolean log = false;
-    private HashMap<Files, File> files = new HashMap<>();
-    private ArrayList<String> homeFolders = new ArrayList<>();
-    private ArrayList<CustomFile> customFiles = new ArrayList<>();
-    private HashMap<String, String> autoGenerateFiles = new HashMap<>();
-    private HashMap<Files, FileConfiguration> configurations = new HashMap<>();
+    private final HashMap<Files, File> files = new HashMap<>();
+    private final ArrayList<String> homeFolders = new ArrayList<>();
+    private final ArrayList<CustomFile> customFiles = new ArrayList<>();
+    private final HashMap<String, String> autoGenerateFiles = new HashMap<>();
+    private final HashMap<Files, FileConfiguration> configurations = new HashMap<>();
     
-    private static FileManager instance = new FileManager();
+    private final static FileManager instance = new FileManager();
     
     public static FileManager getInstance() {
         return instance;
@@ -42,8 +41,10 @@ public class FileManager {
         for (Files file : Files.values()) {
             File newFile = new File(plugin.getDataFolder(), file.getFileLocation());
             if (log) plugin.getLogger().info("Loading the " + file.getFileName());
+
             if (!newFile.exists()) {
                 try {
+
                     String fileLocation = file.getFileLocation();
                     //Switch between 1.12.2- and 1.13+ config version.
                     if (file == Files.CONFIG) {
@@ -53,6 +54,7 @@ public class FileManager {
                             fileLocation = "Config1.13-Up.yml";
                         }
                     }
+
                     File serverFile = new File(plugin.getDataFolder(), "/" + file.getFileLocation());
                     InputStream jarFile = getClass().getResourceAsStream("/" + fileLocation);
                     copyFile(jarFile, serverFile);
@@ -66,6 +68,7 @@ public class FileManager {
             configurations.put(file, YamlConfiguration.loadConfiguration(newFile));
             if (log) plugin.getLogger().info("Successfully loaded " + file.getFileName());
         }
+
         //Starts to load all the custom files.
         if (homeFolders.size() > 0) {
             if (log) plugin.getLogger().info("Loading custom files.");
@@ -340,10 +343,10 @@ public class FileManager {
     
     public class CustomFile {
         
-        private String name;
-        private Plugin plugin;
-        private String fileName;
-        private String homeFolder;
+        private final String name;
+        private final Plugin plugin;
+        private final String fileName;
+        private final String homeFolder;
         
         private FileConfiguration file;
         
@@ -459,7 +462,5 @@ public class FileManager {
             }
             return false;
         }
-        
     }
-    
 }

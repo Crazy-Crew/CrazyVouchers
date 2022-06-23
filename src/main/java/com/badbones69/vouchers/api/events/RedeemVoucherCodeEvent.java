@@ -8,8 +8,8 @@ import org.bukkit.event.HandlerList;
 
 public class RedeemVoucherCodeEvent extends Event implements Cancellable {
     
-    private Player player;
-    private VoucherCode voucherCode;
+    private final Player player;
+    private final VoucherCode voucherCode;
     private Boolean cancelled;
     private static final HandlerList handlers = new HandlerList();
     
@@ -56,5 +56,4 @@ public class RedeemVoucherCodeEvent extends Event implements Cancellable {
     public static HandlerList getHandlerList() {
         return handlers;
     }
-    
 }

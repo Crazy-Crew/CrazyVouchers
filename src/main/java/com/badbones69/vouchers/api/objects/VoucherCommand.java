@@ -6,8 +6,8 @@ import java.util.Random;
 
 public class VoucherCommand {
     
-    private Integer uuid;
-    private List<String> commands;
+    private final Integer uuid;
+    private final List<String> commands;
     
     public VoucherCommand(String commandString) {
         this.uuid = new Random().nextInt();
@@ -25,5 +25,4 @@ public class VoucherCommand {
     public Boolean isSimilar(VoucherCommand voucherCommand) {
         return uuid.equals(voucherCommand.getUUID());
     }
-    
 }

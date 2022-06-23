@@ -9,7 +9,7 @@ public enum Support {
     
     private final String name;
     
-    private Support(String name) {
+    Support(String name) {
         this.name = name;
     }
     
@@ -20,5 +20,4 @@ public enum Support {
     public boolean isPluginLoaded() {
         return Bukkit.getServer().getPluginManager().getPlugin(name) != null;
     }
-    
 }

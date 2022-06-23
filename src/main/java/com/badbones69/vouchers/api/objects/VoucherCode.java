@@ -14,34 +14,34 @@ import java.util.stream.Collectors;
 
 public class VoucherCode {
     
-    private String name;
-    private String code;
-    private Boolean enabled;
-    private Boolean caseSensitive;
+    private final String name;
+    private final String code;
+    private final Boolean enabled;
+    private final Boolean caseSensitive;
     private Boolean limited;
     private Integer limit;
-    private String message;
-    private List<String> commands;
-    private Boolean whitelistPermissionToggle;
-    private List<String> whitelistPermissions = new ArrayList<>();
+    private final String message;
+    private final List<String> commands;
+    private final Boolean whitelistPermissionToggle;
+    private final List<String> whitelistPermissions = new ArrayList<>();
     private List<String> whitelistCommands = new ArrayList<>();
-    private Boolean whitelistWorldsToggle;
+    private final Boolean whitelistWorldsToggle;
     private String whitelistWorldMessage;
-    private List<String> whitelistWorlds = new ArrayList<>();
+    private final List<String> whitelistWorlds = new ArrayList<>();
     private List<String> whitelistWorldCommands = new ArrayList<>();
-    private Boolean blacklistPermissionsToggle;
+    private final Boolean blacklistPermissionsToggle;
     private String blacklistPermissionMessage;
     private List<String> blacklistCommands = new ArrayList<>();
     private List<String> blacklistPermissions = new ArrayList<>();
-    private Boolean limiterToggle;
+    private final Boolean limiterToggle;
     private Integer limiterLimit;
-    private Boolean soundToggle;
-    private List<Sound> sounds = new ArrayList<>();
-    private Boolean fireworkToggle;
-    private List<Color> fireworkColors = new ArrayList<>();
-    private List<VoucherCommand> randomCoammnds = new ArrayList<>();
-    private List<VoucherCommand> chanceCommands = new ArrayList<>();
-    private List<ItemBuilder> items = new ArrayList<>();
+    private final Boolean soundToggle;
+    private final List<Sound> sounds = new ArrayList<>();
+    private final Boolean fireworkToggle;
+    private final List<Color> fireworkColors = new ArrayList<>();
+    private List<VoucherCommand> randomCommands = new ArrayList<>();
+    private final List<VoucherCommand> chanceCommands = new ArrayList<>();
+    private final List<ItemBuilder> items = new ArrayList<>();
     
     public VoucherCode(String name) {
         this.name = name;
@@ -50,9 +50,11 @@ public class VoucherCode {
         this.enabled = config.getBoolean(path + "Options.Enabled");
         this.code = config.getString(path + "Code", "");
         this.commands = config.getStringList(path + "Commands");
+
         for (String commands : config.getStringList(path + "Random-Commands")) {
-            this.randomCoammnds.add(new VoucherCommand(commands));
+            this.randomCommands.add(new VoucherCommand(commands));
         }
+
         for (String line : config.getStringList(path + "Chance-Commands")) {
             try {
                 String[] split = line.split(" ");
@@ -65,15 +67,19 @@ public class VoucherCode {
                 e.printStackTrace();
             }
         }
+
         for (String itemString : config.getStringList(path + "Items")) {
             this.items.add(ItemBuilder.convertString(itemString));
         }
+
         this.caseSensitive = config.getBoolean(path + "Options.Case-Sensitive");
+
         if (config.contains(path + "Options.Message")) {
             this.message = config.getString(path + "Options.Message");
         } else {
             this.message = "";
         }
+
         if (config.contains(path + "Options.Permission.Whitelist-Permission")) {
             this.whitelistPermissionToggle = config.getBoolean(path + "Options.Permission.Whitelist-Permission.Toggle");
             if (config.contains(path + "Options.Permission.Whitelist-Permission.Node")) {
@@ -84,6 +90,7 @@ public class VoucherCode {
         } else {
             this.whitelistPermissionToggle = false;
         }
+
         if (config.contains(path + "Options.Whitelist-Worlds.Toggle")) {
             this.whitelistWorlds.addAll(config.getStringList(path + "Options.Whitelist-Worlds.Worlds").stream().map(String :: toLowerCase).collect(Collectors.toList()));
             if (config.contains(path + "Options.Whitelist-Worlds.Message")) {
@@ -96,6 +103,7 @@ public class VoucherCode {
         } else {
             this.whitelistWorldsToggle = false;
         }
+
         if (config.contains(path + "Options.Permission.Blacklist-Permissions")) {
             this.blacklistPermissionsToggle = config.getBoolean(path + "Options.Permission.Blacklist-Permissions.Toggle");
             if (config.contains(path + "Options.Permission.Blacklist-Permissions.Message")) {
@@ -108,23 +116,25 @@ public class VoucherCode {
         } else {
             this.blacklistPermissionsToggle = false;
         }
+
         if (config.contains(path + "Options.Limiter")) {
             this.limiterToggle = config.getBoolean(path + "Options.Limiter.Toggle");
             this.limiterLimit = config.getInt(path + "Options.Limiter.Limit");
         } else {
             this.limiterToggle = false;
         }
+
         if (config.contains(path + "Options.Sound")) {
             this.soundToggle = config.getBoolean(path + "Options.Sound.Toggle");
             for (String sound : config.getStringList(path + "Options.Sound.Sounds")) {
                 try {
                     this.sounds.add(Sound.valueOf(sound));
-                } catch (Exception e) {
-                }
+                } catch (Exception ignored) {}
             }
         } else {
             this.soundToggle = false;
         }
+
         if (config.contains(path + "Options.Firework")) {
             this.fireworkToggle = config.getBoolean(path + "Options.Firework.Toggle");
             for (String color : config.getString(path + "Options.Firework.Colors").split(", ")) {
@@ -228,7 +238,7 @@ public class VoucherCode {
     }
     
     public List<VoucherCommand> getRandomCommands() {
-        return randomCoammnds;
+        return randomCommands;
     }
     
     public List<VoucherCommand> getChanceCommands() {

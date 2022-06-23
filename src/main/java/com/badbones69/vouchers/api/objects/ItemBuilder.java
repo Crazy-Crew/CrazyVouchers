@@ -1,5 +1,6 @@
 package com.badbones69.vouchers.api.objects;
 
+import com.badbones69.vouchers.Methods;
 import com.badbones69.vouchers.api.enums.Version;
 import de.tr7zw.changeme.nbtapi.NBTItem;
 import org.bukkit.ChatColor;
@@ -30,7 +31,7 @@ public class ItemBuilder {
     private Material material;
     private int damage;
     private String itemName;
-    private List<String> itemLore;
+    private final List<String> itemLore;
     private int itemAmount;
     
     // Player
@@ -50,7 +51,7 @@ public class ItemBuilder {
     private boolean glowing;
     
     // Entities
-    private boolean isMobEgg;
+    private final boolean isMobEgg;
     private EntityType entityType;
     
     // Potions
@@ -525,7 +526,7 @@ public class ItemBuilder {
      * @return The ItemBuilder with an updated name.
      */
     public ItemBuilder setName(String itemName) {
-        if (itemName != null) this.itemName = color(itemName);
+        if (itemName != null) this.itemName = Methods.color(itemName);
         return this;
     }
     
@@ -571,7 +572,7 @@ public class ItemBuilder {
         if (lore != null) {
             this.itemLore.clear();
             for (String line : lore) {
-                this.itemLore.add(color(line));
+                this.itemLore.add(Methods.color(line));
             }
         }
         return this;
@@ -584,7 +585,7 @@ public class ItemBuilder {
      * @return The ItemBuilder with updated info.
      */
     public ItemBuilder addLore(String lore) {
-        if (lore != null) this.itemLore.add(color(lore));
+        if (lore != null) this.itemLore.add(Methods.color(lore));
         return this;
     }
     
@@ -1247,20 +1248,6 @@ public class ItemBuilder {
         return enchantments;
     }
     
-    private final java.util.regex.Pattern HEX_PATTERN = java.util.regex.Pattern.compile("#[a-fA-F0-9]{6}");
-    
-    private String color(String message) {
-        if (Version.isNewer(Version.v1_15_R1)) {
-            Matcher matcher = HEX_PATTERN.matcher(message);
-            StringBuilder buffer = new StringBuilder();
-            while (matcher.find()) {
-                matcher.appendReplacement(buffer, net.md_5.bungee.api.ChatColor.of(matcher.group()).toString());
-            }
-            return ChatColor.translateAlternateColorCodes('&', matcher.appendTail(buffer).toString());
-        }
-        return ChatColor.translateAlternateColorCodes('&', message);
-    }
-    
     private static boolean isInt(String s) {
         try {
             Integer.parseInt(s);
@@ -1286,5 +1273,4 @@ public class ItemBuilder {
         }
         return null;
     }
-    
 }

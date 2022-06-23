@@ -16,35 +16,35 @@ import java.util.stream.Collectors;
 
 public class Voucher {
     
-    private String name;
+    private final String name;
     private Boolean usesArgs;
-    private ItemBuilder itemBuilder;
+    private final ItemBuilder itemBuilder;
     private boolean glowing;
-    private String usedMessage;
-    private Boolean whitelistPermissionToggle;
-    private List<String> whitelistPermissions = new ArrayList<>();
+    private final String usedMessage;
+    private final Boolean whitelistPermissionToggle;
+    private final List<String> whitelistPermissions = new ArrayList<>();
     private List<String> whitelistCommands = new ArrayList<>();
     private String whitelistPermissionMessage;
-    private Boolean whitelistWorldsToggle;
+    private final Boolean whitelistWorldsToggle;
     private String whitelistWorldMessage;
-    private List<String> whitelistWorlds = new ArrayList<>();
+    private final List<String> whitelistWorlds = new ArrayList<>();
     private List<String> whitelistWorldCommands = new ArrayList<>();
-    private Boolean blacklistPermissionsToggle;
+    private final Boolean blacklistPermissionsToggle;
     private String blacklistPermissionMessage;
     private List<String> blacklistCommands = new ArrayList<>();
     private List<String> blacklistPermissions = new ArrayList<>();
-    private Boolean limiterToggle;
+    private final Boolean limiterToggle;
     private Integer limiterLimit;
-    private Boolean twostepAuthentication;
-    private Boolean soundToggle;
-    private List<Sound> sounds = new ArrayList<>();
-    private Boolean fireworkToggle;
-    private List<Color> fireworkColors = new ArrayList<>();
+    private final Boolean twoStepAuthentication;
+    private final Boolean soundToggle;
+    private final List<Sound> sounds = new ArrayList<>();
+    private final Boolean fireworkToggle;
+    private final List<Color> fireworkColors = new ArrayList<>();
     private boolean isEdible;
     private List<String> commands = new ArrayList<>();
-    private List<VoucherCommand> randomCoammnds = new ArrayList<>();
-    private List<VoucherCommand> chanceCommands = new ArrayList<>();
-    private List<ItemBuilder> items = new ArrayList<>();
+    private final List<VoucherCommand> randomCommands = new ArrayList<>();
+    private final List<VoucherCommand> chanceCommands = new ArrayList<>();
+    private final List<ItemBuilder> items = new ArrayList<>();
     
     /**
      * This is just used for imputing fake vouchers.
@@ -64,7 +64,7 @@ public class Voucher {
         this.blacklistPermissionMessage = "blacklistPermissionMessage";
         this.limiterToggle = false;
         this.limiterLimit = 0;
-        this.twostepAuthentication = false;
+        this.twoStepAuthentication = false;
         this.soundToggle = false;
         this.fireworkToggle = false;
         this.isEdible = false;
@@ -82,9 +82,11 @@ public class Voucher {
         .setPlayerName(config.getString(path + "Player"))
         .setFlagsFromStrings(config.getStringList(path + "Flags"));
         this.glowing = config.getBoolean(path + "Glowing");
+
         if (itemBuilder.getName().toLowerCase().contains("%arg%")) {
             this.usesArgs = true;
         }
+
         if (!usesArgs) {
             for (String lore : itemBuilder.getLore()) {
                 if (lore.toLowerCase().contains("%arg%")) {
@@ -93,11 +95,14 @@ public class Voucher {
                 }
             }
         }
+
         this.commands = config.getStringList(path + "Commands");
+
         for (String commands : config.getStringList(path + "Random-Commands")) {
-            this.randomCoammnds.add(new VoucherCommand(commands));
+            this.randomCommands.add(new VoucherCommand(commands));
         }
-        for (String line : config.getStringList(path + "Chance-Commands")) {// - '%chance% %command%, %command%, %command%, ... etc'
+
+        for (String line : config.getStringList(path + "Chance-Commands")) { // - '%chance% %command%, %command%, %command%, ... etc'
             try {
                 String[] split = line.split(" ");
                 VoucherCommand voucherCommand = new VoucherCommand(line.substring(split[0].length() + 1));
@@ -109,33 +114,42 @@ public class Voucher {
                 e.printStackTrace();
             }
         }
+
         for (String itemString : config.getStringList(path + "Items")) {
             this.items.add(ItemBuilder.convertString(itemString));
         }
+
         this.usedMessage = getMessage(path + "Options.Message");
+
         if (config.contains(path + "Options.Permission.Whitelist-Permission")) {
             this.whitelistPermissionToggle = config.getBoolean(path + "Options.Permission.Whitelist-Permission.Toggle");
+
             if (config.contains(path + "Options.Permission.Whitelist-Permission.Node")) {
                 whitelistPermissions.add("voucher." + config.getString(path + "Options.Permission.Whitelist-Permission.Node").toLowerCase());
             }
+
             whitelistPermissions.addAll(config.getStringList(path + "Options.Permission.Whitelist-Permission.Permissions").stream().map(String :: toLowerCase).collect(Collectors.toList()));
             this.whitelistCommands = config.getStringList(path + "Options.Permission.Whitelist-Permission.Commands");
             this.whitelistPermissionMessage = config.contains(path + "Options.Permission.Whitelist-Permission.Message") ? getMessage(path + "Options.Permission.Whitelist-Permission.Message") : Messages.NO_PERMISSION_TO_VOUCHER.getMessageNoPrefix();
         } else {
             this.whitelistPermissionToggle = false;
         }
+
         if (config.contains(path + "Options.Whitelist-Worlds.Toggle")) {
             this.whitelistWorlds.addAll(config.getStringList(path + "Options.Whitelist-Worlds.Worlds").stream().map(String :: toLowerCase).collect(Collectors.toList()));
+
             if (config.contains(path + "Options.Whitelist-Worlds.Message")) {
                 this.whitelistWorldMessage = getMessage(path + "Options.Whitelist-Worlds.Message");
             } else {
                 this.whitelistWorldMessage = Messages.NOT_IN_WHITELISTED_WORLD.getMessageNoPrefix();
             }
+
             this.whitelistWorldCommands = config.getStringList(path + "Options.Whitelist-Worlds.Commands");
             this.whitelistWorldsToggle = !this.whitelistWorlds.isEmpty() && config.getBoolean(path + "Options.Whitelist-Worlds.Toggle");
         } else {
             this.whitelistWorldsToggle = false;
         }
+
         if (config.contains(path + "Options.Permission.Blacklist-Permissions")) {
             this.blacklistPermissionsToggle = config.getBoolean(path + "Options.Permission.Blacklist-Permissions.Toggle");
             if (config.contains(path + "Options.Permission.Blacklist-Permissions.Message")) {
@@ -148,24 +162,27 @@ public class Voucher {
         } else {
             this.blacklistPermissionsToggle = false;
         }
+
         if (config.contains(path + "Options.Limiter")) {
             this.limiterToggle = config.getBoolean(path + "Options.Limiter.Toggle");
             this.limiterLimit = config.getInt(path + "Options.Limiter.Limit");
         } else {
             this.limiterToggle = false;
         }
-        this.twostepAuthentication = config.contains(path + "Options.Two-Step-Authentication") && config.getBoolean(path + "Options.Two-Step-Authentication.Toggle");
+
+        this.twoStepAuthentication = config.contains(path + "Options.Two-Step-Authentication") && config.getBoolean(path + "Options.Two-Step-Authentication.Toggle");
+
         if (config.contains(path + "Options.Sound")) {
             this.soundToggle = config.getBoolean(path + "Options.Sound.Toggle");
             for (String sound : config.getStringList(path + "Options.Sound.Sounds")) {
                 try {
                     this.sounds.add(Sound.valueOf(sound));
-                } catch (Exception e) {
-                }
+                } catch (Exception ignored) {}
             }
         } else {
             this.soundToggle = false;
         }
+
         if (config.getBoolean(path + "Options.Firework.Toggle")) {
             for (String color : config.getString(path + "Options.Firework.Colors", "").split(", ")) {
                 this.fireworkColors.add(Methods.getColor(color));
@@ -174,6 +191,7 @@ public class Voucher {
         } else {
             this.fireworkToggle = false;
         }
+
         if (config.getBoolean(path + "Options.Is-Edible")) {
             this.isEdible = itemBuilder.build().getType().isEdible();
             switch (itemBuilder.getMaterial().toString()) {
@@ -279,7 +297,7 @@ public class Voucher {
     }
     
     public Boolean useTwoStepAuthentication() {
-        return twostepAuthentication;
+        return twoStepAuthentication;
     }
     
     public Boolean playSounds() {
@@ -302,8 +320,8 @@ public class Voucher {
         return commands;
     }
     
-    public List<VoucherCommand> getRandomCoammnds() {
-        return randomCoammnds;
+    public List<VoucherCommand> getRandomCommands() {
+        return randomCommands;
     }
     
     public List<VoucherCommand> getChanceCommands() {
@@ -333,5 +351,4 @@ public class Voucher {
     private boolean isList(String path) {
         return Files.CONFIG.getFile().contains(path) && !Files.CONFIG.getFile().getStringList(path).isEmpty();
     }
-    
 }

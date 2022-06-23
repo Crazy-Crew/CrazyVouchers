@@ -43,22 +43,22 @@ public enum Messages {
     private String defaultMessage;
     private List<String> defaultListMessage;
     
-    private Messages(String path, String defaultMessage) {
+    Messages(String path, String defaultMessage) {
         this.path = path;
         this.defaultMessage = defaultMessage;
     }
     
-    private Messages(String path, List<String> defaultListMessage) {
+    Messages(String path, List<String> defaultListMessage) {
         this.path = path;
         this.defaultListMessage = defaultListMessage;
     }
     
     public static String convertList(List<String> list) {
-        String message = "";
+        StringBuilder message = new StringBuilder();
         for (String line : list) {
-            message += Methods.color(line) + "\n";
+            message.append(Methods.color(line)).append("\n");
         }
-        return message;
+        return message.toString();
     }
     
     public static void addMissingMessages() {
@@ -74,6 +74,7 @@ public enum Messages {
                 }
             }
         }
+
         if (saveFile) {
             Files.MESSAGES.saveFile();
         }
@@ -126,9 +127,9 @@ public enum Messages {
         return newMessageList;
     }
     
-    //check if message is blank
-    //if message is blank return true
-    //if message is not blank return false
+    // check if message is blank
+    // if message is blank return true
+    // if message is not blank return false
     public boolean isBlank() {
         return getMessage(false).equals("");
     }
@@ -141,6 +142,7 @@ public enum Messages {
         String message;
         boolean isList = isList();
         boolean exists = exists();
+
         if (isList) {
             if (exists) {
                 message = Methods.color(convertList(Files.MESSAGES.getFile().getStringList("Messages." + path)));
@@ -154,16 +156,18 @@ public enum Messages {
                 message = Methods.color(getDefaultMessage());
             }
         }
+
         for (String placeholder : placeholders.keySet()) {
             message = message.replaceAll(placeholder, placeholders.get(placeholder))
             .replaceAll(placeholder.toLowerCase(), placeholders.get(placeholder));
         }
-        if (isList) {//Don't want to add a prefix to a list of messages.
+
+        if (isList) { // Don't want to add a prefix to a list of messages.
             return Methods.color(message);
-        } else {//If the message isn't a list.
-            if (prefix) {//If the message needs a prefix.
+        } else { // If the message isn't a list.
+            if (prefix) { // If the message needs a prefix.
                 return Methods.getPrefix(message);
-            } else {//If the message doesn't need a prefix.
+            } else { // If the message doesn't need a prefix.
                 return Methods.color(message);
             }
         }

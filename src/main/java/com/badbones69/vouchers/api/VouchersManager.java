@@ -12,17 +12,19 @@ import java.util.concurrent.ThreadLocalRandom;
 
 public class VouchersManager {
     
-    private static ArrayList<Voucher> vouchers = new ArrayList<>();
-    private static ArrayList<VoucherCode> voucherCodes = new ArrayList<>();
+    private final static ArrayList<Voucher> vouchers = new ArrayList<>();
+    private final static ArrayList<VoucherCode> voucherCodes = new ArrayList<>();
     
     public static void load() {
         vouchers.clear();
         voucherCodes.clear();
         //Used for when wanting to put in fake vouchers.
         //for(int i = 1; i <= 400; i++) vouchers.add(new Voucher(i));
+
         for (String voucherName : FileManager.Files.CONFIG.getFile().getConfigurationSection("Vouchers").getKeys(false)) {
             vouchers.add(new Voucher(voucherName));
         }
+
         if (FileManager.Files.VOUCHER_CODES.getFile().contains("Voucher-Codes")) {
             for (String voucherName : FileManager.Files.VOUCHER_CODES.getFile().getConfigurationSection("Voucher-Codes").getKeys(false)) {
                 voucherCodes.add(new VoucherCode(voucherName));
@@ -85,11 +87,12 @@ public class VouchersManager {
     public static Voucher getVoucherFromItem(ItemStack item) {
         try {
             NBTItem nbt = new NBTItem(item);
+
             if (nbt.hasKey("voucher")) {
                 return getVoucher(nbt.getString("voucher"));
             }
-        } catch (Exception e) {
-        }
+
+        } catch (Exception ignored) {}
         return null;
     }
     
@@ -128,6 +131,7 @@ public class VouchersManager {
                     string += word + " ";
                 }
             }
+
             newString = string.substring(0, string.length() - 1);
         }
         return newString;
@@ -145,5 +149,4 @@ public class VouchersManager {
             return min;
         }
     }
-    
 }

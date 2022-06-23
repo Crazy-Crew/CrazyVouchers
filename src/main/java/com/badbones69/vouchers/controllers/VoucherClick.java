@@ -23,27 +23,29 @@ import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.event.player.PlayerItemConsumeEvent;
 import org.bukkit.inventory.EquipmentSlot;
 import org.bukkit.inventory.ItemStack;
-
 import java.util.HashMap;
 import java.util.concurrent.ThreadLocalRandom;
 
 public class VoucherClick implements Listener {
     
-    private HashMap<Player, String> twoAuth = new HashMap<>();
+    private final HashMap<Player, String> twoAuth = new HashMap<>();
     
-    //This must run as highest, so it doesn't cause other plugins to check
-    //the items that were added to the players inventory and replaced the item in the player's hand.
+    // This must run as highest, so it doesn't cause other plugins to check
+    // the items that were added to the players inventory and replaced the item in the player's hand.
     @EventHandler(priority = EventPriority.HIGHEST)
     public void onVoucherClick(PlayerInteractEvent e) {
         ItemStack item = getItemInHand(e.getPlayer());
         Player player = e.getPlayer();
         Action action = e.getAction();
         if (item != null && item.getType() != Material.AIR) {
+
             if (Version.isNewer(Version.v1_8_R3) && e.getHand() != EquipmentSlot.HAND) {
                 return;
             }
+
             if (action == Action.RIGHT_CLICK_BLOCK || action == Action.RIGHT_CLICK_AIR) {
                 Voucher voucher = VouchersManager.getVoucherFromItem(item);
+
                 if (voucher != null && !voucher.isEdible()) {
                     e.setCancelled(true);
                     useVoucher(player, voucher, item);
@@ -79,6 +81,7 @@ public class VoucherClick implements Listener {
         String argument = VouchersManager.getArgument(item, voucher);
         if (passesPermissionChecks(player, item, voucher, argument)) {
             String uuid = player.getUniqueId().toString();
+
             if (!player.hasPermission("voucher.bypass") && voucher.useLimiter() && data.contains("Players." + uuid + ".Vouchers." + voucher.getName())) {
                 int amount = data.getInt("Players." + uuid + ".Vouchers." + voucher.getName());
                 if (amount >= voucher.getLimiterLimit()) {
@@ -86,6 +89,7 @@ public class VoucherClick implements Listener {
                     return;
                 }
             }
+
             if (!voucher.isEdible() && voucher.useTwoStepAuthentication()) {
                 if (twoAuth.containsKey(player)) {
                     if (!twoAuth.get(player).equalsIgnoreCase(voucher.getName())) {
@@ -99,6 +103,7 @@ public class VoucherClick implements Listener {
                     return;
                 }
             }
+
             twoAuth.remove(player);
             RedeemVoucherEvent event = new RedeemVoucherEvent(player, voucher, argument);
             Bukkit.getPluginManager().callEvent(event);
@@ -137,6 +142,7 @@ public class VoucherClick implements Listener {
                     }
                 }
             }
+
             if (voucher.usesWhitelistWorlds() && !voucher.getWhitelistWorlds().contains(player.getWorld().getName().toLowerCase())) {
                 player.sendMessage(Messages.replacePlaceholders(placeholders, voucher.getWhitelistWorldMessage()));
                 for (String command : voucher.getWhitelistWorldCommands()) {
@@ -144,6 +150,7 @@ public class VoucherClick implements Listener {
                 }
                 return false;
             }
+
             if (voucher.useBlackListPermissions()) {
                 for (String permission : voucher.getBlackListPermissions()) {
                     if (player.hasPermission(permission.toLowerCase().replace("%arg%", argument != null ? argument : "%arg%"))) {
@@ -168,22 +175,26 @@ public class VoucherClick implements Listener {
         placeholders.put("%X%", player.getLocation().getBlockX() + "");
         placeholders.put("%Y%", player.getLocation().getBlockY() + "");
         placeholders.put("%Z%", player.getLocation().getBlockZ() + "");
+
         for (String command : voucher.getCommands()) {
             command = replacePlaceholders(command, player);
             Bukkit.dispatchCommand(Bukkit.getConsoleSender(), Messages.replacePlaceholders(placeholders, VouchersManager.replaceRandom(command)));
         }
-        if (!voucher.getRandomCoammnds().isEmpty()) {// Picks a random command from the Random-Commands list.
-            for (String command : voucher.getRandomCoammnds().get(getRandom(voucher.getRandomCoammnds().size())).getCommands()) {
+
+        if (!voucher.getRandomCommands().isEmpty()) { // Picks a random command from the Random-Commands list.
+            for (String command : voucher.getRandomCommands().get(getRandom(voucher.getRandomCommands().size())).getCommands()) {
                 command = replacePlaceholders(command, player);
                 Bukkit.dispatchCommand(Bukkit.getConsoleSender(), Messages.replacePlaceholders(placeholders, VouchersManager.replaceRandom(command)));
             }
         }
-        if (!voucher.getChanceCommands().isEmpty()) {// Picks a command based on the chance system of the Chance-Commands list.
+
+        if (!voucher.getChanceCommands().isEmpty()) { // Picks a command based on the chance system of the Chance-Commands list.
             for (String command : voucher.getChanceCommands().get(getRandom(voucher.getChanceCommands().size())).getCommands()) {
                 command = replacePlaceholders(command, player);
                 Bukkit.dispatchCommand(Bukkit.getConsoleSender(), Messages.replacePlaceholders(placeholders, VouchersManager.replaceRandom(command)));
             }
         }
+
         for (ItemBuilder itemBuilder : voucher.getItems()) {
             if (!Methods.isInventoryFull(player)) {
                 player.getInventory().addItem(itemBuilder.build());
@@ -191,18 +202,22 @@ public class VoucherClick implements Listener {
                 player.getWorld().dropItem(player.getLocation(), itemBuilder.build());
             }
         }
+
         if (voucher.playSounds()) {
             for (Sound sound : voucher.getSounds()) {
                 player.playSound(player.getLocation(), sound, 1, 1);
             }
         }
+
         if (voucher.useFirework()) {
             Methods.fireWork(player.getLocation(), voucher.getFireworkColors());
         }
+
         if (!voucher.getVoucherUsedMessage().isEmpty()) {
             String message = replacePlaceholders(voucher.getVoucherUsedMessage(), player);
             player.sendMessage(Messages.replacePlaceholders(placeholders, message));
         }
+
         if (voucher.useLimiter()) {
             FileManager.Files.DATA.getFile().set("Players." + player.getUniqueId() + ".UserName", player.getName());
             FileManager.Files.DATA.getFile().set("Players." + player.getUniqueId() + ".Vouchers." + voucher.getName(), FileManager.Files.DATA.getFile().getInt("Players." + player.getUniqueId() + ".Vouchers." + voucher.getName()) + 1);

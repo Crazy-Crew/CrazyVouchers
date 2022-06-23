@@ -15,7 +15,7 @@
 ###################################################################
 Settings: #Settings - Hex Color support does work, Please use #FFFFFF format!
   Prefix: '&7[&6Vouchers&7]: ' #The prefix before messages.
-  Updater: true
+  Updater: true # Has been temporarily removed.
 Vouchers: #Where you make your vouchers.
   Money: #The name of the voucher.
     Item: 'PAPER' #The item the voucher is.

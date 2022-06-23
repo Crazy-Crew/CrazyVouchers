@@ -55,7 +55,7 @@ public class SkullCreator {
         "{SkullOwner:\"" + name + "\"}"
         );
     }
-    
+
     /**
      * Creates a player skull with a UUID. 1.13 only.
      *
@@ -64,7 +64,7 @@ public class SkullCreator {
      */
     public static ItemStack itemFromUuid(UUID id) {
         ItemStack item = getPlayerSkullItem();
-        
+
         return itemWithUuid(item, id);
     }
     
@@ -254,7 +254,6 @@ public class SkullCreator {
         String toEncode = "{\"textures\":{\"SKIN\":{\"url\":\"" + actualUrl.toString() + "\"}}}";
         return Base64.getEncoder().encodeToString(toEncode.getBytes());
     }
-    
 }
 
 /* Format for skull
