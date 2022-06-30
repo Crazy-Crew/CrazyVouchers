@@ -1,7 +1,7 @@
 name: Vouchers
 main: "${group}.Vouchers"
 version: ${version}
-api-version: 1.18
+api-version: 1.13
 description: ${description}
 
 commands:
