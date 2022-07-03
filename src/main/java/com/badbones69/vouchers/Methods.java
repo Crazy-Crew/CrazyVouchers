@@ -23,7 +23,7 @@ public class Methods {
     
     public static Plugin plugin = Bukkit.getServer().getPluginManager().getPlugin("Vouchers");
     
-    public final static Pattern HEX_PATTERN = Pattern.compile("#[a-fA-F0-9]{6}");
+    public final static Pattern HEX_PATTERN = Pattern.compile("#[a-fA-F\\d]{6}");
     
     public static void removeItem(ItemStack item, Player player) {
         if (item.getAmount() <= 1) {

@@ -1,9 +1,7 @@
 package com.badbones69.vouchers.api.objects;
 
 import com.badbones69.vouchers.Methods;
-import com.badbones69.vouchers.api.enums.Version;
 import de.tr7zw.changeme.nbtapi.NBTItem;
-import org.bukkit.ChatColor;
 import org.bukkit.Color;
 import org.bukkit.DyeColor;
 import org.bukkit.Material;
@@ -20,7 +18,6 @@ import org.bukkit.potion.PotionEffectType;
 import org.bukkit.potion.PotionType;
 
 import java.util.*;
-import java.util.regex.Matcher;
 import java.util.stream.Collectors;
 
 public class ItemBuilder {

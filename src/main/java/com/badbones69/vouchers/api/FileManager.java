@@ -269,7 +269,7 @@ public class FileManager {
     }
     
     /**
-     * Was found here: https://bukkit.org/threads/extracting-file-from-jar.16962
+     * Was found here: <a href="https://bukkit.org/threads/extracting-file-from-jar.16962">URL</a>
      */
     private void copyFile(InputStream in, File out) throws Exception {
         try (InputStream fis = in; FileOutputStream fos = new FileOutputStream(out)) {
@@ -297,7 +297,7 @@ public class FileManager {
          * @param fileName The file name that will be in the plugin's folder.
          * @param fileLocation The location the file is in while in the Jar.
          */
-        private Files(String fileName, String fileLocation) {
+        Files(String fileName, String fileLocation) {
             this.fileName = fileName;
             this.fileLocation = fileLocation;
         }
@@ -445,7 +445,7 @@ public class FileManager {
         
         /**
          * Overrides the loaded state file and loads the filesystems file.
-         * @return True if it reloaded correct and false if the file wasn't found or errored.
+         * @return True if it reloaded correct and false if the file wasn't found or error.
          */
         public Boolean reloadFile() {
             if (file != null) {
