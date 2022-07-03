@@ -1180,17 +1180,22 @@ public class ItemBuilder {
         enchantmentName = stripEnchantmentName(enchantmentName);
         for (Enchantment enchantment : Enchantment.values()) {
             try {
-                if (stripEnchantmentName(enchantment.getKey().getKey()).equalsIgnoreCase(enchantmentName)) {
-                    return enchantment;
+                // MC 1.13+ has the correct names.
+                if (Version.isNewer(Version.v1_12_R1)) {
+                    if (stripEnchantmentName(enchantment.getKey().getKey()).equalsIgnoreCase(enchantmentName)) {
+                        return enchantment;
+                    }
                 }
+
                 HashMap<String, String> enchantments = getEnchantmentList();
+
                 if (stripEnchantmentName(enchantment.getName()).equalsIgnoreCase(enchantmentName) || (enchantments.get(enchantment.getName()) != null &&
-                stripEnchantmentName(enchantments.get(enchantment.getName())).equalsIgnoreCase(enchantmentName))) {
+                        stripEnchantmentName(enchantments.get(enchantment.getName())).equalsIgnoreCase(enchantmentName))) {
                     return enchantment;
                 }
-            } catch (Exception ignore) {
-            }
+            } catch (Exception ignore) {}
         }
+
         return null;
     }
     
