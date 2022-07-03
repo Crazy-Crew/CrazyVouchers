@@ -1,6 +1,7 @@
 package com.badbones69.vouchers.api.objects;
 
 import com.badbones69.vouchers.Methods;
+import com.badbones69.vouchers.api.enums.Version;
 import de.tr7zw.changeme.nbtapi.NBTItem;
 import org.bukkit.Color;
 import org.bukkit.DyeColor;
