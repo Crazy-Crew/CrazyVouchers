@@ -1,10 +1,14 @@
 package com.badbones69.vouchers;
 
+import com.badbones69.vouchers.api.CrazyManager;
 import com.badbones69.vouchers.api.enums.Version;
 import com.badbones69.vouchers.api.FileManager.Files;
 import com.badbones69.vouchers.api.enums.Messages;
 import com.badbones69.vouchers.controllers.FireworkDamageAPI;
-import org.bukkit.*;
+import org.bukkit.ChatColor;
+import org.bukkit.Color;
+import org.bukkit.FireworkEffect;
+import org.bukkit.Location;
 import org.bukkit.command.CommandSender;
 import org.bukkit.enchantments.Enchantment;
 import org.bukkit.entity.Firework;
@@ -13,7 +17,6 @@ import org.bukkit.inventory.ItemFlag;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.FireworkMeta;
 import org.bukkit.inventory.meta.ItemMeta;
-import org.bukkit.plugin.Plugin;
 import java.util.HashMap;
 import java.util.List;
 import java.util.regex.Matcher;
@@ -21,9 +24,9 @@ import java.util.regex.Pattern;
 
 public class Methods {
     
-    public static Plugin plugin = Bukkit.getServer().getPluginManager().getPlugin("Vouchers");
-    
     public final static Pattern HEX_PATTERN = Pattern.compile("#[a-fA-F\\d]{6}");
+
+    private final static CrazyManager crazyManager = CrazyManager.getInstance();
     
     public static void removeItem(ItemStack item, Player player) {
         if (item.getAmount() <= 1) {
@@ -41,11 +44,14 @@ public class Methods {
         if (Version.isNewer(Version.v1_15_R1)) {
             Matcher matcher = HEX_PATTERN.matcher(message);
             StringBuffer buffer = new StringBuffer();
+
             while (matcher.find()) {
                 matcher.appendReplacement(buffer, net.md_5.bungee.api.ChatColor.of(matcher.group()).toString());
             }
+
             return ChatColor.translateAlternateColorCodes('&', matcher.appendTail(buffer).toString());
         }
+
         return ChatColor.translateAlternateColorCodes('&', message);
     }
     
@@ -55,6 +61,7 @@ public class Methods {
         } catch (NumberFormatException nfe) {
             return false;
         }
+
         return true;
     }
     
@@ -68,15 +75,17 @@ public class Methods {
             sender.sendMessage(Messages.NOT_A_NUMBER.getMessage(placeholders));
             return false;
         }
+
         return true;
     }
     
     public static boolean isOnline(CommandSender sender, String name) {
-        for (Player player : Bukkit.getServer().getOnlinePlayers()) {
+        for (Player player : crazyManager.getPlugin().getServer().getOnlinePlayers()) {
             if (player.getName().equalsIgnoreCase(name)) {
                 return true;
             }
         }
+
         sender.sendMessage(Messages.NOT_ONLINE.getMessage());
         return false;
     }
@@ -86,12 +95,14 @@ public class Methods {
             player.sendMessage(Messages.NO_PERMISSION.getMessage());
             return false;
         }
+
         return true;
     }
     
     public static boolean hasPermission(CommandSender sender, String perm) {
         if (sender instanceof Player) {
             Player player = (Player) sender;
+
             if (!player.hasPermission("voucher." + perm)) {
                 player.sendMessage(Messages.NO_PERMISSION.getMessage());
                 return false;
@@ -114,7 +125,7 @@ public class Methods {
         fm.setPower(0);
         f.setFireworkMeta(fm);
         FireworkDamageAPI.addFirework(f);
-        Bukkit.getServer().getScheduler().scheduleSyncDelayedTask(plugin, f :: detonate, 2);
+        crazyManager.getPlugin().getServer().getScheduler().scheduleSyncDelayedTask(crazyManager.getPlugin(), f :: detonate, 2);
     }
     
     public static ItemStack addGlow(ItemStack item, boolean glowing) {
@@ -134,6 +145,7 @@ public class Methods {
                 }
             }
         }
+
         return item;
     }
     
@@ -166,12 +178,15 @@ public class Methods {
                         if (one.getItemMeta().hasLore()) {
                             if (one.getItemMeta().getLore().size() == two.getItemMeta().getLore().size()) {
                                 int i = 0;
+
                                 for (String lore : one.getItemMeta().getLore()) {
                                     if (!lore.equals(two.getItemMeta().getLore().get(i))) {
                                         return false;
                                     }
+
                                     i++;
                                 }
+
                                 return true;
                             }
                         }
@@ -179,6 +194,7 @@ public class Methods {
                 }
             }
         }
+
         return false;
     }
     

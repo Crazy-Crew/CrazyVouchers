@@ -3,7 +3,7 @@ package com.badbones69.vouchers;
 import com.badbones69.vouchers.controllers.GUI;
 import com.badbones69.vouchers.api.FileManager;
 import com.badbones69.vouchers.api.FileManager.Files;
-import com.badbones69.vouchers.api.VouchersManager;
+import com.badbones69.vouchers.api.CrazyManager;
 import com.badbones69.vouchers.api.enums.Version;
 import com.badbones69.vouchers.commands.VoucherCommands;
 import com.badbones69.vouchers.commands.VoucherTab;
@@ -18,17 +18,22 @@ import org.bukkit.plugin.java.JavaPlugin;
 public class Vouchers extends JavaPlugin implements Listener {
     
     private final FileManager fileManager = FileManager.getInstance();
-    
+
+    private final CrazyManager crazyManager = CrazyManager.getInstance();
+
     @Override
     public void onEnable() {
 
+        crazyManager.loadPlugin();
+
         fileManager.logInfo(true).setup(this);
+
         if (!Files.DATA.getFile().contains("Players")) {
             Files.DATA.getFile().set("Players.Clear", null);
             Files.DATA.saveFile();
         }
 
-        PluginManager pm = Bukkit.getServer().getPluginManager();
+        PluginManager pm = getServer().getPluginManager();
 
         pm.registerEvents(this, this);
         pm.registerEvents(new VoucherClick(), this);
@@ -44,6 +49,7 @@ public class Vouchers extends JavaPlugin implements Listener {
         } catch (Exception ignored) {}
 
         new Metrics(this, 4536);
-        VouchersManager.load();
+
+        crazyManager.load();
     }
 }

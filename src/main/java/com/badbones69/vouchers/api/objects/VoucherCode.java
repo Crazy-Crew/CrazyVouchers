@@ -1,13 +1,12 @@
 package com.badbones69.vouchers.api.objects;
 
 import com.badbones69.vouchers.Methods;
+import com.badbones69.vouchers.api.CrazyManager;
 import com.badbones69.vouchers.api.FileManager;
 import com.badbones69.vouchers.api.enums.Messages;
-import org.bukkit.Bukkit;
 import org.bukkit.Color;
 import org.bukkit.Sound;
 import org.bukkit.configuration.file.FileConfiguration;
-
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -39,9 +38,11 @@ public class VoucherCode {
     private final List<Sound> sounds = new ArrayList<>();
     private final Boolean fireworkToggle;
     private final List<Color> fireworkColors = new ArrayList<>();
-    private List<VoucherCommand> randomCommands = new ArrayList<>();
+    private final List<VoucherCommand> randomCommands = new ArrayList<>();
     private final List<VoucherCommand> chanceCommands = new ArrayList<>();
     private final List<ItemBuilder> items = new ArrayList<>();
+
+    private final CrazyManager crazyManager = CrazyManager.getInstance();
     
     public VoucherCode(String name) {
         this.name = name;
@@ -59,11 +60,12 @@ public class VoucherCode {
             try {
                 String[] split = line.split(" ");
                 VoucherCommand voucherCommand = new VoucherCommand(line.substring(split[0].length() + 1));
+
                 for (int i = 1; i <= Integer.parseInt(split[0]); i++) {
                     chanceCommands.add(voucherCommand);
                 }
             } catch (Exception e) {
-                Bukkit.getLogger().info("An issue occurred when trying to use chance commands.");
+                crazyManager.getPlugin().getLogger().info("An issue occurred when trying to use chance commands.");
                 e.printStackTrace();
             }
         }
@@ -82,6 +84,7 @@ public class VoucherCode {
 
         if (config.contains(path + "Options.Permission.Whitelist-Permission")) {
             this.whitelistPermissionToggle = config.getBoolean(path + "Options.Permission.Whitelist-Permission.Toggle");
+
             if (config.contains(path + "Options.Permission.Whitelist-Permission.Node")) {
                 whitelistPermissions.add("voucher." + config.getString(path + "Options.Permission.Whitelist-Permission.Node").toLowerCase());
             }
@@ -93,11 +96,13 @@ public class VoucherCode {
 
         if (config.contains(path + "Options.Whitelist-Worlds.Toggle")) {
             this.whitelistWorlds.addAll(config.getStringList(path + "Options.Whitelist-Worlds.Worlds").stream().map(String :: toLowerCase).collect(Collectors.toList()));
+
             if (config.contains(path + "Options.Whitelist-Worlds.Message")) {
                 this.whitelistWorldMessage = config.getString(path + "Options.Whitelist-Worlds.Message");
             } else {
                 this.whitelistWorldMessage = Messages.NOT_IN_WHITELISTED_WORLD.getMessageNoPrefix();
             }
+
             this.whitelistWorldCommands = config.getStringList(path + "Options.Whitelist-Worlds.Commands");
             this.whitelistWorldsToggle = !this.whitelistWorlds.isEmpty() && config.getBoolean(path + "Options.Whitelist-Worlds.Toggle");
         } else {
@@ -106,11 +111,13 @@ public class VoucherCode {
 
         if (config.contains(path + "Options.Permission.Blacklist-Permissions")) {
             this.blacklistPermissionsToggle = config.getBoolean(path + "Options.Permission.Blacklist-Permissions.Toggle");
+
             if (config.contains(path + "Options.Permission.Blacklist-Permissions.Message")) {
                 this.blacklistPermissionMessage = config.getString(path + "Options.Permission.Blacklist-Permissions.Message");
             } else {
                 this.blacklistPermissionMessage = Messages.HAS_BLACKLIST_PERMISSION.getMessageNoPrefix();
             }
+
             this.blacklistPermissions = config.getStringList(path + "Options.Permission.Blacklist-Permissions.Permissions");
             this.blacklistCommands = config.getStringList(path + "Options.Permission.Blacklist-Permissions.Commands");
         } else {
@@ -126,6 +133,7 @@ public class VoucherCode {
 
         if (config.contains(path + "Options.Sound")) {
             this.soundToggle = config.getBoolean(path + "Options.Sound.Toggle");
+
             for (String sound : config.getStringList(path + "Options.Sound.Sounds")) {
                 try {
                     this.sounds.add(Sound.valueOf(sound));
@@ -137,6 +145,7 @@ public class VoucherCode {
 
         if (config.contains(path + "Options.Firework")) {
             this.fireworkToggle = config.getBoolean(path + "Options.Firework.Toggle");
+
             for (String color : config.getString(path + "Options.Firework.Colors").split(", ")) {
                 this.fireworkColors.add(Methods.getColor(color));
             }

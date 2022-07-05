@@ -3,7 +3,6 @@ package com.badbones69.vouchers.api.enums;
 import com.badbones69.vouchers.Methods;
 import com.badbones69.vouchers.api.FileManager.Files;
 import org.bukkit.configuration.file.FileConfiguration;
-
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
@@ -55,18 +54,22 @@ public enum Messages {
     
     public static String convertList(List<String> list) {
         StringBuilder message = new StringBuilder();
+
         for (String line : list) {
             message.append(Methods.color(line)).append("\n");
         }
+
         return message.toString();
     }
     
     public static void addMissingMessages() {
         FileConfiguration messages = Files.MESSAGES.getFile();
         boolean saveFile = false;
+
         for (Messages message : values()) {
             if (!messages.contains("Messages." + message.getPath())) {
                 saveFile = true;
+
                 if (message.getDefaultMessage() != null) {
                     messages.set("Messages." + message.getPath(), message.getDefaultMessage());
                 } else {
@@ -113,17 +116,20 @@ public enum Messages {
             message = message.replaceAll(placeholder, placeholders.get(placeholder))
             .replaceAll(placeholder.toLowerCase(), placeholders.get(placeholder));
         }
+
         return message;
     }
     
     public static List<String> replacePlaceholders(HashMap<String, String> placeholders, List<String> messageList) {
         List<String> newMessageList = new ArrayList<>();
+
         for (String message : messageList) {
             for (String placeholder : placeholders.keySet()) {
                 newMessageList.add(message.replaceAll(placeholder, placeholders.get(placeholder))
                 .replaceAll(placeholder.toLowerCase(), placeholders.get(placeholder)));
             }
         }
+
         return newMessageList;
     }
     

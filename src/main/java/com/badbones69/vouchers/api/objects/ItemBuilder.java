@@ -1,6 +1,7 @@
 package com.badbones69.vouchers.api.objects;
 
 import com.badbones69.vouchers.Methods;
+import com.badbones69.vouchers.api.CrazyManager;
 import com.badbones69.vouchers.api.enums.Version;
 import de.tr7zw.changeme.nbtapi.NBTItem;
 import org.bukkit.Color;
@@ -17,8 +18,11 @@ import org.bukkit.inventory.meta.*;
 import org.bukkit.potion.PotionData;
 import org.bukkit.potion.PotionEffectType;
 import org.bukkit.potion.PotionType;
-
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.HashMap;
+import java.util.List;
+import java.util.UUID;
 import java.util.stream.Collectors;
 
 public class ItemBuilder {
@@ -82,6 +86,8 @@ public class ItemBuilder {
     // Custom Data
     private int customModelData;
     private boolean useCustomModelData;
+
+    private final CrazyManager crazyManager = CrazyManager.getInstance();
     
     /**
      * Create a blank item builder.
@@ -312,9 +318,11 @@ public class ItemBuilder {
      */
     public String getUpdatedName() {
         String newName = itemName;
+
         for (String placeholder : namePlaceholders.keySet()) {
             newName = newName.replace(placeholder, namePlaceholders.get(placeholder)).replace(placeholder.toLowerCase(), namePlaceholders.get(placeholder));
         }
+
         return newName;
     }
     
@@ -330,6 +338,7 @@ public class ItemBuilder {
         }
         
         ItemStack item = referenceItem != null ? referenceItem : new ItemStack(material);
+
         if (item.getType() != Material.AIR) {
             
             if (isHead) { // Has to go 1st due to it removing all data when finished.
@@ -346,6 +355,7 @@ public class ItemBuilder {
             ItemMeta itemMeta = item.getItemMeta();
             itemMeta.setDisplayName(getUpdatedName());
             itemMeta.setLore(getUpdatedLore());
+
             if (itemMeta instanceof org.bukkit.inventory.meta.Damageable) ((org.bukkit.inventory.meta.Damageable) itemMeta).setDamage(damage);
             
             if (isPotion && (potionType != null || potionColor != null)) {
@@ -447,6 +457,7 @@ public class ItemBuilder {
             
             if (metaData.contains("#")) { // <ID>:<Durability>#<CustomModelData>
                 String modelData = metaData.split("#")[1];
+
                 if (isInt(modelData)) { // Value is a number.
                     this.useCustomModelData = true;
                     this.customModelData = convertInt(modelData);
@@ -525,6 +536,7 @@ public class ItemBuilder {
      */
     public ItemBuilder setName(String itemName) {
         if (itemName != null) this.itemName = Methods.color(itemName);
+
         return this;
     }
     
@@ -569,10 +581,12 @@ public class ItemBuilder {
     public ItemBuilder setLore(List<String> lore) {
         if (lore != null) {
             this.itemLore.clear();
+
             for (String line : lore) {
                 this.itemLore.add(Methods.color(line));
             }
         }
+
         return this;
     }
     
@@ -584,6 +598,7 @@ public class ItemBuilder {
      */
     public ItemBuilder addLore(String lore) {
         if (lore != null) this.itemLore.add(Methods.color(lore));
+
         return this;
     }
     
@@ -617,12 +632,15 @@ public class ItemBuilder {
      */
     public List<String> getUpdatedLore() {
         List<String> newLore = new ArrayList<>();
+
         for (String item : itemLore) {
             for (String placeholder : lorePlaceholders.keySet()) {
                 item = item.replace(placeholder, lorePlaceholders.get(placeholder)).replace(placeholder.toLowerCase(), lorePlaceholders.get(placeholder));
             }
+
             newLore.add(item);
         }
+
         return newLore;
     }
     
@@ -663,11 +681,11 @@ public class ItemBuilder {
                     if (color != null) {
                         addPattern(new Pattern(color, pattern));
                     }
+
                     break;
                 }
             }
-        } catch (Exception ignored) {
-        }
+        } catch (Exception ignored) {}
     }
     
     /**
@@ -765,12 +783,15 @@ public class ItemBuilder {
      */
     public ItemBuilder setFlagsFromStrings(List<String> flagStrings) {
         itemFlags.clear();
+
         for (String flagString : flagStrings) {
             ItemFlag flag = getFlag(flagString);
+
             if (flag != null) {
                 itemFlags.add(flag);
             }
         }
+
         return this;
     }
     
@@ -779,12 +800,13 @@ public class ItemBuilder {
         for (String flagString : flagStrings) {
             try {
                 ItemFlag itemFlag = ItemFlag.valueOf(flagString.toUpperCase());
+
                 if (itemFlag != null) {
                     addItemFlag(itemFlag);
                 }
-            } catch (Exception ignored) {
-            }
+            } catch (Exception ignored) {}
         }
+
         return this;
     }
     
@@ -796,9 +818,11 @@ public class ItemBuilder {
      */
     public ItemBuilder addFlags(String flagString) {
         ItemFlag flag = getFlag(flagString);
+
         if (flag != null) {
             itemFlags.add(flag);
         }
+
         return this;
     }
     
@@ -810,6 +834,7 @@ public class ItemBuilder {
      */
     public ItemBuilder addItemFlag(ItemFlag itemFlag) {
         if (itemFlag != null) itemFlags.add(itemFlag);
+
         return this;
     }
     
@@ -846,6 +871,7 @@ public class ItemBuilder {
                 return item;
             }
         }
+
         return item;
     }
     
@@ -920,6 +946,7 @@ public class ItemBuilder {
             ItemMeta itemMeta = item.getItemMeta();
             itemBuilder.setName(itemMeta.getDisplayName()).setLore(itemMeta.getLore());
             NBTItem nbt = new NBTItem(item);
+
             if (nbt.hasKey("Unbreakable")) itemBuilder.setUnbreakable(nbt.getBoolean("Unbreakable"));
             
             if (itemMeta instanceof org.bukkit.inventory.meta.Damageable) itemBuilder.setDamage(((org.bukkit.inventory.meta.Damageable) itemMeta).getDamage());
@@ -951,6 +978,7 @@ public class ItemBuilder {
             for (String optionString : itemString.split(", ")) {
                 String option = optionString.split(":")[0];
                 String value = optionString.replace(option + ":", "").replace(option, "");
+
                 switch (option.toLowerCase()) {
                     case "item":
                         itemBuilder.setMaterial(value);
@@ -976,6 +1004,7 @@ public class ItemBuilder {
                         break;
                     default:
                         Enchantment enchantment = getEnchantment(option);
+
                         if (enchantment != null && enchantment.getName() != null) {
                             itemBuilder.addEnchantments(enchantment, convertInt(value));
                             break;
@@ -991,14 +1020,14 @@ public class ItemBuilder {
                             for (PatternType pattern : PatternType.values()) {
                                 if (option.equalsIgnoreCase(pattern.name()) || value.equalsIgnoreCase(pattern.getIdentifier())) {
                                     DyeColor color = getDyeColor(value);
+
                                     if (color != null) {
                                         itemBuilder.addPattern(new Pattern(color, pattern));
                                     }
                                     break;
                                 }
                             }
-                        } catch (Exception ignored) {
-                        }
+                        } catch (Exception ignored) {}
                         
                         break;
                 }
@@ -1007,6 +1036,7 @@ public class ItemBuilder {
             itemBuilder.setMaterial(Material.RED_TERRACOTTA).setName("&c&lERROR").setLore(Arrays.asList("&cThere is an error", "&cFor : &c" + (placeHolder != null ? placeHolder : "")));
             e.printStackTrace();
         }
+
         return itemBuilder;
     }
     
@@ -1043,13 +1073,13 @@ public class ItemBuilder {
                     if (item.hasItemMeta() && item.getItemMeta().hasEnchants()) {
                         return;
                     }
+
                     item.addUnsafeEnchantment(Enchantment.LUCK, 1);
                     ItemMeta meta = item.getItemMeta();
                     meta.addItemFlags(ItemFlag.HIDE_ENCHANTS);
                     item.setItemMeta(meta);
                 }
-            } catch (NoClassDefFoundError ignored) {
-            }
+            } catch (NoClassDefFoundError ignored) {}
         }
     }
     
@@ -1091,6 +1121,7 @@ public class ItemBuilder {
                 return PotionType.WEAKNESS;
             }
         }
+
         return null;
     }
     
@@ -1138,12 +1169,13 @@ public class ItemBuilder {
                 case "YELLOW":
                     return Color.YELLOW;
             }
+
             try {
                 String[] rgb = color.split(",");
                 return Color.fromRGB(Integer.parseInt(rgb[0]), Integer.parseInt(rgb[1]), Integer.parseInt(rgb[2]));
-            } catch (Exception ignore) {
-            }
+            } catch (Exception ignore) {}
         }
+
         return null;
     }
     
@@ -1161,10 +1193,10 @@ public class ItemBuilder {
                 try {
                     String[] rgb = color.split(",");
                     return DyeColor.getByColor(Color.fromRGB(Integer.parseInt(rgb[0]), Integer.parseInt(rgb[1]), Integer.parseInt(rgb[2])));
-                } catch (Exception ignore) {
-                }
+                } catch (Exception ignore) {}
             }
         }
+
         return null;
     }
     
@@ -1179,7 +1211,7 @@ public class ItemBuilder {
         for (Enchantment enchantment : Enchantment.values()) {
             try {
                 // MC 1.13+ has the correct names.
-                if (Version.isNewer(Version.v1_12_R1)) {
+                if (!Version.isLegacy()) {
                     if (stripEnchantmentName(enchantment.getKey().getKey()).equalsIgnoreCase(enchantmentName)) {
                         return enchantment;
                     }
@@ -1257,6 +1289,7 @@ public class ItemBuilder {
         } catch (NumberFormatException nfe) {
             return false;
         }
+
         return true;
     }
     
@@ -1274,6 +1307,7 @@ public class ItemBuilder {
                 return flag;
             }
         }
+
         return null;
     }
 }

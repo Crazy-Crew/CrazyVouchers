@@ -1,15 +1,14 @@
 package com.badbones69.vouchers.api.objects;
 
+import com.badbones69.vouchers.api.CrazyManager;
 import de.tr7zw.changeme.nbtapi.NBTItem;
 import com.badbones69.vouchers.Methods;
 import com.badbones69.vouchers.api.FileManager.Files;
 import com.badbones69.vouchers.api.enums.Messages;
-import org.bukkit.Bukkit;
 import org.bukkit.Color;
 import org.bukkit.Sound;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.inventory.ItemStack;
-
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -45,7 +44,9 @@ public class Voucher {
     private final List<VoucherCommand> randomCommands = new ArrayList<>();
     private final List<VoucherCommand> chanceCommands = new ArrayList<>();
     private final List<ItemBuilder> items = new ArrayList<>();
-    
+
+    private final CrazyManager crazyManager = CrazyManager.getInstance();
+
     /**
      * This is just used for imputing fake vouchers.
      *
@@ -106,11 +107,12 @@ public class Voucher {
             try {
                 String[] split = line.split(" ");
                 VoucherCommand voucherCommand = new VoucherCommand(line.substring(split[0].length() + 1));
+
                 for (int i = 1; i <= Integer.parseInt(split[0]); i++) {
                     chanceCommands.add(voucherCommand);
                 }
             } catch (Exception e) {
-                Bukkit.getLogger().info("An issue occurred when trying to use chance commands.");
+                crazyManager.getPlugin().getLogger().info("An issue occurred when trying to use chance commands.");
                 e.printStackTrace();
             }
         }
@@ -152,11 +154,13 @@ public class Voucher {
 
         if (config.contains(path + "Options.Permission.Blacklist-Permissions")) {
             this.blacklistPermissionsToggle = config.getBoolean(path + "Options.Permission.Blacklist-Permissions.Toggle");
+
             if (config.contains(path + "Options.Permission.Blacklist-Permissions.Message")) {
                 this.blacklistPermissionMessage = getMessage(path + "Options.Permission.Blacklist-Permissions.Message");
             } else {
                 this.blacklistPermissionMessage = Messages.HAS_BLACKLIST_PERMISSION.getMessageNoPrefix();
             }
+
             this.blacklistPermissions = config.getStringList(path + "Options.Permission.Blacklist-Permissions.Permissions");
             this.blacklistCommands = config.getStringList(path + "Options.Permission.Blacklist-Permissions.Commands");
         } else {
@@ -174,6 +178,7 @@ public class Voucher {
 
         if (config.contains(path + "Options.Sound")) {
             this.soundToggle = config.getBoolean(path + "Options.Sound.Toggle");
+
             for (String sound : config.getStringList(path + "Options.Sound.Sounds")) {
                 try {
                     this.sounds.add(Sound.valueOf(sound));
@@ -187,6 +192,7 @@ public class Voucher {
             for (String color : config.getString(path + "Options.Firework.Colors", "").split(", ")) {
                 this.fireworkColors.add(Methods.getColor(color));
             }
+
             this.fireworkToggle = !fireworkColors.isEmpty();
         } else {
             this.fireworkToggle = false;
@@ -194,6 +200,7 @@ public class Voucher {
 
         if (config.getBoolean(path + "Options.Is-Edible")) {
             this.isEdible = itemBuilder.build().getType().isEdible();
+
             switch (itemBuilder.getMaterial().toString()) {
                 case "MILK_BUCKET":
                 case "POTION":
@@ -218,6 +225,7 @@ public class Voucher {
         ItemStack item = Methods.addGlow(itemBuilder.setAmount(amount).build(), glowing);
         NBTItem nbt = new NBTItem(item);
         nbt.setString("voucher", name);
+
         return nbt.getItem();
     }
     
@@ -233,6 +241,7 @@ public class Voucher {
         NBTItem nbt = new NBTItem(item);
         nbt.setString("voucher", name);
         nbt.setString("argument", argument);
+
         return nbt.getItem();
     }
     
@@ -339,16 +348,19 @@ public class Voucher {
     private String getMessage(String path) {
         FileConfiguration config = Files.CONFIG.getFile();
         String messageString;
+
         if (isList(path)) {
             messageString = Methods.color(Messages.convertList(config.getStringList(path)));
         } else {
             messageString = config.getString(path, "");
             if (!messageString.isEmpty()) messageString = Methods.getPrefix(messageString);
         }
+
         return messageString;
     }
     
     private boolean isList(String path) {
         return Files.CONFIG.getFile().contains(path) && !Files.CONFIG.getFile().getStringList(path).isEmpty();
     }
+
 }

@@ -1,12 +1,12 @@
 package com.badbones69.vouchers.api.objects;
 
+import com.badbones69.vouchers.api.CrazyManager;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
 import org.bukkit.block.Skull;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.SkullMeta;
-
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.Base64;
@@ -15,12 +15,13 @@ import java.util.UUID;
 /**
  * A library for the Bukkit API to create player skulls
  * from names, base64 strings, and texture URLs.
- *
  * Does not use any NMS code, and should work across all versions.
  *
  * @author Dean B on 12/28/2016.
  */
 public class SkullCreator {
+
+    private final static CrazyManager crazyManager = CrazyManager.getInstance();
     
     /**
      * Creates a player skull based on a player's name.
@@ -51,7 +52,7 @@ public class SkullCreator {
         notNull(item, "item");
         notNull(name, "name");
         
-        return Bukkit.getUnsafe().modifyItemStack(item,
+        return crazyManager.getPlugin().getServer().getUnsafe().modifyItemStack(item,
         "{SkullOwner:\"" + name + "\"}"
         );
     }
@@ -80,7 +81,7 @@ public class SkullCreator {
         notNull(id, "id");
         
         SkullMeta meta = (SkullMeta) item.getItemMeta();
-        meta.setOwningPlayer(Bukkit.getOfflinePlayer(id));
+        meta.setOwningPlayer(crazyManager.getPlugin().getServer().getOfflinePlayer(id));
         item.setItemMeta(meta);
         
         return item;
@@ -135,7 +136,7 @@ public class SkullCreator {
         notNull(base64, "base64");
         
         UUID hashAsId = new UUID(base64.hashCode(), base64.hashCode());
-        return Bukkit.getUnsafe().modifyItemStack(item,
+        return crazyManager.getPlugin().getServer().getUnsafe().modifyItemStack(item,
         "{SkullOwner:{Id:\"" + hashAsId + "\",Properties:{textures:[{Value:\"" + base64 + "\"}]}}}"
         );
     }
@@ -154,7 +155,7 @@ public class SkullCreator {
         notNull(name, "name");
         
         setBlockType(block);
-        ((Skull) block.getState()).setOwningPlayer(Bukkit.getOfflinePlayer(name));
+        ((Skull) block.getState()).setOwningPlayer(crazyManager.getPlugin().getServer().getOfflinePlayer(name));
     }
     
     /**
@@ -168,7 +169,7 @@ public class SkullCreator {
         notNull(id, "id");
         
         setBlockType(block);
-        ((Skull) block.getState()).setOwningPlayer(Bukkit.getOfflinePlayer(id));
+        ((Skull) block.getState()).setOwningPlayer(crazyManager.getPlugin().getServer().getOfflinePlayer(id));
     }
     
     /**
@@ -205,9 +206,9 @@ public class SkullCreator {
         );
         
         if (newerApi()) {
-            Bukkit.dispatchCommand(Bukkit.getConsoleSender(), "data merge block " + args);
+            crazyManager.getPlugin().getServer().dispatchCommand(crazyManager.getPlugin().getServer().getConsoleSender(), "data merge block " + args);
         } else {
-            Bukkit.dispatchCommand(Bukkit.getConsoleSender(), "blockdata " + args);
+            crazyManager.getPlugin().getServer().dispatchCommand(crazyManager.getPlugin().getServer().getConsoleSender(), "blockdata " + args);
         }
     }
     
@@ -246,12 +247,14 @@ public class SkullCreator {
     private static String urlToBase64(String url) {
         
         URI actualUrl;
+
         try {
             actualUrl = new URI(url);
         } catch (URISyntaxException e) {
             throw new RuntimeException(e);
         }
-        String toEncode = "{\"textures\":{\"SKIN\":{\"url\":\"" + actualUrl.toString() + "\"}}}";
+
+        String toEncode = "{\"textures\":{\"SKIN\":{\"url\":\"" + actualUrl + "\"}}}";
         return Base64.getEncoder().encodeToString(toEncode.getBytes());
     }
 }

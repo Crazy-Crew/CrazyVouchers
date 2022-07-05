@@ -2,7 +2,7 @@ package com.badbones69.vouchers.controllers;
 
 import com.badbones69.vouchers.api.objects.Voucher;
 import com.badbones69.vouchers.Methods;
-import com.badbones69.vouchers.api.VouchersManager;
+import com.badbones69.vouchers.api.CrazyManager;
 import com.badbones69.vouchers.api.enums.Version;
 import com.badbones69.vouchers.api.objects.ItemBuilder;
 import org.bukkit.Bukkit;
@@ -47,9 +47,11 @@ public class GUI implements Listener {
         Inventory inv = e.getInventory();
         Player player = (Player) e.getWhoClicked();
         ItemStack item = e.getCurrentItem();
+
         if (inv != null) {
             if (e.getView().getTitle().equals(inventoryName)) {
                 e.setCancelled(true);
+
                 if (e.getRawSlot() < 54) {
                     if (e.getCurrentItem() != null) {
                         if (item.hasItemMeta()) {
@@ -66,7 +68,7 @@ public class GUI implements Listener {
                             }
                         }
 
-                        for (Voucher voucher : VouchersManager.getVouchers()) {
+                        for (Voucher voucher : CrazyManager.getVouchers()) {
                             if (Methods.isSimilar(item, voucher.buildItem())) {
                                 player.getInventory().addItem(item);
                                 return;
@@ -82,11 +84,13 @@ public class GUI implements Listener {
         if (playerPage.containsKey(player.getUniqueId())) {
             return playerPage.get(player.getUniqueId());
         }
+
         return 1;
     }
     
     private static void setPage(Player player, int pageNumber) {
         int max = getMaxPage();
+
         if (pageNumber < 1) {
             pageNumber = 1;
         } else if (pageNumber >= max) {
@@ -106,18 +110,19 @@ public class GUI implements Listener {
     
     public static int getMaxPage() {
         int maxPage = 1;
-        int amount = VouchersManager.getVouchers().size();
+        int amount = CrazyManager.getVouchers().size();
         for (; amount > 36; amount -= 36, maxPage++) ;
         return maxPage;
     }
     
     private static List<Voucher> getPageVouchers(Integer page) {
-        List<Voucher> list = VouchersManager.getVouchers();
+        List<Voucher> list = CrazyManager.getVouchers();
         List<Voucher> vouchers = new ArrayList<>();
         if (page <= 0) page = 1;
         int max = 36;
         int index = page * max - max;
         int endIndex = index >= list.size() ? list.size() - 1 : index + max;
+
         for (; index < endIndex; index++) {
             if (index < list.size()) vouchers.add(list.get(index));
         }
@@ -126,6 +131,7 @@ public class GUI implements Listener {
             if (page <= 0) break;
             index = page * max - max;
             endIndex = index >= list.size() ? list.size() - 1 : index + max;
+
             for (; index < endIndex; index++) {
                 if (index < list.size()) vouchers.add(list.get(index));
             }
@@ -135,7 +141,7 @@ public class GUI implements Listener {
     }
     
     private static void setDefaultItems(Player player, Inventory inv) {
-        boolean isNew = Version.isNewer(Version.v1_12_R1);
+        boolean isNew = !Version.isLegacy();
 
         for (int i : Arrays.asList(0, 1, 2, 3, 4, 5, 6, 7, 8, 45, 46, 47, 49, 51, 52, 53)) {
             inv.setItem(i, new ItemBuilder()

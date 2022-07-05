@@ -25,4 +25,5 @@ public class VoucherCommand {
     public Boolean isSimilar(VoucherCommand voucherCommand) {
         return uuid.equals(voucherCommand.getUUID());
     }
+
 }

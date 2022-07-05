@@ -1,6 +1,6 @@
 package com.badbones69.vouchers.api.enums;
 
-import org.bukkit.Bukkit;
+import com.badbones69.vouchers.api.CrazyManager;
 
 public enum Support {
     
@@ -8,6 +8,8 @@ public enum Support {
     MVDWPLACEHOLDERAPI("MVdWPlaceholderAPI");
     
     private final String name;
+
+    private final CrazyManager crazyManager = CrazyManager.getInstance();
     
     Support(String name) {
         this.name = name;
@@ -18,6 +20,6 @@ public enum Support {
     }
     
     public boolean isPluginLoaded() {
-        return Bukkit.getServer().getPluginManager().getPlugin(name) != null;
+        return crazyManager.getPlugin().getServer().getPluginManager().getPlugin(name) != null;
     }
 }

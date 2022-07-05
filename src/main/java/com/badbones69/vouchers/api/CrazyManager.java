@@ -1,25 +1,70 @@
 package com.badbones69.vouchers.api;
 
+import com.badbones69.vouchers.Vouchers;
 import com.badbones69.vouchers.api.objects.Voucher;
 import de.tr7zw.changeme.nbtapi.NBTItem;
 import com.badbones69.vouchers.api.objects.VoucherCode;
-import org.bukkit.Bukkit;
 import org.bukkit.inventory.ItemStack;
-import org.bukkit.plugin.Plugin;
-
+import org.bukkit.plugin.java.JavaPlugin;
 import java.util.ArrayList;
 import java.util.concurrent.ThreadLocalRandom;
 
-public class VouchersManager {
+public class CrazyManager {
     
     private final static ArrayList<Voucher> vouchers = new ArrayList<>();
     private final static ArrayList<VoucherCode> voucherCodes = new ArrayList<>();
+
+    /**
+     * The Vouchers plugin.
+     */
+    private JavaPlugin plugin;
+
+    /**
+     * Get the Vouchers Plugin.
+     * @return The Vouchers Plugin object.
+     */
+    public JavaPlugin getPlugin() {
+        return plugin;
+    }
+
+    /**
+     * FileManager object.
+     */
+    private static final FileManager fileManager = FileManager.getInstance();
+
+    /**
+     * The instance of this class.
+     */
+    private static final CrazyManager instance = new CrazyManager();
+
+    /**
+     * Gets the instance of the CrazyCrates class.
+     *
+     * @return Instance of this class.
+     */
+    public static CrazyManager getInstance() {
+        return instance;
+    }
+
+    /**
+     * Get the file manager that controls all yml files.
+     *
+     * @return The FileManager that controls all yml files.
+     */
+    public static FileManager getFileManager() {
+        return fileManager;
+    }
+
+    public void loadPlugin() {
+        plugin = JavaPlugin.getPlugin(Vouchers.class);
+    }
     
-    public static void load() {
+    public CrazyManager load() {
         vouchers.clear();
         voucherCodes.clear();
-        //Used for when wanting to put in fake vouchers.
-        //for(int i = 1; i <= 400; i++) vouchers.add(new Voucher(i));
+
+        // Used for when wanting to put in fake vouchers.
+        // for(int i = 1; i <= 400; i++) vouchers.add(new Voucher(i));
 
         for (String voucherName : FileManager.Files.CONFIG.getFile().getConfigurationSection("Vouchers").getKeys(false)) {
             vouchers.add(new Voucher(voucherName));
@@ -30,6 +75,8 @@ public class VouchersManager {
                 voucherCodes.add(new VoucherCode(voucherName));
             }
         }
+
+        return this;
     }
     
     public static ArrayList<Voucher> getVouchers() {
@@ -46,6 +93,7 @@ public class VouchersManager {
                 return voucher;
             }
         }
+
         return null;
     }
     
@@ -55,6 +103,7 @@ public class VouchersManager {
                 return true;
             }
         }
+
         return false;
     }
     
@@ -64,6 +113,7 @@ public class VouchersManager {
                 return voucher;
             }
         }
+
         return null;
     }
     
@@ -98,42 +148,46 @@ public class VouchersManager {
     
     public static String getArgument(ItemStack item, Voucher voucher) {
         if (voucher.usesArguments()) {
-            //Checks to see if the voucher uses nbt tags.
+            // Checks to see if the voucher uses nbt tags.
             NBTItem nbt = new NBTItem(item);
+
             if (nbt.hasKey("voucher") && nbt.hasKey("argument")) {
                 if (nbt.getString("voucher").equalsIgnoreCase(voucher.getName())) {
                     return nbt.getString("argument");
                 }
             }
         }
+
         return null;
-    }
-    
-    public static Plugin getPlugin() {
-        return Bukkit.getPluginManager().getPlugin("Vouchers");
     }
     
     public static String replaceRandom(String string) {
         String newString = string;
+
         if (usesRandom(string)) {
-            string = "";
+            StringBuilder stringBuilder = new StringBuilder();
+
             for (String word : newString.split(" ")) {
                 if (word.toLowerCase().startsWith("%random%:")) {
                     word = word.toLowerCase().replace("%random%:", "");
+
                     try {
                         long min = Long.parseLong(word.split("-")[0]);
                         long max = Long.parseLong(word.split("-")[1]);
-                        string += pickNumber(min, max) + " ";
+                        stringBuilder.append(pickNumber(min, max)).append(" ");
                     } catch (Exception e) {
-                        string += "1 ";
+                        stringBuilder.append("1 ");
                     }
                 } else {
-                    string += word + " ";
+                    stringBuilder.append(word).append(" ");
                 }
             }
 
+            string = stringBuilder.toString();
+
             newString = string.substring(0, string.length() - 1);
         }
+
         return newString;
     }
     
@@ -149,4 +203,5 @@ public class VouchersManager {
             return min;
         }
     }
+
 }

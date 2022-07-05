@@ -1,7 +1,7 @@
 package com.badbones69.vouchers.commands;
 
 import com.badbones69.vouchers.controllers.GUI;
-import com.badbones69.vouchers.api.VouchersManager;
+import com.badbones69.vouchers.api.CrazyManager;
 import org.bukkit.Bukkit;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
@@ -12,6 +12,8 @@ import java.util.Arrays;
 import java.util.List;
 
 public class VoucherTab implements TabCompleter {
+
+    private final CrazyManager crazyManager = CrazyManager.getInstance();
     
     @Override
     public List<String> onTabComplete(CommandSender sender, Command command, String commandLabel, String[] args) {
@@ -29,26 +31,32 @@ public class VoucherTab implements TabCompleter {
             switch (args[0].toLowerCase()) {
                 case "redeem":
                     // Only want admins to be able to see all the voucher codes.
-                    if (hasPermission(sender, "admin")) VouchersManager.getVoucherCodes().forEach(voucherCode -> completions.add(voucherCode.getCode()));
+                    if (hasPermission(sender, "admin")) CrazyManager.getVoucherCodes().forEach(voucherCode -> completions.add(voucherCode.getCode()));
+
                     break;
                 case "open":
                     for (int i = 1; i <= GUI.getMaxPage(); i++) completions.add(i + "");
+
                     break;
                 case "give":
                 case "giveall":
-                    VouchersManager.getVouchers().forEach(voucher -> completions.add(voucher.getName()));
+                    CrazyManager.getVouchers().forEach(voucher -> completions.add(voucher.getName()));
+
                     break;
             }
+
             return StringUtil.copyPartialMatches(args[1], completions, new ArrayList<>());
         } else if (args.length == 3) { // /voucher arg0 arg1
             switch (args[0].toLowerCase()) {
                 case "give": case "giveall": completions.addAll(Arrays.asList("1", "2", "3", "4", "5", "10", "32", "64"));
             }
+
             return StringUtil.copyPartialMatches(args[2], completions, new ArrayList<>());
         } else if (args.length == 4) { // /voucher arg0 arg1 arg2
             if (args[0].equalsIgnoreCase("give")) {
-                Bukkit.getOnlinePlayers().forEach(player -> completions.add(player.getName()));
+                crazyManager.getPlugin().getServer().getOnlinePlayers().forEach(player -> completions.add(player.getName()));
             }
+
             return StringUtil.copyPartialMatches(args[3], completions, new ArrayList<>());
         }
         return new ArrayList<>();

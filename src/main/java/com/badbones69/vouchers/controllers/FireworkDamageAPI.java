@@ -57,6 +57,7 @@ public class FireworkDamageAPI implements Listener {
     @EventHandler
     public void onFireworkExplode(FireworkExplodeEvent e) {
         final Entity firework = e.getEntity();
+
         if (getFireworks().contains(firework)) {
             new BukkitRunnable() {
                 @Override
