@@ -45,8 +45,6 @@ public class Voucher {
     private final List<VoucherCommand> chanceCommands = new ArrayList<>();
     private final List<ItemBuilder> items = new ArrayList<>();
 
-    private final CrazyManager crazyManager = CrazyManager.getInstance();
-
     /**
      * This is just used for imputing fake vouchers.
      *
@@ -112,6 +110,7 @@ public class Voucher {
                     chanceCommands.add(voucherCommand);
                 }
             } catch (Exception e) {
+                CrazyManager crazyManager = CrazyManager.getInstance();
                 crazyManager.getPlugin().getLogger().info("An issue occurred when trying to use chance commands.");
                 e.printStackTrace();
             }
