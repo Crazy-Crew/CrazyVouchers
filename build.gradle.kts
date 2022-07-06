@@ -5,7 +5,7 @@ plugins {
 }
 
 group = "com.badbones69.vouchers"
-version = "1.9.4"
+version = "1.9.5"
 description = "Make Custom Vouchers just for your server!"
 
 repositories {
@@ -23,7 +23,7 @@ dependencies {
 
     compileOnly("me.clip:placeholderapi:2.10.10")
 
-    implementation("de.tr7zw:nbt-data-api:2.10.0-SNAPSHOT")
+    implementation("de.tr7zw:nbt-data-api:2.10.0")
 
     implementation("org.bstats:bstats-bukkit:3.0.0")
 }

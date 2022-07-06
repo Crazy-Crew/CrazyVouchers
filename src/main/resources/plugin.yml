@@ -5,6 +5,14 @@ api-version: 1.13
 description: ${description}
 
 commands:
-  Vouchers:
+  vouchers:
     description: Give yourself a Voucher!
-    aliases: [voucher, vouch]
+    aliases: [voucher]
+    permission: "voucher.admin"
+
+permissions:
+  voucher.admin:
+    default: op
+
+  voucher.redeem:
+    default: op

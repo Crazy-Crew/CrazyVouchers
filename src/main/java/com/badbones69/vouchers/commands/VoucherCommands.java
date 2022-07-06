@@ -242,12 +242,6 @@ public class VoucherCommands implements CommandExecutor {
                     return true;
                 case "give": // /Voucher 0Give 1<Type> 2[Amount] 3[Player] 4[Arguments]
                     if (Methods.hasPermission(sender, "admin")) {
-                        if (args.length == 1) {
-                            if (!(sender instanceof Player)) {
-                                sender.sendMessage(Messages.NOT_A_PLAYER.getMessage());
-                                return true;
-                            }
-                        }
 
                         if (args.length > 1) {
                             String name = sender.getName();
@@ -303,12 +297,6 @@ public class VoucherCommands implements CommandExecutor {
                     return true;
                 case "giveall": // /Voucher 0GiveAll 1<Type> 2[Amount] 3[Arguments]
                     if (Methods.hasPermission(sender, "admin")) {
-                        if (args.length == 1) {
-                            if (!(sender instanceof Player)) {
-                                sender.sendMessage(Messages.NOT_A_PLAYER.getMessage());
-                                return true;
-                            }
-                        }
 
                         if (args.length > 1) {
 
