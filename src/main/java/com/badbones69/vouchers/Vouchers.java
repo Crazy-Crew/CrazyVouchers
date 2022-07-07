@@ -10,7 +10,6 @@ import com.badbones69.vouchers.commands.VoucherTab;
 import com.badbones69.vouchers.controllers.FireworkDamageAPI;
 import com.badbones69.vouchers.controllers.VoucherClick;
 import org.bstats.bukkit.Metrics;
-import org.bukkit.Bukkit;
 import org.bukkit.event.Listener;
 import org.bukkit.plugin.PluginManager;
 import org.bukkit.plugin.java.JavaPlugin;

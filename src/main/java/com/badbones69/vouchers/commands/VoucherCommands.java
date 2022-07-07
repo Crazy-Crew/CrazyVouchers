@@ -10,7 +10,6 @@ import com.badbones69.vouchers.api.CrazyManager;
 import com.badbones69.vouchers.api.enums.Messages;
 import com.badbones69.vouchers.api.events.RedeemVoucherCodeEvent;
 import com.badbones69.vouchers.api.objects.VoucherCode;
-import org.bukkit.Bukkit;
 import org.bukkit.Sound;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
@@ -18,7 +17,6 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
-
 import java.util.HashMap;
 import java.util.Random;
 
@@ -68,6 +66,7 @@ public class VoucherCommands implements CommandExecutor {
 
                         GUI.openGUI((Player) sender, page);
                     }
+
                     return true;
                 case "types":
                 case "list":
@@ -88,6 +87,7 @@ public class VoucherCommands implements CommandExecutor {
                         sender.sendMessage(Methods.color("&e&lVouchers #" + CrazyManager.getVouchers().size() + ":&f " + vouchers));
                         sender.sendMessage(Methods.color("&e&lVoucher Codes #" + CrazyManager.getVoucherCodes().size() + ":&f " + codes));
                     }
+
                     return true;
                 case "redeem":
                     if (Methods.hasPermission(sender, "redeem")) {
@@ -101,6 +101,7 @@ public class VoucherCommands implements CommandExecutor {
 
                             Player player = (Player) sender;
                             HashMap<String, String> placeholders = new HashMap<>();
+
                             placeholders.put("%Arg%", code);
                             placeholders.put("%Player%", player.getName());
                             placeholders.put("%World%", player.getWorld().getName());
