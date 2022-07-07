@@ -5,7 +5,7 @@ plugins {
 }
 
 group = "com.badbones69.vouchers"
-version = "1.9.5"
+version = "1.9.6"
 description = "Make Custom Vouchers just for your server!"
 
 repositories {

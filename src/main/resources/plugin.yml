@@ -8,7 +8,6 @@ commands:
   vouchers:
     description: Give yourself a Voucher!
     aliases: [voucher]
-    permission: "voucher.admin"
 
 permissions:
   voucher.admin:
