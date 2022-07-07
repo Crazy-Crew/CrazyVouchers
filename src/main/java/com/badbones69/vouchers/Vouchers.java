@@ -32,22 +32,34 @@ public class Vouchers extends JavaPlugin implements Listener {
             Files.DATA.saveFile();
         }
 
-        PluginManager pm = getServer().getPluginManager();
+        PluginManager pluginManager = getServer().getPluginManager();
 
-        pm.registerEvents(this, this);
-        pm.registerEvents(new VoucherClick(), this);
-        pm.registerEvents(new GUI(), this);
+        pluginManager.registerEvents(this, this);
+        pluginManager.registerEvents(new VoucherClick(), this);
+        pluginManager.registerEvents(new GUI(), this);
 
         getCommand("vouchers").setExecutor(new VoucherCommands());
         getCommand("vouchers").setTabCompleter(new VoucherTab());
 
         try {
             if (Version.isNewer(Version.v1_10_R1)) {
-                pm.registerEvents(new FireworkDamageAPI(this), this);
+                pluginManager.registerEvents(new FireworkDamageAPI(this), this);
             }
         } catch (Exception ignored) {}
 
-        new Metrics(this, 4536);
+        boolean metricsEnabled = Files.CONFIG.getFile().getBoolean("Settings.Toggle-Metrics");
+
+        if (Files.CONFIG.getFile().getString("Settings.Toggle-Metrics") != null) {
+            if (metricsEnabled) new Metrics(this, 4536);
+        } else {
+            getLogger().warning("Metrics was automatically enabled.");
+            getLogger().warning("Please add Toggle-Metrics: false to the top of your config.yml");
+            getLogger().warning("https://github.com/Crazy-Crew/Vouchers/blob/master/Config1.12.2-Down.yml");
+
+            getLogger().warning("An example if confused is linked above.");
+
+            new Metrics(this, 4536);
+        }
 
         crazyManager.load();
     }
