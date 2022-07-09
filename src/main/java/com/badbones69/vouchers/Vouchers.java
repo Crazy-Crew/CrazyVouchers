@@ -23,7 +23,7 @@ public class Vouchers extends JavaPlugin implements Listener {
     @Override
     public void onEnable() {
 
-        crazyManager.loadPlugin();
+        crazyManager.loadPlugin(this);
 
         fileManager.logInfo(true).setup(this);
 

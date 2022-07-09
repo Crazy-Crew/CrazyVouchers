@@ -5,7 +5,6 @@ import com.badbones69.vouchers.api.objects.Voucher;
 import de.tr7zw.changeme.nbtapi.NBTItem;
 import com.badbones69.vouchers.api.objects.VoucherCode;
 import org.bukkit.inventory.ItemStack;
-import org.bukkit.plugin.java.JavaPlugin;
 import java.util.ArrayList;
 import java.util.concurrent.ThreadLocalRandom;
 
@@ -17,13 +16,13 @@ public class CrazyManager {
     /**
      * The Vouchers plugin.
      */
-    private JavaPlugin plugin;
+    private Vouchers plugin;
 
     /**
      * Get the Vouchers Plugin.
      * @return The Vouchers Plugin object.
      */
-    public JavaPlugin getPlugin() {
+    public Vouchers getPlugin() {
         return plugin;
     }
 
@@ -55,8 +54,8 @@ public class CrazyManager {
         return fileManager;
     }
 
-    public void loadPlugin() {
-        plugin = JavaPlugin.getPlugin(Vouchers.class);
+    public void loadPlugin(Vouchers plugin) {
+        this.plugin = plugin;
     }
     
     public CrazyManager load() {
