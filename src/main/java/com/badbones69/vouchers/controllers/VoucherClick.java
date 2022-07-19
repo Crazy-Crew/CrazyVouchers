@@ -18,6 +18,7 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.Action;
+import org.bukkit.event.inventory.CraftItemEvent;
 import org.bukkit.event.player.PlayerInteractEntityEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.event.player.PlayerItemConsumeEvent;
@@ -88,6 +89,20 @@ public class VoucherClick implements Listener {
             e.setCancelled(true);
         }
     }
+
+    @EventHandler(priority = EventPriority.LOW)
+    public void onCrafts(CraftItemEvent e) {
+        Player player = (Player) e.getWhoClicked();
+        for (ItemStack itemStack : e.getInventory().getContents()) {
+            Voucher voucher = CrazyManager.getVoucherFromItem(itemStack);
+            if (voucher != null) {
+                player.sendMessage(Messages.CANNOT_PUT_ITEMS_IN_CRAFTING_TABLE.getMessage());
+                e.getInventory().setResult(null);
+                player.getInventory().addItem(itemStack);
+                e.getInventory().remove(itemStack);
+            }
+        }
+    }
     
     private void useVoucher(Player player, Voucher voucher, ItemStack item) {
         FileConfiguration data = FileManager.Files.DATA.getFile();
@@ -128,6 +143,7 @@ public class VoucherClick implements Listener {
     
     @SuppressWarnings({"deprecation", "squid:CallToDeprecatedMethod"})
     private ItemStack getItemInHand(Player player) {
+
         if (Version.isNewer(Version.v1_8_R3)) {
             return player.getInventory().getItemInMainHand();
         } else {
