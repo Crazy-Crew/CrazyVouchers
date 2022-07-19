@@ -29,6 +29,7 @@ public enum Messages {
     NOT_IN_WHITELISTED_WORLD("Not-In-Whitelisted-World", "&cYou can not use that voucher here as you are not in a whitelisted world for this voucher."),
     UNSTACK_ITEM("Unstack-Item", "&cYou need to unstack that item before you can use it."),
     NO_PERMISSION_TO_USE_VOUCHER_IN_OFFHAND("No-Permission-To-Use-Voucher-In-OffHand", "&cYou do not have permission to use vouchers in your off hand."),
+    CANNOT_PUT_ITEMS_IN_CRAFTING_TABLE("Cannot-Put-Items-In-Crafting-Table", "&cYou cannot put vouchers in the crafting table."),
     HELP("Help",
     Arrays.asList(
     "&8- &6/Voucher Help &3Lists all the commands for vouchers.",

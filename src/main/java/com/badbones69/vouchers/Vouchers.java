@@ -1,5 +1,6 @@
 package com.badbones69.vouchers;
 
+import com.badbones69.vouchers.api.enums.Messages;
 import com.badbones69.vouchers.controllers.GUI;
 import com.badbones69.vouchers.api.FileManager;
 import com.badbones69.vouchers.api.FileManager.Files;
@@ -40,6 +41,8 @@ public class Vouchers extends JavaPlugin implements Listener {
 
         getCommand("vouchers").setExecutor(new VoucherCommands());
         getCommand("vouchers").setTabCompleter(new VoucherTab());
+
+        Messages.addMissingMessages();
 
         try {
             if (Version.isNewer(Version.v1_10_R1)) {

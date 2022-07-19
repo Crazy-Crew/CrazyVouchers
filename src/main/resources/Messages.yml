@@ -5,6 +5,7 @@ Messages:
   No-Permission: '&cYou do not have permission to use that command!'
   No-Permission-To-Voucher: '&cYou do not have permission to use that voucher.'
   No-Permission-To-Use-Voucher-In-OffHand: '&cYou do not have permission to use vouchers in your off hand.'
+  Cannot-Put-Items-In-Crafting-Table: '&cYou cannot put vouchers in the crafting table.'
   Not-Online: '&cThat player is not online.'
   Not-A-Number: '&c%arg% is not a number.'
   Not-A-Voucher: '&cThat is not a Voucher Type.'
