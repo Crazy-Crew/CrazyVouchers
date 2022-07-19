@@ -37,6 +37,19 @@ public class VoucherClick implements Listener {
         ItemStack item = getItemInHand(e.getPlayer());
         Player player = e.getPlayer();
         Action action = e.getAction();
+
+        if (e.getHand().equals(EquipmentSlot.OFF_HAND)) {
+            Voucher voucher = CrazyManager.getVoucherFromItem(player.getInventory().getItemInOffHand());
+
+            if (voucher != null && !voucher.isEdible()) {
+                e.setCancelled(true);
+                player.sendMessage(Messages.NO_PERMISSION_TO_USE_VOUCHER_IN_OFFHAND.getMessage());
+            }
+
+            return;
+        }
+
+
         if (item != null && item.getType() != Material.AIR) {
 
             if (Version.isNewer(Version.v1_8_R3) && e.getHand() != EquipmentSlot.HAND) {
