@@ -39,7 +39,7 @@ public class VoucherClick implements Listener {
         Player player = e.getPlayer();
         Action action = e.getAction();
 
-        if (e.getHand().equals(EquipmentSlot.OFF_HAND)) {
+        if (e.getHand() == EquipmentSlot.OFF_HAND && e.getHand() != null) {
             Voucher voucher = CrazyManager.getVoucherFromItem(player.getInventory().getItemInOffHand());
 
             if (voucher != null && !voucher.isEdible()) {
