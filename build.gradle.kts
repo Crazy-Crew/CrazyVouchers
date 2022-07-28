@@ -6,7 +6,7 @@ plugins {
 }
 
 group = "com.badbones69.vouchers"
-version = "1.9.8-SNAPSHOT"
+version = "1.9.9-SNAPSHOT"
 description = "Make Custom Vouchers just for your server!"
 
 idea {
@@ -27,7 +27,7 @@ repositories {
 }
 
 dependencies {
-    compileOnly("org.spigotmc:spigot-api:1.19-R0.1-SNAPSHOT")
+    compileOnly("org.spigotmc:spigot-api:1.19.1-R0.1-SNAPSHOT")
 
     compileOnly("me.clip:placeholderapi:2.10.10")
 
@@ -38,7 +38,7 @@ dependencies {
 
 tasks {
     shadowJar {
-        archiveFileName.set("${rootProject.name}-[1.8-1.19]-${rootProject.version}.jar")
+        archiveFileName.set("${rootProject.name}-[1.8-1.19]-[v${rootProject.version}].jar")
 
         listOf(
             "de.tr7zw",
