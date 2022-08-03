@@ -39,9 +39,6 @@ public class ItemBuilder {
     // Player
     private String player;
     
-    // Crates
-    private String crateName;
-    
     // Skulls
     private boolean isHash;
     private boolean isURL;
@@ -100,8 +97,7 @@ public class ItemBuilder {
         this.itemLore = new ArrayList<>();
         this.itemAmount = 1;
         this.player = "";
-        
-        this.crateName = "";
+
         
         this.isHash = false;
         this.isURL = false;
@@ -151,8 +147,6 @@ public class ItemBuilder {
         this.referenceItem = itemBuilder.referenceItem;
         this.customModelData = itemBuilder.customModelData;
         this.useCustomModelData = itemBuilder.useCustomModelData;
-        
-        this.crateName = itemBuilder.crateName;
         
         this.enchantments = new HashMap<>(itemBuilder.enchantments);
         
@@ -246,13 +240,6 @@ public class ItemBuilder {
      */
     public List<String> getLore() {
         return itemLore;
-    }
-    
-    /**
-     * Returns the crate name.
-     */
-    public String getCrateName() {
-        return crateName;
     }
     
     /**
@@ -415,10 +402,6 @@ public class ItemBuilder {
                 }
             }
             
-            if (!crateName.isEmpty()) {
-                nbt.setString("CrazyCrates-Crate", crateName);
-            }
-            
             return nbt.getItem();
         } else {
             return item;
@@ -512,12 +495,6 @@ public class ItemBuilder {
         }
         
         if (this.material.name().contains("BANNER")) this.isBanner = true;
-        return this;
-    }
-    
-    // Sets the "Crate Name" for the item.
-    public ItemBuilder setCrateName(String crateName) {
-        this.crateName = crateName;
         return this;
     }
     
