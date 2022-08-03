@@ -356,7 +356,7 @@ public class ItemBuilder {
             itemMeta.setDisplayName(getUpdatedName());
             itemMeta.setLore(getUpdatedLore());
 
-            if (itemMeta instanceof org.bukkit.inventory.meta.Damageable) ((org.bukkit.inventory.meta.Damageable) itemMeta).setDamage(damage);
+            if (itemMeta instanceof org.bukkit.inventory.meta.Damageable && Version.isAtLeast(Version.v1_13_R2)) ((org.bukkit.inventory.meta.Damageable) itemMeta).setDamage(damage);
             
             if (isPotion && (potionType != null || potionColor != null)) {
                 PotionMeta potionMeta = (PotionMeta) itemMeta;
