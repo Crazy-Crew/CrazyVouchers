@@ -320,9 +320,7 @@ public class ItemBuilder {
      */
     public ItemStack build() {
         
-        if (nbtItem != null) {
-            referenceItem = nbtItem.getItem();
-        }
+        if (nbtItem != null) referenceItem = nbtItem.getItem();
         
         ItemStack item = referenceItem != null ? referenceItem : new ItemStack(material);
 
@@ -348,14 +346,9 @@ public class ItemBuilder {
             if (isPotion && (potionType != null || potionColor != null)) {
                 PotionMeta potionMeta = (PotionMeta) itemMeta;
                 
-                if (potionType != null) {
-                    potionMeta.setBasePotionData(new PotionData(potionType));
-                }
+                if (potionType != null) potionMeta.setBasePotionData(new PotionData(potionType));
                 
-                if (potionColor != null) {
-                    potionMeta.setColor(potionColor);
-                }
-                
+                if (potionColor != null) potionMeta.setColor(potionColor);
             }
             
             if (material == Material.TIPPED_ARROW && potionType != null) {
@@ -381,9 +374,7 @@ public class ItemBuilder {
                 shieldMeta.setBlockState(banner);
             }
             
-            if (useCustomModelData) {
-                itemMeta.setCustomModelData(customModelData);
-            }
+            if (useCustomModelData) itemMeta.setCustomModelData(customModelData);
             
             itemFlags.forEach(itemMeta :: addItemFlags);
             item.setItemMeta(itemMeta);
@@ -392,9 +383,7 @@ public class ItemBuilder {
             addGlow(item);
             NBTItem nbt = new NBTItem(item);
             
-            if (isHead && !isHash) {
-                nbt.setString("SkullOwner", player);
-            }
+            if (isHead && !isHash) nbt.setString("SkullOwner", player);
             
             if (isMobEgg) {
                 if (entityType != null) {
