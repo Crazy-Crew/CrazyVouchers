@@ -1,7 +1,6 @@
 package com.badbones69.vouchers.api;
 
 import com.badbones69.vouchers.Vouchers;
-import com.badbones69.vouchers.api.enums.Version;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
 import java.io.File;
@@ -47,23 +46,12 @@ public class FileManager {
 
             if (!newFile.exists()) {
                 try {
-
-                    String fileLocation = file.getFileLocation();
-
-                    //Switch between 1.12.2- and 1.13+ config version.
-                    if (file == Files.CONFIG) {
-                        if (Version.isOlder(Version.v1_13_R2)) {
-                            fileLocation = "Config1.12.2-Down.yml";
-                        } else {
-                            fileLocation = "Config1.13-Up.yml";
-                        }
-                    }
-
                     File serverFile = new File(plugin.getDataFolder(), "/" + file.getFileLocation());
-                    InputStream jarFile = getClass().getResourceAsStream("/" + fileLocation);
+                    InputStream jarFile = getClass().getResourceAsStream("/" + file.getFileLocation());
                     copyFile(jarFile, serverFile);
                 } catch (Exception e) {
                     if (log) plugin.getLogger().info("Failed to load " + file.getFileName());
+
                     e.printStackTrace();
                     continue;
                 }
@@ -87,13 +75,16 @@ public class FileManager {
 
                             if (file.exists()) {
                                 customFiles.add(file);
+
                                 if (log) plugin.getLogger().info("Loaded custom file: " + homeFolder + "/" + name + ".");
                             }
                         }
                     }
                 } else {
                     new File(plugin.getDataFolder(), "/" + homeFolder).mkdir();
+
                     if (log) plugin.getLogger().info("The folder " + homeFolder + "/ was not found so it was created.");
+
                     for (String fileName : autoGenerateFiles.keySet()) {
                         if (autoGenerateFiles.get(fileName).equalsIgnoreCase(homeFolder)) {
                             homeFolder = autoGenerateFiles.get(fileName);
@@ -481,5 +472,4 @@ public class FileManager {
             return false;
         }
     }
-
 }

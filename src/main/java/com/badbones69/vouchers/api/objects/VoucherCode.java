@@ -257,5 +257,4 @@ public class VoucherCode {
     public List<ItemBuilder> getItems() {
         return items;
     }
-    
 }

@@ -64,5 +64,4 @@ public class VoucherTab implements TabCompleter {
     private boolean hasPermission(CommandSender sender, String node) {
         return sender.hasPermission("voucher." + node) || sender.hasPermission("voucher.admin");
     }
-    
 }

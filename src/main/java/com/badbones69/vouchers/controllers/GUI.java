@@ -3,7 +3,6 @@ package com.badbones69.vouchers.controllers;
 import com.badbones69.vouchers.api.objects.Voucher;
 import com.badbones69.vouchers.Methods;
 import com.badbones69.vouchers.api.CrazyManager;
-import com.badbones69.vouchers.api.enums.Version;
 import com.badbones69.vouchers.api.objects.ItemBuilder;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
@@ -13,7 +12,6 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
-
 import java.util.*;
 
 public class GUI implements Listener {
@@ -25,9 +23,11 @@ public class GUI implements Listener {
         int page = getPage(player);
         Inventory inv = Bukkit.createInventory(null, 54, inventoryName);
         setDefaultItems(player, inv);
+
         for (Voucher i : getPageVouchers(page)) {
             inv.setItem(inv.firstEmpty(), i.buildItem());
         }
+
         player.openInventory(inv);
     }
     
@@ -36,9 +36,11 @@ public class GUI implements Listener {
         pageNumber = getPage(player);
         Inventory inv = Bukkit.createInventory(null, 54, inventoryName);
         setDefaultItems(player, inv);
+
         for (Voucher i : getPageVouchers(pageNumber)) {
             inv.setItem(inv.firstEmpty(), i.buildItem());
         }
+
         player.openInventory(inv);
     }
     
@@ -141,12 +143,11 @@ public class GUI implements Listener {
     }
     
     private static void setDefaultItems(Player player, Inventory inv) {
-        boolean isNew = !Version.isLegacy();
 
         for (int i : Arrays.asList(0, 1, 2, 3, 4, 5, 6, 7, 8, 45, 46, 47, 49, 51, 52, 53)) {
             inv.setItem(i, new ItemBuilder()
-            .setMaterial(isNew ? Material.BLUE_STAINED_GLASS_PANE : Material.matchMaterial("STAINED_GLASS_PANE"))
-            .setDamage(isNew ? 0 : (short) 11)
+            .setMaterial(Material.BLUE_STAINED_GLASS_PANE)
+            .setDamage(0)
             .setName(" ")
             .build());
         }
@@ -156,8 +157,8 @@ public class GUI implements Listener {
 
         if (page == 1) {
             inv.setItem(48, new ItemBuilder()
-            .setMaterial(isNew ? Material.GRAY_STAINED_GLASS_PANE : Material.matchMaterial("STAINED_GLASS_PANE"))
-            .setDamage(isNew ? 0 : (short) 7)
+            .setMaterial(Material.GRAY_STAINED_GLASS_PANE)
+            .setDamage(0)
             .setName(" ")
             .build());
         } else {
@@ -169,8 +170,8 @@ public class GUI implements Listener {
         }
         if (page == maxPage) {
             inv.setItem(50, new ItemBuilder()
-            .setMaterial(isNew ? Material.GRAY_STAINED_GLASS_PANE : Material.matchMaterial("STAINED_GLASS_PANE"))
-            .setDamage(isNew ? 0 : (short) 7)
+            .setMaterial(Material.GRAY_STAINED_GLASS_PANE)
+            .setDamage(0)
             .setName(" ")
             .build());
         } else {
@@ -181,5 +182,4 @@ public class GUI implements Listener {
             .build());
         }
     }
-    
 }

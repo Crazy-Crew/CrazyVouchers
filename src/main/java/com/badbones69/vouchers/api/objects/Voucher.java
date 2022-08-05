@@ -361,5 +361,4 @@ public class Voucher {
     private boolean isList(String path) {
         return Files.CONFIG.getFile().contains(path) && !Files.CONFIG.getFile().getStringList(path).isEmpty();
     }
-
 }

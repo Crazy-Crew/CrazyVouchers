@@ -66,5 +66,4 @@ public class RedeemVoucherEvent extends Event implements Cancellable {
     public static HandlerList getHandlerList() {
         return handlers;
     }
-
 }

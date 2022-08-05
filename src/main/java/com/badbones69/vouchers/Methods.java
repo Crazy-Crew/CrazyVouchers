@@ -1,7 +1,6 @@
 package com.badbones69.vouchers;
 
 import com.badbones69.vouchers.api.CrazyManager;
-import com.badbones69.vouchers.api.enums.Version;
 import com.badbones69.vouchers.api.FileManager.Files;
 import com.badbones69.vouchers.api.enums.Messages;
 import com.badbones69.vouchers.controllers.FireworkDamageAPI;
@@ -41,18 +40,14 @@ public class Methods {
     }
 
     public static String color(String message) {
-        if (Version.isNewer(Version.v1_15_R1)) {
-            Matcher matcher = HEX_PATTERN.matcher(message);
-            StringBuffer buffer = new StringBuffer();
+        Matcher matcher = HEX_PATTERN.matcher(message);
+        StringBuffer buffer = new StringBuffer();
 
-            while (matcher.find()) {
-                matcher.appendReplacement(buffer, net.md_5.bungee.api.ChatColor.of(matcher.group()).toString());
-            }
-
-            return ChatColor.translateAlternateColorCodes('&', matcher.appendTail(buffer).toString());
+        while (matcher.find()) {
+            matcher.appendReplacement(buffer, net.md_5.bungee.api.ChatColor.of(matcher.group()).toString());
         }
 
-        return ChatColor.translateAlternateColorCodes('&', message);
+        return ChatColor.translateAlternateColorCodes('&', matcher.appendTail(buffer).toString());
     }
     
     public static boolean isInt(String s) {
@@ -129,23 +124,20 @@ public class Methods {
     }
     
     public static ItemStack addGlow(ItemStack item, boolean glowing) {
-        if (Version.isNewer(Version.v1_7_R3)) {
-            if (glowing) {
-                if (item != null) {
-                    if (item.hasItemMeta()) {
-                        if (item.getItemMeta().hasEnchants()) {
-                            return item;
-                        }
+        if (glowing) {
+            if (item != null) {
+                if (item.hasItemMeta()) {
+                    if (item.getItemMeta().hasEnchants()) {
+                        return item;
                     }
-
-                    item.addUnsafeEnchantment(Enchantment.LUCK, 1);
-                    ItemMeta meta = item.getItemMeta();
-                    meta.addItemFlags(ItemFlag.HIDE_ENCHANTS);
-                    item.setItemMeta(meta);
                 }
+
+                item.addUnsafeEnchantment(Enchantment.LUCK, 1);
+                ItemMeta meta = item.getItemMeta();
+                meta.addItemFlags(ItemFlag.HIDE_ENCHANTS);
+                item.setItemMeta(meta);
             }
         }
-
         return item;
     }
     

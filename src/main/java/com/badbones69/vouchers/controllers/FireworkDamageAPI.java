@@ -1,71 +1,29 @@
 package com.badbones69.vouchers.controllers;
 
-import com.badbones69.vouchers.api.enums.Version;
+import com.badbones69.vouchers.api.CrazyManager;
 import org.bukkit.entity.Entity;
-import org.bukkit.entity.EntityType;
+import org.bukkit.entity.Firework;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
-import org.bukkit.event.entity.EntityDamageEvent;
-import org.bukkit.event.entity.FireworkExplodeEvent;
-import org.bukkit.plugin.Plugin;
-import org.bukkit.scheduler.BukkitRunnable;
-import java.util.ArrayList;
+import org.bukkit.event.entity.EntityDamageByEntityEvent;
+import org.bukkit.metadata.FixedMetadataValue;
 
 public class FireworkDamageAPI implements Listener {
-    
-    private final Plugin plugin;
-    private static final ArrayList<Entity> fireworks = new ArrayList<>();
-    
-    public FireworkDamageAPI(Plugin plugin) {
-        this.plugin = plugin;
-    }
-    
-    /**
-     * @return All the active fireworks.
-     */
-    public static ArrayList<Entity> getFireworks() {
-        return fireworks;
-    }
+
+    public static CrazyManager crazyManager = CrazyManager.getInstance();
     
     /**
      * @param firework The firework you want to add.
      */
     public static void addFirework(Entity firework) {
-        if (Version.isNewer(Version.v1_10_R1)) {
-            fireworks.add(firework);
-        }
+        firework.setMetadata("nodamage", new FixedMetadataValue(crazyManager.getPlugin(), true));
     }
-    
-    /**
-     * @param firework The firework you are removing.
-     */
-    public static void removeFirework(Entity firework) {
-        fireworks.remove(firework);
-    }
-    
-    @EventHandler
-    public void onPlayerDamage(EntityDamageEvent e) {
-        for (Entity en : e.getEntity().getNearbyEntities(5, 5, 5)) {
-            if (en.getType() == EntityType.FIREWORK) {
-                if (getFireworks().contains(en)) {
-                    e.setCancelled(true);
-                }
-            }
-        }
-    }
-    
-    @EventHandler
-    public void onFireworkExplode(FireworkExplodeEvent e) {
-        final Entity firework = e.getEntity();
 
-        if (getFireworks().contains(firework)) {
-            new BukkitRunnable() {
-                @Override
-                public void run() {
-                    removeFirework(firework);
-                }
-            }.runTaskLater(plugin, 5);
+    @EventHandler
+    public void onPlayerDamage(EntityDamageByEntityEvent e) {
+        if (e.getDamager() instanceof Firework) {
+            Firework fw = (Firework) e.getDamager();
+            if (fw.hasMetadata("nodamage")) e.setCancelled(true);
         }
     }
-    
 }

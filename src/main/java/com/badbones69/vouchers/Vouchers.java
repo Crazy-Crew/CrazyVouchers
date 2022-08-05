@@ -5,7 +5,6 @@ import com.badbones69.vouchers.controllers.GUI;
 import com.badbones69.vouchers.api.FileManager;
 import com.badbones69.vouchers.api.FileManager.Files;
 import com.badbones69.vouchers.api.CrazyManager;
-import com.badbones69.vouchers.api.enums.Version;
 import com.badbones69.vouchers.commands.VoucherCommands;
 import com.badbones69.vouchers.commands.VoucherTab;
 import com.badbones69.vouchers.controllers.FireworkDamageAPI;
@@ -38,17 +37,12 @@ public class Vouchers extends JavaPlugin implements Listener {
         pluginManager.registerEvents(this, this);
         pluginManager.registerEvents(new VoucherClick(), this);
         pluginManager.registerEvents(new GUI(), this);
+        pluginManager.registerEvents(new FireworkDamageAPI(), this);
 
         getCommand("vouchers").setExecutor(new VoucherCommands());
         getCommand("vouchers").setTabCompleter(new VoucherTab());
 
         Messages.addMissingMessages();
-
-        try {
-            if (Version.isNewer(Version.v1_10_R1)) {
-                pluginManager.registerEvents(new FireworkDamageAPI(this), this);
-            }
-        } catch (Exception ignored) {}
 
         boolean metricsEnabled = Files.CONFIG.getFile().getBoolean("Settings.Toggle-Metrics");
 
@@ -56,7 +50,7 @@ public class Vouchers extends JavaPlugin implements Listener {
             if (metricsEnabled) new Metrics(this, 4536);
         } else {
             getLogger().warning("Metrics was automatically enabled.");
-            getLogger().warning("Please add Toggle-Metrics: false to the top of your config.yml");
+            getLogger().warning("Please add Toggle-Metrics: false to the top of your Config.yml");
             getLogger().warning("https://github.com/Crazy-Crew/Vouchers/blob/master/Config1.12.2-Down.yml");
 
             getLogger().warning("An example if confused is linked above.");

@@ -2,7 +2,6 @@ package com.badbones69.vouchers.api.objects;
 
 import com.badbones69.vouchers.Methods;
 import com.badbones69.vouchers.api.CrazyManager;
-import com.badbones69.vouchers.api.enums.Version;
 import de.tr7zw.changeme.nbtapi.NBTItem;
 import org.bukkit.Color;
 import org.bukkit.DyeColor;
@@ -341,7 +340,7 @@ public class ItemBuilder {
             itemMeta.setDisplayName(getUpdatedName());
             itemMeta.setLore(getUpdatedLore());
 
-            if (itemMeta instanceof org.bukkit.inventory.meta.Damageable && Version.isAtLeast(Version.v1_13_R2)) ((org.bukkit.inventory.meta.Damageable) itemMeta).setDamage(damage);
+            if (itemMeta instanceof org.bukkit.inventory.meta.Damageable) ((org.bukkit.inventory.meta.Damageable) itemMeta).setDamage(damage);
             
             if (isPotion && (potionType != null || potionColor != null)) {
                 PotionMeta potionMeta = (PotionMeta) itemMeta;
@@ -1176,11 +1175,8 @@ public class ItemBuilder {
         enchantmentName = stripEnchantmentName(enchantmentName);
         for (Enchantment enchantment : Enchantment.values()) {
             try {
-                // MC 1.13+ has the correct names.
-                if (!Version.isLegacy()) {
-                    if (stripEnchantmentName(enchantment.getKey().getKey()).equalsIgnoreCase(enchantmentName)) {
-                        return enchantment;
-                    }
+                if (stripEnchantmentName(enchantment.getKey().getKey()).equalsIgnoreCase(enchantmentName)) {
+                    return enchantment;
                 }
 
                 HashMap<String, String> enchantments = getEnchantmentList();
