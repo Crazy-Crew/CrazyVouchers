@@ -4,8 +4,7 @@ import com.badbones69.vouchers.api.CrazyManager;
 
 public enum Support {
     
-    PLACEHOLDERAPI("PlaceholderAPI"),
-    MVDWPLACEHOLDERAPI("MVdWPlaceholderAPI");
+    PLACEHOLDERAPI("PlaceholderAPI");
     
     private final String name;
 
