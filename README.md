@@ -21,7 +21,7 @@ Downloads can be obtained from the [Spigot Page](https://www.spigotmc.org/resour
 Legacy Downloads (1.17 & below) can be found @ [Jenkins](https://jenkins.badbones69.com/view/Legacy/job/Vouchers-Legacy/).
 
 ## Plugin Data
-[![bStats Graph Data](https://bstats.org/signatures/bukkit/CrazyEnvoy.svg)](https://bstats.org/plugin/bukkit/CrazyEnvoy/4537)
+[![bStats Graph Data](https://bstats.org/signatures/bukkit/Vouchers.svg)](https://bstats.org/plugin/bukkit/Vouchers/4536)
 
 ## API
 In Progress.
