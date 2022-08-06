@@ -34,10 +34,10 @@ In Progress.
 #### Gradle
 In Progress.
 
-## Working with CrazyEnvoys.
+## Working with Vouchers.
 
 #### Contributing
 Fork the project & open a pull request.
 
 #### Compiling
-Clone the project & run the install task.
+Clone the project & run the shadowJar task.
