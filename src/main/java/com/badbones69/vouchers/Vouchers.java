@@ -51,7 +51,7 @@ public class Vouchers extends JavaPlugin implements Listener {
         } else {
             getLogger().warning("Metrics was automatically enabled.");
             getLogger().warning("Please add Toggle-Metrics: false to the top of your Config.yml");
-            getLogger().warning("https://github.com/Crazy-Crew/Vouchers/blob/master/Config1.12.2-Down.yml");
+            getLogger().warning("https://github.com/Crazy-Crew/Vouchers/blob/main/Config.yml");
 
             getLogger().warning("An example if confused is linked above.");
 
