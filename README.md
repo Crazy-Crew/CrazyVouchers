@@ -6,7 +6,7 @@
 [![Voucher's Forks](https://img.shields.io/github/forks/Crazy-Crew/Vouchers?label=forks&logo=github)](https://github.com/Crazy-Crew/Vouchers/network/members)
 [![Voucher's Watchers](https://img.shields.io/github/watchers/Crazy-Crew/Vouchers?label=watchers&logo=github)](https://github.com/Crazy-Crew/Vouchers/watchers)
 
-CrazyEnvoys is a plugin where you can make a paper give you an axolotl with a pretty firework display!
+Vouchers is a plugin where you can make a paper give you an axolotl with a pretty firework display!
 
 ## Contact
 [![Join us on Discord](https://img.shields.io/discord/182615261403283459.svg?label=&logo=discord&logoColor=ffffff&color=7389D8&labelColor=6A7EC2)](https://discord.badbones69.com)
