@@ -38,7 +38,7 @@ dependencies {
 
 tasks {
     shadowJar {
-        archiveFileName.set("${rootProject.name}-[1.8-1.19]-[v${rootProject.version}].jar")
+        archiveFileName.set("${rootProject.name}-[1.18-1.19]-[v${rootProject.version}].jar")
 
         listOf(
             "de.tr7zw",
