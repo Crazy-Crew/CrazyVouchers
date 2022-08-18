@@ -16,7 +16,7 @@ Join us on [Discord](https://discord.badbones69.com)
 ## Downloads
 [![Build Status](https://jenkins.badbones69.com/view/Stable/job/Vouchers/badge/icon)](https://jenkins.badbones69.com/view/Stable/job/Vouchers/)
 
-Downloads can be obtained from the [Spigot Page](https://www.spigotmc.org/resources/Vouchers.32870/) or the [Jenkins](https://jenkins.badbones69.com/view/Stable/job/Vouchers/).
+Downloads can be obtained from the [Spigot Page](https://www.spigotmc.org/resources/vouchers.13654/) or the [Jenkins](https://jenkins.badbones69.com/view/Stable/job/Vouchers/).
 
 Legacy Downloads (1.17 & below) can be found @ [Jenkins](https://jenkins.badbones69.com/view/Legacy/job/Vouchers-Legacy/).
 
