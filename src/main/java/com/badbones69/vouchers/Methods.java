@@ -9,13 +9,11 @@ import org.bukkit.Color;
 import org.bukkit.FireworkEffect;
 import org.bukkit.Location;
 import org.bukkit.command.CommandSender;
-import org.bukkit.enchantments.Enchantment;
 import org.bukkit.entity.Firework;
 import org.bukkit.entity.Player;
-import org.bukkit.inventory.ItemFlag;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.FireworkMeta;
-import org.bukkit.inventory.meta.ItemMeta;
+
 import java.util.HashMap;
 import java.util.List;
 import java.util.regex.Matcher;
@@ -41,7 +39,7 @@ public class Methods {
 
     public static String color(String message) {
         Matcher matcher = HEX_PATTERN.matcher(message);
-        StringBuffer buffer = new StringBuffer();
+        StringBuilder buffer = new StringBuilder();
 
         while (matcher.find()) {
             matcher.appendReplacement(buffer, net.md_5.bungee.api.ChatColor.of(matcher.group()).toString());
@@ -112,31 +110,16 @@ public class Methods {
     }
     
     public static void fireWork(Location loc, List<Color> list) {
+        if (loc.getWorld() == null) return;
+
         final Firework f = loc.getWorld().spawn(loc, Firework.class);
         FireworkMeta fm = f.getFireworkMeta();
         fm.addEffects(FireworkEffect.builder().with(FireworkEffect.Type.BALL_LARGE).withColor(list).trail(false).flicker(false).build());
         fm.setPower(0);
         f.setFireworkMeta(fm);
         FireworkDamageAPI.addFirework(f);
-        crazyManager.getPlugin().getServer().getScheduler().scheduleSyncDelayedTask(crazyManager.getPlugin(), f :: detonate, 2);
-    }
-    
-    public static ItemStack addGlow(ItemStack item, boolean glowing) {
-        if (glowing) {
-            if (item != null) {
-                if (item.hasItemMeta()) {
-                    if (item.getItemMeta().hasEnchants()) {
-                        return item;
-                    }
-                }
 
-                item.addUnsafeEnchantment(Enchantment.LUCK, 1);
-                ItemMeta meta = item.getItemMeta();
-                meta.addItemFlags(ItemFlag.HIDE_ENCHANTS);
-                item.setItemMeta(meta);
-            }
-        }
-        return item;
+        crazyManager.getPlugin().getServer().getScheduler().scheduleSyncDelayedTask(crazyManager.getPlugin(), f :: detonate, 2);
     }
     
     public static Color getColor(String color) {
@@ -187,5 +170,4 @@ public class Methods {
 
         return false;
     }
-    
 }

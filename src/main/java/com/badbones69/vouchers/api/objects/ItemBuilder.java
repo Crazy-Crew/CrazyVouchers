@@ -2,7 +2,10 @@ package com.badbones69.vouchers.api.objects;
 
 import com.badbones69.vouchers.Methods;
 import com.badbones69.vouchers.api.CrazyManager;
+import de.tr7zw.changeme.nbtapi.NBTCompound;
+import de.tr7zw.changeme.nbtapi.NBTContainer;
 import de.tr7zw.changeme.nbtapi.NBTItem;
+import de.tr7zw.changeme.nbtapi.NBTList;
 import org.bukkit.Color;
 import org.bukkit.DyeColor;
 import org.bukkit.Material;
@@ -302,6 +305,7 @@ public class ItemBuilder {
      *
      * @return The name with all the placeholders in it.
      */
+
     public String getUpdatedName() {
         String newName = itemName;
 
@@ -376,10 +380,13 @@ public class ItemBuilder {
             if (useCustomModelData) itemMeta.setCustomModelData(customModelData);
             
             itemFlags.forEach(itemMeta :: addItemFlags);
+
             item.setItemMeta(itemMeta);
             hideItemFlags(item);
             item.addUnsafeEnchantments(enchantments);
+
             addGlow(item);
+
             NBTItem nbt = new NBTItem(item);
             
             if (isHead && !isHash) nbt.setString("SkullOwner", player);
@@ -831,6 +838,7 @@ public class ItemBuilder {
         if (hideItemFlags) {
             if (item != null && item.hasItemMeta()) {
                 ItemMeta itemMeta = item.getItemMeta();
+                assert itemMeta != null;
                 itemMeta.addItemFlags(ItemFlag.values());
                 item.setItemMeta(itemMeta);
                 return item;
@@ -1034,13 +1042,14 @@ public class ItemBuilder {
     private void addGlow(ItemStack item) {
         if (glowing) {
             try {
-                if (item != null) {
-                    if (item.hasItemMeta() && item.getItemMeta().hasEnchants()) {
-                        return;
-                    }
+                if (item != null && item.getItemMeta() != null) {
+                    if (item.hasItemMeta() && item.getItemMeta().hasEnchants()) return;
 
                     item.addUnsafeEnchantment(Enchantment.LUCK, 1);
+
                     ItemMeta meta = item.getItemMeta();
+
+                    assert meta != null;
                     meta.addItemFlags(ItemFlag.HIDE_ENCHANTS);
                     item.setItemMeta(meta);
                 }
