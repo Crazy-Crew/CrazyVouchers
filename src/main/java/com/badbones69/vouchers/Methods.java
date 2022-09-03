@@ -95,9 +95,7 @@ public class Methods {
     }
     
     public static boolean hasPermission(CommandSender sender, String perm) {
-        if (sender instanceof Player) {
-            Player player = (Player) sender;
-
+        if (sender instanceof Player player) {
             if (!player.hasPermission("voucher." + perm)) {
                 player.sendMessage(Messages.NO_PERMISSION.getMessage());
                 return false;
