@@ -1,20 +1,12 @@
 plugins {
     java
-    idea
 
     id("com.github.johnrengelman.shadow") version "7.1.2"
 }
 
 group = "com.badbones69.vouchers"
-version = "2.9.10-SNAPSHOT"
+version = "2.9.11-${System.getenv("BUILD_NUMBER") ?: "SNAPSHOT"}"
 description = "Make Custom Vouchers just for your server!"
-
-idea {
-    module {
-        isDownloadJavadoc = true
-        isDownloadSources = true
-    }
-}
 
 repositories {
     mavenCentral()
@@ -27,9 +19,12 @@ repositories {
 }
 
 dependencies {
-    compileOnly("org.spigotmc:spigot-api:1.19.1-R0.1-SNAPSHOT")
+    compileOnly("org.spigotmc:spigot-api:1.19.2-R0.1-SNAPSHOT")
 
-    compileOnly("me.clip:placeholderapi:2.10.10")
+    compileOnly("me.clip:placeholderapi:2.11.2") {
+        exclude(group = "org.spigotmc", module = "spigot")
+        exclude(group = "org.bukkit", module = "bukkit")
+    }
 
     implementation("de.tr7zw:nbt-data-api:2.10.0")
 

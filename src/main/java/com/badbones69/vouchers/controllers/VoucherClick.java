@@ -1,5 +1,6 @@
 package com.badbones69.vouchers.controllers;
 import com.badbones69.vouchers.Methods;
+import com.badbones69.vouchers.Vouchers;
 import com.badbones69.vouchers.api.FileManager;
 import com.badbones69.vouchers.api.CrazyManager;
 import com.badbones69.vouchers.api.enums.Messages;
@@ -7,6 +8,7 @@ import com.badbones69.vouchers.api.objects.ItemBuilder;
 import com.badbones69.vouchers.api.objects.Voucher;
 import com.badbones69.vouchers.api.enums.Support;
 import com.badbones69.vouchers.api.events.RedeemVoucherEvent;
+import me.clip.placeholderapi.PlaceholderAPI;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.Sound;
@@ -27,20 +29,24 @@ import java.util.concurrent.ThreadLocalRandom;
 
 public class VoucherClick implements Listener {
     
-    private final HashMap<Player, String> twoAuth = new HashMap<>();
+    private final Vouchers plugin = Vouchers.getPlugin();
+    
+    private final CrazyManager crazyManager = plugin.getCrazyManager();
 
-    public static CrazyManager crazyManager = CrazyManager.getInstance();
+    private final Methods methods = plugin.getMethods();
+    
+    private final HashMap<Player, String> twoAuth = new HashMap<>();
     
     // This must run as highest, so it doesn't cause other plugins to check
     // the items that were added to the players inventory and replaced the item in the player's hand.
-    @EventHandler(priority = EventPriority.HIGHEST)
+    @EventHandler(priority = EventPriority.HIGHEST, ignoreCancelled = true)
     public void onVoucherClick(PlayerInteractEvent e) {
         ItemStack item = getItemInHand(e.getPlayer());
         Player player = e.getPlayer();
         Action action = e.getAction();
 
         if (e.getHand() == EquipmentSlot.OFF_HAND && e.getHand() != null) {
-            Voucher voucher = CrazyManager.getVoucherFromItem(player.getInventory().getItemInOffHand());
+            Voucher voucher = crazyManager.getVoucherFromItem(player.getInventory().getItemInOffHand());
 
             if (voucher != null && !voucher.isEdible()) {
                 e.setCancelled(true);
@@ -56,7 +62,7 @@ public class VoucherClick implements Listener {
             if (e.getHand() != EquipmentSlot.HAND) return;
 
             if (action == Action.RIGHT_CLICK_BLOCK || action == Action.RIGHT_CLICK_AIR) {
-                Voucher voucher = CrazyManager.getVoucherFromItem(item);
+                Voucher voucher = crazyManager.getVoucherFromItem(item);
 
                 if (voucher != null && !voucher.isEdible()) {
                     e.setCancelled(true);
@@ -66,13 +72,14 @@ public class VoucherClick implements Listener {
         }
     }
     
-    @EventHandler
+    @EventHandler(ignoreCancelled = true)
     public void onItemConsume(PlayerItemConsumeEvent e) {
         ItemStack item = e.getItem();
-        Voucher voucher = CrazyManager.getVoucherFromItem(item);
+        Voucher voucher = crazyManager.getVoucherFromItem(item);
         if (voucher != null && voucher.isEdible()) {
             Player player = e.getPlayer();
             e.setCancelled(true);
+            
             if (item.getAmount() > 1) {
                 player.sendMessage(Messages.UNSTACK_ITEM.getMessage());
             } else {
@@ -81,19 +88,17 @@ public class VoucherClick implements Listener {
         }
     }
     
-    @EventHandler(priority = EventPriority.LOW)
+    @EventHandler(priority = EventPriority.LOW, ignoreCancelled = true)
     public void onArmorStandClick(PlayerInteractEntityEvent e) {
-        if (e.getHand() == EquipmentSlot.HAND && CrazyManager.getVoucherFromItem(getItemInHand(e.getPlayer())) != null) {
-            e.setCancelled(true);
-        }
+        if (e.getHand() == EquipmentSlot.HAND && crazyManager.getVoucherFromItem(getItemInHand(e.getPlayer())) != null) e.setCancelled(true);
     }
 
-    @EventHandler(priority = EventPriority.LOW)
+    @EventHandler(priority = EventPriority.LOW, ignoreCancelled = true)
     public void onCrafts(CraftItemEvent e) {
         Player player = (Player) e.getWhoClicked();
 
         for (ItemStack itemStack : e.getInventory().getContents()) {
-            Voucher voucher = CrazyManager.getVoucherFromItem(itemStack);
+            Voucher voucher = crazyManager.getVoucherFromItem(itemStack);
 
             if (voucher != null) {
                 player.sendMessage(Messages.CANNOT_PUT_ITEMS_IN_CRAFTING_TABLE.getMessage());
@@ -106,13 +111,14 @@ public class VoucherClick implements Listener {
     
     private void useVoucher(Player player, Voucher voucher, ItemStack item) {
         FileConfiguration data = FileManager.Files.DATA.getFile();
-        String argument = CrazyManager.getArgument(item, voucher);
+        String argument = crazyManager.getArgument(item, voucher);
 
         if (passesPermissionChecks(player, item, voucher, argument)) {
             String uuid = player.getUniqueId().toString();
 
             if (!player.hasPermission("voucher.bypass") && voucher.useLimiter() && data.contains("Players." + uuid + ".Vouchers." + voucher.getName())) {
                 int amount = data.getInt("Players." + uuid + ".Vouchers." + voucher.getName());
+
                 if (amount >= voucher.getLimiterLimit()) {
                     player.sendMessage(Messages.HIT_LIMIT.getMessage());
                     return;
@@ -135,7 +141,7 @@ public class VoucherClick implements Listener {
 
             twoAuth.remove(player);
             RedeemVoucherEvent event = new RedeemVoucherEvent(player, voucher, argument);
-            crazyManager.getPlugin().getServer().getPluginManager().callEvent(event);
+            plugin.getServer().getPluginManager().callEvent(event);
 
             if (!event.isCancelled()) voucherClick(player, item, voucher, argument);
         }
@@ -145,7 +151,7 @@ public class VoucherClick implements Listener {
     private ItemStack getItemInHand(Player player) {
         return player.getInventory().getItemInMainHand();
     }
-    
+
     private boolean passesPermissionChecks(Player player, ItemStack item, Voucher voucher, String argument) {
         if (!player.isOp()) {
             HashMap<String, String> placeholders = new HashMap<>();
@@ -162,7 +168,7 @@ public class VoucherClick implements Listener {
                         player.sendMessage(Messages.replacePlaceholders(placeholders, voucher.getWhitelistPermissionMessage()));
 
                         for (String command : voucher.getWhitelistCommands()) {
-                            crazyManager.getPlugin().getServer().dispatchCommand(crazyManager.getPlugin().getServer().getConsoleSender(), Messages.replacePlaceholders(placeholders, command));
+                            plugin.getServer().dispatchCommand(plugin.getServer().getConsoleSender(), Messages.replacePlaceholders(placeholders, command));
                         }
 
                         return false;
@@ -174,7 +180,7 @@ public class VoucherClick implements Listener {
                 player.sendMessage(Messages.replacePlaceholders(placeholders, voucher.getWhitelistWorldMessage()));
 
                 for (String command : voucher.getWhitelistWorldCommands()) {
-                    crazyManager.getPlugin().getServer().dispatchCommand(crazyManager.getPlugin().getServer().getConsoleSender(), Messages.replacePlaceholders(placeholders, command));
+                    plugin.getServer().dispatchCommand(plugin.getServer().getConsoleSender(), Messages.replacePlaceholders(placeholders, command));
                 }
 
                 return false;
@@ -186,7 +192,7 @@ public class VoucherClick implements Listener {
                         player.sendMessage(Messages.replacePlaceholders(placeholders, voucher.getBlackListMessage()));
 
                         for (String command : voucher.getBlacklistCommands()) {
-                            crazyManager.getPlugin().getServer().dispatchCommand(crazyManager.getPlugin().getServer().getConsoleSender(), Messages.replacePlaceholders(placeholders, command));
+                            plugin.getServer().dispatchCommand(plugin.getServer().getConsoleSender(), Messages.replacePlaceholders(placeholders, command));
                         }
 
                         return false;
@@ -199,7 +205,8 @@ public class VoucherClick implements Listener {
     }
     
     private void voucherClick(Player player, ItemStack item, Voucher voucher, String argument) {
-        Methods.removeItem(item, player);
+        methods.removeItem(item, player);
+
         HashMap<String, String> placeholders = new HashMap<>();
         placeholders.put("%Arg%", argument != null ? argument : "%arg%");
         placeholders.put("%Player%", player.getName());
@@ -210,25 +217,25 @@ public class VoucherClick implements Listener {
 
         for (String command : voucher.getCommands()) {
             command = replacePlaceholders(command, player);
-            crazyManager.getPlugin().getServer().dispatchCommand(crazyManager.getPlugin().getServer().getConsoleSender(), Messages.replacePlaceholders(placeholders, CrazyManager.replaceRandom(command)));
+            plugin.getServer().dispatchCommand(plugin.getServer().getConsoleSender(), Messages.replacePlaceholders(placeholders, crazyManager.replaceRandom(command)));
         }
 
         if (!voucher.getRandomCommands().isEmpty()) { // Picks a random command from the Random-Commands list.
             for (String command : voucher.getRandomCommands().get(getRandom(voucher.getRandomCommands().size())).getCommands()) {
                 command = replacePlaceholders(command, player);
-                crazyManager.getPlugin().getServer().dispatchCommand(crazyManager.getPlugin().getServer().getConsoleSender(), Messages.replacePlaceholders(placeholders, CrazyManager.replaceRandom(command)));
+                plugin.getServer().dispatchCommand(plugin.getServer().getConsoleSender(), Messages.replacePlaceholders(placeholders, crazyManager.replaceRandom(command)));
             }
         }
 
         if (!voucher.getChanceCommands().isEmpty()) { // Picks a command based on the chance system of the Chance-Commands list.
             for (String command : voucher.getChanceCommands().get(getRandom(voucher.getChanceCommands().size())).getCommands()) {
                 command = replacePlaceholders(command, player);
-                crazyManager.getPlugin().getServer().dispatchCommand(crazyManager.getPlugin().getServer().getConsoleSender(), Messages.replacePlaceholders(placeholders, CrazyManager.replaceRandom(command)));
+                plugin.getServer().dispatchCommand(plugin.getServer().getConsoleSender(), Messages.replacePlaceholders(placeholders, crazyManager.replaceRandom(command)));
             }
         }
 
         for (ItemBuilder itemBuilder : voucher.getItems()) {
-            if (!Methods.isInventoryFull(player)) {
+            if (!methods.isInventoryFull(player)) {
                 player.getInventory().addItem(itemBuilder.build());
             } else {
                 player.getWorld().dropItem(player.getLocation(), itemBuilder.build());
@@ -241,9 +248,7 @@ public class VoucherClick implements Listener {
             }
         }
 
-        if (voucher.useFirework()) {
-            Methods.fireWork(player.getLocation(), voucher.getFireworkColors());
-        }
+        if (voucher.useFirework()) methods.fireWork(player.getLocation(), voucher.getFireworkColors());
 
         if (!voucher.getVoucherUsedMessage().isEmpty()) {
             String message = replacePlaceholders(voucher.getVoucherUsedMessage(), player);
@@ -256,11 +261,9 @@ public class VoucherClick implements Listener {
             FileManager.Files.DATA.saveFile();
         }
     }
-    
+
     private String replacePlaceholders(String string, Player player) {
-        if (Support.PLACEHOLDERAPI.isPluginLoaded()) {
-            return me.clip.placeholderapi.PlaceholderAPI.setPlaceholders(player, string);
-        }
+        if (Support.PLACEHOLDERAPI.isPluginLoaded()) return PlaceholderAPI.setPlaceholders(player, string);
 
         return string;
     }
@@ -268,5 +271,4 @@ public class VoucherClick implements Listener {
     private int getRandom(int max) {
         return ThreadLocalRandom.current().nextInt(max);
     }
-    
 }

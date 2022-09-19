@@ -1,6 +1,7 @@
 package com.badbones69.vouchers.api.enums;
 
 import com.badbones69.vouchers.Methods;
+import com.badbones69.vouchers.Vouchers;
 import com.badbones69.vouchers.api.FileManager.Files;
 import org.bukkit.configuration.file.FileConfiguration;
 import java.util.ArrayList;
@@ -53,12 +54,16 @@ public enum Messages {
         this.path = path;
         this.defaultListMessage = defaultListMessage;
     }
+
+    private static Vouchers plugin = Vouchers.getPlugin();
+
+    private static Methods methods = plugin.getMethods();
     
     public static String convertList(List<String> list) {
         StringBuilder message = new StringBuilder();
 
         for (String line : list) {
-            message.append(Methods.color(line)).append("\n");
+            message.append(methods.color(line)).append("\n");
         }
 
         return message.toString();
@@ -153,15 +158,15 @@ public enum Messages {
 
         if (isList) {
             if (exists) {
-                message = Methods.color(convertList(Files.MESSAGES.getFile().getStringList("Messages." + path)));
+                message = methods.color(convertList(Files.MESSAGES.getFile().getStringList("Messages." + path)));
             } else {
-                message = Methods.color(convertList(getDefaultListMessage()));
+                message = methods.color(convertList(getDefaultListMessage()));
             }
         } else {
             if (exists) {
-                message = Methods.color(Files.MESSAGES.getFile().getString("Messages." + path));
+                message = methods.color(Files.MESSAGES.getFile().getString("Messages." + path));
             } else {
-                message = Methods.color(getDefaultMessage());
+                message = methods.color(getDefaultMessage());
             }
         }
 
@@ -171,12 +176,12 @@ public enum Messages {
         }
 
         if (isList) { // Don't want to add a prefix to a list of messages.
-            return Methods.color(message);
+            return methods.color(message);
         } else { // If the message isn't a list.
             if (prefix) { // If the message needs a prefix.
-                return Methods.getPrefix(message);
+                return methods.getPrefix(message);
             } else { // If the message doesn't need a prefix.
-                return Methods.color(message);
+                return methods.color(message);
             }
         }
     }

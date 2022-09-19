@@ -1,6 +1,5 @@
 package com.badbones69.vouchers.api;
 
-import com.badbones69.vouchers.Vouchers;
 import com.badbones69.vouchers.api.objects.Voucher;
 import de.tr7zw.changeme.nbtapi.NBTItem;
 import com.badbones69.vouchers.api.objects.VoucherCode;
@@ -12,51 +11,6 @@ public class CrazyManager {
     
     private final static ArrayList<Voucher> vouchers = new ArrayList<>();
     private final static ArrayList<VoucherCode> voucherCodes = new ArrayList<>();
-
-    /**
-     * The Vouchers plugin.
-     */
-    private Vouchers plugin;
-
-    /**
-     * Get the Vouchers Plugin.
-     * @return The Vouchers Plugin object.
-     */
-    public Vouchers getPlugin() {
-        return plugin;
-    }
-
-    /**
-     * FileManager object.
-     */
-    private static final FileManager fileManager = FileManager.getInstance();
-
-    /**
-     * The instance of this class.
-     */
-    private static final CrazyManager instance = new CrazyManager();
-
-    /**
-     * Gets the instance of the CrazyCrates class.
-     *
-     * @return Instance of this class.
-     */
-    public static CrazyManager getInstance() {
-        return instance;
-    }
-
-    /**
-     * Get the file manager that controls all yml files.
-     *
-     * @return The FileManager that controls all yml files.
-     */
-    public static FileManager getFileManager() {
-        return fileManager;
-    }
-
-    public void loadPlugin(Vouchers plugin) {
-        this.plugin = plugin;
-    }
     
     public CrazyManager load() {
         vouchers.clear();
@@ -78,15 +32,15 @@ public class CrazyManager {
         return this;
     }
     
-    public static ArrayList<Voucher> getVouchers() {
+    public ArrayList<Voucher> getVouchers() {
         return vouchers;
     }
     
-    public static ArrayList<VoucherCode> getVoucherCodes() {
+    public ArrayList<VoucherCode> getVoucherCodes() {
         return voucherCodes;
     }
     
-    public static Voucher getVoucher(String voucherName) {
+    public Voucher getVoucher(String voucherName) {
         for (Voucher voucher : getVouchers()) {
             if (voucher.getName().equalsIgnoreCase(voucherName)) {
                 return voucher;
@@ -96,7 +50,7 @@ public class CrazyManager {
         return null;
     }
     
-    public static Boolean isVoucherName(String voucherName) {
+    public boolean isVoucherName(String voucherName) {
         for (Voucher voucher : getVouchers()) {
             if (voucher.getName().equalsIgnoreCase(voucherName)) {
                 return true;
@@ -106,7 +60,7 @@ public class CrazyManager {
         return false;
     }
     
-    public static VoucherCode getVoucherCode(String voucherName) {
+    public VoucherCode getVoucherCode(String voucherName) {
         for (VoucherCode voucher : getVoucherCodes()) {
             if (voucher.getCode().equalsIgnoreCase(voucherName)) {
                 return voucher;
@@ -116,7 +70,7 @@ public class CrazyManager {
         return null;
     }
     
-    public static Boolean isVoucherCode(String voucherCode) {
+    public boolean isVoucherCode(String voucherCode) {
         for (VoucherCode voucher : getVoucherCodes()) {
             if (voucher.isEnabled()) {
                 if (voucher.isCaseSensitive()) {
@@ -133,7 +87,7 @@ public class CrazyManager {
         return false;
     }
     
-    public static Voucher getVoucherFromItem(ItemStack item) {
+    public Voucher getVoucherFromItem(ItemStack item) {
         try {
             NBTItem nbt = new NBTItem(item);
 
@@ -145,7 +99,7 @@ public class CrazyManager {
         return null;
     }
     
-    public static String getArgument(ItemStack item, Voucher voucher) {
+    public String getArgument(ItemStack item, Voucher voucher) {
         if (voucher.usesArguments()) {
             // Checks to see if the voucher uses nbt tags.
             NBTItem nbt = new NBTItem(item);
@@ -160,7 +114,7 @@ public class CrazyManager {
         return null;
     }
     
-    public static String replaceRandom(String string) {
+    public String replaceRandom(String string) {
         String newString = string;
 
         if (usesRandom(string)) {
@@ -190,11 +144,11 @@ public class CrazyManager {
         return newString;
     }
     
-    private static boolean usesRandom(String string) {
+    private boolean usesRandom(String string) {
         return string.toLowerCase().contains("%random%:");
     }
     
-    private static long pickNumber(long min, long max) {
+    private long pickNumber(long min, long max) {
         try {
             // new Random() does not have a nextLong(long bound) method.
             return min + ThreadLocalRandom.current().nextLong(max - min);

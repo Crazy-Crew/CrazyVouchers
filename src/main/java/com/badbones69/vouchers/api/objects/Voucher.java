@@ -1,5 +1,6 @@
 package com.badbones69.vouchers.api.objects;
 
+import com.badbones69.vouchers.Vouchers;
 import com.badbones69.vouchers.api.CrazyManager;
 import de.tr7zw.changeme.nbtapi.NBTItem;
 import com.badbones69.vouchers.Methods;
@@ -68,6 +69,10 @@ public class Voucher {
         this.fireworkToggle = false;
         this.isEdible = false;
     }
+
+    private final Vouchers plugin = Vouchers.getPlugin();
+
+    private final Methods methods = plugin.getMethods();
     
     public Voucher(String name) {
         this.name = name;
@@ -82,9 +87,7 @@ public class Voucher {
         .setFlagsFromStrings(config.getStringList(path + "Flags"));
         this.glowing = config.getBoolean(path + "Glowing");
 
-        if (itemBuilder.getName().toLowerCase().contains("%arg%")) {
-            this.usesArgs = true;
-        }
+        if (itemBuilder.getName().toLowerCase().contains("%arg%")) this.usesArgs = true;
 
         if (!usesArgs) {
             for (String lore : itemBuilder.getLore()) {
@@ -110,8 +113,7 @@ public class Voucher {
                     chanceCommands.add(voucherCommand);
                 }
             } catch (Exception e) {
-                CrazyManager crazyManager = CrazyManager.getInstance();
-                crazyManager.getPlugin().getLogger().info("An issue occurred when trying to use chance commands.");
+                plugin.getLogger().info("An issue occurred when trying to use chance commands.");
                 e.printStackTrace();
             }
         }
@@ -125,9 +127,7 @@ public class Voucher {
         if (config.contains(path + "Options.Permission.Whitelist-Permission")) {
             this.whitelistPermissionToggle = config.getBoolean(path + "Options.Permission.Whitelist-Permission.Toggle");
 
-            if (config.contains(path + "Options.Permission.Whitelist-Permission.Node")) {
-                whitelistPermissions.add("voucher." + config.getString(path + "Options.Permission.Whitelist-Permission.Node").toLowerCase());
-            }
+            if (config.contains(path + "Options.Permission.Whitelist-Permission.Node")) whitelistPermissions.add("voucher." + config.getString(path + "Options.Permission.Whitelist-Permission.Node").toLowerCase());
 
             whitelistPermissions.addAll(config.getStringList(path + "Options.Permission.Whitelist-Permission.Permissions").stream().map(String :: toLowerCase).collect(Collectors.toList()));
             this.whitelistCommands = config.getStringList(path + "Options.Permission.Whitelist-Permission.Commands");
@@ -189,7 +189,7 @@ public class Voucher {
 
         if (config.getBoolean(path + "Options.Firework.Toggle")) {
             for (String color : config.getString(path + "Options.Firework.Colors", "").split(", ")) {
-                this.fireworkColors.add(Methods.getColor(color));
+                this.fireworkColors.add(methods.getColor(color));
             }
 
             this.fireworkToggle = !fireworkColors.isEmpty();
@@ -201,9 +201,7 @@ public class Voucher {
             this.isEdible = itemBuilder.build().getType().isEdible();
 
             switch (itemBuilder.getMaterial().toString()) {
-                case "MILK_BUCKET":
-                case "POTION":
-                    this.isEdible = true;
+                case "MILK_BUCKET", "POTION" -> this.isEdible = true;
             }
         }
     }
@@ -348,10 +346,10 @@ public class Voucher {
         String messageString;
 
         if (isList(path)) {
-            messageString = Methods.color(Messages.convertList(config.getStringList(path)));
+            messageString = methods.color(Messages.convertList(config.getStringList(path)));
         } else {
             messageString = config.getString(path, "");
-            if (!messageString.isEmpty()) messageString = Methods.getPrefix(messageString);
+            if (!messageString.isEmpty()) messageString = methods.getPrefix(messageString);
         }
 
         return messageString;

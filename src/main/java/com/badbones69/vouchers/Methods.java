@@ -20,12 +20,14 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 public class Methods {
-    
-    public final static Pattern HEX_PATTERN = Pattern.compile("#[a-fA-F\\d]{6}");
 
-    private final static CrazyManager crazyManager = CrazyManager.getInstance();
+    private final Vouchers plugin = Vouchers.getPlugin();
+
+    private final CrazyManager crazyManager = plugin.getCrazyManager();
     
-    public static void removeItem(ItemStack item, Player player) {
+    public final Pattern HEX_PATTERN = Pattern.compile("#[a-fA-F\\d]{6}");
+    
+    public void removeItem(ItemStack item, Player player) {
         if (item.getAmount() <= 1) {
             player.getInventory().removeItem(item);
         } else if (item.getAmount() > 1) {
@@ -33,11 +35,11 @@ public class Methods {
         }
     }
     
-    public static String getPrefix(String message) {
+    public String getPrefix(String message) {
         return color(Files.CONFIG.getFile().getString("Settings.Prefix") + message);
     }
 
-    public static String color(String message) {
+    public String color(String message) {
         Matcher matcher = HEX_PATTERN.matcher(message);
         StringBuilder buffer = new StringBuilder();
 
@@ -48,7 +50,7 @@ public class Methods {
         return ChatColor.translateAlternateColorCodes('&', matcher.appendTail(buffer).toString());
     }
     
-    public static boolean isInt(String s) {
+    public boolean isInt(String s) {
         try {
             Integer.parseInt(s);
         } catch (NumberFormatException nfe) {
@@ -58,7 +60,7 @@ public class Methods {
         return true;
     }
     
-    public static boolean isInt(CommandSender sender, String s) {
+    public boolean isInt(CommandSender sender, String s) {
         try {
             Integer.parseInt(s);
         } catch (NumberFormatException nfe) {
@@ -72,18 +74,16 @@ public class Methods {
         return true;
     }
     
-    public static boolean isOnline(CommandSender sender, String name) {
-        for (Player player : crazyManager.getPlugin().getServer().getOnlinePlayers()) {
-            if (player.getName().equalsIgnoreCase(name)) {
-                return true;
-            }
+    public boolean isOnline(CommandSender sender, String name) {
+        for (Player player : plugin.getServer().getOnlinePlayers()) {
+            if (player.getName().equalsIgnoreCase(name)) return true;
         }
 
         sender.sendMessage(Messages.NOT_ONLINE.getMessage());
         return false;
     }
     
-    public static boolean hasPermission(Player player, String perm) {
+    public boolean hasPermission(Player player, String perm) {
         if (!player.hasPermission("voucher." + perm)) {
             player.sendMessage(Messages.NO_PERMISSION.getMessage());
             return false;
@@ -92,7 +92,7 @@ public class Methods {
         return true;
     }
     
-    public static boolean hasPermission(CommandSender sender, String perm) {
+    public boolean hasPermission(CommandSender sender, String perm) {
         if (sender instanceof Player player) {
             if (!player.hasPermission("voucher." + perm)) {
                 player.sendMessage(Messages.NO_PERMISSION.getMessage());
@@ -105,11 +105,11 @@ public class Methods {
         }
     }
     
-    public static boolean isInventoryFull(Player player) {
+    public boolean isInventoryFull(Player player) {
         return player.getInventory().firstEmpty() == -1;
     }
     
-    public static void fireWork(Location loc, List<Color> list) {
+    public void fireWork(Location loc, List<Color> list) {
         if (loc.getWorld() == null) return;
 
         final Firework f = loc.getWorld().spawn(loc, Firework.class);
@@ -117,12 +117,12 @@ public class Methods {
         fm.addEffects(FireworkEffect.builder().with(FireworkEffect.Type.BALL_LARGE).withColor(list).trail(false).flicker(false).build());
         fm.setPower(0);
         f.setFireworkMeta(fm);
-        FireworkDamageAPI.addFirework(f);
+        plugin.getFireworkDamageAPI().addFirework(f);
 
-        crazyManager.getPlugin().getServer().getScheduler().scheduleSyncDelayedTask(crazyManager.getPlugin(), f :: detonate, 2);
+        plugin.getServer().getScheduler().scheduleSyncDelayedTask(plugin, f :: detonate, 2);
     }
     
-    public static Color getColor(String color) {
+    public Color getColor(String color) {
         if (color.equalsIgnoreCase("AQUA")) return Color.AQUA;
         if (color.equalsIgnoreCase("BLACK")) return Color.BLACK;
         if (color.equalsIgnoreCase("BLUE")) return Color.BLUE;
@@ -140,10 +140,11 @@ public class Methods {
         if (color.equalsIgnoreCase("TEAL")) return Color.TEAL;
         if (color.equalsIgnoreCase("WHITE")) return Color.WHITE;
         if (color.equalsIgnoreCase("YELLOW")) return Color.YELLOW;
+
         return Color.WHITE;
     }
     
-    public static boolean isSimilar(ItemStack one, ItemStack two) {
+    public boolean isSimilar(ItemStack one, ItemStack two) {
         if (one.getType() == two.getType()) {
             if (one.hasItemMeta()) {
                 if (one.getItemMeta().hasDisplayName()) {

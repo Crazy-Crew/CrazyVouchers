@@ -12,6 +12,8 @@ import java.util.HashMap;
 
 public class FileManager {
 
+    private final Vouchers plugin = Vouchers.getPlugin();
+
     private Boolean log = false;
     private final HashMap<Files, File> files = new HashMap<>();
     private final ArrayList<String> homeFolders = new ArrayList<>();
@@ -19,19 +21,10 @@ public class FileManager {
     private final HashMap<String, String> autoGenerateFiles = new HashMap<>();
     private final HashMap<Files, FileConfiguration> configurations = new HashMap<>();
     
-    private final static FileManager instance = new FileManager();
-
-    private final CrazyManager crazyManager = CrazyManager.getInstance();
-
-    public static FileManager getInstance() {
-        return instance;
-    }
-    
     /**
      * Sets up the plugin and loads all necessary files.
-     * @param plugin The plugin this is getting loading for.
      */
-    public void setup(Vouchers plugin) {
+    public void setup() {
         if (!plugin.getDataFolder().exists()) plugin.getDataFolder().mkdirs();
 
         files.clear();
@@ -198,7 +191,7 @@ public class FileManager {
         try {
             configurations.get(file).save(files.get(file));
         } catch (IOException e) {
-            crazyManager.getPlugin().getLogger().info("Could not save " + file.getFileName() + "!");
+            plugin.getLogger().info("Could not save " + file.getFileName() + "!");
             e.printStackTrace();
         }
     }
@@ -212,15 +205,15 @@ public class FileManager {
 
         if (file != null) {
             try {
-                file.getFile().save(new File(crazyManager.getPlugin().getDataFolder(), file.getHomeFolder() + "/" + file.getFileName()));
+                file.getFile().save(new File(plugin.getDataFolder(), file.getHomeFolder() + "/" + file.getFileName()));
 
-                if (log) crazyManager.getPlugin().getLogger().info("Successfully saved the " + file.getFileName() + ".");
+                if (log) plugin.getLogger().info("Successfully saved the " + file.getFileName() + ".");
             } catch (Exception e) {
-                crazyManager.getPlugin().getLogger().info("Could not save " + file.getFileName() + "!");
+                plugin.getLogger().info("Could not save " + file.getFileName() + "!");
                 e.printStackTrace();
             }
         } else {
-            if (log) crazyManager.getPlugin().getLogger().info("The file " + name + ".yml could not be found!");
+            if (log) plugin.getLogger().info("The file " + name + ".yml could not be found!");
         }
     }
     
@@ -247,15 +240,15 @@ public class FileManager {
         CustomFile file = getFile(name);
         if (file != null) {
             try {
-                file.file = YamlConfiguration.loadConfiguration(new File(crazyManager.getPlugin().getDataFolder(), "/" + file.getHomeFolder() + "/" + file.getFileName()));
+                file.file = YamlConfiguration.loadConfiguration(new File(plugin.getDataFolder(), "/" + file.getHomeFolder() + "/" + file.getFileName()));
 
-                if (log) crazyManager.getPlugin().getLogger().info("Successfully reload the " + file.getFileName() + ".");
+                if (log) plugin.getLogger().info("Successfully reload the " + file.getFileName() + ".");
             } catch (Exception e) {
-                crazyManager.getPlugin().getLogger().info("Could not reload the " + file.getFileName() + "!");
+                plugin.getLogger().info("Could not reload the " + file.getFileName() + "!");
                 e.printStackTrace();
             }
         } else {
-            if (log) crazyManager.getPlugin().getLogger().info("The file " + name + ".yml could not be found!");
+            if (log) plugin.getLogger().info("The file " + name + ".yml could not be found!");
         }
     }
     
@@ -311,6 +304,10 @@ public class FileManager {
             this.fileName = fileName;
             this.fileLocation = fileLocation;
         }
+
+        private final Vouchers plugin = Vouchers.getPlugin();
+
+        private final FileManager fileManager = plugin.getFileManager();
         
         /**
          * Get the name of the file.
@@ -333,21 +330,21 @@ public class FileManager {
          * @return The file from the system.
          */
         public FileConfiguration getFile() {
-            return getInstance().getFile(this);
+            return fileManager.getFile(this);
         }
         
         /**
          * Saves the file from the loaded state to the file system.
          */
         public void saveFile() {
-            getInstance().saveFile(this);
+            fileManager.saveFile(this);
         }
         
         /**
          * Overrides the loaded state file and loads the file systems file.
          */
         public void reloadFile() {
-            getInstance().reloadFile(this);
+            fileManager.reloadFile(this);
         }
     }
     
@@ -378,9 +375,9 @@ public class FileManager {
                     file = null;
                 }
             } else {
-                new File(crazyManager.getPlugin().getDataFolder(), "/" + homeFolder).mkdir();
+                new File(plugin.getDataFolder(), "/" + homeFolder).mkdir();
 
-                if (log) crazyManager.getPlugin().getLogger().info("The folder " + homeFolder + "/ was not found so it was created.");
+                if (log) plugin.getLogger().info("The folder " + homeFolder + "/ was not found so it was created.");
 
                 file = null;
             }

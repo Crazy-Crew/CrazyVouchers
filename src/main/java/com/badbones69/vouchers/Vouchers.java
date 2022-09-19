@@ -10,22 +10,36 @@ import com.badbones69.vouchers.commands.VoucherTab;
 import com.badbones69.vouchers.controllers.FireworkDamageAPI;
 import com.badbones69.vouchers.controllers.VoucherClick;
 import org.bstats.bukkit.Metrics;
+import org.bukkit.block.data.type.Fire;
 import org.bukkit.event.Listener;
 import org.bukkit.plugin.PluginManager;
 import org.bukkit.plugin.java.JavaPlugin;
 
 public class Vouchers extends JavaPlugin implements Listener {
-    
-    private final FileManager fileManager = FileManager.getInstance();
 
-    private final CrazyManager crazyManager = CrazyManager.getInstance();
+    private static Vouchers plugin;
+
+    private FileManager fileManager;
+
+    private CrazyManager crazyManager;
+
+    private Methods methods;
+
+    private FireworkDamageAPI fireworkDamageAPI;
+
+    private GUI gui;
 
     @Override
     public void onEnable() {
+        plugin = this;
 
-        crazyManager.loadPlugin(this);
+        fileManager = new FileManager();
 
-        fileManager.logInfo(true).setup(this);
+        crazyManager = new CrazyManager();
+
+        methods = new Methods();
+
+        fileManager.logInfo(true).setup();
 
         if (!Files.DATA.getFile().contains("Players")) {
             Files.DATA.getFile().set("Players.Clear", null);
@@ -36,8 +50,8 @@ public class Vouchers extends JavaPlugin implements Listener {
 
         pluginManager.registerEvents(this, this);
         pluginManager.registerEvents(new VoucherClick(), this);
-        pluginManager.registerEvents(new GUI(), this);
-        pluginManager.registerEvents(new FireworkDamageAPI(), this);
+        pluginManager.registerEvents(gui = new GUI(), this);
+        pluginManager.registerEvents(fireworkDamageAPI = new FireworkDamageAPI(), this);
 
         getCommand("vouchers").setExecutor(new VoucherCommands());
         getCommand("vouchers").setTabCompleter(new VoucherTab());
@@ -59,5 +73,29 @@ public class Vouchers extends JavaPlugin implements Listener {
         }
 
         crazyManager.load();
+    }
+
+    public static Vouchers getPlugin() {
+        return plugin;
+    }
+
+    public CrazyManager getCrazyManager() {
+        return crazyManager;
+    }
+
+    public FileManager getFileManager() {
+        return fileManager;
+    }
+
+    public Methods getMethods() {
+        return methods;
+    }
+
+    public FireworkDamageAPI getFireworkDamageAPI() {
+        return fireworkDamageAPI;
+    }
+
+    public GUI getGui() {
+        return gui;
     }
 }

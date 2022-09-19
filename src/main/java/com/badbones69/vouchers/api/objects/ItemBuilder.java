@@ -1,11 +1,9 @@
 package com.badbones69.vouchers.api.objects;
 
 import com.badbones69.vouchers.Methods;
+import com.badbones69.vouchers.Vouchers;
 import com.badbones69.vouchers.api.CrazyManager;
-import de.tr7zw.changeme.nbtapi.NBTCompound;
-import de.tr7zw.changeme.nbtapi.NBTContainer;
 import de.tr7zw.changeme.nbtapi.NBTItem;
-import de.tr7zw.changeme.nbtapi.NBTList;
 import org.bukkit.Color;
 import org.bukkit.DyeColor;
 import org.bukkit.Material;
@@ -28,6 +26,10 @@ import java.util.UUID;
 import java.util.stream.Collectors;
 
 public class ItemBuilder {
+
+    private final Vouchers plugin = Vouchers.getPlugin();
+
+    private final Methods methods = plugin.getMethods();
     
     private NBTItem nbtItem;
     
@@ -85,8 +87,6 @@ public class ItemBuilder {
     // Custom Data
     private int customModelData;
     private boolean useCustomModelData;
-
-    private final CrazyManager crazyManager = CrazyManager.getInstance();
     
     /**
      * Create a blank item builder.
@@ -507,7 +507,7 @@ public class ItemBuilder {
      * @return The ItemBuilder with an updated name.
      */
     public ItemBuilder setName(String itemName) {
-        if (itemName != null) this.itemName = Methods.color(itemName);
+        if (itemName != null) this.itemName = methods.color(itemName);
 
         return this;
     }
@@ -555,7 +555,7 @@ public class ItemBuilder {
             this.itemLore.clear();
 
             for (String line : lore) {
-                this.itemLore.add(Methods.color(line));
+                this.itemLore.add(methods.color(line));
             }
         }
 
@@ -569,7 +569,7 @@ public class ItemBuilder {
      * @return The ItemBuilder with updated info.
      */
     public ItemBuilder addLore(String lore) {
-        if (lore != null) this.itemLore.add(Methods.color(lore));
+        if (lore != null) this.itemLore.add(methods.color(lore));
 
         return this;
     }

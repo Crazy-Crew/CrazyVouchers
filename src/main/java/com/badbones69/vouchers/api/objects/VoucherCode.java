@@ -1,7 +1,7 @@
 package com.badbones69.vouchers.api.objects;
 
 import com.badbones69.vouchers.Methods;
-import com.badbones69.vouchers.api.CrazyManager;
+import com.badbones69.vouchers.Vouchers;
 import com.badbones69.vouchers.api.FileManager;
 import com.badbones69.vouchers.api.enums.Messages;
 import org.bukkit.Color;
@@ -42,7 +42,9 @@ public class VoucherCode {
     private final List<VoucherCommand> chanceCommands = new ArrayList<>();
     private final List<ItemBuilder> items = new ArrayList<>();
 
-    private final CrazyManager crazyManager = CrazyManager.getInstance();
+    private final Vouchers plugin = Vouchers.getPlugin();
+
+    private final Methods methods = plugin.getMethods();
     
     public VoucherCode(String name) {
         this.name = name;
@@ -65,7 +67,7 @@ public class VoucherCode {
                     chanceCommands.add(voucherCommand);
                 }
             } catch (Exception e) {
-                crazyManager.getPlugin().getLogger().info("An issue occurred when trying to use chance commands.");
+                plugin.getLogger().info("An issue occurred when trying to use chance commands.");
                 e.printStackTrace();
             }
         }
@@ -147,7 +149,7 @@ public class VoucherCode {
             this.fireworkToggle = config.getBoolean(path + "Options.Firework.Toggle");
 
             for (String color : config.getString(path + "Options.Firework.Colors").split(", ")) {
-                this.fireworkColors.add(Methods.getColor(color));
+                this.fireworkColors.add(methods.getColor(color));
             }
         } else {
             this.fireworkToggle = false;
