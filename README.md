@@ -1,6 +1,6 @@
 <br />
 
-[![Vouchers](https://raw.githubusercontent.com/RyderBelserion/Assets/main/crazycrew/banners/Vouchers.png)](https://modrinth.com/mod/Vouchers)
+[![Vouchers](https://raw.githubusercontent.com/RyderBelserion/Assets/main/crazycrew/banners/Vouchers.png)](https://www.spigotmc.org/resources/vouchers.13654/)
 
 <div align="center">
 
@@ -49,7 +49,7 @@
 </details>
 
 ## Downloads
-N/A
+https://www.spigotmc.org/resources/vouchers.13654/
 
 ## Getting Started
 
@@ -69,7 +69,7 @@ A list of things necessary to make sure you can build Vouchers properly.
    git clone https://github.com/Crazy-Crew/Vouchers.git
    ```
 2. Open the repository using Intellij IDEA & wait until it finishes downloading/indexing.
-3. Run the reobfJar task.
+3. Run the shadowJar task.
    ```gradle
    ./gradlew shadowJar
    ```
