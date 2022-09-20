@@ -51,6 +51,8 @@
 ## Downloads
 https://www.spigotmc.org/resources/vouchers.13654/
 
+https://jenkins.badbones69.com/view/Stable/job/Vouchers/
+
 ## Getting Started
 
 How to get started with contributing / maintaining your own version of Vouchers!
