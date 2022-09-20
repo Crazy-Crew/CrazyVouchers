@@ -11,6 +11,7 @@
 [![GPU License][license-shield]][license-url]
 [![Contact][discord-shield]][discord-url]
 ![CodeFactor][codefactor-shield]
+
 <a href="/#"><img src="https://raw.githubusercontent.com/intergrav/devins-badges/v2/assets/cozy/supported/spigot_64h.png" height="50"></a>
 <a href="/#"><img src="https://raw.githubusercontent.com/intergrav/devins-badges/v2/assets/cozy/supported/paper_64h.png" height="50"></a>
 <a href="/#"><img src="https://raw.githubusercontent.com/intergrav/devins-badges/v2/assets/cozy/supported/purpur_64h.png" height="50"></a>
