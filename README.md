@@ -1,43 +1,107 @@
-## Vouchers
+<br />
 
-[![Join us on Discord](https://img.shields.io/discord/182615261403283459.svg?label=&logo=discord&logoColor=ffffff&color=7389D8&labelColor=6A7EC2)](https://discord.badbones69.com)
+[![Vouchers](https://raw.githubusercontent.com/RyderBelserion/Assets/main/crazycrew/banners/Vouchers.png)](https://modrinth.com/mod/Vouchers)
 
-[![Voucher's Stargazers](https://img.shields.io/github/stars/Crazy-Crew/Vouchers?label=stars&logo=github)](https://github.com/Crazy-Crew/Vouchers/stargazers)
-[![Voucher's Forks](https://img.shields.io/github/forks/Crazy-Crew/Vouchers?label=forks&logo=github)](https://github.com/Crazy-Crew/Vouchers/network/members)
-[![Voucher's Watchers](https://img.shields.io/github/watchers/Crazy-Crew/Vouchers?label=watchers&logo=github)](https://github.com/Crazy-Crew/Vouchers/watchers)
+<div align="center">
 
-Vouchers is a plugin where you can make a paper give you an axolotl with a pretty firework display!
+[![Contributors][contributors-shield]][contributors-url]
+[![Forks][forks-shield]][forks-url]
+[![Stargazers][stars-shield]][stars-url]
+[![Issues][issues-shield]][issues-url]
+[![GPU License][license-shield]][license-url]
+[![Contact][discord-shield]][discord-url]
+![CodeFactor][codefactor-shield]
 
-## Contact
-[![Join us on Discord](https://img.shields.io/discord/182615261403283459.svg?label=&logo=discord&logoColor=ffffff&color=7389D8&labelColor=6A7EC2)](https://discord.badbones69.com)
+<a href="#"><img src="https://raw.githubusercontent.com/intergrav/devins-badges/v1/assets/supported/spigot_64h.png" height="50"></a>
+<a href="#"><img src="https://raw.githubusercontent.com/intergrav/devins-badges/v1/assets/supported/paper_64h.png" height="50"></a>
+<a href="#"><img src="https://raw.githubusercontent.com/intergrav/devins-badges/v1/assets/supported/purpur_64h.png" height="50"></a>
 
-Join us on [Discord](https://discord.badbones69.com)
+  <p align="center">
+    Want to make a paper that can give you an axolotl with a pretty firework display, Look no further!
+    <br />
+    <a href="https://github.com/Crazy-Crew/Vouchers/wiki"><strong>Explore the docs »</strong></a>
+    <br />
+    <br />
+    <a href="https://github.com/Crazy-Crew/Vouchers/issues">Report Bug</a>
+    ·
+    <a href="https://github.com/Crazy-Crew/Vouchers/discussions/categories/feature-rquests">Request Feature</a>
+    ·
+    <a href="https://github.com/Crazy-Crew/Vouchers/discussions/categories/support">Get Support</a>
+  </p>
+</div>
+
+<!-- TABLE OF CONTENTS -->
+<details>
+  <summary>Table of Contents</summary>
+  <ol>
+    <li>
+      <a href="#getting-started">Getting Started</a>
+      <ul>
+        <li><a href="#prerequisites">Prerequisites</a></li>
+        <li><a href="#installation">Installation</a></li>
+      </ul>
+    </li>
+    <li><a href="#roadmap">Roadmap</a></li>
+    <li><a href="#contributing">Contributing</a></li>
+    <li><a href="#license">License</a></li>
+    <li><a href="#contact">Contact</a></li>
+  </ol>
+</details>
 
 ## Downloads
-[![Build Status](https://jenkins.badbones69.com/view/Stable/job/Vouchers/badge/icon)](https://jenkins.badbones69.com/view/Stable/job/Vouchers/)
+N/A
 
-Downloads can be obtained from the [Spigot Page](https://www.spigotmc.org/resources/vouchers.13654/) or the [Jenkins](https://jenkins.badbones69.com/view/Stable/job/Vouchers/).
+## Getting Started
 
-Legacy Downloads (1.17 & below) can be found @ [Jenkins](https://jenkins.badbones69.com/view/Legacy/job/Vouchers-Legacy/).
+How to get started with contributing / maintaining your own version of Vouchers!
 
-## Plugin Data
-[![bStats Graph Data](https://bstats.org/signatures/bukkit/Vouchers.svg)](https://bstats.org/plugin/bukkit/Vouchers/4536)
+### Prerequisites
 
-## API
-In Progress.
+A list of things necessary to make sure you can build Vouchers properly.
+* Intellij IDEA
+    * https://www.jetbrains.com/idea/download/
+* Gradle
 
-### Dependency Information
+### Installation
 
-#### Maven
-In Progress.
+1. Clone the repo
+   ```sh
+   git clone https://github.com/Crazy-Crew/Vouchers.git
+   ```
+2. Open the repository using Intellij IDEA & wait until it finishes downloading/indexing.
+3. Run the reobfJar task.
+   ```gradle
+   ./gradlew shadowJar
+   ```
 
-#### Gradle
-In Progress.
+## Roadmap
 
-## Working with Vouchers.
+Check our public [trello board](https://trello.com/b/gWiGLBWI) for our current plans, any bugs and general tracking of the project progress.
 
-#### Contributing
-Fork the project & open a pull request.
+## Contributing
 
-#### Compiling
-Clone the project & run the shadowJar task.
+1. Fork the Project
+2. Create your Feature Branch (`git checkout -b feature/yourfeature`)
+3. Commit your Changes (`git commit -m 'your amazing feature.'`)
+4. Push to the Branch (`git push origin feature/yourfeature`)
+5. Open a Pull Request
+
+## License
+
+Distributed under the GPU v3 License. See `LICENSE.MD` for more information.
+
+[discord-shield]: https://img.shields.io/discord/182615261403283459.svg?style=for-the-badge
+[discord-url]: https://discord.gg/crazycrew
+
+[contributors-shield]: https://img.shields.io/github/contributors/Crazy-Crew/Vouchers.svg?style=for-the-badge
+[contributors-url]: https://github.com/Crazy-Crew/Vouchers/graphs/contributors
+[forks-shield]: https://img.shields.io/github/forks/Crazy-Crew/Vouchers.svg?style=for-the-badge
+[forks-url]: https://github.com/Crazy-Crew/Vouchers/network/members
+[stars-shield]: https://img.shields.io/github/stars/Crazy-Crew/Vouchers.svg?style=for-the-badge
+[stars-url]: https://github.com/Crazy-Crew/Vouchers/stargazers
+[issues-shield]: https://img.shields.io/github/issues/Crazy-Crew/Vouchers.svg?style=for-the-badge
+[issues-url]: https://github.com/Crazy-Crew/Vouchers/issues
+[license-shield]: https://img.shields.io/github/license/Crazy-Crew/Vouchers.svg?style=for-the-badge
+[license-url]: https://github.com/Crazy-Crew/Vouchers/blob/master/LICENSE.MD
+
+[codefactor-shield]: https://img.shields.io/codefactor/grade/github/crazy-crew/Vouchers/main?style=for-the-badge
