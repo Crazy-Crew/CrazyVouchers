@@ -119,7 +119,7 @@ public class Methods {
         firework.setFireworkMeta(meta);
         plugin.getFireworkDamageAPI().addFirework(firework);
 
-        plugin.getServer().getScheduler().scheduleSyncDelayedTask(plugin, f :: detonate, 2);
+        plugin.getServer().getScheduler().scheduleSyncDelayedTask(plugin, firework::detonate, 2);
     }
     
     public Color getColor(String color) {
