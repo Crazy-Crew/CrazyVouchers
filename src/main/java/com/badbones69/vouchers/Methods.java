@@ -112,12 +112,12 @@ public class Methods {
     public void fireWork(Location loc, List<Color> list) {
         if (loc.getWorld() == null) return;
 
-        final Firework f = loc.getWorld().spawn(loc, Firework.class);
-        FireworkMeta fm = f.getFireworkMeta();
-        fm.addEffects(FireworkEffect.builder().with(FireworkEffect.Type.BALL_LARGE).withColor(list).trail(false).flicker(false).build());
-        fm.setPower(0);
-        f.setFireworkMeta(fm);
-        plugin.getFireworkDamageAPI().addFirework(f);
+        Firework firework = loc.getWorld().spawn(loc, Firework.class);
+        FireworkMeta meta = firework.getFireworkMeta();
+        meta.addEffects(FireworkEffect.builder().with(FireworkEffect.Type.BALL_LARGE).withColor(list).trail(false).flicker(false).build());
+        meta.setPower(0);
+        firework.setFireworkMeta(meta);
+        plugin.getFireworkDamageAPI().addFirework(firework);
 
         plugin.getServer().getScheduler().scheduleSyncDelayedTask(plugin, f :: detonate, 2);
     }

@@ -1,15 +1,17 @@
-name: Vouchers
+name: "Vouchers"
 main: "${group}.Vouchers"
+
+authors: [BadBones69, RyderBelserion]
+
 version: ${version}
-api-version: 1.13
+api-version: "1.19"
 description: ${description}
 
-softdepend:
-  - PlaceholderAPI
+softdepend: [PlaceholderAPI]
 
 commands:
   vouchers:
-    description: Give yourself a Voucher!
+    description: "Manage your vouchers however you want."
     aliases: [voucher]
 
 permissions:
