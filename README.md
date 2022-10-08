@@ -51,7 +51,7 @@
 ## Downloads
 https://www.spigotmc.org/resources/vouchers.13654/
 
-https://jenkins.badbones69.com/view/Stable/job/Vouchers/
+https://ci.badbones69.com/view/Stable/job/Vouchers/
 
 ## Getting Started
 
