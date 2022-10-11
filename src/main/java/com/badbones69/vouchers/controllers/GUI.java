@@ -90,9 +90,7 @@ public class GUI implements Listener {
     }
     
     private int getPage(Player player) {
-        if (playerPage.containsKey(player.getUniqueId())) {
-            return playerPage.get(player.getUniqueId());
-        }
+        if (playerPage.containsKey(player.getUniqueId())) return playerPage.get(player.getUniqueId());
 
         return 1;
     }
@@ -175,6 +173,7 @@ public class GUI implements Listener {
             .addLore("&7&lPage: &b" + (getPage(player) - 1))
             .build());
         }
+
         if (page == maxPage) {
             inv.setItem(50, new ItemBuilder()
             .setMaterial(Material.GRAY_STAINED_GLASS_PANE)

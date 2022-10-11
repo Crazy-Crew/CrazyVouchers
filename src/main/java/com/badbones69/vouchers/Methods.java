@@ -1,9 +1,7 @@
 package com.badbones69.vouchers;
 
-import com.badbones69.vouchers.api.CrazyManager;
 import com.badbones69.vouchers.api.FileManager.Files;
 import com.badbones69.vouchers.api.enums.Messages;
-import com.badbones69.vouchers.controllers.FireworkDamageAPI;
 import org.bukkit.ChatColor;
 import org.bukkit.Color;
 import org.bukkit.FireworkEffect;
@@ -13,7 +11,6 @@ import org.bukkit.entity.Firework;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.FireworkMeta;
-
 import java.util.HashMap;
 import java.util.List;
 import java.util.regex.Matcher;
@@ -22,8 +19,6 @@ import java.util.regex.Pattern;
 public class Methods {
 
     private final Vouchers plugin = Vouchers.getPlugin();
-
-    private final CrazyManager crazyManager = plugin.getCrazyManager();
     
     public final Pattern HEX_PATTERN = Pattern.compile("#[a-fA-F\\d]{6}");
     
