@@ -8,8 +8,8 @@ import com.badbones69.vouchers.api.objects.ItemBuilder;
 import com.badbones69.vouchers.api.objects.Voucher;
 import com.badbones69.vouchers.api.enums.Support;
 import com.badbones69.vouchers.api.events.RedeemVoucherEvent;
+import com.google.common.collect.Maps;
 import me.clip.placeholderapi.PlaceholderAPI;
-import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.Sound;
 import org.bukkit.configuration.file.FileConfiguration;
@@ -36,6 +36,8 @@ public class VoucherClick implements Listener {
     private final Methods methods = plugin.getMethods();
     
     private final HashMap<Player, String> twoAuth = new HashMap<>();
+
+    private final HashMap<String, String> placeholders = Maps.newHashMap();
     
     // This must run as highest, so it doesn't cause other plugins to check
     // the items that were added to the players inventory and replaced the item in the player's hand.
@@ -76,6 +78,7 @@ public class VoucherClick implements Listener {
     public void onItemConsume(PlayerItemConsumeEvent e) {
         ItemStack item = e.getItem();
         Voucher voucher = crazyManager.getVoucherFromItem(item);
+
         if (voucher != null && voucher.isEdible()) {
             Player player = e.getPlayer();
             e.setCancelled(true);
@@ -113,7 +116,7 @@ public class VoucherClick implements Listener {
         FileConfiguration data = FileManager.Files.DATA.getFile();
         String argument = crazyManager.getArgument(item, voucher);
 
-        if (passesPermissionChecks(player, item, voucher, argument)) {
+        if (passesPermissionChecks(player, voucher, argument)) {
             String uuid = player.getUniqueId().toString();
 
             if (!player.hasPermission("voucher.bypass") && voucher.useLimiter() && data.contains("Players." + uuid + ".Vouchers." + voucher.getName())) {
@@ -147,20 +150,14 @@ public class VoucherClick implements Listener {
         }
     }
     
-    @SuppressWarnings({"deprecation", "squid:CallToDeprecatedMethod"})
+    @SuppressWarnings({"squid:CallToDeprecatedMethod"})
     private ItemStack getItemInHand(Player player) {
         return player.getInventory().getItemInMainHand();
     }
 
-    private boolean passesPermissionChecks(Player player, ItemStack item, Voucher voucher, String argument) {
+    private boolean passesPermissionChecks(Player player, Voucher voucher, String argument) {
         if (!player.isOp()) {
-            HashMap<String, String> placeholders = new HashMap<>();
-            placeholders.put("%Arg%", argument != null ? argument : "%arg%");
-            placeholders.put("%Player%", player.getName());
-            placeholders.put("%World%", player.getWorld().getName());
-            placeholders.put("%X%", player.getLocation().getBlockX() + "");
-            placeholders.put("%Y%", player.getLocation().getBlockY() + "");
-            placeholders.put("%Z%", player.getLocation().getBlockZ() + "");
+            fillMap(player, argument);
 
             if (voucher.useWhiteListPermissions()) {
                 for (String permission : voucher.getWhitelistPermissions()) {
@@ -207,13 +204,7 @@ public class VoucherClick implements Listener {
     private void voucherClick(Player player, ItemStack item, Voucher voucher, String argument) {
         methods.removeItem(item, player);
 
-        HashMap<String, String> placeholders = new HashMap<>();
-        placeholders.put("%Arg%", argument != null ? argument : "%arg%");
-        placeholders.put("%Player%", player.getName());
-        placeholders.put("%World%", player.getWorld().getName());
-        placeholders.put("%X%", player.getLocation().getBlockX() + "");
-        placeholders.put("%Y%", player.getLocation().getBlockY() + "");
-        placeholders.put("%Z%", player.getLocation().getBlockZ() + "");
+        fillMap(player, argument);
 
         for (String command : voucher.getCommands()) {
             command = replacePlaceholders(command, player);
@@ -260,6 +251,15 @@ public class VoucherClick implements Listener {
             FileManager.Files.DATA.getFile().set("Players." + player.getUniqueId() + ".Vouchers." + voucher.getName(), FileManager.Files.DATA.getFile().getInt("Players." + player.getUniqueId() + ".Vouchers." + voucher.getName()) + 1);
             FileManager.Files.DATA.saveFile();
         }
+    }
+
+    private void fillMap(Player player, String argument) {
+        placeholders.put("%Arg%", argument != null ? argument : "%arg%");
+        placeholders.put("%Player%", player.getName());
+        placeholders.put("%World%", player.getWorld().getName());
+        placeholders.put("%X%", player.getLocation().getBlockX() + "");
+        placeholders.put("%Y%", player.getLocation().getBlockY() + "");
+        placeholders.put("%Z%", player.getLocation().getBlockZ() + "");
     }
 
     private String replacePlaceholders(String string, Player player) {
