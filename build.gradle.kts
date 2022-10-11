@@ -4,36 +4,62 @@ plugins {
     id("com.github.johnrengelman.shadow") version "7.1.2"
 }
 
+val buildNumber: String? = System.getenv("BUILD_NUMBER")
+
+val jenkinsVersion = "2.9.11-b$buildNumber"
+
 group = "com.badbones69.vouchers"
-version = "2.9.11-${System.getenv("BUILD_NUMBER") ?: "SNAPSHOT"}"
-description = "Make Custom Vouchers just for your server!"
+version = "2.9.11"
+description = "Want to make a paper that can give you an axolotl with a pretty firework display, Look no further! "
 
 repositories {
-    mavenCentral()
 
-    maven("https://repo.codemc.org/repository/maven-public/")
+    /**
+     * Placeholders
+     */
+    maven("https://repo.extendedclip.com/content/repositories/placeholderapi/")
 
+    /**
+     * Spigot Team
+     */
     maven("https://hub.spigotmc.org/nexus/content/repositories/snapshots/")
 
-    maven("https://repo.extendedclip.com/content/repositories/placeholderapi/")
+    /**
+     * NBT API
+     */
+    maven("https://repo.codemc.org/repository/maven-public/")
+
+    /**
+     * Everything else we need.
+     */
+    mavenCentral()
 }
 
 dependencies {
-    compileOnly("org.spigotmc:spigot-api:1.19.2-R0.1-SNAPSHOT")
+    implementation(libs.nbt.api)
+
+    implementation(libs.bukkit.bstats)
+
+    compileOnly(libs.spigot)
+
+    compileOnly(libs.placeholder.api) {
+        exclude(group = "org.spigotmc", module = "spigot")
+        exclude(group = "org.bukkit", module = "bukkit")
+    }
 
     compileOnly("me.clip:placeholderapi:2.11.2") {
         exclude(group = "org.spigotmc", module = "spigot")
         exclude(group = "org.bukkit", module = "bukkit")
     }
-
-    implementation("de.tr7zw:nbt-data-api:2.10.0")
-
-    implementation("org.bstats:bstats-bukkit:3.0.0")
 }
 
 tasks {
     shadowJar {
-        archiveFileName.set("${rootProject.name}-[v${rootProject.version}].jar")
+        if (buildNumber != null) {
+            archiveFileName.set("${rootProject.name}-[v${jenkinsVersion}.jar")
+        } else {
+            archiveFileName.set("${rootProject.name}-[v${rootProject.version}].jar")
+        }
 
         listOf(
             "de.tr7zw",
