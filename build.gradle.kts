@@ -6,10 +6,10 @@ plugins {
 
 val buildNumber: String? = System.getenv("BUILD_NUMBER")
 
-val jenkinsVersion = "2.9.11-b$buildNumber"
+val jenkinsVersion = "2.9.12-b$buildNumber"
 
 group = "com.badbones69.vouchers"
-version = "2.9.11"
+version = "2.9.12"
 description = "Want to make a paper that can give you an axolotl with a pretty firework display, Look no further! "
 
 repositories {
