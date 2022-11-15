@@ -36,20 +36,15 @@ repositories {
 }
 
 dependencies {
-    implementation(libs.nbt.api)
+    implementation("de.tr7zw", "nbt-data-api", "2.10.0")
 
-    implementation(libs.bukkit.bstats)
+    implementation("org.bstats", "bstats-bukkit", "3.0.0")
 
-    compileOnly(libs.spigot)
+    compileOnly("org.spigotmc", "spigot-api", "1.19.2-R0.1-SNAPSHOT")
 
-    compileOnly(libs.placeholder.api) {
-        exclude(group = "org.spigotmc", module = "spigot")
-        exclude(group = "org.bukkit", module = "bukkit")
-    }
-
-    compileOnly("me.clip:placeholderapi:2.11.2") {
-        exclude(group = "org.spigotmc", module = "spigot")
-        exclude(group = "org.bukkit", module = "bukkit")
+    compileOnly("me.clip", "placeholderapi", "2.11.2") {
+        exclude(group = "org.spigotmc")
+        exclude(group = "org.bukkit")
     }
 }
 
