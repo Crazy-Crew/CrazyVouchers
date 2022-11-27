@@ -1,6 +1,6 @@
 <br />
 
-[![Vouchers](https://raw.githubusercontent.com/RyderBelserion/Assets/main/crazycrew/banners/Vouchers.png)](https://www.spigotmc.org/resources/vouchers.13654/)
+[![Vouchers](https://raw.githubusercontent.com/RyderBelserion/Assets/main/crazycrew/old/banners/Vouchers.png)](https://www.spigotmc.org/resources/vouchers.13654/)
 
 <div align="center">
 
