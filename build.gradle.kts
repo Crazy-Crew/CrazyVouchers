@@ -6,28 +6,27 @@ plugins {
 
 val buildNumber: String? = System.getenv("BUILD_NUMBER")
 
-val jenkinsVersion = "2.9.12-b$buildNumber"
+val jenkinsVersion = "2.9.13-b$buildNumber"
 
 group = "com.badbones69.vouchers"
-version = "2.9.12"
+version = "2.9.13"
 description = "Want to make a paper that can give you an axolotl with a pretty firework display, Look no further! "
 
 repositories {
-
     /**
      * Placeholders
      */
     maven("https://repo.extendedclip.com/content/repositories/placeholderapi/")
 
     /**
-     * Spigot Team
-     */
-    maven("https://hub.spigotmc.org/nexus/content/repositories/snapshots/")
-
-    /**
      * NBT API
      */
     maven("https://repo.codemc.org/repository/maven-public/")
+
+    /**
+     * Paper Team
+     */
+    maven("https://repo.papermc.io/repository/maven-public/")
 
     /**
      * Everything else we need.
@@ -40,7 +39,7 @@ dependencies {
 
     implementation("org.bstats", "bstats-bukkit", "3.0.0")
 
-    compileOnly("org.spigotmc", "spigot-api", "1.19.2-R0.1-SNAPSHOT")
+    compileOnly("io.papermc.paper", "paper-api", "1.19.3-R0.1-SNAPSHOT")
 
     compileOnly("me.clip", "placeholderapi", "2.11.2") {
         exclude(group = "org.spigotmc")
