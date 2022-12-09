@@ -10,7 +10,9 @@ import com.badbones69.vouchers.commands.VoucherTab;
 import com.badbones69.vouchers.controllers.FireworkDamageAPI;
 import com.badbones69.vouchers.controllers.VoucherClick;
 import org.bstats.bukkit.Metrics;
-import org.bukkit.block.data.type.Fire;
+import org.bukkit.command.CommandExecutor;
+import org.bukkit.command.PluginCommand;
+import org.bukkit.command.TabCompleter;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.event.Listener;
 import org.bukkit.plugin.PluginManager;
@@ -54,8 +56,7 @@ public class Vouchers extends JavaPlugin implements Listener {
         pluginManager.registerEvents(gui = new GUI(), this);
         pluginManager.registerEvents(fireworkDamageAPI = new FireworkDamageAPI(), this);
 
-        getCommand("vouchers").setExecutor(new VoucherCommands());
-        getCommand("vouchers").setTabCompleter(new VoucherTab());
+        registerCommand(getCommand("vouchers"), new VoucherTab(), new VoucherCommands());
 
         Messages.addMissingMessages();
 
@@ -73,6 +74,14 @@ public class Vouchers extends JavaPlugin implements Listener {
         if (metricsEnabled) new Metrics(this, 4536);
 
         crazyManager.load();
+    }
+
+    private void registerCommand(PluginCommand pluginCommand, TabCompleter tabCompleter, CommandExecutor commandExecutor) {
+        if (pluginCommand != null) {
+            pluginCommand.setExecutor(commandExecutor);
+
+            if (tabCompleter != null) pluginCommand.setTabCompleter(tabCompleter);
+        }
     }
 
     public static Vouchers getPlugin() {
