@@ -11,7 +11,7 @@ public class RedeemVoucherCodeEvent extends Event implements Cancellable {
     private final Player player;
     private final VoucherCode voucherCode;
     private Boolean cancelled;
-    private final HandlerList handlers = new HandlerList();
+    private static final HandlerList handlers = new HandlerList();
     
     /**
      *
@@ -50,6 +50,10 @@ public class RedeemVoucherCodeEvent extends Event implements Cancellable {
     }
     
     public HandlerList getHandlers() {
+        return handlers;
+    }
+
+    public static HandlerList getHandlerList() {
         return handlers;
     }
 }
