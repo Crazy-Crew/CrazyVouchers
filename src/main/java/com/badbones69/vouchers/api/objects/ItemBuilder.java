@@ -418,7 +418,7 @@ public class ItemBuilder {
         this.isHead = material == Material.PLAYER_HEAD;
         return this;
     }
-    
+
     /**
      * Set the type of item and its metadata in the builder.
      *
@@ -448,8 +448,8 @@ public class ItemBuilder {
                 this.damage = convertInt(metaData);
             } else { // Value is something else.
                 this.potionType = getPotionType(PotionEffectType.getByName(metaData));
-                this.potionColor = getColor(metaData);
-                this.armorColor = getColor(metaData);
+                this.potionColor = methods.getColor(metaData);
+                this.armorColor = methods.getColor(metaData);
             }
             
         } else if (material.contains("#")) {
@@ -467,26 +467,12 @@ public class ItemBuilder {
         if (matchedMaterial != null) this.material = matchedMaterial;
 
         switch (this.material.name()) {
-            case "PLAYER_HEAD":
-            case "SKULL_ITEM":
-                this.isHead = true;
-                break;
-            case "POTION":
-            case "SPLASH_POTION":
-                this.isPotion = true;
-                break;
-            case "LEATHER_HELMET":
-            case "LEATHER_CHESTPLATE":
-            case "LEATHER_LEGGINGS":
-            case "LEATHER_BOOTS":
-                this.isLeatherArmor = true;
-                break;
-            case "BANNER":
-                this.isBanner = true;
-                break;
-            case "SHIELD":
-                this.isShield = true;
-                break;
+            case "PLAYER_HEAD", "SKULL_ITEM" -> this.isHead = true;
+            case "POTION", "SPLASH_POTION" -> this.isPotion = true;
+            case "LEATHER_HELMET", "LEATHER_CHESTPLATE", "LEATHER_LEGGINGS", "LEATHER_BOOTS" ->
+                    this.isLeatherArmor = true;
+            case "BANNER" -> this.isBanner = true;
+            case "SHIELD" -> this.isShield = true;
         }
         
         if (this.material.name().contains("BANNER")) this.isBanner = true;
@@ -1098,60 +1084,7 @@ public class ItemBuilder {
 
         return null;
     }
-    
-    /**
-     * Get the Color from a string.
-     *
-     * @param color The string of the color.
-     * @return The color from the string.
-     */
-    private static Color getColor(String color) {
-        if (color != null) {
-            switch (color.toUpperCase()) {
-                case "AQUA":
-                    return Color.AQUA;
-                case "BLACK":
-                    return Color.BLACK;
-                case "BLUE":
-                    return Color.BLUE;
-                case "FUCHSIA":
-                    return Color.FUCHSIA;
-                case "GRAY":
-                    return Color.GRAY;
-                case "GREEN":
-                    return Color.GREEN;
-                case "LIME":
-                    return Color.LIME;
-                case "MAROON":
-                    return Color.MAROON;
-                case "NAVY":
-                    return Color.NAVY;
-                case "OLIVE":
-                    return Color.OLIVE;
-                case "ORANGE":
-                    return Color.ORANGE;
-                case "PURPLE":
-                    return Color.PURPLE;
-                case "RED":
-                    return Color.RED;
-                case "SILVER":
-                    return Color.SILVER;
-                case "TEAL":
-                    return Color.TEAL;
-                case "WHITE":
-                    return Color.WHITE;
-                case "YELLOW":
-                    return Color.YELLOW;
-            }
 
-            try {
-                String[] rgb = color.split(",");
-                return Color.fromRGB(Integer.parseInt(rgb[0]), Integer.parseInt(rgb[1]), Integer.parseInt(rgb[2]));
-            } catch (Exception ignore) {}
-        }
-
-        return null;
-    }
     
     /**
      * Get the dye color from a string.

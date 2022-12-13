@@ -116,25 +116,68 @@ public class Methods {
 
         plugin.getServer().getScheduler().scheduleSyncDelayedTask(plugin, firework::detonate, 2);
     }
-    
+
     public Color getColor(String color) {
-        if (color.equalsIgnoreCase("AQUA")) return Color.AQUA;
-        if (color.equalsIgnoreCase("BLACK")) return Color.BLACK;
-        if (color.equalsIgnoreCase("BLUE")) return Color.BLUE;
-        if (color.equalsIgnoreCase("FUCHSIA")) return Color.FUCHSIA;
-        if (color.equalsIgnoreCase("GRAY")) return Color.GRAY;
-        if (color.equalsIgnoreCase("GREEN")) return Color.GREEN;
-        if (color.equalsIgnoreCase("LIME")) return Color.LIME;
-        if (color.equalsIgnoreCase("MAROON")) return Color.MAROON;
-        if (color.equalsIgnoreCase("NAVY")) return Color.NAVY;
-        if (color.equalsIgnoreCase("OLIVE")) return Color.OLIVE;
-        if (color.equalsIgnoreCase("ORANGE")) return Color.ORANGE;
-        if (color.equalsIgnoreCase("PURPLE")) return Color.PURPLE;
-        if (color.equalsIgnoreCase("RED")) return Color.RED;
-        if (color.equalsIgnoreCase("SILVER")) return Color.SILVER;
-        if (color.equalsIgnoreCase("TEAL")) return Color.TEAL;
-        if (color.equalsIgnoreCase("WHITE")) return Color.WHITE;
-        if (color.equalsIgnoreCase("YELLOW")) return Color.YELLOW;
+        if (color != null) {
+            switch (color.toUpperCase()) {
+                case "AQUA" -> {
+                    return Color.AQUA;
+                }
+                case "BLACK" -> {
+                    return Color.BLACK;
+                }
+                case "BLUE" -> {
+                    return Color.BLUE;
+                }
+                case "FUCHSIA" -> {
+                    return Color.FUCHSIA;
+                }
+                case "GRAY" -> {
+                    return Color.GRAY;
+                }
+                case "GREEN" -> {
+                    return Color.GREEN;
+                }
+                case "LIME" -> {
+                    return Color.LIME;
+                }
+                case "MAROON" -> {
+                    return Color.MAROON;
+                }
+                case "NAVY" -> {
+                    return Color.NAVY;
+                }
+                case "OLIVE" -> {
+                    return Color.OLIVE;
+                }
+                case "ORANGE" -> {
+                    return Color.ORANGE;
+                }
+                case "PURPLE" -> {
+                    return Color.PURPLE;
+                }
+                case "RED" -> {
+                    return Color.RED;
+                }
+                case "SILVER" -> {
+                    return Color.SILVER;
+                }
+                case "TEAL" -> {
+                    return Color.TEAL;
+                }
+                case "WHITE" -> {
+                    return Color.WHITE;
+                }
+                case "YELLOW" -> {
+                    return Color.YELLOW;
+                }
+            }
+
+            try {
+                String[] rgb = color.split(",");
+                return Color.fromRGB(Integer.parseInt(rgb[0]), Integer.parseInt(rgb[1]), Integer.parseInt(rgb[2]));
+            } catch (Exception ignore) {}
+        }
 
         return Color.WHITE;
     }
