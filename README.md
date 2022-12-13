@@ -19,14 +19,14 @@
   <p align="center">
     Want to make a paper that can give you an axolotl with a pretty firework display, Look no further!
     <br />
-    <a href="https://github.com/Crazy-Crew/Vouchers/wiki"><strong>Explore the docs »</strong></a>
+    <a href="https://github.com/Crazy-Crew/CrazyVouchers/wiki"><strong>Explore the docs »</strong></a>
     <br />
     <br />
-    <a href="https://github.com/Crazy-Crew/Vouchers/issues">Report Bug</a>
+    <a href="https://github.com/Crazy-Crew/CrazyVouchers/issues">Report Bug</a>
     ·
-    <a href="https://github.com/Crazy-Crew/Vouchers/discussions/categories/feature-rquests">Request Feature</a>
+    <a href="https://github.com/Crazy-Crew/CrazyVouchers/discussions/categories/feature-rquests">Request Feature</a>
     ·
-    <a href="https://github.com/Crazy-Crew/Vouchers/discussions/categories/support">Get Support</a>
+    <a href="https://github.com/Crazy-Crew/CrazyVouchers/discussions/categories/support">Get Support</a>
   </p>
 </div>
 
@@ -51,7 +51,7 @@
 ## Downloads
 https://www.spigotmc.org/resources/vouchers.13654/
 
-https://ci.badbones69.com/view/Stable/job/Vouchers/
+https://ci.badbones69.com/view/Stable/job/CrazyVouchers/
 
 ## Getting Started
 
@@ -95,15 +95,15 @@ Distributed under the MIT License. See [`LICENSE`](/LICENSE) for more informatio
 [discord-shield]: https://img.shields.io/discord/182615261403283459.svg?style=for-the-badge
 [discord-url]: https://discord.gg/crazycrew
 
-[contributors-shield]: https://img.shields.io/github/contributors/Crazy-Crew/Vouchers.svg?style=for-the-badge
-[contributors-url]: https://github.com/Crazy-Crew/Vouchers/graphs/contributors
-[forks-shield]: https://img.shields.io/github/forks/Crazy-Crew/Vouchers.svg?style=for-the-badge
-[forks-url]: https://github.com/Crazy-Crew/Vouchers/network/members
-[stars-shield]: https://img.shields.io/github/stars/Crazy-Crew/Vouchers.svg?style=for-the-badge
-[stars-url]: https://github.com/Crazy-Crew/Vouchers/stargazers
-[issues-shield]: https://img.shields.io/github/issues/Crazy-Crew/Vouchers.svg?style=for-the-badge
-[issues-url]: https://github.com/Crazy-Crew/Vouchers/issues
-[license-shield]: https://img.shields.io/github/license/Crazy-Crew/Vouchers.svg?style=for-the-badge
-[license-url]: https://github.com/Crazy-Crew/Vouchers/blob/master/LICENSE
+[contributors-shield]: https://img.shields.io/github/contributors/Crazy-Crew/CrazyVouchers.svg?style=for-the-badge
+[contributors-url]: https://github.com/Crazy-Crew/CrazyVouchers/graphs/contributors
+[forks-shield]: https://img.shields.io/github/forks/Crazy-Crew/CrazyVouchers.svg?style=for-the-badge
+[forks-url]: https://github.com/Crazy-Crew/CrazyVouchers/network/members
+[stars-shield]: https://img.shields.io/github/stars/Crazy-Crew/CrazyVouchers.svg?style=for-the-badge
+[stars-url]: https://github.com/Crazy-Crew/CrazyVouchers/stargazers
+[issues-shield]: https://img.shields.io/github/issues/Crazy-Crew/CrazyVouchers.svg?style=for-the-badge
+[issues-url]: https://github.com/Crazy-Crew/CrazyVouchers/issues
+[license-shield]: https://img.shields.io/github/license/Crazy-Crew/CrazyVouchers.svg?style=for-the-badge
+[license-url]: https://github.com/Crazy-Crew/CrazyVouchers/blob/master/LICENSE
 
-[codefactor-shield]: https://img.shields.io/codefactor/grade/github/crazy-crew/Vouchers/main?style=for-the-badge
+[codefactor-shield]: https://img.shields.io/codefactor/grade/github/Crazy-Crew/CrazyVouchers/main?style=for-the-badge
