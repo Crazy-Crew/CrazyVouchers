@@ -1,6 +1,6 @@
-package com.badbones69.vouchers.api.enums;
+package com.badbones69.crazyvouchers.api.enums;
 
-import com.badbones69.vouchers.Vouchers;
+import com.badbones69.crazyvouchers.CrazyVouchers;
 
 public enum Support {
     
@@ -8,7 +8,7 @@ public enum Support {
     
     private final String name;
 
-    private final Vouchers plugin = Vouchers.getPlugin();
+    private final CrazyVouchers plugin = CrazyVouchers.getPlugin();
     
     Support(String name) {
         this.name = name;

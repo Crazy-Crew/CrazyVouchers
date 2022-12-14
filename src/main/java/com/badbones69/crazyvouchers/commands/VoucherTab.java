@@ -1,8 +1,8 @@
-package com.badbones69.vouchers.commands;
+package com.badbones69.crazyvouchers.commands;
 
-import com.badbones69.vouchers.Vouchers;
-import com.badbones69.vouchers.controllers.GUI;
-import com.badbones69.vouchers.api.CrazyManager;
+import com.badbones69.crazyvouchers.CrazyVouchers;
+import com.badbones69.crazyvouchers.controllers.GUI;
+import com.badbones69.crazyvouchers.api.CrazyManager;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
 import org.bukkit.command.TabCompleter;
@@ -13,7 +13,7 @@ import java.util.List;
 
 public class VoucherTab implements TabCompleter {
 
-    private final Vouchers plugin = Vouchers.getPlugin();
+    private final CrazyVouchers plugin = CrazyVouchers.getPlugin();
 
     private final CrazyManager crazyManager = plugin.getCrazyManager();
 

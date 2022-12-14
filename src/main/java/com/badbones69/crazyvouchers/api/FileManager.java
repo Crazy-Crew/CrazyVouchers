@@ -1,6 +1,6 @@
-package com.badbones69.vouchers.api;
+package com.badbones69.crazyvouchers.api;
 
-import com.badbones69.vouchers.Vouchers;
+import com.badbones69.crazyvouchers.CrazyVouchers;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
 import java.io.File;
@@ -12,7 +12,7 @@ import java.util.HashMap;
 
 public class FileManager {
 
-    private final Vouchers plugin = Vouchers.getPlugin();
+    private final CrazyVouchers plugin = CrazyVouchers.getPlugin();
 
     private Boolean log = false;
     private final HashMap<Files, File> files = new HashMap<>();
@@ -305,7 +305,7 @@ public class FileManager {
             this.fileLocation = fileLocation;
         }
 
-        private final Vouchers plugin = Vouchers.getPlugin();
+        private final CrazyVouchers plugin = CrazyVouchers.getPlugin();
 
         private final FileManager fileManager = plugin.getFileManager();
         
@@ -353,7 +353,7 @@ public class FileManager {
         private final String name;
         private final String fileName;
         private final String homeFolder;
-        private final Vouchers plugin;
+        private final CrazyVouchers plugin;
         
         private FileConfiguration file;
         
@@ -362,7 +362,7 @@ public class FileManager {
          * @param name Name of the file.
          * @param homeFolder The home folder of the file.
          */
-        public CustomFile(String name, String homeFolder, Vouchers plugin) {
+        public CustomFile(String name, String homeFolder, CrazyVouchers plugin) {
             this.name = name.replace(".yml", "");
             this.fileName = name;
             this.plugin = plugin;

@@ -1,14 +1,14 @@
-package com.badbones69.vouchers;
+package com.badbones69.crazyvouchers;
 
-import com.badbones69.vouchers.api.enums.Messages;
-import com.badbones69.vouchers.controllers.GUI;
-import com.badbones69.vouchers.api.FileManager;
-import com.badbones69.vouchers.api.FileManager.Files;
-import com.badbones69.vouchers.api.CrazyManager;
-import com.badbones69.vouchers.commands.VoucherCommands;
-import com.badbones69.vouchers.commands.VoucherTab;
-import com.badbones69.vouchers.controllers.FireworkDamageAPI;
-import com.badbones69.vouchers.controllers.VoucherClick;
+import com.badbones69.crazyvouchers.api.enums.Messages;
+import com.badbones69.crazyvouchers.controllers.GUI;
+import com.badbones69.crazyvouchers.api.FileManager;
+import com.badbones69.crazyvouchers.api.FileManager.Files;
+import com.badbones69.crazyvouchers.api.CrazyManager;
+import com.badbones69.crazyvouchers.commands.VoucherCommands;
+import com.badbones69.crazyvouchers.commands.VoucherTab;
+import com.badbones69.crazyvouchers.controllers.FireworkDamageAPI;
+import com.badbones69.crazyvouchers.controllers.VoucherClick;
 import org.bstats.bukkit.Metrics;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.PluginCommand;
@@ -18,9 +18,9 @@ import org.bukkit.event.Listener;
 import org.bukkit.plugin.PluginManager;
 import org.bukkit.plugin.java.JavaPlugin;
 
-public class Vouchers extends JavaPlugin implements Listener {
+public class CrazyVouchers extends JavaPlugin implements Listener {
 
-    private static Vouchers plugin;
+    private static CrazyVouchers plugin;
 
     private FileManager fileManager;
 
@@ -84,7 +84,7 @@ public class Vouchers extends JavaPlugin implements Listener {
         }
     }
 
-    public static Vouchers getPlugin() {
+    public static CrazyVouchers getPlugin() {
         return plugin;
     }
 

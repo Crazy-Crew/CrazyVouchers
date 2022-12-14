@@ -1,4 +1,4 @@
-package com.badbones69.vouchers.api.objects;
+package com.badbones69.crazyvouchers.api.objects;
 
 import java.util.Arrays;
 import java.util.List;

@@ -1,20 +1,18 @@
-package com.badbones69.vouchers.controllers;
+package com.badbones69.crazyvouchers.controllers;
 
-import com.badbones69.vouchers.Vouchers;
-import com.badbones69.vouchers.api.CrazyManager;
+import com.badbones69.crazyvouchers.CrazyVouchers;
 import org.bukkit.NamespacedKey;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.Firework;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
-import org.bukkit.metadata.FixedMetadataValue;
 import org.bukkit.persistence.PersistentDataContainer;
 import org.bukkit.persistence.PersistentDataType;
 
 public class FireworkDamageAPI implements Listener {
 
-    public final Vouchers plugin = Vouchers.getPlugin();
+    public final CrazyVouchers plugin = CrazyVouchers.getPlugin();
 
     NamespacedKey noDamage = new NamespacedKey(plugin, "no-damage");
 

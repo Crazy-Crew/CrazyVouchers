@@ -1,8 +1,8 @@
-package com.badbones69.vouchers.api.enums;
+package com.badbones69.crazyvouchers.api.enums;
 
-import com.badbones69.vouchers.Methods;
-import com.badbones69.vouchers.Vouchers;
-import com.badbones69.vouchers.api.FileManager.Files;
+import com.badbones69.crazyvouchers.Methods;
+import com.badbones69.crazyvouchers.CrazyVouchers;
+import com.badbones69.crazyvouchers.api.FileManager.Files;
 import org.bukkit.configuration.file.FileConfiguration;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -55,7 +55,7 @@ public enum Messages {
         this.defaultListMessage = defaultListMessage;
     }
 
-    private static Vouchers plugin = Vouchers.getPlugin();
+    private static CrazyVouchers plugin = CrazyVouchers.getPlugin();
 
     private static Methods methods = plugin.getMethods();
     

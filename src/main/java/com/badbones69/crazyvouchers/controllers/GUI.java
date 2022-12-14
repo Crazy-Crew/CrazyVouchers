@@ -1,10 +1,10 @@
-package com.badbones69.vouchers.controllers;
+package com.badbones69.crazyvouchers.controllers;
 
-import com.badbones69.vouchers.Vouchers;
-import com.badbones69.vouchers.api.objects.Voucher;
-import com.badbones69.vouchers.Methods;
-import com.badbones69.vouchers.api.CrazyManager;
-import com.badbones69.vouchers.api.objects.ItemBuilder;
+import com.badbones69.crazyvouchers.CrazyVouchers;
+import com.badbones69.crazyvouchers.api.objects.Voucher;
+import com.badbones69.crazyvouchers.Methods;
+import com.badbones69.crazyvouchers.api.CrazyManager;
+import com.badbones69.crazyvouchers.api.objects.ItemBuilder;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
@@ -17,7 +17,7 @@ import java.util.*;
 
 public class GUI implements Listener {
     
-    private final Vouchers plugin = Vouchers.getPlugin();
+    private final CrazyVouchers plugin = CrazyVouchers.getPlugin();
     
     private final CrazyManager crazyManager = plugin.getCrazyManager();
 

@@ -1,16 +1,16 @@
-package com.badbones69.vouchers.commands;
+package com.badbones69.crazyvouchers.commands;
 
-import com.badbones69.vouchers.Methods;
-import com.badbones69.vouchers.Vouchers;
-import com.badbones69.vouchers.api.objects.ItemBuilder;
-import com.badbones69.vouchers.api.objects.Voucher;
-import com.badbones69.vouchers.controllers.GUI;
-import com.badbones69.vouchers.api.FileManager;
-import com.badbones69.vouchers.api.FileManager.Files;
-import com.badbones69.vouchers.api.CrazyManager;
-import com.badbones69.vouchers.api.enums.Messages;
-import com.badbones69.vouchers.api.events.RedeemVoucherCodeEvent;
-import com.badbones69.vouchers.api.objects.VoucherCode;
+import com.badbones69.crazyvouchers.Methods;
+import com.badbones69.crazyvouchers.CrazyVouchers;
+import com.badbones69.crazyvouchers.api.objects.ItemBuilder;
+import com.badbones69.crazyvouchers.api.objects.Voucher;
+import com.badbones69.crazyvouchers.controllers.GUI;
+import com.badbones69.crazyvouchers.api.FileManager;
+import com.badbones69.crazyvouchers.api.FileManager.Files;
+import com.badbones69.crazyvouchers.api.CrazyManager;
+import com.badbones69.crazyvouchers.api.enums.Messages;
+import com.badbones69.crazyvouchers.api.events.RedeemVoucherCodeEvent;
+import com.badbones69.crazyvouchers.api.objects.VoucherCode;
 import org.bukkit.Sound;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
@@ -23,7 +23,7 @@ import java.util.Random;
 
 public class VoucherCommands implements CommandExecutor {
     
-    private final Vouchers plugin = Vouchers.getPlugin();
+    private final CrazyVouchers plugin = CrazyVouchers.getPlugin();
 
     private final FileManager fileManager = plugin.getFileManager();
 

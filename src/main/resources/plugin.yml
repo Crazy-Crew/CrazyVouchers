@@ -1,5 +1,5 @@
-name: "Vouchers"
-main: "${group}.Vouchers"
+name: "CrazyVouchers"
+main: "${group}.CrazyVouchers"
 
 authors: [BadBones69, RyderBelserion]
 

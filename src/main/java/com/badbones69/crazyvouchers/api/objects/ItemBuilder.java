@@ -1,8 +1,7 @@
-package com.badbones69.vouchers.api.objects;
+package com.badbones69.crazyvouchers.api.objects;
 
-import com.badbones69.vouchers.Methods;
-import com.badbones69.vouchers.Vouchers;
-import com.badbones69.vouchers.api.CrazyManager;
+import com.badbones69.crazyvouchers.Methods;
+import com.badbones69.crazyvouchers.CrazyVouchers;
 import de.tr7zw.changeme.nbtapi.NBTItem;
 import org.bukkit.Color;
 import org.bukkit.DyeColor;
@@ -27,7 +26,7 @@ import java.util.stream.Collectors;
 
 public class ItemBuilder {
 
-    private final Vouchers plugin = Vouchers.getPlugin();
+    private final CrazyVouchers plugin = CrazyVouchers.getPlugin();
 
     private final Methods methods = plugin.getMethods();
     

@@ -1,13 +1,13 @@
-package com.badbones69.vouchers.controllers;
-import com.badbones69.vouchers.Methods;
-import com.badbones69.vouchers.Vouchers;
-import com.badbones69.vouchers.api.FileManager;
-import com.badbones69.vouchers.api.CrazyManager;
-import com.badbones69.vouchers.api.enums.Messages;
-import com.badbones69.vouchers.api.objects.ItemBuilder;
-import com.badbones69.vouchers.api.objects.Voucher;
-import com.badbones69.vouchers.api.enums.Support;
-import com.badbones69.vouchers.api.events.RedeemVoucherEvent;
+package com.badbones69.crazyvouchers.controllers;
+import com.badbones69.crazyvouchers.Methods;
+import com.badbones69.crazyvouchers.CrazyVouchers;
+import com.badbones69.crazyvouchers.api.FileManager;
+import com.badbones69.crazyvouchers.api.CrazyManager;
+import com.badbones69.crazyvouchers.api.enums.Messages;
+import com.badbones69.crazyvouchers.api.objects.ItemBuilder;
+import com.badbones69.crazyvouchers.api.objects.Voucher;
+import com.badbones69.crazyvouchers.api.enums.Support;
+import com.badbones69.crazyvouchers.api.events.RedeemVoucherEvent;
 import com.google.common.collect.Maps;
 import me.clip.placeholderapi.PlaceholderAPI;
 import org.bukkit.Material;
@@ -29,7 +29,7 @@ import java.util.concurrent.ThreadLocalRandom;
 
 public class VoucherClick implements Listener {
     
-    private final Vouchers plugin = Vouchers.getPlugin();
+    private final CrazyVouchers plugin = CrazyVouchers.getPlugin();
     
     private final CrazyManager crazyManager = plugin.getCrazyManager();
 

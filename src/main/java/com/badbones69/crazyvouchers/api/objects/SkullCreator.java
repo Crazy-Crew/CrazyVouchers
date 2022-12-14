@@ -1,8 +1,6 @@
-package com.badbones69.vouchers.api.objects;
+package com.badbones69.crazyvouchers.api.objects;
 
-import com.badbones69.vouchers.Vouchers;
-import com.badbones69.vouchers.api.CrazyManager;
-import org.bukkit.Bukkit;
+import com.badbones69.crazyvouchers.CrazyVouchers;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
 import org.bukkit.block.Skull;
@@ -22,7 +20,7 @@ import java.util.UUID;
  */
 public class SkullCreator {
 
-    private static final Vouchers plugin = Vouchers.getPlugin();
+    private static final CrazyVouchers plugin = CrazyVouchers.getPlugin();
     
     /**
      * Creates a player skull based on a player's name.

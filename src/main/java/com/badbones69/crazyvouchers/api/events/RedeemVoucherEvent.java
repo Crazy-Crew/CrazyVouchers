@@ -1,6 +1,6 @@
-package com.badbones69.vouchers.api.events;
+package com.badbones69.crazyvouchers.api.events;
 
-import com.badbones69.vouchers.api.objects.Voucher;
+import com.badbones69.crazyvouchers.api.objects.Voucher;
 import org.bukkit.entity.Player;
 import org.bukkit.event.Cancellable;
 import org.bukkit.event.Event;
