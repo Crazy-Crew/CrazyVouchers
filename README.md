@@ -49,7 +49,7 @@
 </details>
 
 ## Downloads
-https://www.spigotmc.org/resources/vouchers.13654/
+https://www.spigotmc.org/resources/crazy-vouchers.13654/
 
 https://ci.badbones69.com/view/Stable/job/CrazyVouchers/
 
