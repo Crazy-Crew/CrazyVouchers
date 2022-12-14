@@ -1,6 +1,6 @@
 <br />
 
-[![CrazyVouchers](https://proxy.spigotmc.org/d16745adfa6269efad7fd15e297705c19b49c161?url=https%3A%2F%2Fraw.githubusercontent.com%2FRyderBelserion%2FAssets%2Fmain%2Fcrazycrew%2Fnew%2Fvouchers%2FBanner.png)](https://www.spigotmc.org/resources/crazy-vouchers.13654/)
+[![CrazyVouchers](https://raw.githubusercontent.com/RyderBelserion/Assets/main/crazycrew/new/crazyvouchers/Banner.png)](https://www.spigotmc.org/resources/crazy-vouchers.13654/)
 
 <div align="center">
 
