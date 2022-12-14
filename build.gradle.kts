@@ -102,7 +102,6 @@ tasks {
     }
 }
 
-
 publishing {
     repositories {
         maven("https://repo.crazycrew.us/releases") {
