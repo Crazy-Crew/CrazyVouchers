@@ -1,6 +1,6 @@
 <br />
 
-[![Vouchers](https://raw.githubusercontent.com/RyderBelserion/Assets/main/crazycrew/old/banners/Vouchers.png)](https://www.spigotmc.org/resources/vouchers.13654/)
+[![CrazyVouchers](https://proxy.spigotmc.org/d16745adfa6269efad7fd15e297705c19b49c161?url=https%3A%2F%2Fraw.githubusercontent.com%2FRyderBelserion%2FAssets%2Fmain%2Fcrazycrew%2Fnew%2Fvouchers%2FBanner.png)](https://www.spigotmc.org/resources/crazy-vouchers.13654/)
 
 <div align="center">
 
@@ -55,7 +55,7 @@ https://ci.badbones69.com/view/Stable/job/CrazyVouchers/
 
 ## Getting Started
 
-How to get started with contributing / maintaining your own version of Vouchers!
+How to get started with contributing / maintaining your own version of CrazyVouchers!
 
 ### Prerequisites
 
@@ -68,7 +68,7 @@ A list of things necessary to make sure you can build Vouchers properly.
 
 1. Clone the repo
    ```sh
-   git clone https://github.com/Crazy-Crew/Vouchers.git
+   git clone https://github.com/Crazy-Crew/CrazyVouchers.git
    ```
 2. Open the repository using Intellij IDEA & wait until it finishes downloading/indexing.
 3. Run the shadowJar task.
