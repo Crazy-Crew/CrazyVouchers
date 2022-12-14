@@ -35,7 +35,7 @@ repositories {
 }
 
 dependencies {
-    implementation("de.tr7zw", "nbt-data-api", "2.10.0")
+    implementation("de.tr7zw", "nbt-data-api", "2.11.0")
 
     implementation("org.bstats", "bstats-bukkit", "3.0.0")
 
