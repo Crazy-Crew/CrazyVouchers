@@ -12,9 +12,9 @@
 [![Contact][discord-shield]][discord-url]
 ![CodeFactor][codefactor-shield]
 
-<a href="/#"><img src="https://raw.githubusercontent.com/intergrav/devins-badges/v2/assets/cozy/unsupported/spigot_64h.png" height="50"></a>
-<a href="/#"><img src="https://raw.githubusercontent.com/intergrav/devins-badges/v2/assets/cozy/supported/paper_64h.png" height="50"></a>
-<a href="/#"><img src="https://raw.githubusercontent.com/intergrav/devins-badges/v2/assets/cozy/supported/purpur_64h.png" height="50"></a>
+![Spigot](https://cdn.jsdelivr.net/gh/intergrav/devins-badges/assets/compact/unsupported/spigot_vector.svg)
+![Paper](https://cdn.jsdelivr.net/gh/intergrav/devins-badges/assets/compact/supported/paper_vector.svg)
+![Purpur](https://cdn.jsdelivr.net/gh/intergrav/devins-badges/assets/compact/supported/purpur_vector.svg)
 
   <p align="center">
     Want to make a paper that can give you an axolotl with a pretty firework display, Look no further!
@@ -53,7 +53,7 @@ https://modrinth.com/plugin/crazyvouchers
 
 ## Snapshot Builds
 ### Get the latest changes before they are uploaded to modrinth!
-https://ci.crazycrew.us/view/Plugins/job/CrazyVouchers/
+https://ci.crazycrew.us/view/Snapshots/job/CrazyVouchers/
 
 ## Getting Started
 
@@ -88,24 +88,24 @@ Check our public [trello board](https://trello.com/b/gWiGLBWI) for our current p
 2. Create your Feature Branch (`git checkout -b feature/yourfeature`)
 3. Commit your Changes (`git commit -m 'your amazing feature.'`)
 4. Push to the Branch (`git push`)
-5. Open a Pull Request
+5. Open a Pull Request to the `dev` branch.
 
 ## License
 
 Distributed under the MIT License. See [`LICENSE`](/LICENSE) for more information.
 
-[discord-shield]: https://img.shields.io/discord/182615261403283459.svg?style=for-the-badge
+[discord-shield]: https://img.shields.io/discord/182615261403283459.svg?style=flat&logo=appveyor
 [discord-url]: https://discord.gg/crazycrew
 
-[contributors-shield]: https://img.shields.io/github/contributors/Crazy-Crew/CrazyVouchers.svg?style=for-the-badge
+[contributors-shield]: https://img.shields.io/github/contributors/Crazy-Crew/CrazyVouchers.svg?style=flat&logo=appveyor
 [contributors-url]: https://github.com/Crazy-Crew/CrazyVouchers/graphs/contributors
-[forks-shield]: https://img.shields.io/github/forks/Crazy-Crew/CrazyVouchers.svg?style=for-the-badge
+[forks-shield]: https://img.shields.io/github/forks/Crazy-Crew/CrazyVouchers.svg?style=flat&logo=appveyor
 [forks-url]: https://github.com/Crazy-Crew/CrazyVouchers/network/members
-[stars-shield]: https://img.shields.io/github/stars/Crazy-Crew/CrazyVouchers.svg?style=for-the-badge
+[stars-shield]: https://img.shields.io/github/stars/Crazy-Crew/CrazyVouchers.svg?style=flat&logo=appveyor
 [stars-url]: https://github.com/Crazy-Crew/CrazyVouchers/stargazers
-[issues-shield]: https://img.shields.io/github/issues/Crazy-Crew/CrazyVouchers.svg?style=for-the-badge
+[issues-shield]: https://img.shields.io/github/issues/Crazy-Crew/CrazyVouchers.svg?style=flat&logo=appveyor
 [issues-url]: https://github.com/Crazy-Crew/CrazyVouchers/issues
-[license-shield]: https://img.shields.io/github/license/Crazy-Crew/CrazyVouchers.svg?style=for-the-badge
+[license-shield]: https://img.shields.io/github/license/Crazy-Crew/CrazyVouchers.svg?style=flat&logo=appveyor
 [license-url]: https://github.com/Crazy-Crew/CrazyVouchers/blob/master/LICENSE
 
-[codefactor-shield]: https://img.shields.io/codefactor/grade/github/Crazy-Crew/CrazyVouchers/main?style=for-the-badge
+[codefactor-shield]: https://img.shields.io/codefactor/grade/github/Crazy-Crew/CrazyVouchers/main?style=flat&logo=appveyor
