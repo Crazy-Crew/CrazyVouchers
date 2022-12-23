@@ -18,6 +18,8 @@ import org.bukkit.event.Listener;
 import org.bukkit.plugin.PluginManager;
 import org.bukkit.plugin.java.JavaPlugin;
 
+import java.io.File;
+
 public class CrazyVouchers extends JavaPlugin implements Listener {
 
     private static CrazyVouchers plugin;
