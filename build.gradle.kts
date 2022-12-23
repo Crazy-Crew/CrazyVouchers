@@ -83,7 +83,12 @@ tasks {
         gameVersions.addAll(listOf("1.19", "1.19.1", "1.19.2", "1.19.3"))
         loaders.addAll(listOf("paper", "purpur"))
 
-        changelog.set(System.getenv("COMMIT_MESSAGE"))
+        changelog.set("""
+            <h2>Changes:</h2>
+             <p>Added an update checker with a configurable toggle</p>
+            <h2>Bug Fixes:</h2>
+             <p>Rename the old "Vouchers" directory to "CrazyVouchers"... Sorry!</p>
+        """.trimIndent())
     }
 
     compileJava {

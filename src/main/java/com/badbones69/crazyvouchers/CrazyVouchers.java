@@ -14,9 +14,15 @@ import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.PluginCommand;
 import org.bukkit.command.TabCompleter;
 import org.bukkit.configuration.file.FileConfiguration;
+import org.bukkit.entity.Player;
+import org.bukkit.event.EventHandler;
+import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
+import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.plugin.PluginManager;
 import org.bukkit.plugin.java.JavaPlugin;
+
+import java.io.File;
 
 public class CrazyVouchers extends JavaPlugin implements Listener {
 
@@ -71,7 +77,17 @@ public class CrazyVouchers extends JavaPlugin implements Listener {
             Files.CONFIG.saveFile();
         }
 
+        String updater = config.getString("Settings.Update-Checker");
+
+        if (updater == null) {
+            config.set("Settings.Update-Checker", true);
+
+            Files.CONFIG.saveFile();
+        }
+
         if (metricsEnabled) new Metrics(this, 4536);
+
+        checkUpdate(null, true);
 
         crazyManager.load();
     }
@@ -82,6 +98,48 @@ public class CrazyVouchers extends JavaPlugin implements Listener {
 
             if (tabCompleter != null) pluginCommand.setTabCompleter(tabCompleter);
         }
+    }
+
+    @EventHandler(priority = EventPriority.MONITOR, ignoreCancelled = true)
+    public void onPlayerJoin(PlayerJoinEvent e) {
+        checkUpdate(e.getPlayer(), false);
+    }
+
+    private void checkUpdate(Player player, boolean consolePrint) {
+        FileConfiguration config = Files.CONFIG.getFile();
+
+        boolean updaterEnabled = config.getBoolean("Settings.Update-Checker");
+
+        if (!updaterEnabled) return;
+
+        getServer().getScheduler().runTaskAsynchronously(plugin, () -> {
+            UpdateChecker updateChecker = new UpdateChecker(13654);
+
+            try {
+                if (updateChecker.hasUpdate() && !getDescription().getVersion().contains("SNAPSHOT")) {
+                    if (consolePrint) {
+                        getLogger().warning("CrazyVouchers has a new update available! New version: " + updateChecker.getNewVersion());
+                        getLogger().warning("Current Version: v" + getDescription().getVersion());
+                        getLogger().warning("Download: " + updateChecker.getResourcePage());
+
+                        return;
+                    } else {
+                        if (!player.isOp() || !player.hasPermission("voucher-admin")) return;
+
+                        player.sendMessage(methods.color("&8> &cCrazyVouchers has a new update available! New version: &e&n" + updateChecker.getNewVersion()));
+                        player.sendMessage(methods.color("&8> &cCurrent Version: &e&n" + getDescription().getVersion()));
+                        player.sendMessage(methods.color("&8> &cDownload: &e&n" + updateChecker.getResourcePage()));
+                    }
+
+                    return;
+                }
+
+                getLogger().info("Plugin is up to date! - " + updateChecker.getNewVersion());
+            } catch (Exception exception) {
+                getLogger().warning("Could not check for updates! Perhaps the call failed or you are using a snapshot build:");
+                getLogger().warning("You can turn off the update checker in config.yml if on a snapshot build.");
+            }
+        });
     }
 
     public static CrazyVouchers getPlugin() {
