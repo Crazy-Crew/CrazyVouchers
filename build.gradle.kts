@@ -109,7 +109,7 @@ tasks {
 
 publishing {
     repositories {
-        maven("https://repo.crazycrew.us/releases") {
+        maven("https://repo.crazycrew.us/snapshots") {
             name = "crazycrew"
             credentials {
                 username = System.getenv("REPOSITORY_USERNAME")
