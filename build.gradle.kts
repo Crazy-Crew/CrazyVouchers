@@ -85,9 +85,9 @@ tasks {
 
         changelog.set("""
             <h2>Changes:</h2>
-             <p>Added an update checker with a configurable toggle</p>
+             <p>Do not rename "Vouchers" folder if "CrazyVouchers" already exists with console warnings.</p>
             <h2>Bug Fixes:</h2>
-             <p>Rename the old "Vouchers" directory to "CrazyVouchers"... Sorry!</p>
+             <p>N/A</p>
         """.trimIndent())
     }
 
