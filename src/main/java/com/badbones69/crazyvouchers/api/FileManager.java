@@ -27,11 +27,19 @@ public class FileManager {
     public void setup() {
         File oldFolder = new File(plugin.getServer().getPluginsFolder() + "/Vouchers");
 
-        if (oldFolder.exists()) {
+        if (oldFolder.exists() && !plugin.getDataFolder().exists()) {
             plugin.getLogger().warning("Renaming " + oldFolder.getPath() + " directory to " + plugin.getDataFolder().getPath());
 
             oldFolder.renameTo(plugin.getDataFolder());
             oldFolder.delete();
+        } else {
+            plugin.getLogger().warning("Could not detect if an old folder existed or maybe " + plugin.getDataFolder().getName() + " already exists");
+
+            if (plugin.getDataFolder().exists()) {
+                plugin.getLogger().warning("The folder does exist which prevents " + oldFolder.getName() + " from being renamed.");
+                plugin.getLogger().warning("You must delete or take a backup of " + plugin.getDataFolder().getName() + " if you wish to have it automatically convert");
+                plugin.getLogger().warning("You can run /vouchers reload after deleting or taking a backup of " + plugin.getDataFolder().getName() + " if needed.");
+            }
         }
 
         if (!plugin.getDataFolder().exists()) plugin.getDataFolder().mkdirs();
