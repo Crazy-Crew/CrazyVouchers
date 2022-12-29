@@ -33,9 +33,7 @@ public class FileManager {
             oldFolder.renameTo(plugin.getDataFolder());
             oldFolder.delete();
         } else {
-            plugin.getLogger().warning("Could not detect if an old folder existed or maybe " + plugin.getDataFolder().getName() + " already exists");
-
-            if (plugin.getDataFolder().exists()) {
+            if (plugin.getDataFolder().exists() && oldFolder.exists()) {
                 plugin.getLogger().warning("The folder does exist which prevents " + oldFolder.getName() + " from being renamed.");
                 plugin.getLogger().warning("You must delete or take a backup of " + plugin.getDataFolder().getName() + " if you wish to have it automatically convert");
                 plugin.getLogger().warning("You can run /vouchers reload after deleting or taking a backup of " + plugin.getDataFolder().getName() + " if needed.");
