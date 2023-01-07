@@ -52,8 +52,9 @@
 https://modrinth.com/plugin/crazyvouchers
 
 ## Snapshot Builds
-### Get the latest changes before they are uploaded to modrinth!
-https://ci.crazycrew.us/view/Snapshots/job/CrazyVouchers/
+### Get the latest changes before marked as release.
+All snapshot builds will be labeled with Beta on Modrinth.<br>
+> https://modrinth.com/plugin/crazyvouchers/versions
 
 ## Getting Started
 
@@ -61,9 +62,9 @@ How to get started with contributing / maintaining your own version of CrazyVouc
 
 ### Prerequisites
 
-A list of things necessary to make sure you can build Vouchers properly.
+A list of things necessary to make sure you can build CrazyVouchers properly.
 * Intellij IDEA
-    * https://www.jetbrains.com/idea/download/
+    * > https://www.jetbrains.com/idea/download/
 * Gradle
 
 ### Installation
