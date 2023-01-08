@@ -106,7 +106,8 @@ tasks {
                 "name" to rootProject.name,
                 "group" to project.group,
                 "version" to getPluginVersion(),
-                "description" to project.description
+                "description" to project.description,
+                "website" to "https://modrinth.com/plugin/crazyvouchers"
             )
         }
     }
