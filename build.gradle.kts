@@ -8,8 +8,6 @@ plugins {
     id("com.github.johnrengelman.shadow") version "7.1.2"
 }
 
-project.description = "Want to make a paper that can give you an axolotl with a pretty firework display, Look no further! "
-
 repositories {
     /**
      * Placeholders
@@ -46,10 +44,10 @@ dependencies {
 }
 
 java {
-    toolchain.languageVersion.set(JavaLanguageVersion.of(17))
+    toolchain.languageVersion.set(JavaLanguageVersion.of(extra["java_version"].toString()))
 }
 
-val isBeta = false
+val isBeta: Boolean = extra["isBeta"].toString().toBoolean()
 
 fun getPluginVersion(): String {
     return if (isBeta) "${project.version}-BETA" else project.version.toString()
@@ -61,21 +59,21 @@ fun getPluginVersionType(): String {
 
 tasks {
     shadowJar {
-        archiveFileName.set("${rootProject.name}-${getPluginVersion()}.jar")
+        archiveFileName.set("${project.name}-${getPluginVersion()}.jar")
 
         listOf(
             "de.tr7zw",
             "org.bstats"
         ).forEach {
-            relocate(it, "${rootProject.group}.plugin.lib.$it")
+            relocate(it, "${project.group}.plugin.lib.$it")
         }
     }
 
     modrinth {
         token.set(System.getenv("MODRINTH_TOKEN"))
-        projectId.set("crazyvouchers")
+        projectId.set(project.name.toLowerCase())
 
-        versionName.set("${rootProject.name} ${getPluginVersion()}")
+        versionName.set("${project.name} ${getPluginVersion()}")
         versionNumber.set(getPluginVersion())
 
         versionType.set(getPluginVersionType())
@@ -97,17 +95,17 @@ tasks {
     }
 
     compileJava {
-        options.release.set(17)
+        options.release.set(extra["java_version"].toString().toInt())
     }
 
     processResources {
         filesMatching("plugin.yml") {
             expand(
-                "name" to rootProject.name,
+                "name" to project.name,
                 "group" to project.group,
                 "version" to getPluginVersion(),
                 "description" to project.description,
-                "website" to "https://modrinth.com/plugin/crazyvouchers"
+                "website" to "https://modrinth.com/plugin/${project.name.toLowerCase()}"
             )
         }
     }
@@ -130,7 +128,7 @@ publishing {
     publications {
         create<MavenPublication>("maven") {
             groupId = "${project.group}"
-            artifactId = rootProject.name.toLowerCase()
+            artifactId = project.name.toLowerCase()
             version = getPluginVersion()
             from(components["java"])
         }
