@@ -1,7 +1,9 @@
-package com.badbones69.crazyvouchers;
+package com.badbones69.crazyvouchers.support.libraries;
 
+import com.badbones69.crazyvouchers.CrazyVouchers;
 import com.google.gson.Gson;
 import com.google.gson.JsonObject;
+
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
@@ -72,13 +74,13 @@ public class UpdateChecker {
 
         Gson gson = new Gson();
 
-        int currentVersion = Integer.parseInt(plugin.getDescription().getVersion().replace(".", ""));
+        int currentVersion = Integer.parseInt(plugin.getDescription().getVersion().replace(".", "").replace("+Beta", ""));
 
         String apiValue = gson.fromJson(reader, JsonObject.class).get("name").getAsString();
 
         this.newVersion = apiValue;
 
-        int spigotVersion = Integer.parseInt(apiValue.replace(".", "").replace("v", ""));
+        int spigotVersion = Integer.parseInt(apiValue.replace(".", "").replace("v", "").replace("+Beta", ""));
 
         connection.disconnect();
         inputStream.close();

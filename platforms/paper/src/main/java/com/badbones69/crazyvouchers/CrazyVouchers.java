@@ -9,6 +9,8 @@ import com.badbones69.crazyvouchers.commands.VoucherCommands;
 import com.badbones69.crazyvouchers.commands.VoucherTab;
 import com.badbones69.crazyvouchers.controllers.FireworkDamageAPI;
 import com.badbones69.crazyvouchers.controllers.VoucherClick;
+import com.badbones69.crazyvouchers.support.MetricsHandler;
+import com.badbones69.crazyvouchers.support.libraries.UpdateChecker;
 import org.bstats.bukkit.Metrics;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.PluginCommand;
@@ -71,8 +73,16 @@ public class CrazyVouchers extends JavaPlugin implements Listener {
         boolean metricsEnabled = Files.CONFIG.getFile().getBoolean("Settings.Toggle-Metrics");
         String metricsPath = Files.CONFIG.getFile().getString("Settings.Toggle-Metrics");
 
+        String version = config.getString("Settings.Config-Version");
+
         if (metricsPath == null) {
             config.set("Settings.Toggle-Metrics", true);
+
+            Files.CONFIG.saveFile();
+        }
+
+        if (version == null) {
+            config.set("Settings.Config-Version", 1);
 
             Files.CONFIG.saveFile();
         }
@@ -85,7 +95,22 @@ public class CrazyVouchers extends JavaPlugin implements Listener {
             Files.CONFIG.saveFile();
         }
 
-        if (metricsEnabled) new Metrics(this, 4536);
+        int configVersion = 1;
+        if (configVersion != config.getInt("Settings.Config-Version") && version != null) {
+            plugin.getLogger().warning("========================================================================");
+            plugin.getLogger().warning("You have an outdated config, Please run the command /vouchers update!");
+            plugin.getLogger().warning("This will take a backup of your entire folder & update your configs.");
+            plugin.getLogger().warning("Default values will be used in place of missing options!");
+            plugin.getLogger().warning("If you have any issues, Please contact Discord Support.");
+            plugin.getLogger().warning("https://discord.gg/crazycrew");
+            plugin.getLogger().warning("========================================================================");
+        }
+
+        if (metricsEnabled) {
+            MetricsHandler metricsHandler = new MetricsHandler();
+
+            metricsHandler.start();
+        }
 
         checkUpdate(null, true);
 
