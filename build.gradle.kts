@@ -46,7 +46,7 @@ webhook {
             this.author(
                 projectName,
                 "https://modrinth.com/$projectExt/$projectNameLowerCase/versions",
-                "https://cdn-raw.modrinth.com/data/r3BBZyf3/4522ef0f83143c4803473d356160a3e877c2499c.png"
+                "https://cdn-raw.modrinth.com/data/EMORKQjj/1cf7fffa9bf92d1bc292983dc320984cc764b51e.png"
             )
         }
     }
