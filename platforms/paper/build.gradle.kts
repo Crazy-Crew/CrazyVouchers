@@ -45,7 +45,7 @@ tasks {
         archiveFileName.set("${projectName}+$finalVersion.jar")
 
         listOf(
-            "de.tr7zw",
+            "de.tr7zw.changeme.nbtapi",
             "org.bstats"
         ).forEach { relocate(it, "$projectGroup.plugin.library.$it") }
     }
