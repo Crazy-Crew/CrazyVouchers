@@ -87,12 +87,14 @@ tasks {
         changelog.set(
             """
                 <h4>Changes:</h4>
-                 <p>Re-work gradle build script to match CrazyCrates.</p>
                  <p>Added update checker / config version with toggles.</p>
-                 <p>Bumped nbt-api.</p>
                  <p>Allowed 1.17-1.17.1 support.</p>
+                <h4>Under the hood changes</h4>
+                 <p>Re-organized the build script for the last time.</p>
+                 <p>Cleaned up a few pieces of code.</p>
+                 <p>Bumped nbt-api to 2.11.1.</p>
                 <h4>Bug Fixes:</h4>
-                 <p>N/A</p>
+                 <p>Fixed the nbt-api link.</p>
             """.trimIndent()
         )
     }
