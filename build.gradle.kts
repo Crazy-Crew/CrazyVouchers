@@ -1,3 +1,4 @@
+import task.WebhookExtension
 import java.awt.Color
 
 plugins {
@@ -21,7 +22,7 @@ val color = if (isBeta) betaUpdate else releaseUpdate
 val repo = if (isBeta) "beta" else "releases"
 
 webhook {
-    this.avatar("https://en.gravatar.com/avatar/${task.WebhookExtension.Gravatar().md5Hex("no-reply@ryderbelserion.com")}.jpeg")
+    this.avatar("https://en.gravatar.com/avatar/${WebhookExtension.Gravatar().md5Hex("no-reply@ryderbelserion.com")}.jpeg")
 
     this.username("Ryder Belserion")
 
