@@ -1,10 +1,10 @@
-name: "CrazyVouchers"
-main: "${group}.CrazyVouchers"
+name: CrazyVouchers
+main: ${group}.CrazyVouchers
 
 authors: [BadBones69, RyderBelserion]
 
 version: ${version}
-api-version: "1.17"
+api-version: '1.17'
 description: ${description}
 website: ${website}
 
