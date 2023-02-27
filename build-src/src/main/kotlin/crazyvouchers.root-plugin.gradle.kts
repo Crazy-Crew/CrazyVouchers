@@ -8,6 +8,8 @@ plugins {
 repositories {
     maven("https://repo.triumphteam.dev/snapshots/")
 
+    maven("https://repo.crazycrew.us/libraries/")
+
     maven("https://repo.crazycrew.us/plugins/")
 
     maven("https://libraries.minecraft.net/")
