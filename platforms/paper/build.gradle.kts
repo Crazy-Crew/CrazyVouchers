@@ -75,7 +75,7 @@ tasks {
 
         loaders.addAll(listOf("paper", "purpur"))
 
-        //<h3>The first release for CrazyEnvoys on Modrinth! 🎉🎉🎉🎉🎉<h3><br> If we want a header.
+        //<h3>The first release for CrazyVouchers on Modrinth! 🎉🎉🎉🎉🎉<h3><br> If we want a header.
         changelog.set(
             """
                 <h4>Changes:</h4>
@@ -119,7 +119,7 @@ publishing {
     publications {
         create<MavenPublication>("maven") {
             groupId = projectGroup
-            artifactId = "${projectName.lowercase()}-${projectDir.name}"
+            artifactId = "${projectName.lowercase()}-api"
             version = finalVersion
 
             from(components["java"])
