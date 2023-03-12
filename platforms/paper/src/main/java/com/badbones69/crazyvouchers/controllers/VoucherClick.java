@@ -26,6 +26,7 @@ import org.bukkit.inventory.EquipmentSlot;
 import org.bukkit.inventory.ItemStack;
 import java.util.HashMap;
 import java.util.concurrent.ThreadLocalRandom;
+import java.util.concurrent.atomic.AtomicBoolean;
 
 public class VoucherClick implements Listener {
     
@@ -126,6 +127,19 @@ public class VoucherClick implements Listener {
                     player.sendMessage(Messages.HIT_LIMIT.getMessage());
                     return;
                 }
+            }
+
+            if (plugin.getServer().getPluginManager().isPluginEnabled("PlaceholderAPI")) {
+                AtomicBoolean shouldCancel = new AtomicBoolean(false);
+                voucher.getRequiredPlaceholders().forEach((placeholder, value) -> {
+                    String newValue = PlaceholderAPI.setPlaceholders(player, value);
+                    if (!newValue.equals(value)) {
+                        String message = replacePlaceholders(voucher.getRequiredPlaceholdersMessage(), player);
+                        player.sendMessage(Messages.replacePlaceholders(placeholders, message));
+                        shouldCancel.set(true);
+                    }
+                });
+                if (shouldCancel.get()) return;
             }
 
             if (!voucher.isEdible() && voucher.useTwoStepAuthentication()) {

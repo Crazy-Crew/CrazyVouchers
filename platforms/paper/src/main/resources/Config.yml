@@ -115,6 +115,11 @@ Vouchers: #Where you make your vouchers.
       - 'Item:DIAMOND_BOOTS, Amount:1, Name:&bGod Boots, Protection:4, Depth_Strider:3, Unbreaking:3, Thorns:3'
     Options:
       Message: '&7Congratulations, you have your self a new God-Set.'
+      Required-Placeholders-Message: '&cYou are on Gset cooldown.'
+      Required-Placeholders:
+        GsetCooldown:
+          Placeholder: '%gset_cooldown%'
+          Value: '0'
       Whitelist-Worlds:
         Toggle: false
         Message: '&cYou can not use that voucher here as you are not in a whitelisted world for this voucher.'
