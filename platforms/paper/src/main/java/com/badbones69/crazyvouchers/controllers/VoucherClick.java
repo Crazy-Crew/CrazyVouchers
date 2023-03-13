@@ -132,7 +132,7 @@ public class VoucherClick implements Listener {
             if (plugin.getServer().getPluginManager().isPluginEnabled("PlaceholderAPI")) {
                 AtomicBoolean shouldCancel = new AtomicBoolean(false);
                 voucher.getRequiredPlaceholders().forEach((placeholder, value) -> {
-                    String newValue = PlaceholderAPI.setPlaceholders(player, value);
+                    String newValue = PlaceholderAPI.setPlaceholders(player, placeholder);
                     if (!newValue.equals(value)) {
                         String message = replacePlaceholders(voucher.getRequiredPlaceholdersMessage(), player);
                         player.sendMessage(Messages.replacePlaceholders(placeholders, message));
