@@ -10,7 +10,9 @@ import org.bukkit.Sound;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.inventory.ItemStack;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 public class Voucher {
@@ -44,6 +46,8 @@ public class Voucher {
     private final List<VoucherCommand> randomCommands = new ArrayList<>();
     private final List<VoucherCommand> chanceCommands = new ArrayList<>();
     private final List<ItemBuilder> items = new ArrayList<>();
+    private final Map<String, String> requiredPlaceholders = new HashMap<>();
+    private String requiredPlaceholdersMessage;
 
     /**
      * This is just used for imputing fake vouchers.
@@ -67,6 +71,7 @@ public class Voucher {
         this.soundToggle = false;
         this.fireworkToggle = false;
         this.isEdible = false;
+        this.requiredPlaceholdersMessage = "";
     }
 
     private final CrazyVouchers plugin = CrazyVouchers.getPlugin();
@@ -170,6 +175,16 @@ public class Voucher {
             this.limiterLimit = config.getInt(path + "Options.Limiter.Limit");
         } else {
             this.limiterToggle = false;
+        }
+        if (config.contains(path + "Options.Required-Placeholders-Message")) {
+            this.requiredPlaceholdersMessage = getMessage(path + "Options.Required-Placeholders-Message");
+        }
+        if (config.contains(path + "Options.Required-Placeholders")) {
+            for (String key : config.getConfigurationSection(path + "Options.Required-Placeholders").getKeys(false)) {
+                String placeholder = config.getString(path + "Options.Required-Placeholders." + key + ".Placeholder");
+                String value = config.getString(path + "Options.Required-Placeholders." + key + ".Value");
+                this.requiredPlaceholders.put(placeholder, value);
+            }
         }
 
         this.twoStepAuthentication = config.contains(path + "Options.Two-Step-Authentication") && config.getBoolean(path + "Options.Two-Step-Authentication.Toggle");
@@ -335,7 +350,15 @@ public class Voucher {
     public List<ItemBuilder> getItems() {
         return items;
     }
-    
+
+    public Map<String, String> getRequiredPlaceholders() {
+        return requiredPlaceholders;
+    }
+
+    public String getRequiredPlaceholdersMessage() {
+        return requiredPlaceholdersMessage;
+    }
+
     public boolean isEdible() {
         return isEdible;
     }
