@@ -31,7 +31,7 @@ val type = if (beta) "beta" else "release"
 
 tasks {
     shadowJar {
-        archiveFileName.set("${rootProject.name}+${projectDir.name}+${rootProject.version}.jar")
+        archiveFileName.set("${rootProject.name}+Paper+${rootProject.version}.jar")
 
         listOf(
             "de.tr7zw.changeme.nbtapi",
