@@ -18,28 +18,28 @@ import java.util.stream.Collectors;
 public class Voucher {
     
     private final String name;
-    private Boolean usesArgs;
+    private boolean usesArgs;
     private final ItemBuilder itemBuilder;
     private boolean glowing;
     private final String usedMessage;
-    private final Boolean whitelistPermissionToggle;
+    private final boolean whitelistPermissionToggle;
     private final List<String> whitelistPermissions = new ArrayList<>();
     private List<String> whitelistCommands = new ArrayList<>();
     private String whitelistPermissionMessage;
-    private final Boolean whitelistWorldsToggle;
+    private final boolean whitelistWorldsToggle;
     private String whitelistWorldMessage;
     private final List<String> whitelistWorlds = new ArrayList<>();
     private List<String> whitelistWorldCommands = new ArrayList<>();
-    private final Boolean blacklistPermissionsToggle;
+    private final boolean blacklistPermissionsToggle;
     private String blacklistPermissionMessage;
     private List<String> blacklistCommands = new ArrayList<>();
     private List<String> blacklistPermissions = new ArrayList<>();
-    private final Boolean limiterToggle;
-    private Integer limiterLimit;
-    private final Boolean twoStepAuthentication;
-    private final Boolean soundToggle;
+    private final boolean limiterToggle;
+    private int limiterLimit;
+    private final boolean twoStepAuthentication;
+    private final boolean soundToggle;
     private final List<Sound> sounds = new ArrayList<>();
-    private final Boolean fireworkToggle;
+    private final boolean fireworkToggle;
     private final List<Color> fireworkColors = new ArrayList<>();
     private boolean isEdible;
     private List<String> commands = new ArrayList<>();
@@ -176,9 +176,11 @@ public class Voucher {
         } else {
             this.limiterToggle = false;
         }
+
         if (config.contains(path + "Options.Required-Placeholders-Message")) {
             this.requiredPlaceholdersMessage = getMessage(path + "Options.Required-Placeholders-Message");
         }
+
         if (config.contains(path + "Options.Required-Placeholders")) {
             for (String key : config.getConfigurationSection(path + "Options.Required-Placeholders").getKeys(false)) {
                 String placeholder = config.getString(path + "Options.Required-Placeholders." + key + ".Placeholder");
@@ -224,7 +226,7 @@ public class Voucher {
         return name;
     }
     
-    public Boolean usesArguments() {
+    public boolean usesArguments() {
         return usesArgs;
     }
     
@@ -259,7 +261,7 @@ public class Voucher {
         return usedMessage;
     }
     
-    public Boolean useWhiteListPermissions() {
+    public boolean useWhiteListPermissions() {
         return whitelistPermissionToggle;
     }
     
@@ -275,7 +277,7 @@ public class Voucher {
         return whitelistPermissionMessage;
     }
     
-    public Boolean usesWhitelistWorlds() {
+    public boolean usesWhitelistWorlds() {
         return whitelistWorldsToggle;
     }
     
@@ -291,7 +293,7 @@ public class Voucher {
         return whitelistWorldCommands;
     }
     
-    public Boolean useBlackListPermissions() {
+    public boolean useBlackListPermissions() {
         return blacklistPermissionsToggle;
     }
     
@@ -307,19 +309,19 @@ public class Voucher {
         return blacklistCommands;
     }
     
-    public Boolean useLimiter() {
+    public boolean useLimiter() {
         return limiterToggle;
     }
     
-    public Integer getLimiterLimit() {
+    public int getLimiterLimit() {
         return limiterLimit;
     }
     
-    public Boolean useTwoStepAuthentication() {
+    public boolean useTwoStepAuthentication() {
         return twoStepAuthentication;
     }
     
-    public Boolean playSounds() {
+    public boolean playSounds() {
         return soundToggle;
     }
     
@@ -327,7 +329,7 @@ public class Voucher {
         return sounds;
     }
     
-    public Boolean useFirework() {
+    public boolean useFirework() {
         return fireworkToggle;
     }
     

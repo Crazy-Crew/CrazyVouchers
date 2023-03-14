@@ -11,20 +11,13 @@ import com.badbones69.crazyvouchers.controllers.FireworkDamageAPI;
 import com.badbones69.crazyvouchers.controllers.VoucherClick;
 import com.badbones69.crazyvouchers.support.MetricsHandler;
 import com.badbones69.crazyvouchers.support.libraries.UpdateChecker;
-import org.bstats.bukkit.Metrics;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.PluginCommand;
 import org.bukkit.command.TabCompleter;
 import org.bukkit.configuration.file.FileConfiguration;
-import org.bukkit.entity.Player;
-import org.bukkit.event.EventHandler;
-import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
-import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.plugin.PluginManager;
 import org.bukkit.plugin.java.JavaPlugin;
-
-import java.io.File;
 
 public class CrazyVouchers extends JavaPlugin implements Listener {
 
@@ -112,7 +105,7 @@ public class CrazyVouchers extends JavaPlugin implements Listener {
             metricsHandler.start();
         }
 
-        checkUpdate(null, true);
+        checkUpdate();
 
         crazyManager.load();
     }
@@ -125,12 +118,7 @@ public class CrazyVouchers extends JavaPlugin implements Listener {
         }
     }
 
-    @EventHandler(priority = EventPriority.MONITOR, ignoreCancelled = true)
-    public void onPlayerJoin(PlayerJoinEvent e) {
-        checkUpdate(e.getPlayer(), false);
-    }
-
-    private void checkUpdate(Player player, boolean consolePrint) {
+    private void checkUpdate() {
         FileConfiguration config = Files.CONFIG.getFile();
 
         boolean updaterEnabled = config.getBoolean("Settings.Update-Checker");
@@ -142,19 +130,9 @@ public class CrazyVouchers extends JavaPlugin implements Listener {
 
             try {
                 if (updateChecker.hasUpdate() && !getDescription().getVersion().contains("SNAPSHOT")) {
-                    if (consolePrint) {
-                        getLogger().warning("CrazyVouchers has a new update available! New version: " + updateChecker.getNewVersion());
-                        getLogger().warning("Current Version: v" + getDescription().getVersion());
-                        getLogger().warning("Download: " + updateChecker.getResourcePage());
-
-                        return;
-                    } else {
-                        if (!player.isOp() || !player.hasPermission("voucher-admin")) return;
-
-                        player.sendMessage(methods.color("&8> &cCrazyVouchers has a new update available! New version: &e&n" + updateChecker.getNewVersion()));
-                        player.sendMessage(methods.color("&8> &cCurrent Version: &e&n" + getDescription().getVersion()));
-                        player.sendMessage(methods.color("&8> &cDownload: &e&n" + updateChecker.getResourcePage()));
-                    }
+                    getLogger().warning("CrazyVouchers has a new update available! New version: " + updateChecker.getNewVersion());
+                    getLogger().warning("Current Version: v" + getDescription().getVersion());
+                    getLogger().warning("Download: " + updateChecker.getResourcePage());
 
                     return;
                 }

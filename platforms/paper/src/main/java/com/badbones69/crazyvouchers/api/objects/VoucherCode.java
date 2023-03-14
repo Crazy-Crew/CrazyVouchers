@@ -15,28 +15,28 @@ public class VoucherCode {
     
     private final String name;
     private final String code;
-    private final Boolean enabled;
-    private final Boolean caseSensitive;
-    private Boolean limited;
-    private Integer limit;
+    private final boolean enabled;
+    private final boolean caseSensitive;
+    private boolean limited;
+    private int limit;
     private final String message;
     private final List<String> commands;
-    private final Boolean whitelistPermissionToggle;
+    private final boolean whitelistPermissionToggle;
     private final List<String> whitelistPermissions = new ArrayList<>();
     private List<String> whitelistCommands = new ArrayList<>();
-    private final Boolean whitelistWorldsToggle;
+    private final boolean whitelistWorldsToggle;
     private String whitelistWorldMessage;
     private final List<String> whitelistWorlds = new ArrayList<>();
     private List<String> whitelistWorldCommands = new ArrayList<>();
-    private final Boolean blacklistPermissionsToggle;
+    private final boolean blacklistPermissionsToggle;
     private String blacklistPermissionMessage;
     private List<String> blacklistCommands = new ArrayList<>();
     private List<String> blacklistPermissions = new ArrayList<>();
-    private final Boolean limiterToggle;
+    private final boolean limiterToggle;
     private Integer limiterLimit;
-    private final Boolean soundToggle;
+    private final boolean soundToggle;
     private final List<Sound> sounds = new ArrayList<>();
-    private final Boolean fireworkToggle;
+    private final boolean fireworkToggle;
     private final List<Color> fireworkColors = new ArrayList<>();
     private final List<VoucherCommand> randomCommands = new ArrayList<>();
     private final List<VoucherCommand> chanceCommands = new ArrayList<>();
@@ -164,11 +164,11 @@ public class VoucherCode {
         return code;
     }
     
-    public Boolean isEnabled() {
+    public boolean isEnabled() {
         return enabled;
     }
     
-    public Boolean isCaseSensitive() {
+    public boolean isCaseSensitive() {
         return caseSensitive;
     }
     
@@ -180,7 +180,7 @@ public class VoucherCode {
         return commands;
     }
     
-    public Boolean useWhiteListPermissions() {
+    public boolean useWhiteListPermissions() {
         return whitelistPermissionToggle;
     }
     
@@ -192,7 +192,7 @@ public class VoucherCode {
         return whitelistCommands;
     }
     
-    public Boolean useWhitelistWorlds() {
+    public boolean useWhitelistWorlds() {
         return whitelistWorldsToggle;
     }
     
@@ -204,7 +204,7 @@ public class VoucherCode {
         return whitelistWorlds;
     }
     
-    public Boolean useBlacklistPermissions() {
+    public boolean useBlacklistPermissions() {
         return blacklistPermissionsToggle;
     }
     
@@ -224,15 +224,15 @@ public class VoucherCode {
         return blacklistCommands;
     }
     
-    public Boolean useLimiter() {
+    public boolean useLimiter() {
         return limiterToggle;
     }
     
-    public Integer getLimit() {
+    public int getLimit() {
         return limiterLimit;
     }
     
-    public Boolean useSounds() {
+    public boolean useSounds() {
         return soundToggle;
     }
     
@@ -240,7 +240,7 @@ public class VoucherCode {
         return sounds;
     }
     
-    public Boolean useFireworks() {
+    public boolean useFireworks() {
         return fireworkToggle;
     }
     

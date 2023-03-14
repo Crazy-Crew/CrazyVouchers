@@ -14,7 +14,7 @@ public class VoucherCommand {
         this.commands = Arrays.asList(commandString.split(", "));
     }
     
-    public Integer getUUID() {
+    public int getUUID() {
         return uuid;
     }
     
@@ -22,7 +22,7 @@ public class VoucherCommand {
         return commands;
     }
     
-    public Boolean isSimilar(VoucherCommand voucherCommand) {
+    public boolean isSimilar(VoucherCommand voucherCommand) {
         return uuid.equals(voucherCommand.getUUID());
     }
 }

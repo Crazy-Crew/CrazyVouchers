@@ -28,7 +28,7 @@ public class GUI implements Listener {
     
     public void openGUI(Player player) {
         int page = getPage(player);
-        Inventory inv = Bukkit.createInventory(null, 54, inventoryName);
+        Inventory inv = plugin.getServer().createInventory(null, 54, inventoryName);
         setDefaultItems(player, inv);
 
         for (Voucher i : getPageVouchers(page)) {
@@ -41,7 +41,7 @@ public class GUI implements Listener {
     public void openGUI(Player player, int pageNumber) {
         setPage(player, pageNumber);
         pageNumber = getPage(player);
-        Inventory inv = Bukkit.createInventory(null, 54, inventoryName);
+        Inventory inv = plugin.getServer().createInventory(null, 54, inventoryName);
         setDefaultItems(player, inv);
 
         for (Voucher i : getPageVouchers(pageNumber)) {

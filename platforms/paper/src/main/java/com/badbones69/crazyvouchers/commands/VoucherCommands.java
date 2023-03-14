@@ -18,6 +18,8 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
+import org.jetbrains.annotations.NotNull;
+
 import java.util.HashMap;
 import java.util.Random;
 
@@ -34,9 +36,9 @@ public class VoucherCommands implements CommandExecutor {
     private final GUI gui = plugin.getGui();
 
     @Override
-    public boolean onCommand(CommandSender sender, Command cmd, String commandLabel, String[] args) {
+    public boolean onCommand(@NotNull CommandSender sender, @NotNull Command cmd, @NotNull String commandLabel, String[] args) {
         if (args.length == 0) {
-            plugin.getServer().dispatchCommand(sender, "voucher help");
+            if (methods.hasPermission(sender, "access")) sender.sendMessage(Messages.HELP.getMessageNoPrefix());
             return true;
         } else {
             switch (args[0].toLowerCase()) {

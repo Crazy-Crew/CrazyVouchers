@@ -42,9 +42,7 @@ public class CrazyManager {
     
     public Voucher getVoucher(String voucherName) {
         for (Voucher voucher : getVouchers()) {
-            if (voucher.getName().equalsIgnoreCase(voucherName)) {
-                return voucher;
-            }
+            if (voucher.getName().equalsIgnoreCase(voucherName)) return voucher;
         }
 
         return null;
@@ -52,9 +50,7 @@ public class CrazyManager {
     
     public boolean isVoucherName(String voucherName) {
         for (Voucher voucher : getVouchers()) {
-            if (voucher.getName().equalsIgnoreCase(voucherName)) {
-                return true;
-            }
+            if (voucher.getName().equalsIgnoreCase(voucherName)) return true;
         }
 
         return false;
@@ -62,9 +58,7 @@ public class CrazyManager {
     
     public VoucherCode getVoucherCode(String voucherName) {
         for (VoucherCode voucher : getVoucherCodes()) {
-            if (voucher.getCode().equalsIgnoreCase(voucherName)) {
-                return voucher;
-            }
+            if (voucher.getCode().equalsIgnoreCase(voucherName)) return voucher;
         }
 
         return null;
@@ -74,13 +68,9 @@ public class CrazyManager {
         for (VoucherCode voucher : getVoucherCodes()) {
             if (voucher.isEnabled()) {
                 if (voucher.isCaseSensitive()) {
-                    if (voucher.getCode().equals(voucherCode)) {
-                        return true;
-                    }
+                    if (voucher.getCode().equals(voucherCode)) return true;
                 } else {
-                    if (voucher.getCode().equalsIgnoreCase(voucherCode)) {
-                        return true;
-                    }
+                    if (voucher.getCode().equalsIgnoreCase(voucherCode)) return true;
                 }
             }
         }
@@ -91,9 +81,7 @@ public class CrazyManager {
         try {
             NBTItem nbt = new NBTItem(item);
 
-            if (nbt.hasKey("voucher")) {
-                return getVoucher(nbt.getString("voucher"));
-            }
+            if (nbt.hasKey("voucher")) return getVoucher(nbt.getString("voucher"));
 
         } catch (Exception ignored) {}
         return null;
@@ -105,9 +93,7 @@ public class CrazyManager {
             NBTItem nbt = new NBTItem(item);
 
             if (nbt.hasKey("voucher") && nbt.hasKey("argument")) {
-                if (nbt.getString("voucher").equalsIgnoreCase(voucher.getName())) {
-                    return nbt.getString("argument");
-                }
+                if (nbt.getString("voucher").equalsIgnoreCase(voucher.getName())) return nbt.getString("argument");
             }
         }
 

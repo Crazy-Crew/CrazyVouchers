@@ -23,9 +23,9 @@
     <br />
     <a href="https://github.com/Crazy-Crew/CrazyVouchers/issues">Report Bug</a>
     ·
-    <a href="https://github.com/orgs/Crazy-Crew/discussions/categories/features?discussions_q=label%3Acrazyvouchers+category%3AFeatures">Request Feature</a>
+    <a href="https://github.com/Crazy-Crew/CrazyVouchers/discussions/categories/feature-rquests">Request Feature</a>
     ·
-    <a href="https://github.com/orgs/Crazy-Crew/discussions/categories/support?discussions_q=label%3Acrazyvouchers+category%3ASupport">Get Support</a>
+    <a href="https://github.com/Crazy-Crew/CrazyVouchers/discussions/categories/support">Get Support</a>
   </p>
 </div>
 
@@ -48,11 +48,12 @@
 </details>
 
 ## Resource Page
-
-### Beta Builds
-All beta builds will be on Modrinth marked as beta.<br>
-
 <a href="https://modrinth.com/plugin/crazyvouchers">![Modrinth](https://raw.githubusercontent.com/intergrav/devins-badges/v3/assets/cozy/available/modrinth_64h.png)</a>
+
+## Beta Builds
+### Get the latest changes before marked as release.
+All beta builds will be on Modrinth.<br>
+> https://modrinth.com/plugin/crazyvouchers/versions
 
 ## Getting Started
 
