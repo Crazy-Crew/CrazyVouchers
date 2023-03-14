@@ -176,13 +176,13 @@ public class Voucher {
         } else {
             this.limiterToggle = false;
         }
-        if (config.contains("Options.Required-Placeholders-Message")) {
-            this.requiredPlaceholdersMessage = getMessage("Options.Required-Placeholders-Message");
+        if (config.contains(path + "Options.Required-Placeholders-Message")) {
+            this.requiredPlaceholdersMessage = getMessage(path + "Options.Required-Placeholders-Message");
         }
-        if (config.contains("Options.Required-Placeholders")) {
-            for (String key : config.getConfigurationSection("Options.Required-Placeholders").getKeys(false)) {
-                String placeholder = config.getString("Options.Required-Placeholders." + key + ".Placeholder");
-                String value = config.getString("Options.Required-Placeholders." + key + ".Value");
+        if (config.contains(path + "Options.Required-Placeholders")) {
+            for (String key : config.getConfigurationSection(path + "Options.Required-Placeholders").getKeys(false)) {
+                String placeholder = config.getString(path + "Options.Required-Placeholders." + key + ".Placeholder");
+                String value = config.getString(path + "Options.Required-Placeholders." + key + ".Value");
                 this.requiredPlaceholders.put(placeholder, value);
             }
         }
