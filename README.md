@@ -1,6 +1,6 @@
 <br />
 
-[![CrazyVouchers](https://raw.githubusercontent.com/RyderBelserion/Assets/main/crazycrew/new/vouchers/Banner.png)](https://modrinth.com/plugin/crazyvouchers)
+[![CrazyVouchers](https://git.crazycrew.us/ryderbelserion/Assets/raw/branch/main/crazycrew/webp/CrazyVouchersBanner.webp)](https://modrinth.com/plugin/crazyvouchers)
 
 <div align="center">
 
