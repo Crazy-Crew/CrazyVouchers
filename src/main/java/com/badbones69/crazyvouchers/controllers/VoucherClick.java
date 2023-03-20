@@ -25,6 +25,7 @@ import org.bukkit.event.player.PlayerItemConsumeEvent;
 import org.bukkit.inventory.EquipmentSlot;
 import org.bukkit.inventory.ItemStack;
 import java.util.HashMap;
+import java.util.UUID;
 import java.util.concurrent.ThreadLocalRandom;
 
 public class VoucherClick implements Listener {
@@ -127,6 +128,11 @@ public class VoucherClick implements Listener {
                     return;
                 }
             }
+            
+            if (voucher.hasCooldown() && voucher.isCooldown(player)){
+                player.sendMessage(Messages.HIT_LIMIT.getMessage());
+                return;
+            }
 
             if (!voucher.isEdible() && voucher.useTwoStepAuthentication()) {
                 if (twoAuth.containsKey(player)) {
@@ -205,6 +211,10 @@ public class VoucherClick implements Listener {
         methods.removeItem(item, player);
 
         fillMap(player, argument);
+
+        if (voucher.hasCooldown()){
+            voucher.setCooldown(player);
+        }
 
         for (String command : voucher.getCommands()) {
             command = replacePlaceholders(command, player);

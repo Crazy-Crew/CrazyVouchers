@@ -25,6 +25,8 @@ public enum Messages {
     GIVEN_A_VOUCHER("Given-A-Voucher", "&3You have just given &6%Player% &3a &6%Voucher% &3voucher."),
     GIVEN_ALL_PLAYERS_VOUCHER("Given-All-Players-Voucher", "&3You have just given all players a &6%Voucher% &3voucher."),
     HIT_LIMIT("Hit-Limit", "&cYou have hit your limit for using this voucher."),
+
+    COOLDOWN("Cooldown", "&c.Please wait a few seconds before using the voucher again."),
     TWO_STEP_AUTHENTICATION("Two-Step-Authentication", "&7Right click again to confirm that you want to use this voucher."),
     HAS_BLACKLIST_PERMISSION("Has-Blacklist-Permission", "&cSorry but you can not use this voucher because you have a black-listed permission."),
     NOT_IN_WHITELISTED_WORLD("Not-In-Whitelisted-World", "&cYou can not use that voucher here as you are not in a whitelisted world for this voucher."),

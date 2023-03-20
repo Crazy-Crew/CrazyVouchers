@@ -8,9 +8,12 @@ import com.badbones69.crazyvouchers.api.enums.Messages;
 import org.bukkit.Color;
 import org.bukkit.Sound;
 import org.bukkit.configuration.file.FileConfiguration;
+import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.UUID;
 import java.util.stream.Collectors;
 
 public class Voucher {
@@ -18,6 +21,7 @@ public class Voucher {
     private final String name;
     private Boolean usesArgs;
     private final ItemBuilder itemBuilder;
+    private final int cooldown;
     private boolean glowing;
     private final String usedMessage;
     private final Boolean whitelistPermissionToggle;
@@ -44,6 +48,7 @@ public class Voucher {
     private final List<VoucherCommand> randomCommands = new ArrayList<>();
     private final List<VoucherCommand> chanceCommands = new ArrayList<>();
     private final List<ItemBuilder> items = new ArrayList<>();
+    private final HashMap<UUID, Long> cooldowns = new HashMap<>();
 
     /**
      * This is just used for imputing fake vouchers.
@@ -67,6 +72,7 @@ public class Voucher {
         this.soundToggle = false;
         this.fireworkToggle = false;
         this.isEdible = false;
+        this.cooldown = 0;
     }
 
     private final CrazyVouchers plugin = CrazyVouchers.getPlugin();
@@ -85,6 +91,8 @@ public class Voucher {
         .setPlayerName(config.getString(path + "Player"))
         .setFlagsFromStrings(config.getStringList(path + "Flags"));
         this.glowing = config.getBoolean(path + "Glowing");
+
+        this.cooldown = config.getInt(path + "Cooldown", 0);
 
         if (itemBuilder.getName().toLowerCase().contains("%arg%")) this.usesArgs = true;
 
@@ -339,7 +347,19 @@ public class Voucher {
     public boolean isEdible() {
         return isEdible;
     }
-    
+
+    public int getCooldown() {
+        return cooldown;
+    }
+
+    public boolean hasCooldown() {
+        return cooldown > 0;
+    }
+
+    public HashMap<UUID, Long> getCooldowns() {
+        return cooldowns;
+    }
+
     private String getMessage(String path) {
         FileConfiguration config = Files.CONFIG.getFile();
         String messageString;
@@ -356,5 +376,13 @@ public class Voucher {
     
     private boolean isList(String path) {
         return Files.CONFIG.getFile().contains(path) && !Files.CONFIG.getFile().getStringList(path).isEmpty();
+    }
+
+    public boolean isCooldown(Player player) {
+        return cooldowns.getOrDefault(player.getUniqueId(), 0L) >= System.currentTimeMillis();
+    }
+
+    public void setCooldown(Player player) {
+        cooldowns.put(player.getUniqueId(), System.currentTimeMillis() + (1000L * cooldown));
     }
 }
