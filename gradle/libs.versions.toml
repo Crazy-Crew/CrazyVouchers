@@ -20,8 +20,12 @@ kyori-mm = { module = "net.kyori:adventure-text-minimessage", version.ref = "kyo
 triumph_cmds = { module = "dev.triumphteam:triumph-cmd-bukkit", version = "2.0.0-SNAPSHOT" }
 
 # Misc
-nbt_api = { module = "de.tr7zw:item-nbt-api", version = "2.11.1" }
+nbt_api = { module = "de.tr7zw:item-nbt-api", version = "2.11.2" }
 bstats_bukkit = { module = "org.bstats:bstats-bukkit", version = "3.0.0" }
 
+# CMI
+cmi_api = { module = "com.Zrips.CMI:CMI-API", version = "9.3.1.5" }
+cmi_lib = { module = "net.zrips.CMILib:cmi-lib-api", version = "1.2.5.3" }
+
 # Placeholders
-placeholder_api = { module = "me.clip:placeholderapi", version = "2.11.2" }
+placeholder_api = { module = "me.clip:placeholderapi", version = "2.11.3" }
