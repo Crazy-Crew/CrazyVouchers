@@ -26,6 +26,7 @@ Vouchers: #Where you make your vouchers.
     Lore: #The item's lore
       - '&7Use this voucher to gain &a$%Arg%&7.'
       - '&7&l(&6&l!&7&l) &7Right click to redeem.'
+    Cooldown: 5 # Cooldown in seconds
     Player: '' #Set the Item: to PLAYER_HEAD and use this to set the skin on the player head. Can use Name/Hash/URL
     Glowing: false #Toggle if the item will have a glowing effect or not.
     Commands: #The commands that are run when redeemed.
