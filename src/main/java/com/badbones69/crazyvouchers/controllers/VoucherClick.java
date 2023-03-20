@@ -128,9 +128,9 @@ public class VoucherClick implements Listener {
                     return;
                 }
             }
-            
+
             if (voucher.hasCooldown() && voucher.isCooldown(player)){
-                player.sendMessage(Messages.HIT_LIMIT.getMessage());
+                player.sendMessage(Messages.COOLDOWN.getMessage());
                 return;
             }
 
