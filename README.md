@@ -1,6 +1,6 @@
 <br />
 
-[![CrazyVouchers](https://raw.githubusercontent.com/RyderBelserion/Assets/main/crazycrew/new/vouchers/Banner.png)](https://modrinth.com/plugin/crazyvouchers)
+[![CrazyVouchers](https://git.crazycrew.us/ryderbelserion/Assets/raw/branch/main/crazycrew/webp/CrazyVouchersBanner.webp)](https://modrinth.com/plugin/crazyvouchers)
 
 <div align="center">
 
@@ -12,7 +12,6 @@
 [![Contact][discord-shield]][discord-url]
 ![CodeFactor][codefactor-shield]
 
-![Spigot](https://cdn.jsdelivr.net/gh/intergrav/devins-badges/assets/compact/unsupported/spigot_vector.svg)
 ![Paper](https://cdn.jsdelivr.net/gh/intergrav/devins-badges/assets/compact/supported/paper_vector.svg)
 ![Purpur](https://cdn.jsdelivr.net/gh/intergrav/devins-badges/assets/compact/supported/purpur_vector.svg)
 
@@ -48,13 +47,12 @@
   </ol>
 </details>
 
-## Downloads
-> https://modrinth.com/plugin/crazyvouchers
+## Resource Page
 
-## Beta Builds
-### Get the latest changes before marked as release.
-All beta builds will be on Modrinth.<br>
-> https://modrinth.com/plugin/crazyvouchers/versions
+### Beta Builds
+All beta builds will be on Modrinth marked as beta.<br>
+
+<a href="https://modrinth.com/plugin/crazyvouchers">![Modrinth](https://raw.githubusercontent.com/intergrav/devins-badges/v3/assets/cozy/available/modrinth_64h.png)</a>
 
 ## Getting Started
 
@@ -89,7 +87,7 @@ Check our public [trello board](https://trello.com/b/gWiGLBWI) for our current p
 2. Create your Feature Branch (`git checkout -b feature/yourfeature`)
 3. Commit your Changes (`git commit -m 'your amazing feature.'`)
 4. Push to the Branch (`git push`)
-5. Open a Pull Request to add your feature/fix.
+5. Open a Pull Request to the dev branch to add your feature/fix.
 
 ## License
 

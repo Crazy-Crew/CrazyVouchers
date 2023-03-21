@@ -1,136 +1,47 @@
+import task.WebhookExtension
+import java.awt.Color
+
 plugins {
-    `java-library`
-
-    `maven-publish`
-
-    id("com.modrinth.minotaur") version "2.6.0"
-
-    id("com.github.johnrengelman.shadow") version "7.1.2"
+    id("crazyvouchers.root-plugin")
 }
 
-repositories {
-    /**
-     * Placeholders
-     */
-    maven("https://repo.extendedclip.com/content/repositories/placeholderapi/")
+val releaseUpdate = Color(27, 217, 106)
+val betaUpdate = Color(255, 163, 71)
 
-    /**
-     * NBT API
-     */
-    maven("https://repo.codemc.org/repository/maven-public/")
+val beta = settings.versions.beta.get().toBoolean()
+val extension = settings.versions.extension.get()
 
-    /**
-     * Paper Team
-     */
-    maven("https://repo.papermc.io/repository/maven-public/")
+val color = if (beta) betaUpdate else releaseUpdate
+val repo = if (beta) "beta" else "releases"
 
-    /**
-     * Everything else we need.
-     */
-    mavenCentral()
-}
+webhook {
+    this.avatar("https://en.gravatar.com/avatar/${WebhookExtension.Gravatar().md5Hex("no-reply@ryderbelserion.com")}.jpeg")
 
-dependencies {
-    implementation("de.tr7zw", "nbt-data-api", "2.11.0")
+    this.username("Ryder Belserion")
 
-    implementation("org.bstats", "bstats-bukkit", "3.0.0")
+    this.content("New version of ${rootProject.name} is ready! <@&1029922295210311681>")
 
-    compileOnly("io.papermc.paper", "paper-api", "${project.extra["minecraft_version"]}-R0.1-SNAPSHOT")
+    this.embeds {
+        this.embed {
+            this.color(color)
 
-    compileOnly("me.clip", "placeholderapi", "2.11.2") {
-        exclude(group = "org.spigotmc")
-        exclude(group = "org.bukkit")
-    }
-}
+            this.fields {
+                this.field(
+                    "Version ${rootProject.version}",
+                    "Download Link: https://modrinth.com/$extension/${rootProject.name.lowercase()}/version/${rootProject.version}"
+                )
 
-java {
-    toolchain.languageVersion.set(JavaLanguageVersion.of(project.extra["java_version"].toString()))
-}
-
-val isBeta: Boolean = extra["isBeta"].toString().toBoolean()
-
-fun getPluginVersion(): String {
-    return if (isBeta) "${project.version}-BETA" else project.version.toString()
-}
-
-fun getPluginVersionType(): String {
-    return if (isBeta) "beta" else "release"
-}
-
-tasks {
-    shadowJar {
-        archiveFileName.set("${rootProject.name}-${getPluginVersion()}.jar")
-
-        listOf(
-            "de.tr7zw",
-            "org.bstats"
-        ).forEach {
-            relocate(it, "${project.group}.plugin.lib.$it")
-        }
-    }
-
-    modrinth {
-        token.set(System.getenv("MODRINTH_TOKEN"))
-        projectId.set(rootProject.name.toLowerCase())
-
-        versionName.set("${rootProject.name} ${getPluginVersion()}")
-        versionNumber.set(getPluginVersion())
-
-        versionType.set(getPluginVersionType())
-
-        uploadFile.set(shadowJar.get())
-
-        autoAddDependsOn.set(true)
-
-        gameVersions.addAll(listOf("1.18", "1.18.1", "1.18.2", "1.19", "1.19.1", "1.19.2", "1.19.3"))
-        loaders.addAll(listOf("paper", "purpur"))
-
-        //<h3>The first release for CrazyVouchers on Modrinth! 🎉🎉🎉🎉🎉<h3><br> If we want a header.
-        changelog.set("""
-                <h4>Changes:</h4>
-                 <p>Added 1.18.2 support.</p>
-                <h4>Bug Fixes:</h4>
-                 <p>N/A</p>
-            """.trimIndent())
-    }
-
-    compileJava {
-        options.release.set(project.extra["java_version"].toString().toInt())
-    }
-
-    processResources {
-        filesMatching("plugin.yml") {
-            expand(
-                "name" to rootProject.name,
-                "group" to project.group,
-                "version" to getPluginVersion(),
-                "description" to project.description,
-                "website" to "https://modrinth.com/plugin/${rootProject.name.toLowerCase()}"
-            )
-        }
-    }
-}
-
-publishing {
-    val mavenExt: String = if (isBeta) "beta" else "releases"
-
-    repositories {
-        maven("https://repo.crazycrew.us/$mavenExt") {
-            name = "crazycrew"
-            //credentials(PasswordCredentials::class)
-            credentials {
-                username = System.getenv("REPOSITORY_USERNAME")
-                password = System.getenv("REPOSITORY_PASSWORD")
+                this.field(
+                    "API Update",
+                    "Version ${rootProject.version} has been pushed to https://repo.crazycrew.us/#/$repo"
+                )
             }
-        }
-    }
 
-    publications {
-        create<MavenPublication>("maven") {
-            groupId = "${project.group}"
-            artifactId = rootProject.name.toLowerCase()
-            version = getPluginVersion()
-            from(components["java"])
+            this.author(
+                rootProject.name,
+                "https://modrinth.com/$extension/${rootProject.name.lowercase()}/versions",
+                "https://cdn-raw.modrinth.com/data/EMORKQjj/1cf7fffa9bf92d1bc292983dc320984cc764b51e.png"
+            )
         }
     }
 }
