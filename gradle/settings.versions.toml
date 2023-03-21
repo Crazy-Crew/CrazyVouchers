@@ -2,7 +2,7 @@
 
 # Project Settings
 github = "https://github.com/Crazy-Crew/CrazyVouchers"
-beta = "true"
+beta = "false"
 extension = "plugin"
 
 [plugins]
