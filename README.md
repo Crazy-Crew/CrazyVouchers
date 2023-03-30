@@ -1,8 +1,8 @@
 <br />
 
-[![CrazyVouchers](https://git.crazycrew.us/ryderbelserion/Assets/raw/branch/main/crazycrew/webp/CrazyVouchersBanner.webp)](https://modrinth.com/plugin/crazyvouchers)
-
 <div align="center">
+
+[![CrazyVouchers](https://raw.githubusercontent.com/RyderBelserion/Assets/main/crazycrew/webp/CrazyVouchersBanner.webp)](https://modrinth.com/plugin/crazyvouchers)
 
 [![Contributors][contributors-shield]][contributors-url]
 [![Forks][forks-shield]][forks-url]
