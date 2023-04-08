@@ -51,7 +51,7 @@ tasks {
 
         versionType.set(type)
 
-        uploadFile.set(shadowJar.get())
+        uploadFile.set(reobfJar.get())
 
         autoAddDependsOn.set(true)
 
