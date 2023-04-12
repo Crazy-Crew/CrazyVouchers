@@ -1,6 +1,6 @@
 Messages:
   Config-Reload: '&7You have just reloaded the Config.yml'
-  Inventory-Full: '&cYour inventory is too full. Please open up some space to buy that.'
+  Inventory-Full: '&cYour inventory is too full. Please empty your inventory to use this voucher.'
   Players-Only: '&cOnly players can use this command.'
   No-Permission: '&cYou do not have permission to use that command!'
   No-Permission-To-Voucher: '&cYou do not have permission to use that voucher.'

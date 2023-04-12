@@ -117,6 +117,11 @@ public class VoucherClick implements Listener {
         FileConfiguration data = FileManager.Files.DATA.getFile();
         String argument = crazyManager.getArgument(item, voucher);
 
+        if (!player.getInventory().isEmpty()) {
+            player.sendMessage(Messages.INVENTORY_FULL.getMessage());
+            return;
+        }
+
         if (passesPermissionChecks(player, voucher, argument)) {
             String uuid = player.getUniqueId().toString();
 
