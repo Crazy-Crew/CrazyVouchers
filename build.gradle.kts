@@ -61,9 +61,17 @@ webhook {
             this.title("What changed?")
 
             this.description("""
-                > Preventing opening vouchers if inventory is full.
+                » Preventing opening vouchers if inventory is full.
+                » Add a toggle to prevent people from opening vouchers in creative.
+                » Removed the update checker for Spigot, The option in config.yml is a paperweight.
                 
-                Full Changelog -> $desc
+                API:
+                 » N/A
+                 
+                Bugs:
+                 » Submit any bugs @ https://github.com/Crazy-Crew/CrazyVouchers/issues
+                
+                Full Changelog -> $download
             """.trimIndent())
         }
     }

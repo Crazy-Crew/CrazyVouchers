@@ -10,6 +10,7 @@ import com.badbones69.crazyvouchers.api.enums.Support;
 import com.badbones69.crazyvouchers.api.events.RedeemVoucherEvent;
 import com.google.common.collect.Maps;
 import me.clip.placeholderapi.PlaceholderAPI;
+import org.bukkit.GameMode;
 import org.bukkit.Material;
 import org.bukkit.Sound;
 import org.bukkit.configuration.file.FileConfiguration;
@@ -116,6 +117,13 @@ public class VoucherClick implements Listener {
     private void useVoucher(Player player, Voucher voucher, ItemStack item) {
         FileConfiguration data = FileManager.Files.DATA.getFile();
         String argument = crazyManager.getArgument(item, voucher);
+
+        FileConfiguration config = FileManager.Files.CONFIG.getFile();
+
+        if (player.getGameMode() == GameMode.CREATIVE && config.getBoolean("Settings.Must-Be-In-Survival")) {
+            player.sendMessage(Messages.SURVIVAL_MODE.getMessage());
+            return;
+        }
 
         if (!player.getInventory().isEmpty()) {
             player.sendMessage(Messages.INVENTORY_FULL.getMessage());
