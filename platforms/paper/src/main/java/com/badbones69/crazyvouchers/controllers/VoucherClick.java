@@ -15,6 +15,7 @@ import org.bukkit.GameMode;
 import org.bukkit.Material;
 import org.bukkit.Sound;
 import org.bukkit.configuration.file.FileConfiguration;
+import org.bukkit.craftbukkit.v1_19_R3.entity.CraftPlayer;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
@@ -25,6 +26,7 @@ import org.bukkit.event.player.PlayerInteractEntityEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.event.player.PlayerItemConsumeEvent;
 import org.bukkit.inventory.EquipmentSlot;
+import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 import java.util.HashMap;
 import java.util.concurrent.ThreadLocalRandom;
@@ -249,11 +251,33 @@ public class VoucherClick implements Listener {
         }
 
         for (ItemBuilder itemBuilder : voucher.getItems()) {
+            ItemStack itemStack = itemBuilder.build();
+
+            //int size = player.getInventory().getSize();
+
+            //int voucherSize = voucher.getItems().size();
+
+            //Inventory inventory = player.getInventory();
+
+            //int count = 0;
+
+            //for (ItemStack invItem : inventory.getContents()) {
+            //    if (item.getType() != Material.AIR) count++;
+            //}
+
+            //if (count + voucherSize > player.getInventory().getSize()) {
+            //    return;
+            //}
+
             if (!methods.isInventoryFull(player)) {
-                player.getInventory().addItem(itemBuilder.build());
+                player.getInventory().addItem(itemStack);
             } else {
-                player.getWorld().dropItem(player.getLocation(), itemBuilder.build());
+                player.getWorld().dropItem(player.getLocation(), itemStack);
             }
+
+            //HashMap<Integer, ItemStack> stack = player.getInventory().addItem(itemBuilder.build());
+
+            //stack.forEach((amount, itemStack) -> player.getWorld().dropItem(player.getLocation(), itemBuilder.build()));
         }
 
         if (voucher.playSounds()) {
