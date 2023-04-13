@@ -125,7 +125,7 @@ public class VoucherClick implements Listener {
             return;
         }
 
-        if (!player.getInventory().isEmpty()) {
+        if (player.getInventory().firstEmpty() == -1) {
             player.sendMessage(Messages.INVENTORY_FULL.getMessage());
             return;
         }
