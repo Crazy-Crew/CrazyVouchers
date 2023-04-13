@@ -17,13 +17,11 @@ val extension = settings.versions.extension.get()
 val color = if (beta) betaUpdate else releaseUpdate
 val repo = if (beta) "beta" else "releases"
 
-val download = "https://modrinth.com/$extension/${rootProject.name.lowercase()}/version/${rootProject.version}"
-
 val msg = "New version of ${rootProject.name} is ready! <@&1029922295210311681>"
 
 rootProject.version = "2.9.14.3"
 
-val desc = "https://modrinth.com/$extension/${rootProject.name.lowercase()}/version/${rootProject.version}"
+val download = "https://modrinth.com/$extension/${rootProject.name.lowercase()}/version/${rootProject.version}"
 
 webhook {
     this.avatar("https://en.gravatar.com/avatar/${WebhookExtension.Gravatar().md5Hex("no-reply@ryderbelserion.com")}.jpeg")
@@ -63,7 +61,7 @@ webhook {
             this.description("""
                 » Add a toggle to prevent people from opening vouchers in creative.
                 » Removed the update checker for Spigot, The option in config.yml is a paperweight.
-                » Removed unused config / messages
+                » Removed unused config / messages.
                 
                 API:
                  » N/A
