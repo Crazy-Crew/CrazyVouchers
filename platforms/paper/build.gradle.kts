@@ -107,8 +107,8 @@ publishing {
             //credentials(PasswordCredentials::class)
 
             credentials {
-                username = System.getenv("CRAZYCREW_USERNAME")
-                password = System.getenv("CRAZYCREW_PASSWORD")
+                username = System.getenv("REPOSITORY_USERNAME")
+                password = System.getenv("REPOSITORY_PASSWORD")
             }
         }
     }
