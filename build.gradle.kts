@@ -1,4 +1,3 @@
-import com.lordcodes.turtle.shellRun
 import task.WebhookExtension
 import java.awt.Color
 
@@ -18,18 +17,13 @@ val extension = settings.versions.extension.get()
 val color = if (beta) betaUpdate else releaseUpdate
 val repo = if (beta) "beta" else "releases"
 
-val download = if (beta) "https://ci.crazycrew.us/job/${rootProject.name}/" else "https://modrinth.com/$extension/${rootProject.name.lowercase()}/version/${rootProject.version}"
+val download = "https://modrinth.com/$extension/${rootProject.name.lowercase()}/version/${rootProject.version}"
 
-val msg = if (beta) "New version of ${rootProject.name} is ready!" else "New version of ${rootProject.name} is ready! <@&1029922295210311681>"
+val msg = "New version of ${rootProject.name} is ready! <@&1029922295210311681>"
 
-val hash = shellRun("git", listOf("rev-parse", "--short", "HEAD"))
+rootProject.version = "2.9.14.3"
 
-rootProject.version = if (beta) hash else "2.9.14.2"
-
-val desc = if (beta) """
-    Changes:
-    » N/A
-""".trimIndent() else "https://modrinth.com/$extension/${rootProject.name.lowercase()}/version/${rootProject.version}"
+val desc = "https://modrinth.com/$extension/${rootProject.name.lowercase()}/version/${rootProject.version}"
 
 webhook {
     this.avatar("https://en.gravatar.com/avatar/${WebhookExtension.Gravatar().md5Hex("no-reply@ryderbelserion.com")}.jpeg")
@@ -66,7 +60,19 @@ webhook {
 
             this.title("What changed?")
 
-            this.description(desc)
+            this.description("""
+                » Add a toggle to prevent people from opening vouchers in creative.
+                » Removed the update checker for Spigot, The option in config.yml is a paperweight.
+                » Removed unused config / messages
+                
+                API:
+                 » N/A
+                 
+                Bugs:
+                 » Submit any bugs @ https://github.com/Crazy-Crew/CrazyVouchers/issues
+                
+                Full Changelog -> $download
+            """.trimIndent())
         }
     }
 

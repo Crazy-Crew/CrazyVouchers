@@ -75,10 +75,11 @@ tasks {
         changelog.set(
             """
                 <h4>Changes:</h4>
-                 <p>Added 1.19.4 support</p>
-                 <p>Removed 1.18.2 and below support</p>
+                 <p>Add a toggle to prevent people from opening vouchers in creative</p>
+                 <p>Removed the update checker for Spigot, The option in config.yml is a paperweight.</p>
+                 <p>Removed unused config / messages</p>
                 <h4>Under the hood changes</h4>
-                 <p>Simplified build script</p>
+                 <p>N/A</p>
                 <h4>Bug Fixes:</h4>
                  <p>N/A</p>
             """.trimIndent()

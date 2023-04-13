@@ -12,7 +12,7 @@ import java.util.List;
 public enum Messages {
     
     RELOAD("Config-Reload", "&7You have just reloaded the Config.yml"),
-    INVENTORY_FULL("Inventory-Full", "&cYour inventory is to full. Please open up some space to buy that."),
+    SURVIVAL_MODE("Survival-Mode", "&cYou must be in survival mode to use vouchers."),
     PLAYERS_ONLY("Reload", "&cOnly players can use this command."),
     NO_PERMISSION("No-Permission", "&cYou do not have permission to use that command!"),
     NO_PERMISSION_TO_VOUCHER("No-Permission-To-Voucher", "&cYou do not have permission to use that voucher."),
