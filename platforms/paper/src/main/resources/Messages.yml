@@ -1,6 +1,5 @@
 Messages:
   Config-Reload: '&7You have just reloaded the Config.yml'
-  Inventory-Full: '&cYour inventory is too full. Please empty your inventory to use this voucher.'
   Survival-Mode: '&cYou must be in survival mode to use vouchers.'
   Players-Only: '&cOnly players can use this command.'
   No-Permission: '&cYou do not have permission to use that command!'

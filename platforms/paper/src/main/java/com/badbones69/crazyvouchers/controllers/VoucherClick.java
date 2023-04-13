@@ -125,11 +125,6 @@ public class VoucherClick implements Listener {
             return;
         }
 
-        if (player.getInventory().firstEmpty() == -1) {
-            player.sendMessage(Messages.INVENTORY_FULL.getMessage());
-            return;
-        }
-
         if (passesPermissionChecks(player, voucher, argument)) {
             String uuid = player.getUniqueId().toString();
 
