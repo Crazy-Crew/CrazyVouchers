@@ -61,9 +61,9 @@ webhook {
             this.title("What changed?")
 
             this.description("""
-                » Preventing opening vouchers if inventory is full.
                 » Add a toggle to prevent people from opening vouchers in creative.
                 » Removed the update checker for Spigot, The option in config.yml is a paperweight.
+                » Removed unused config / messages
                 
                 API:
                  » N/A
