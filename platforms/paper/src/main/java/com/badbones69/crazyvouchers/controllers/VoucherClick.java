@@ -1,4 +1,5 @@
 package com.badbones69.crazyvouchers.controllers;
+
 import com.badbones69.crazyvouchers.Methods;
 import com.badbones69.crazyvouchers.CrazyVouchers;
 import com.badbones69.crazyvouchers.api.FileManager;
