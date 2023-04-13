@@ -73,24 +73,8 @@ public class CrazyVouchers extends JavaPlugin implements Listener {
             Files.CONFIG.saveFile();
         }
 
-        String version = config.getString("Settings.Config-Version");
-
         if (metricsPath == null) {
             config.set("Settings.Toggle-Metrics", true);
-
-            Files.CONFIG.saveFile();
-        }
-
-        if (version == null) {
-            config.set("Settings.Config-Version", 1);
-
-            Files.CONFIG.saveFile();
-        }
-
-        String updater = config.getString("Settings.Update-Checker");
-
-        if (updater == null) {
-            config.set("Settings.Update-Checker", true);
 
             Files.CONFIG.saveFile();
         }
