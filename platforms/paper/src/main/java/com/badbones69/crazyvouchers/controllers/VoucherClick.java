@@ -1,33 +1,29 @@
 package com.badbones69.crazyvouchers.controllers;
 
-import com.badbones69.crazyvouchers.Methods;
 import com.badbones69.crazyvouchers.CrazyVouchers;
-import com.badbones69.crazyvouchers.api.FileManager;
+import com.badbones69.crazyvouchers.Methods;
 import com.badbones69.crazyvouchers.api.CrazyManager;
+import com.badbones69.crazyvouchers.api.FileManager;
 import com.badbones69.crazyvouchers.api.enums.Messages;
-import com.badbones69.crazyvouchers.api.objects.ItemBuilder;
-import com.badbones69.crazyvouchers.api.objects.Voucher;
 import com.badbones69.crazyvouchers.api.enums.Support;
 import com.badbones69.crazyvouchers.api.events.RedeemVoucherEvent;
+import com.badbones69.crazyvouchers.api.objects.ItemBuilder;
+import com.badbones69.crazyvouchers.api.objects.Voucher;
 import com.google.common.collect.Maps;
 import me.clip.placeholderapi.PlaceholderAPI;
 import org.bukkit.GameMode;
 import org.bukkit.Material;
 import org.bukkit.Sound;
 import org.bukkit.configuration.file.FileConfiguration;
-import org.bukkit.craftbukkit.v1_19_R3.entity.CraftPlayer;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.Action;
-import org.bukkit.event.inventory.CraftItemEvent;
-import org.bukkit.event.inventory.PrepareItemCraftEvent;
 import org.bukkit.event.player.PlayerInteractEntityEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.event.player.PlayerItemConsumeEvent;
 import org.bukkit.inventory.EquipmentSlot;
-import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 import java.util.HashMap;
 import java.util.concurrent.ThreadLocalRandom;
@@ -100,25 +96,6 @@ public class VoucherClick implements Listener {
     @EventHandler(priority = EventPriority.LOW, ignoreCancelled = true)
     public void onArmorStandClick(PlayerInteractEntityEvent e) {
         if (e.getHand() == EquipmentSlot.HAND && crazyManager.getVoucherFromItem(getItemInHand(e.getPlayer())) != null) e.setCancelled(true);
-    }
-
-    @EventHandler(priority = EventPriority.NORMAL, ignoreCancelled = true)
-    public void onPreCraft(PrepareItemCraftEvent event) {
-        if (!FileManager.Files.CONFIG.getFile().getBoolean("Settings.Prevent-Using-Vouchers-In-Recipes")) return;
-
-        for (ItemStack itemStack : event.getInventory().getMatrix()) {
-            Voucher voucher = crazyManager.getVoucherFromItem(itemStack);
-
-            if (voucher != null) {
-                event.getInventory().setResult(new ItemStack(Material.AIR));
-
-                event.getViewers().forEach(player -> {
-                    if (player instanceof Player) {
-                        player.sendMessage(Messages.CANNOT_PUT_ITEMS_IN_CRAFTING_TABLE.getMessage());
-                    }
-                });
-            }
-        }
     }
     
     private void useVoucher(Player player, Voucher voucher, ItemStack item) {

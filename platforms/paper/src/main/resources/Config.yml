@@ -16,7 +16,9 @@
 Settings: #Settings - Hex Color support does work, Please use #FFFFFF format!
   Prefix: '&7[&6Vouchers&7]: ' #The prefix before messages.
   Must-Be-In-Survival: True #Toggle whether they should be only allowed to use vouchers in survival.
-  Prevent-Using-Vouchers-In-Recipes: True #Toggle whether they should be be allowed to use vouchers in recipes.
+  Prevent-Using-Vouchers-In-Recipes:
+    Toggle: true #Toggle whether they should be allowed to use vouchers in recipes.
+    Alert: false #Toggle whether they should be sent an alert when trying to use vouchers in recipes.
   Toggle-Metrics: true #Turn on and off if your server stats are sent to https://bstats.org/ - Requires a restart!
 Vouchers: #Where you make your vouchers.
   Money: #The name of the voucher.
