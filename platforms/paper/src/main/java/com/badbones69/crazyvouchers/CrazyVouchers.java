@@ -65,7 +65,15 @@ public class CrazyVouchers extends JavaPlugin implements Listener {
         boolean metricsEnabled = Files.CONFIG.getFile().getBoolean("Settings.Toggle-Metrics");
         String metricsPath = Files.CONFIG.getFile().getString("Settings.Toggle-Metrics");
 
+        String useVouchers = Files.CONFIG.getFile().getString("Settings.Prevent-Using-Vouchers-In-Recipes");
+
         String path = Files.CONFIG.getFile().getString("Settings.Must-Be-In-Survival");
+
+        if (useVouchers == null) {
+            config.set("Settings.Prevent-Using-Vouchers-In-Recipes", true);
+
+            Files.CONFIG.saveFile();
+        }
 
         if (path == null) {
             config.set("Settings.Must-Be-In-Survival", true);
