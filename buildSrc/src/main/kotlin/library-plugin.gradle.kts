@@ -39,8 +39,14 @@ val commitLog = getGitHistory().joinToString(separator = "") { formatGitLog(it) 
 
 val desc = """
   # Release ${rootProject.version}
-           
-  Spigot support has been completely dropped.
+  ### Changes         
+  * Changes it from using the CraftItemEvent to PrepareCraftItemEvent
+  * Added 2 new config options
+    * `Prevent-Using-Vouchers-In-Recipes.Toggle` which defaults to true, Prevents crafting recipes from being complete when including a voucher.
+    * `Prevent-Using-Vouchers-In-Recipes.Alert` which defaults to false, Sends a message when an item that is a voucher is in the Crafting Table's 9 slots.
+  
+  * Added support to publish to https://hangar.papermc.io/CrazyCrew/CrazyVouchers
+  * Simplified the project as we are only going to focus on the Paper platform for the time being.
            
   ### Commits
             
@@ -52,7 +58,7 @@ val desc = """
             
   </details>
                 
-  Report any bugs @ https://github.com/Crazy-Crew/${rootProject.name}/issues
+  As always, report any bugs @ https://github.com/Crazy-Crew/${rootProject.name}/issues
 """.trimIndent()
 
 val versions = listOf(
