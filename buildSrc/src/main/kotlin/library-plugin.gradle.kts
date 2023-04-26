@@ -28,7 +28,7 @@ val otherType = if (isBeta) "Beta" else "Release"
 val msg = "New version of ${rootProject.name} is ready! <@&1029922295210311681>"
 
 val downloads = """
-    https://modrinth.com/plugin/${rootProject.name.lowercase()}/version/${rootProject.version}"
+    https://modrinth.com/plugin/${rootProject.name.lowercase()}/version/${rootProject.version}
     https://hangar.papermc.io/CrazyCrew/${rootProject.name}/versions/${rootProject.version}
 """.trimIndent()
 
@@ -161,19 +161,9 @@ webhook {
                 "https://raw.githubusercontent.com/RyderBelserion/assets/main/crazycrew/png/${rootProject.name}Website.png"
             )
         }
-
-        this.embed {
-            this.color(logColor)
-
-            this.title("What changed?")
-
-            this.description("""
-                Full Changelogs -> $downloads
-            """.trimIndent())
-        }
     }
 
-    this.url("DISCORD_WEBHOOK")
+    this.url("TEST_WEBHOOK")
 }
 
 publishing {
