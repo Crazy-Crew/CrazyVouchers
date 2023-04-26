@@ -44,9 +44,6 @@ val desc = """
   * Added 2 new config options
     * `Prevent-Using-Vouchers-In-Recipes.Toggle` which defaults to true, Prevents crafting recipes from being complete when including a voucher.
     * `Prevent-Using-Vouchers-In-Recipes.Alert` which defaults to false, Sends a message when an item that is a voucher is in the Crafting Table's 9 slots.
-  
-  * Added support to publish to https://hangar.papermc.io/CrazyCrew/CrazyVouchers
-  * Simplified the project as we are only going to focus on the Paper platform for the time being.
            
   ### Commits
             
