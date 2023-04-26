@@ -1,14 +1,14 @@
 package com.badbones69.crazyvouchers.controllers;
 
-import com.badbones69.crazyvouchers.Methods;
 import com.badbones69.crazyvouchers.CrazyVouchers;
-import com.badbones69.crazyvouchers.api.FileManager;
+import com.badbones69.crazyvouchers.Methods;
 import com.badbones69.crazyvouchers.api.CrazyManager;
+import com.badbones69.crazyvouchers.api.FileManager;
 import com.badbones69.crazyvouchers.api.enums.Messages;
-import com.badbones69.crazyvouchers.api.objects.ItemBuilder;
-import com.badbones69.crazyvouchers.api.objects.Voucher;
 import com.badbones69.crazyvouchers.api.enums.Support;
 import com.badbones69.crazyvouchers.api.events.RedeemVoucherEvent;
+import com.badbones69.crazyvouchers.api.objects.ItemBuilder;
+import com.badbones69.crazyvouchers.api.objects.Voucher;
 import com.google.common.collect.Maps;
 import me.clip.placeholderapi.PlaceholderAPI;
 import org.bukkit.GameMode;
@@ -20,7 +20,6 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.Action;
-import org.bukkit.event.inventory.CraftItemEvent;
 import org.bukkit.event.player.PlayerInteractEntityEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.event.player.PlayerItemConsumeEvent;
@@ -97,22 +96,6 @@ public class VoucherClick implements Listener {
     @EventHandler(priority = EventPriority.LOW, ignoreCancelled = true)
     public void onArmorStandClick(PlayerInteractEntityEvent e) {
         if (e.getHand() == EquipmentSlot.HAND && crazyManager.getVoucherFromItem(getItemInHand(e.getPlayer())) != null) e.setCancelled(true);
-    }
-
-    @EventHandler(priority = EventPriority.LOW, ignoreCancelled = true)
-    public void onCrafts(CraftItemEvent e) {
-        Player player = (Player) e.getWhoClicked();
-
-        for (ItemStack itemStack : e.getInventory().getContents()) {
-            Voucher voucher = crazyManager.getVoucherFromItem(itemStack);
-
-            if (voucher != null) {
-                player.sendMessage(Messages.CANNOT_PUT_ITEMS_IN_CRAFTING_TABLE.getMessage());
-                e.getInventory().setResult(null);
-                player.getInventory().addItem(itemStack);
-                e.getInventory().remove(itemStack);
-            }
-        }
     }
     
     private void useVoucher(Player player, Voucher voucher, ItemStack item) {
@@ -249,10 +232,12 @@ public class VoucherClick implements Listener {
         }
 
         for (ItemBuilder itemBuilder : voucher.getItems()) {
+            ItemStack itemStack = itemBuilder.build();
+
             if (!methods.isInventoryFull(player)) {
-                player.getInventory().addItem(itemBuilder.build());
+                player.getInventory().addItem(itemStack);
             } else {
-                player.getWorld().dropItem(player.getLocation(), itemBuilder.build());
+                player.getWorld().dropItem(player.getLocation(), itemStack);
             }
         }
 

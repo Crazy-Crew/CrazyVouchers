@@ -81,7 +81,7 @@ public class CrazyManager {
         try {
             NBTItem nbt = new NBTItem(item);
 
-            if (nbt.hasKey("voucher")) return getVoucher(nbt.getString("voucher"));
+            if (nbt.hasTag("voucher")) return getVoucher(nbt.getString("voucher"));
 
         } catch (Exception ignored) {}
         return null;
@@ -92,7 +92,7 @@ public class CrazyManager {
             // Checks to see if the voucher uses nbt tags.
             NBTItem nbt = new NBTItem(item);
 
-            if (nbt.hasKey("voucher") && nbt.hasKey("argument")) {
+            if (nbt.hasTag("voucher") && nbt.hasTag("argument")) {
                 if (nbt.getString("voucher").equalsIgnoreCase(voucher.getName())) return nbt.getString("argument");
             }
         }

@@ -9,6 +9,7 @@ import com.badbones69.crazyvouchers.commands.VoucherCommands;
 import com.badbones69.crazyvouchers.commands.VoucherTab;
 import com.badbones69.crazyvouchers.controllers.FireworkDamageAPI;
 import com.badbones69.crazyvouchers.controllers.VoucherClick;
+import com.badbones69.crazyvouchers.listeners.VoucherCraftListener;
 import com.badbones69.crazyvouchers.support.MetricsHandler;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.PluginCommand;
@@ -53,6 +54,7 @@ public class CrazyVouchers extends JavaPlugin implements Listener {
 
         pluginManager.registerEvents(this, this);
         pluginManager.registerEvents(new VoucherClick(), this);
+        pluginManager.registerEvents(new VoucherCraftListener(), this);
         pluginManager.registerEvents(gui = new GUI(), this);
         pluginManager.registerEvents(fireworkDamageAPI = new FireworkDamageAPI(), this);
 
@@ -65,7 +67,16 @@ public class CrazyVouchers extends JavaPlugin implements Listener {
         boolean metricsEnabled = Files.CONFIG.getFile().getBoolean("Settings.Toggle-Metrics");
         String metricsPath = Files.CONFIG.getFile().getString("Settings.Toggle-Metrics");
 
+        String useVouchers = Files.CONFIG.getFile().getString("Settings.Prevent-Using-Vouchers-In-Recipes");
+
         String path = Files.CONFIG.getFile().getString("Settings.Must-Be-In-Survival");
+
+        if (useVouchers == null) {
+            config.set("Settings.Prevent-Using-Vouchers-In-Recipes.Toggle", true);
+            config.set("Settings.Prevent-Using-Vouchers-In-Recipes.Alert", false);
+
+            Files.CONFIG.saveFile();
+        }
 
         if (path == null) {
             config.set("Settings.Must-Be-In-Survival", true);
