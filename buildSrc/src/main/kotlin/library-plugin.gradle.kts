@@ -163,7 +163,7 @@ webhook {
         }
     }
 
-    this.url("TEST_WEBHOOK")
+    this.url("DISCORD_WEBHOOK")
 }
 
 publishing {
