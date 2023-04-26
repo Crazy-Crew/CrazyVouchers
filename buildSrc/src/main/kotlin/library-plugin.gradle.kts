@@ -86,7 +86,7 @@ fun formatGitLog(commitLog: String): String {
 tasks {
     modrinth {
         token.set(System.getenv("MODRINTH_TOKEN"))
-        projectId.set("crazycratestest")
+        projectId.set(rootProject.name.lowercase())
 
         versionName.set("${rootProject.name} ${rootProject.version}")
         versionNumber.set(rootProject.version.toString())
