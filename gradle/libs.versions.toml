@@ -6,7 +6,7 @@ hangar = { module = "io.papermc:hangar-publish-plugin", version = "0.0.5" }
 
 minotaur = { module = "com.modrinth.minotaur:Minotaur", version = "2.7.2" }
 paperweight = { module = "io.papermc.paperweight:paperweight-userdev", version = "1.5.3" }
-featherweight = { module = "com.ryderbelserion.feather:feather-plugin", version = "0.0.0.3" }
+featherweight = { module = "com.ryderbelserion.feather:feather-plugin", version = "0.0.0.2" }
 
 shadow = { module = "com.github.johnrengelman:shadow", version = "8.1.1" }
 

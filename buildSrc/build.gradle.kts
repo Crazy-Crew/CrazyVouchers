@@ -6,7 +6,6 @@ repositories {
     gradlePluginPortal()
 
     maven("https://repo.crazycrew.us/api/")
-    mavenLocal()
 }
 
 dependencies {
