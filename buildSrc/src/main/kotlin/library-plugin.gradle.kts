@@ -11,7 +11,7 @@ plugins {
 
     id("featherpatcher")
     id("com.modrinth.minotaur")
-    id("io.papermc.hangar-publish-plugin")
+    //id("io.papermc.hangar-publish-plugin")
 }
 
 val releaseColor = Color(27, 217, 106)
@@ -113,7 +113,7 @@ tasks {
     }
 }
 
-hangarPublish {
+/*hangarPublish {
     publications.register("release") {
 
         namespace("CrazyCrew", rootProject.name)
@@ -136,6 +136,7 @@ hangarPublish {
         }
     }
 }
+ */
 
 webhook {
     this.avatar("https://en.gravatar.com/avatar/${WebhookExtension.Gravatar().md5Hex("no-reply@ryderbelserion.com")}.jpeg")
