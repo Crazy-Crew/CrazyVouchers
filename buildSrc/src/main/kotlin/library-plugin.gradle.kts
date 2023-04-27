@@ -29,7 +29,6 @@ val msg = "New version of ${rootProject.name} is ready! <@&1029922295210311681>"
 
 val downloads = """
     https://modrinth.com/plugin/${rootProject.name.lowercase()}/version/${rootProject.version}
-    https://hangar.papermc.io/CrazyCrew/${rootProject.name}/versions/${rootProject.version}
 """.trimIndent()
 
 // The commit id for the "main" branch prior to merging a pull request.
