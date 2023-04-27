@@ -32,8 +32,10 @@ val downloads = """
     https://hangar.papermc.io/CrazyCrew/${rootProject.name}/versions/${rootProject.version}
 """.trimIndent()
 
-val start = shellRun("git", listOf("rev-parse", "--short", "origin/main"))
-val end = shellRun("git", listOf("rev-parse", "--short", "HEAD"))
+//val start = shellRun("git", listOf("rev-parse", "--short", "origin/main"))
+val start = "d0585eb"
+val end = "008b197"
+//val end = shellRun("git", listOf("rev-parse", "--short", "HEAD"))
 
 val commitLog = getGitHistory().joinToString(separator = "") { formatGitLog(it) }
 

@@ -47,8 +47,9 @@
   </ol>
 </details>
 
-### Resource Page
+### Resource Pages
 <a href="https://modrinth.com/plugin/crazyvouchers">![Modrinth](https://raw.githubusercontent.com/intergrav/devins-badges/v3/assets/compact/available/modrinth_46h.png)</a>
+<a href="https://hangar.papermc.io/CrazyCrew/CrazyVouchers">![Hangar](https://raw.githubusercontent.com/intergrav/devins-badges/v3/assets/compact/available/hangar_46h.png)</a>
 
 ## Getting Started
 
