@@ -1,12 +1,12 @@
 name: CrazyVouchers
-main: ${group}.CrazyVouchers
+main: com.badbones69.crazyvouchers.CrazyVouchers
 
 authors: [BadBones69, RyderBelserion]
 
-version: ${version}
+version: '2.9.14.4'
 api-version: '1.19'
-description: ${description}
-website: ${website}
+description: 'Want to make a paper that can give you an axolotl with a pretty firework display, Look no further!'
+website: 'https://github.com/Crazy-Crew/CrazyVouchers'
 
 softdepend: [PlaceholderAPI]
 
