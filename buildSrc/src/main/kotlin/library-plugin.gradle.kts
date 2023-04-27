@@ -18,7 +18,7 @@ val releaseColor = Color(27, 217, 106)
 val betaColor = Color(255, 163, 71)
 val logColor = Color(37, 137, 204)
 
-val isBeta = true
+val isBeta = false
 val color = if (isBeta) logColor else releaseColor
 val repo = if (isBeta) "beta" else "releases"
 
@@ -116,7 +116,7 @@ tasks {
 hangarPublish {
     publications.register("release") {
 
-        namespace("Ryder Belserion", rootProject.name)
+        namespace("CrazyCrew", rootProject.name)
         version.set(rootProject.version as String)
         channel.set(otherType)
 
