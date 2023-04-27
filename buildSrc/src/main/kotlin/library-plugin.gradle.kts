@@ -32,10 +32,11 @@ val downloads = """
     https://hangar.papermc.io/CrazyCrew/${rootProject.name}/versions/${rootProject.version}
 """.trimIndent()
 
-//val start = shellRun("git", listOf("rev-parse", "--short", "origin/main"))
+// The commit id for the "main" branch prior to merging a pull request.
 val start = "d0585eb"
+
+// The commit id AFTER merging the pull request so the last commit before you release.
 val end = "008b197"
-//val end = shellRun("git", listOf("rev-parse", "--short", "HEAD"))
 
 val commitLog = getGitHistory().joinToString(separator = "") { formatGitLog(it) }
 
