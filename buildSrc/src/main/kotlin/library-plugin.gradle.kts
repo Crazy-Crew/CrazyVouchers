@@ -1,3 +1,4 @@
+import java.io.ByteArrayOutputStream
 import java.io.File
 
 plugins {
@@ -20,12 +21,12 @@ val downloads = """
 """.trimIndent()
 
 // The commit id for the "main" branch prior to merging a pull request.
-//val start = "771117"
+val start = "ddeb4f3"
 
-// The commit id AFTER merging the pull request so the last commit before you release.
-//val end = "9deae3"
+// The commit id BEFORE merging the pull request so before "Merge pull request #30"
+val end = "5ffdca7"
 
-//val commitLog = getGitHistory().joinToString(separator = "") { formatGitLog(it) }
+val commitLog = getGitHistory().joinToString(separator = "") { formatGitLog(it) }
 
 val desc = """
 ## Changes:
@@ -42,6 +43,8 @@ val desc = """
 <details>
           
 <summary>Other</summary>
+
+$commitLog
             
 </details>
 
@@ -52,7 +55,7 @@ val versions = listOf(
     "1.20"
 )
 
-/*fun getGitHistory(): List<String> {
+fun getGitHistory(): List<String> {
     val output: String = ByteArrayOutputStream().use { outputStream ->
         project.exec {
             executable("git")
@@ -71,7 +74,6 @@ fun formatGitLog(commitLog: String): String {
     val message = commitLog.substring(8) // Get message after commit hash + space between
     return "[$hash](https://github.com/Crazy-Crew/${rootProject.name}/commit/$hash) $message<br>"
 }
- */
 
 val javaComponent: SoftwareComponent = components["java"]
 
