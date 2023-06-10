@@ -8,17 +8,8 @@ plugins {
     id("com.modrinth.minotaur")
 }
 
-val isBeta = false
-val repo = if (isBeta) "beta" else "releases"
-
-val type = if (isBeta) "beta" else "release"
-val otherType = if (isBeta) "Beta" else "Release"
-
-val msg = "New version of ${rootProject.name} is ready! <@&1029922295210311681>"
-
-val downloads = """
-    https://modrinth.com/plugin/${rootProject.name.lowercase()}/version/${rootProject.version}
-""".trimIndent()
+val isSnapshot = rootProject.version.toString().contains("snapshot")
+val type = if (isSnapshot) "beta" else "release"
 
 // The commit id for the "main" branch prior to merging a pull request.
 val start = "ddeb4f3"
@@ -36,7 +27,7 @@ val desc = """
  * N/A
 
 ## Bugs:
- * Submit any bugs @ https://github.com/Crazy-Crew/CrazyVouchers/issues 
+ * Submit any bugs @ https://github.com/Crazy-Crew/${rootProject.name}/issues 
 
 ## Commits
             
@@ -48,7 +39,6 @@ $commitLog
             
 </details>
 
-As always, report any bugs @ https://github.com/Crazy-Crew/${rootProject.name}/issues
 """.trimIndent()
 
 val versions = listOf(
@@ -119,7 +109,7 @@ tasks {
                     this.password = System.getenv("gradle_password")
                 }
 
-                if (rootProject.version.toString().contains("SNAPSHOT")) {
+                if (isSnapshot) {
                     url = uri("https://repo.crazycrew.us/snapshots/")
                     return@maven
                 }
