@@ -5,7 +5,6 @@ plugins {
 
     id("featherpatcher")
     id("com.modrinth.minotaur")
-    //id("io.papermc.hangar-publish-plugin")
 }
 
 val isBeta = false
@@ -29,26 +28,27 @@ val downloads = """
 //val commitLog = getGitHistory().joinToString(separator = "") { formatGitLog(it) }
 
 val desc = """
-  # Release ${rootProject.version}
-  ### Changes         
-  * Changes it from using the CraftItemEvent to PrepareCraftItemEvent
-  * Added 2 new config options
-    * `Prevent-Using-Vouchers-In-Recipes.Toggle` which defaults to true, Prevents crafting recipes from being complete when including a voucher.
-    * `Prevent-Using-Vouchers-In-Recipes.Alert` which defaults to false, Sends a message when an item that is a voucher is in the Crafting Table's 9 slots.
-           
-  ### Commits
+## Changes:
+ * Added 1.20 support.
+
+## API:
+ * N/A
+
+## Bugs:
+ * Submit any bugs @ https://github.com/Crazy-Crew/CrazyVouchers/issues 
+
+## Commits
             
-  <details>
+<details>
           
-  <summary>Other</summary>
+<summary>Other</summary>
             
-  </details>
-                
-  As always, report any bugs @ https://github.com/Crazy-Crew/${rootProject.name}/issues
+</details>
+
+As always, report any bugs @ https://github.com/Crazy-Crew/${rootProject.name}/issues
 """.trimIndent()
 
 val versions = listOf(
-    "1.19.4",
     "1.20"
 )
 
@@ -73,6 +73,8 @@ fun formatGitLog(commitLog: String): String {
 }
  */
 
+val javaComponent: SoftwareComponent = components["java"]
+
 tasks {
     modrinth {
         token.set(System.getenv("MODRINTH_TOKEN"))
@@ -96,54 +98,32 @@ tasks {
 
         changelog.set(desc)
     }
-}
 
-/*hangarPublish {
-    publications.register("release") {
+    publishing {
+        publications {
+            create<MavenPublication>("maven") {
+                groupId = rootProject.group.toString()
+                artifactId = "${rootProject.name.lowercase()}-api"
+                version = rootProject.version.toString()
 
-        namespace("CrazyCrew", rootProject.name)
-        version.set(rootProject.version as String)
-        channel.set(otherType)
-
-        changelog.set(desc)
-
-        apiKey.set(System.getenv("HANGAR_KEY"))
-
-        val file = File("$rootDir/jars")
-        if (!file.exists()) file.mkdirs()
-
-        platforms {
-            register(Platforms.PAPER) {
-                jar.set(layout.buildDirectory.file("$file/${rootProject.name}-${rootProject.version}.jar"))
-
-                platformVersions.set(versions)
+                from(javaComponent)
             }
         }
-    }
-}
- */
 
-publishing {
-    repositories {
-        val repo = if (isBeta) "beta" else "releases"
-        maven("https://repo.crazycrew.us/$repo") {
-            name = "crazycrew"
-            //credentials(PasswordCredentials::class)
+        repositories {
+            maven {
+                credentials {
+                    this.username = System.getenv("gradle_username")
+                    this.password = System.getenv("gradle_password")
+                }
 
-            credentials {
-                username = System.getenv("REPOSITORY_USERNAME")
-                password = System.getenv("REPOSITORY_PASSWORD")
+                if (rootProject.version.toString().contains("SNAPSHOT")) {
+                    url = uri("https://repo.crazycrew.us/snapshots/")
+                    return@maven
+                }
+
+                url = uri("https://repo.crazycrew.us/releases/")
             }
-        }
-    }
-
-    publications {
-        create<MavenPublication>("maven") {
-            groupId = rootProject.group.toString()
-            artifactId = "${rootProject.name.lowercase()}-api"
-            version = rootProject.version.toString()
-
-            from(components["java"])
         }
     }
 }

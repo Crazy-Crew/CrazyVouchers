@@ -1,12 +1,12 @@
 [libraries]
 
 # Minecraft
-papermc = { module = "io.papermc.paper:paper-api", version = "1.19.4-R0.1-SNAPSHOT" }
+papermc = { module = "io.papermc.paper:paper-api", version = "1.20-R0.1-SNAPSHOT" }
 hangar = { module = "io.papermc:hangar-publish-plugin", version = "0.0.5" }
 
 minotaur = { module = "com.modrinth.minotaur:Minotaur", version = "2.7.2" }
 paperweight = { module = "io.papermc.paperweight:paperweight-userdev", version = "1.5.3" }
-featherweight = { module = "com.ryderbelserion.feather:feather-plugin", version = "0.0.0.2" }
+featherweight = { module = "com.ryderbelserion.feather:feather-plugin", version = "0.0.0.4" }
 
 shadow = { module = "com.github.johnrengelman:shadow", version = "8.1.1" }
 
@@ -19,7 +19,7 @@ crazycore = { module = "us.crazycrew.crazycore:crazycore-api", version = "2.0.0.
 triumph_cmds = { module = "dev.triumphteam:triumph-cmd-bukkit", version = "2.0.0-SNAPSHOT" }
 
 # Misc
-nbt_api = { module = "de.tr7zw:item-nbt-api", version = "2.11.2" }
+nbt_api = { module = "de.tr7zw:item-nbt-api", version = "2.11.3" }
 bstats_bukkit = { module = "org.bstats:bstats-bukkit", version = "3.0.0" }
 
 # CMI

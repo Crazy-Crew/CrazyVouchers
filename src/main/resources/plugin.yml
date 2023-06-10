@@ -1,10 +1,10 @@
-name: CrazyVouchers
-main: com.badbones69.crazyvouchers.CrazyVouchers
+name: 'CrazyVouchers'
+main: 'com.badbones69.crazyvouchers.CrazyVouchers'
 
 authors: [BadBones69, RyderBelserion]
 
-version: '2.9.14.4'
-api-version: '1.19'
+version: '2.9.14.5'
+api-version: '1.20'
 description: 'Want to make a paper that can give you an axolotl with a pretty firework display, Look no further!'
 website: 'https://github.com/Crazy-Crew/CrazyVouchers'
 

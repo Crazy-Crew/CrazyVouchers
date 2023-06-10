@@ -1,6 +1,6 @@
 plugins {
     id("paper-plugin")
-    id("library-plugin")
+    //id("library-plugin")
 
     id("xyz.jpenilla.run-paper") version "2.0.1"
 }
@@ -24,6 +24,6 @@ tasks {
     }
 
     runServer {
-        minecraftVersion("1.19.4")
+        minecraftVersion("1.20")
     }
 }
