@@ -9,11 +9,7 @@ paperweight = { module = "io.papermc.paperweight:paperweight-userdev", version =
 featherweight = { module = "com.ryderbelserion.feather:feather-plugin", version = "0.0.0.4" }
 
 shadow = { module = "com.github.johnrengelman:shadow", version = "8.1.1" }
-
 turtle = { module = "com.lordcodes.turtle:turtle", version = "0.8.0" }
-
-# CrazyCrew
-crazycore = { module = "us.crazycrew.crazycore:crazycore-api", version = "2.0.0.4" }
 
 # Triumph Team
 triumph_cmds = { module = "dev.triumphteam:triumph-cmd-bukkit", version = "2.0.0-SNAPSHOT" }
@@ -21,10 +17,6 @@ triumph_cmds = { module = "dev.triumphteam:triumph-cmd-bukkit", version = "2.0.0
 # Misc
 nbt_api = { module = "de.tr7zw:item-nbt-api", version = "2.11.3" }
 bstats_bukkit = { module = "org.bstats:bstats-bukkit", version = "3.0.0" }
-
-# CMI
-cmi_api = { module = "com.Zrips.CMI:CMI-API", version = "9.3.1.5" }
-cmi_lib = { module = "net.zrips.CMILib:cmi-lib-api", version = "1.2.5.3" }
 
 # Placeholders
 placeholder_api = { module = "me.clip:placeholderapi", version = "2.11.3" }
