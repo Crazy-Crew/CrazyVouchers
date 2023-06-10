@@ -13,6 +13,7 @@ repositories {
     maven("https://repo.triumphteam.dev/snapshots/")
 
     maven("https://repo.crazycrew.us/first-party/")
+    maven("https://repo.crazycrew.us/third-party/")
 
     maven("https://jitpack.io/")
 
