@@ -5,7 +5,7 @@ plugins {
 repositories {
     gradlePluginPortal()
 
-    maven("https://repo.crazycrew.us/api/")
+    maven("https://repo.crazycrew.us/first-party/")
 }
 
 dependencies {

@@ -1,25 +1,13 @@
-import java.awt.Color
 import java.io.File
-import task.WebhookExtension
-import io.papermc.hangarpublishplugin.model.Platforms
-import com.lordcodes.turtle.shellRun
-import com.ryderbelserion.feather.git.Patcher
-import java.io.ByteArrayOutputStream
 
 plugins {
     id("root-plugin")
 
     id("featherpatcher")
     id("com.modrinth.minotaur")
-    //id("io.papermc.hangar-publish-plugin")
 }
 
-val releaseColor = Color(27, 217, 106)
-val betaColor = Color(255, 163, 71)
-val logColor = Color(37, 137, 204)
-
 val isBeta = false
-val color = if (isBeta) logColor else releaseColor
 val repo = if (isBeta) "beta" else "releases"
 
 val type = if (isBeta) "beta" else "release"
@@ -32,43 +20,39 @@ val downloads = """
 """.trimIndent()
 
 // The commit id for the "main" branch prior to merging a pull request.
-val start = "d0585eb"
+//val start = "771117"
 
 // The commit id AFTER merging the pull request so the last commit before you release.
-val end = "008b197"
+//val end = "9deae3"
 
-val commitLog = getGitHistory().joinToString(separator = "") { formatGitLog(it) }
+//val commitLog = getGitHistory().joinToString(separator = "") { formatGitLog(it) }
 
 val desc = """
-  # Release ${rootProject.version}
-  ### Changes         
-  * Changes it from using the CraftItemEvent to PrepareCraftItemEvent
-  * Added 2 new config options
-    * `Prevent-Using-Vouchers-In-Recipes.Toggle` which defaults to true, Prevents crafting recipes from being complete when including a voucher.
-    * `Prevent-Using-Vouchers-In-Recipes.Alert` which defaults to false, Sends a message when an item that is a voucher is in the Crafting Table's 9 slots.
-           
-  ### Commits
+## Changes:
+ * Added 1.20 support.
+
+## API:
+ * N/A
+
+## Bugs:
+ * Submit any bugs @ https://github.com/Crazy-Crew/CrazyVouchers/issues 
+
+## Commits
             
-  <details>
+<details>
           
-  <summary>Other</summary>
-           
-  $commitLog
+<summary>Other</summary>
             
-  </details>
-                
-  As always, report any bugs @ https://github.com/Crazy-Crew/${rootProject.name}/issues
+</details>
+
+As always, report any bugs @ https://github.com/Crazy-Crew/${rootProject.name}/issues
 """.trimIndent()
 
 val versions = listOf(
-    "1.19",
-    "1.19.1",
-    "1.19.2",
-    "1.19.3",
-    "1.19.4"
+    "1.20"
 )
 
-fun getGitHistory(): List<String> {
+/*fun getGitHistory(): List<String> {
     val output: String = ByteArrayOutputStream().use { outputStream ->
         project.exec {
             executable("git")
@@ -87,6 +71,9 @@ fun formatGitLog(commitLog: String): String {
     val message = commitLog.substring(8) // Get message after commit hash + space between
     return "[$hash](https://github.com/Crazy-Crew/${rootProject.name}/commit/$hash) $message<br>"
 }
+ */
+
+val javaComponent: SoftwareComponent = components["java"]
 
 tasks {
     modrinth {
@@ -111,88 +98,32 @@ tasks {
 
         changelog.set(desc)
     }
-}
 
-/*hangarPublish {
-    publications.register("release") {
+    publishing {
+        publications {
+            create<MavenPublication>("maven") {
+                groupId = rootProject.group.toString()
+                artifactId = "${rootProject.name.lowercase()}-api"
+                version = rootProject.version.toString()
 
-        namespace("CrazyCrew", rootProject.name)
-        version.set(rootProject.version as String)
-        channel.set(otherType)
-
-        changelog.set(desc)
-
-        apiKey.set(System.getenv("HANGAR_KEY"))
-
-        val file = File("$rootDir/jars")
-        if (!file.exists()) file.mkdirs()
-
-        platforms {
-            register(Platforms.PAPER) {
-                jar.set(layout.buildDirectory.file("$file/${rootProject.name}-${rootProject.version}.jar"))
-
-                platformVersions.set(versions)
+                from(javaComponent)
             }
         }
-    }
-}
- */
 
-webhook {
-    this.avatar("https://en.gravatar.com/avatar/${WebhookExtension.Gravatar().md5Hex("no-reply@ryderbelserion.com")}.jpeg")
+        repositories {
+            maven {
+                credentials {
+                    this.username = System.getenv("gradle_username")
+                    this.password = System.getenv("gradle_password")
+                }
 
-    this.username("Ryder Belserion")
+                if (rootProject.version.toString().contains("SNAPSHOT")) {
+                    url = uri("https://repo.crazycrew.us/snapshots/")
+                    return@maven
+                }
 
-    this.content(msg)
-
-    this.embeds {
-        this.embed {
-            this.color(color)
-
-            this.fields {
-                this.field(
-                    "Download: ",
-                    downloads
-                )
-
-                this.field(
-                    "API: ",
-                    "https://repo.crazycrew.us/#/$repo/${rootProject.group.toString().replace(".", "/")}/${rootProject.name.lowercase()}-api/${rootProject.version}"
-                )
+                url = uri("https://repo.crazycrew.us/releases/")
             }
-
-            this.author(
-                "${rootProject.name} | Version ${rootProject.version}",
-                downloads,
-                "https://raw.githubusercontent.com/RyderBelserion/assets/main/crazycrew/png/${rootProject.name}Website.png"
-            )
-        }
-    }
-
-    this.url("DISCORD_WEBHOOK")
-}
-
-publishing {
-    repositories {
-        val repo = if (isBeta) "beta" else "releases"
-        maven("https://repo.crazycrew.us/$repo") {
-            name = "crazycrew"
-            //credentials(PasswordCredentials::class)
-
-            credentials {
-                username = System.getenv("REPOSITORY_USERNAME")
-                password = System.getenv("REPOSITORY_PASSWORD")
-            }
-        }
-    }
-
-    publications {
-        create<MavenPublication>("maven") {
-            groupId = rootProject.group.toString()
-            artifactId = "${rootProject.name.lowercase()}-api"
-            version = rootProject.version.toString()
-
-            from(components["java"])
         }
     }
 }
