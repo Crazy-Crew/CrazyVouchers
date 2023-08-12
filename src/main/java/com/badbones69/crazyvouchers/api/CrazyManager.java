@@ -1,10 +1,13 @@
 package com.badbones69.crazyvouchers.api;
 
+import com.badbones69.crazyvouchers.api.objects.ItemBuilder;
 import com.badbones69.crazyvouchers.api.objects.Voucher;
 import de.tr7zw.changeme.nbtapi.NBTItem;
 import com.badbones69.crazyvouchers.api.objects.VoucherCode;
+import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.inventory.ItemStack;
 import java.util.ArrayList;
+import java.util.List;
 import java.util.concurrent.ThreadLocalRandom;
 
 public class CrazyManager {
@@ -128,6 +131,10 @@ public class CrazyManager {
         }
 
         return newString;
+    }
+
+    public List<ItemBuilder> getItems(FileConfiguration file, String voucher) {
+        return ItemBuilder.convertStringList(file.getStringList("Vouchers." + voucher + ".Items"), voucher);
     }
     
     private boolean usesRandom(String string) {

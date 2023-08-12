@@ -1,6 +1,7 @@
 package com.badbones69.crazyvouchers.api.objects;
 
 import com.badbones69.crazyvouchers.CrazyVouchers;
+import com.badbones69.crazyvouchers.api.CrazyManager;
 import de.tr7zw.changeme.nbtapi.NBTItem;
 import com.badbones69.crazyvouchers.Methods;
 import com.badbones69.crazyvouchers.api.FileManager.Files;
@@ -11,8 +12,6 @@ import org.bukkit.Registry;
 import org.bukkit.Sound;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.inventory.ItemStack;
-import org.bukkit.inventory.meta.trim.TrimMaterial;
-
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -23,35 +22,39 @@ public class Voucher {
     
     private final String name;
     private boolean usesArgs;
-    private final ItemBuilder itemBuilder;
     private boolean glowing;
-    private final String usedMessage;
-    private final boolean whitelistPermissionToggle;
+    private String usedMessage;
+    private boolean whitelistPermissionToggle;
     private final List<String> whitelistPermissions = new ArrayList<>();
     private List<String> whitelistCommands = new ArrayList<>();
     private String whitelistPermissionMessage;
-    private final boolean whitelistWorldsToggle;
+    private boolean whitelistWorldsToggle;
     private String whitelistWorldMessage;
     private final List<String> whitelistWorlds = new ArrayList<>();
     private List<String> whitelistWorldCommands = new ArrayList<>();
-    private final boolean blacklistPermissionsToggle;
+    private boolean blacklistPermissionsToggle;
     private String blacklistPermissionMessage;
     private List<String> blacklistCommands = new ArrayList<>();
     private List<String> blacklistPermissions = new ArrayList<>();
-    private final boolean limiterToggle;
+    private boolean limiterToggle;
     private int limiterLimit;
-    private final boolean twoStepAuthentication;
-    private final boolean soundToggle;
+    private boolean twoStepAuthentication;
+    private boolean soundToggle;
     private final List<Sound> sounds = new ArrayList<>();
-    private final boolean fireworkToggle;
+    private boolean fireworkToggle;
     private final List<Color> fireworkColors = new ArrayList<>();
     private boolean isEdible;
     private List<String> commands = new ArrayList<>();
     private final List<VoucherCommand> randomCommands = new ArrayList<>();
     private final List<VoucherCommand> chanceCommands = new ArrayList<>();
-    private final List<ItemBuilder> items = new ArrayList<>();
+    private final List<ItemBuilder> items = new ArrayList<ItemBuilder>();
     private final Map<String, String> requiredPlaceholders = new HashMap<>();
     private String requiredPlaceholdersMessage;
+
+    private final CrazyVouchers plugin = CrazyVouchers.getPlugin();
+    private final CrazyManager crazyManager = this.plugin.getCrazyManager();
+
+    private final Methods methods = plugin.getMethods();
 
     /**
      * This is just used for imputing fake vouchers.
@@ -61,7 +64,6 @@ public class Voucher {
     public Voucher(int number) {
         this.name = number + "";
         this.usesArgs = false;
-        itemBuilder = new ItemBuilder().setMaterial("Stone").setName(number + "");
         this.usedMessage = "";
         this.whitelistPermissionToggle = false;
         this.whitelistPermissionMessage = "";
@@ -77,32 +79,33 @@ public class Voucher {
         this.isEdible = false;
         this.requiredPlaceholdersMessage = "";
     }
-
-    private final CrazyVouchers plugin = CrazyVouchers.getPlugin();
-
-    private final Methods methods = plugin.getMethods();
     
     public Voucher(String name) {
         this.name = name;
         this.usesArgs = false;
+    }
+
+    public ItemBuilder build() {
         FileConfiguration config = Files.CONFIG.getFile();
-        String path = "Vouchers." + name + ".";
+        String path = "Vouchers." + name;
+
+        ItemBuilder itemBuilder;
 
         itemBuilder = new ItemBuilder()
-        .setMaterial(config.getString(path + "Item", "Stone"))
-        .setName(config.getString(path + "Name", ""))
-        .setLore(config.getStringList(path + "Lore"))
-        .setPlayerName(config.getString(path + "Player"))
-        .setFlagsFromStrings(config.getStringList(path + "Flags"));
+                .setMaterial(config.getString(path + ".Item", "Stone"))
+                .setName(config.getString(path + ".Name", ""))
+                .setLore(config.getStringList(path + ".Lore"))
+                .setPlayerName(config.getString(path + ".Player"))
+                .setFlagsFromStrings(config.getStringList(path + ".Flags"));
 
-        if (config.contains(path + "DisplayDamage")) itemBuilder.setDamage(config.getInt(path + "DisplayDamage"));
+        if (config.contains(path + ".DisplayDamage")) itemBuilder.setDamage(config.getInt(path + ".DisplayDamage"));
 
-        if (config.contains(path + "DisplayTrim.Material") && config.contains(path + "DisplayTrim.Pattern")) {
-            itemBuilder.setTrimMaterial(Registry.TRIM_MATERIAL.get(NamespacedKey.minecraft(config.getString(path + "DisplayTrim.Material", "QUARTZ").toLowerCase())))
-                    .setTrimPattern(Registry.TRIM_PATTERN.get(NamespacedKey.minecraft(config.getString(path + "DisplayTrim.Pattern", "SENTRY").toLowerCase())));
+        if (config.contains(path + ".DisplayTrim.Material") && config.contains(path + ".DisplayTrim.Pattern")) {
+            itemBuilder.setTrimMaterial(Registry.TRIM_MATERIAL.get(NamespacedKey.minecraft(config.getString(path + ".DisplayTrim.Material", "QUARTZ").toLowerCase())))
+                    .setTrimPattern(Registry.TRIM_PATTERN.get(NamespacedKey.minecraft(config.getString(path + ".DisplayTrim.Pattern", "SENTRY").toLowerCase())));
         }
 
-        this.glowing = config.getBoolean(path + "Glowing");
+        this.glowing = config.getBoolean(path + ".Glowing");
 
         if (itemBuilder.getName().toLowerCase().contains("%arg%")) this.usesArgs = true;
 
@@ -115,13 +118,13 @@ public class Voucher {
             }
         }
 
-        this.commands = config.getStringList(path + "Commands");
+        this.commands = config.getStringList(path + ".Commands");
 
-        for (String commands : config.getStringList(path + "Random-Commands")) {
+        for (String commands : config.getStringList(path + ".Random-Commands")) {
             this.randomCommands.add(new VoucherCommand(commands));
         }
 
-        for (String line : config.getStringList(path + "Chance-Commands")) { // - '%chance% %command%, %command%, %command%, ... etc'
+        for (String line : config.getStringList(path + ".Chance-Commands")) { // - '%chance% %command%, %command%, %command%, ... etc'
             try {
                 String[] split = line.split(" ");
                 VoucherCommand voucherCommand = new VoucherCommand(line.substring(split[0].length() + 1));
@@ -135,79 +138,77 @@ public class Voucher {
             }
         }
 
-        for (String itemString : config.getStringList(path + "Items")) {
-            this.items.add(ItemBuilder.convertString(itemString));
-        }
+        this.items.addAll(this.crazyManager.getItems(config, this.name));
 
-        this.usedMessage = getMessage(path + "Options.Message");
+        this.usedMessage = getMessage(path + ".Options.Message");
 
-        if (config.contains(path + "Options.Permission.Whitelist-Permission")) {
-            this.whitelistPermissionToggle = config.getBoolean(path + "Options.Permission.Whitelist-Permission.Toggle");
+        if (config.contains(path + ".Options.Permission.Whitelist-Permission")) {
+            this.whitelistPermissionToggle = config.getBoolean(path + ".Options.Permission.Whitelist-Permission.Toggle");
 
-            if (config.contains(path + "Options.Permission.Whitelist-Permission.Node")) whitelistPermissions.add("voucher." + config.getString(path + "Options.Permission.Whitelist-Permission.Node").toLowerCase());
+            if (config.contains(path + ".Options.Permission.Whitelist-Permission.Node")) whitelistPermissions.add("voucher." + config.getString(path + ".Options.Permission.Whitelist-Permission.Node").toLowerCase());
 
-            whitelistPermissions.addAll(config.getStringList(path + "Options.Permission.Whitelist-Permission.Permissions").stream().map(String :: toLowerCase).collect(Collectors.toList()));
-            this.whitelistCommands = config.getStringList(path + "Options.Permission.Whitelist-Permission.Commands");
-            this.whitelistPermissionMessage = config.contains(path + "Options.Permission.Whitelist-Permission.Message") ? getMessage(path + "Options.Permission.Whitelist-Permission.Message") : Messages.NO_PERMISSION_TO_VOUCHER.getMessageNoPrefix();
+            whitelistPermissions.addAll(config.getStringList(path + ".Options.Permission.Whitelist-Permission.Permissions").stream().map(String :: toLowerCase).collect(Collectors.toList()));
+            this.whitelistCommands = config.getStringList(path + ".Options.Permission.Whitelist-Permission.Commands");
+            this.whitelistPermissionMessage = config.contains(path + ".Options.Permission.Whitelist-Permission.Message") ? getMessage(path + ".Options.Permission.Whitelist-Permission.Message") : Messages.NO_PERMISSION_TO_VOUCHER.getMessageNoPrefix();
         } else {
             this.whitelistPermissionToggle = false;
         }
 
-        if (config.contains(path + "Options.Whitelist-Worlds.Toggle")) {
-            this.whitelistWorlds.addAll(config.getStringList(path + "Options.Whitelist-Worlds.Worlds").stream().map(String :: toLowerCase).collect(Collectors.toList()));
+        if (config.contains(path + ".Options.Whitelist-Worlds.Toggle")) {
+            this.whitelistWorlds.addAll(config.getStringList(path + ".Options.Whitelist-Worlds.Worlds").stream().map(String :: toLowerCase).collect(Collectors.toList()));
 
-            if (config.contains(path + "Options.Whitelist-Worlds.Message")) {
-                this.whitelistWorldMessage = getMessage(path + "Options.Whitelist-Worlds.Message");
+            if (config.contains(path + ".Options.Whitelist-Worlds.Message")) {
+                this.whitelistWorldMessage = getMessage(path + ".Options.Whitelist-Worlds.Message");
             } else {
                 this.whitelistWorldMessage = Messages.NOT_IN_WHITELISTED_WORLD.getMessageNoPrefix();
             }
 
-            this.whitelistWorldCommands = config.getStringList(path + "Options.Whitelist-Worlds.Commands");
-            this.whitelistWorldsToggle = !this.whitelistWorlds.isEmpty() && config.getBoolean(path + "Options.Whitelist-Worlds.Toggle");
+            this.whitelistWorldCommands = config.getStringList(path + ".Options.Whitelist-Worlds.Commands");
+            this.whitelistWorldsToggle = !this.whitelistWorlds.isEmpty() && config.getBoolean(path + ".Options.Whitelist-Worlds.Toggle");
         } else {
             this.whitelistWorldsToggle = false;
         }
 
-        if (config.contains(path + "Options.Permission.Blacklist-Permissions")) {
-            this.blacklistPermissionsToggle = config.getBoolean(path + "Options.Permission.Blacklist-Permissions.Toggle");
+        if (config.contains(path + ".Options.Permission.Blacklist-Permissions")) {
+            this.blacklistPermissionsToggle = config.getBoolean(path + ".Options.Permission.Blacklist-Permissions.Toggle");
 
-            if (config.contains(path + "Options.Permission.Blacklist-Permissions.Message")) {
-                this.blacklistPermissionMessage = getMessage(path + "Options.Permission.Blacklist-Permissions.Message");
+            if (config.contains(path + ".Options.Permission.Blacklist-Permissions.Message")) {
+                this.blacklistPermissionMessage = getMessage(path + ".Options.Permission.Blacklist-Permissions.Message");
             } else {
                 this.blacklistPermissionMessage = Messages.HAS_BLACKLIST_PERMISSION.getMessageNoPrefix();
             }
 
-            this.blacklistPermissions = config.getStringList(path + "Options.Permission.Blacklist-Permissions.Permissions");
-            this.blacklistCommands = config.getStringList(path + "Options.Permission.Blacklist-Permissions.Commands");
+            this.blacklistPermissions = config.getStringList(path + ".Options.Permission.Blacklist-Permissions.Permissions");
+            this.blacklistCommands = config.getStringList(path + ".Options.Permission.Blacklist-Permissions.Commands");
         } else {
             this.blacklistPermissionsToggle = false;
         }
 
-        if (config.contains(path + "Options.Limiter")) {
-            this.limiterToggle = config.getBoolean(path + "Options.Limiter.Toggle");
-            this.limiterLimit = config.getInt(path + "Options.Limiter.Limit");
+        if (config.contains(path + ".Options.Limiter")) {
+            this.limiterToggle = config.getBoolean(path + ".Options.Limiter.Toggle");
+            this.limiterLimit = config.getInt(path + ".Options.Limiter.Limit");
         } else {
             this.limiterToggle = false;
         }
 
-        if (config.contains(path + "Options.Required-Placeholders-Message")) {
-            this.requiredPlaceholdersMessage = getMessage(path + "Options.Required-Placeholders-Message");
+        if (config.contains(path + ".Options.Required-Placeholders-Message")) {
+            this.requiredPlaceholdersMessage = getMessage(path + ".Options.Required-Placeholders-Message");
         }
 
-        if (config.contains(path + "Options.Required-Placeholders")) {
-            for (String key : config.getConfigurationSection(path + "Options.Required-Placeholders").getKeys(false)) {
-                String placeholder = config.getString(path + "Options.Required-Placeholders." + key + ".Placeholder");
-                String value = config.getString(path + "Options.Required-Placeholders." + key + ".Value");
+        if (config.contains(path + ".Options.Required-Placeholders")) {
+            for (String key : config.getConfigurationSection(path + ".Options.Required-Placeholders").getKeys(false)) {
+                String placeholder = config.getString(path + ".Options.Required-Placeholders." + key + ".Placeholder");
+                String value = config.getString(path + ".Options.Required-Placeholders." + key + ".Value");
                 this.requiredPlaceholders.put(placeholder, value);
             }
         }
 
-        this.twoStepAuthentication = config.contains(path + "Options.Two-Step-Authentication") && config.getBoolean(path + "Options.Two-Step-Authentication.Toggle");
+        this.twoStepAuthentication = config.contains(path + ".Options.Two-Step-Authentication") && config.getBoolean(path + ".Options.Two-Step-Authentication.Toggle");
 
-        if (config.contains(path + "Options.Sound")) {
-            this.soundToggle = config.getBoolean(path + "Options.Sound.Toggle");
+        if (config.contains(path + ".Options.Sound")) {
+            this.soundToggle = config.getBoolean(path + ".Options.Sound.Toggle");
 
-            for (String sound : config.getStringList(path + "Options.Sound.Sounds")) {
+            for (String sound : config.getStringList(path + ".Options.Sound.Sounds")) {
                 try {
                     this.sounds.add(Sound.valueOf(sound));
                 } catch (Exception ignored) {}
@@ -216,8 +217,8 @@ public class Voucher {
             this.soundToggle = false;
         }
 
-        if (config.getBoolean(path + "Options.Firework.Toggle")) {
-            for (String color : config.getString(path + "Options.Firework.Colors", "").split(", ")) {
+        if (config.getBoolean(path + ".Options.Firework.Toggle")) {
+            for (String color : config.getString(path + ".Options.Firework.Colors", "").split(", ")) {
                 this.fireworkColors.add(methods.getColor(color));
             }
 
@@ -226,13 +227,15 @@ public class Voucher {
             this.fireworkToggle = false;
         }
 
-        if (config.getBoolean(path + "Options.Is-Edible")) {
+        if (config.getBoolean(path + ".Options.Is-Edible")) {
             this.isEdible = itemBuilder.build().getType().isEdible();
 
             switch (itemBuilder.getMaterial().toString()) {
                 case "MILK_BUCKET", "POTION" -> this.isEdible = true;
             }
         }
+
+        return itemBuilder;
     }
     
     public String getName() {
@@ -248,7 +251,7 @@ public class Voucher {
     }
     
     public ItemStack buildItem(int amount) {
-        ItemStack item = itemBuilder.setAmount(amount).setGlow(glowing).build();
+        ItemStack item = build().setAmount(amount).setGlow(glowing).build();
         NBTItem nbt = new NBTItem(item);
         nbt.setString("voucher", name);
 
@@ -260,7 +263,7 @@ public class Voucher {
     }
     
     public ItemStack buildItem(String argument, int amount) {
-        ItemStack item = itemBuilder.setAmount(amount).addLorePlaceholder("%Arg%", argument).addNamePlaceholder("%Arg%", argument).setGlow(glowing).build();
+        ItemStack item = build().setAmount(amount).addLorePlaceholder("%Arg%", argument).addNamePlaceholder("%Arg%", argument).setGlow(glowing).build();
 
         NBTItem nbt = new NBTItem(item);
 

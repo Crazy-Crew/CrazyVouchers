@@ -12,7 +12,7 @@ plugins {
 
 rootProject.group = "com.badbones69.crazyvouchers"
 rootProject.description = "Want to make a paper that can give you an axolotl with a pretty firework display, Look no further!"
-rootProject.version = "3.0"
+rootProject.version = "3.0.1"
 
 repositories {
     maven("https://repo.extendedclip.com/content/repositories/placeholderapi/")
@@ -110,35 +110,9 @@ tasks {
 }
 
 val description = """
-## New Features:
-* Added the ability for an item to have damage applied to it. 
-  * You do need a mod to be able to see how much durability an item has by default in order to apply the correct damage.
-* Added the ability for armor trim support as you can see below.
-```yml
-  Trims:
-    Item: 'DIAMOND_HELMET'
-    Name: '&8&l>&7&l>&cTrim Example&7&l<&8&l<'
-    # Only works on items with durability. This will make the item appear more damaged.
-    # It does not set the durability but subtracts this number from the durability
-    # Durability is 100, It subtracts 50.
-    # It cannot be 0.
-    DisplayDamage: 50
-    DisplayTrim:
-      # Available Materials: https://jd.papermc.io/paper/1.20/org/bukkit/inventory/meta/trim/TrimMaterial.html
-      Material: 'QUARTZ'
-      # Available Patterns: https://jd.papermc.io/paper/1.20/org/bukkit/inventory/meta/trim/TrimPattern.html
-      Pattern: 'SENTRY'
-    Lore:
-      - '&7Use this voucher to get fancy trims.'
-      - '&7&l(&6&l!&7&l) &7Right click to redeem.'
-    Player: ''
-    Glowing: true
-    # Available Materials: https://jd.papermc.io/paper/1.20/org/bukkit/inventory/meta/trim/TrimMaterial.html
-    # Available Patterns: https://jd.papermc.io/paper/1.20/org/bukkit/inventory/meta/trim/TrimPattern.html
-    Items:
-      - 'Item:DIAMOND_HELMET, Damage: 50, Trim-Pattern:SENTRY, Trim-Material:QUARTZ, Amount:1, Protection:4, Respiration:1, Aqua_Affinity:3, Unbreaking:3, Thorns:3'
-      - 'Item:DIAMOND_CHESTPLATE, Damage: 50, Trim-Pattern:DUNE, Trim-Material:REDSTONE, Amount:1, Protection:4, Unbreaking:3, Thorns:3'
-```
+## Fix:
+* Properly apply the damage to the items given to you when you right click the voucher
+ * Change `Damage: 50` to `Damage:50` as it will not work with this.
     
 ## Other:
 * [Feature Requests](https://github.com/Crazy-Crew/${rootProject.name}/discussions/categories/features)

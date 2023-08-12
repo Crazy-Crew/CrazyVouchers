@@ -19,14 +19,14 @@ import org.bukkit.inventory.meta.trim.TrimPattern;
 import org.bukkit.potion.PotionData;
 import org.bukkit.potion.PotionEffectType;
 import org.bukkit.potion.PotionType;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.List;
-import java.util.UUID;
+import java.util.*;
 import java.util.stream.Collectors;
 
 public class ItemBuilder {
+
+    private final CrazyVouchers plugin = CrazyVouchers.getPlugin();
+    private final Methods methods = this.plugin.getMethods();
+    private final SkullCreator skullCreator = this.plugin.getSkullCreator();
 
     private NBTItem nbtItem;
 
@@ -132,12 +132,6 @@ public class ItemBuilder {
         this.itemFlags = new ArrayList<>();
     }
 
-    private final CrazyVouchers plugin = CrazyVouchers.getPlugin();
-
-    private final Methods methods = plugin.getMethods();
-
-    private final SkullCreator skullCreator = plugin.getSkullCreator();
-
     /**
      * Deduplicate an item builder.
      *
@@ -201,6 +195,13 @@ public class ItemBuilder {
      */
     public Material getMaterial() {
         return material;
+    }
+
+    /**
+     * @return trim material
+     */
+    public TrimMaterial getTrimMaterial() {
+        return trimMaterial;
     }
 
     /**
@@ -335,13 +336,13 @@ public class ItemBuilder {
      * @return The result of all the info that was given to the builder as an ItemStack.
      */
     public ItemStack build() {
-
         if (nbtItem != null) referenceItem = nbtItem.getItem();
 
-        ItemStack item = referenceItem != null ? referenceItem : new ItemStack(material);
+        ItemStack item = referenceItem;
+
+        if (item == null) item = new ItemStack(material);
 
         if (item.getType() != Material.AIR) {
-
             if (isHead) { // Has to go 1st due to it removing all data when finished.
                 if (isHash) { // Sauce: https://github.com/deanveloper/SkullCreator
                     if (isURL) {
@@ -354,7 +355,6 @@ public class ItemBuilder {
 
             item.setAmount(itemAmount);
             ItemMeta itemMeta = item.getItemMeta();
-            assert itemMeta != null;
             itemMeta.setDisplayName(getUpdatedName());
             itemMeta.setLore(getUpdatedLore());
 
@@ -364,7 +364,15 @@ public class ItemBuilder {
                 }
             }
 
-            if (itemMeta instanceof org.bukkit.inventory.meta.Damageable) ((org.bukkit.inventory.meta.Damageable) itemMeta).setDamage(damage);
+            if (itemMeta instanceof Damageable) {
+                if (damage >= 1) {
+                    if (damage >= item.getType().getMaxDurability()) {
+                        ((Damageable) itemMeta).setDamage(item.getType().getMaxDurability());
+                    } else {
+                        ((Damageable) itemMeta).setDamage(damage);
+                    }
+                }
+            }
 
             if (isPotion && (potionType != null || potionColor != null)) {
                 PotionMeta potionMeta = (PotionMeta) itemMeta;
@@ -474,17 +482,17 @@ public class ItemBuilder {
                 this.damage = Integer.parseInt(metaData);
             } else { // Value is something else.
                 this.potionType = getPotionType(PotionEffectType.getByName(metaData));
-                this.potionColor = methods.getColor(metaData);
-                this.armorColor = methods.getColor(metaData);
+                this.potionColor = getColor(metaData);
+                this.armorColor = getColor(metaData);
             }
 
         } else if (material.contains("#")) {
-            String[] materialSplit = material.split("#");
-            material = materialSplit[0];
+            String[] b = material.split("#");
+            material = b[0];
 
-            if (isInt(materialSplit[1])) { // Value is a number.
+            if (isInt(b[1])) { // Value is a number.
                 this.useCustomModelData = true;
-                this.customModelData = Integer.parseInt(materialSplit[1]);
+                this.customModelData = Integer.parseInt(b[1]);
             }
         }
 
@@ -514,13 +522,8 @@ public class ItemBuilder {
         return this;
     }
 
-    /**
-     * Get the damage to the item.
-     *
-     * @return The damage to the item as an int.
-     */
     public int getDamage() {
-        return damage;
+        return this.damage;
     }
 
     /**
@@ -591,7 +594,6 @@ public class ItemBuilder {
      */
     public ItemBuilder addLore(String lore) {
         if (lore != null) this.itemLore.add(methods.color(lore));
-
         return this;
     }
 
@@ -624,7 +626,17 @@ public class ItemBuilder {
      * @return The lore with all placeholders in it.
      */
     public List<String> getUpdatedLore() {
-        return methods.getPlaceholders(itemLore, lorePlaceholders);
+        List<String> newLore = new ArrayList<>();
+
+        for (String item : itemLore) {
+            for (String placeholder : lorePlaceholders.keySet()) {
+                item = item.replace(placeholder, lorePlaceholders.get(placeholder)).replace(placeholder.toLowerCase(), lorePlaceholders.get(placeholder));
+            }
+
+            newLore.add(item);
+        }
+
+        return newLore;
     }
 
     /**
@@ -741,7 +753,7 @@ public class ItemBuilder {
      * @param level The level of the enchantment ( Unsafe levels included )
      * @return The ItemBuilder with updated enchantments.
      */
-    public ItemBuilder addEnchantments(Enchantment enchantment, Integer level) {
+    public ItemBuilder addEnchantments(Enchantment enchantment, int level) {
         this.enchantments.put(enchantment, level);
         return this;
     }
@@ -798,7 +810,6 @@ public class ItemBuilder {
         ItemFlag flag = getFlag(flagString);
 
         if (flag != null) itemFlags.add(flag);
-
         return this;
     }
 
@@ -840,9 +851,8 @@ public class ItemBuilder {
      */
     public ItemStack hideItemFlags(ItemStack item) {
         if (hideItemFlags) {
-            if (item != null && item.hasItemMeta()) {
+            if (item != null && item.hasItemMeta() && item.getItemMeta() != null) {
                 ItemMeta itemMeta = item.getItemMeta();
-                assert itemMeta != null;
                 itemMeta.addItemFlags(ItemFlag.values());
                 item.setItemMeta(itemMeta);
                 return item;
@@ -917,11 +927,14 @@ public class ItemBuilder {
      * @return The ItemStack as an ItemBuilder with all the info from the item.
      */
     public static ItemBuilder convertItemStack(ItemStack item) {
-        ItemBuilder itemBuilder = new ItemBuilder().setReferenceItem(item).setAmount(item.getAmount()).setMaterial(item.getType()).setEnchantments(new HashMap<>(item.getEnchantments()));
+        ItemBuilder itemBuilder = new ItemBuilder()
+                .setReferenceItem(item)
+                .setAmount(item.getAmount())
+                .setMaterial(item.getType())
+                .setEnchantments(new HashMap<>(item.getEnchantments()));
 
-        if (item.hasItemMeta()) {
+        if (item.hasItemMeta() && item.getItemMeta() != null) {
             ItemMeta itemMeta = item.getItemMeta();
-            assert itemMeta != null;
             itemBuilder.setName(itemMeta.getDisplayName()).setLore(itemMeta.getLore());
             NBTItem nbt = new NBTItem(item);
 
@@ -966,6 +979,13 @@ public class ItemBuilder {
                             itemBuilder.setAmount(Integer.parseInt(value));
                         } catch (NumberFormatException e) {
                             itemBuilder.setAmount(1);
+                        }
+                    }
+                    case "damage" -> {
+                        try {
+                            itemBuilder.setDamage(Integer.parseInt(value));
+                        } catch (NumberFormatException e) {
+                            itemBuilder.setDamage(0);
                         }
                     }
                     case "lore" -> itemBuilder.setLore(Arrays.asList(value.split(",")));
@@ -1045,8 +1065,8 @@ public class ItemBuilder {
     private void addGlow(ItemStack item) {
         if (glowing) {
             try {
-                if (item != null) {
-                    if (item.getItemMeta() != null) {
+                if (item != null && item.getItemMeta() != null) {
+                    if (item.hasItemMeta()) {
                         if (item.getItemMeta().hasEnchants()) return;
                     }
 
@@ -1096,6 +1116,77 @@ public class ItemBuilder {
             } else if (type.equals(PotionEffectType.WEAKNESS)) {
                 return PotionType.WEAKNESS;
             }
+        }
+
+        return null;
+    }
+
+    /**
+     * Get the Color from a string.
+     *
+     * @param color The string of the color.
+     * @return The color from the string.
+     */
+    private static Color getColor(String color) {
+        if (color != null) {
+            switch (color.toUpperCase()) {
+                case "AQUA" -> {
+                    return Color.AQUA;
+                }
+                case "BLACK" -> {
+                    return Color.BLACK;
+                }
+                case "BLUE" -> {
+                    return Color.BLUE;
+                }
+                case "FUCHSIA" -> {
+                    return Color.FUCHSIA;
+                }
+                case "GRAY" -> {
+                    return Color.GRAY;
+                }
+                case "GREEN" -> {
+                    return Color.GREEN;
+                }
+                case "LIME" -> {
+                    return Color.LIME;
+                }
+                case "MAROON" -> {
+                    return Color.MAROON;
+                }
+                case "NAVY" -> {
+                    return Color.NAVY;
+                }
+                case "OLIVE" -> {
+                    return Color.OLIVE;
+                }
+                case "ORANGE" -> {
+                    return Color.ORANGE;
+                }
+                case "PURPLE" -> {
+                    return Color.PURPLE;
+                }
+                case "RED" -> {
+                    return Color.RED;
+                }
+                case "SILVER" -> {
+                    return Color.SILVER;
+                }
+                case "TEAL" -> {
+                    return Color.TEAL;
+                }
+                case "WHITE" -> {
+                    return Color.WHITE;
+                }
+                case "YELLOW" -> {
+                    return Color.YELLOW;
+                }
+            }
+
+            try {
+                String[] rgb = color.split(",");
+                return Color.fromRGB(Integer.parseInt(rgb[0]), Integer.parseInt(rgb[1]), Integer.parseInt(rgb[2]));
+            } catch (Exception ignore) {}
         }
 
         return null;
