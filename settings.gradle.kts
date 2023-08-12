@@ -12,3 +12,9 @@ pluginManagement {
 }
 
 rootProject.name = "CrazyVouchers"
+
+listOf(
+    "paper"
+).forEach {
+    include(it)
+}
