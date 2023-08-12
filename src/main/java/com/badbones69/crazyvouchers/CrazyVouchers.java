@@ -11,6 +11,7 @@ import com.badbones69.crazyvouchers.controllers.FireworkDamageAPI;
 import com.badbones69.crazyvouchers.controllers.VoucherClick;
 import com.badbones69.crazyvouchers.listeners.VoucherCraftListener;
 import com.badbones69.crazyvouchers.support.MetricsHandler;
+import com.badbones69.crazyvouchers.support.SkullCreator;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.PluginCommand;
 import org.bukkit.command.TabCompleter;
@@ -31,6 +32,8 @@ public class CrazyVouchers extends JavaPlugin implements Listener {
 
     private FireworkDamageAPI fireworkDamageAPI;
 
+    private SkullCreator skullCreator;
+
     private GUI gui;
 
     @Override
@@ -42,6 +45,8 @@ public class CrazyVouchers extends JavaPlugin implements Listener {
         crazyManager = new CrazyManager();
 
         methods = new Methods();
+
+        skullCreator = new SkullCreator();
 
         fileManager.logInfo(true).setup();
 
@@ -85,7 +90,7 @@ public class CrazyVouchers extends JavaPlugin implements Listener {
         }
 
         if (metricsPath == null) {
-            config.set("Settings.Toggle-Metrics", true);
+            config.set("Settings.Toggle-Metrics", false);
 
             Files.CONFIG.saveFile();
         }
@@ -121,6 +126,10 @@ public class CrazyVouchers extends JavaPlugin implements Listener {
 
     public Methods getMethods() {
         return methods;
+    }
+
+    public SkullCreator getSkullCreator() {
+        return skullCreator;
     }
 
     public FireworkDamageAPI getFireworkDamageAPI() {

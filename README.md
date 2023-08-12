@@ -18,7 +18,7 @@
   <p align="center">
     Want to make a paper that can give you an axolotl with a pretty firework display, Look no further!
     <br />
-    <a href="https://github.com/Crazy-Crew/CrazyVouchers/wiki"><strong>Explore the docs »</strong></a>
+    <a href="https://docs.crazycrew.us/crazyvouchers/home"><strong>Explore the docs »</strong></a>
     <br />
     <br />
     <a href="https://github.com/Crazy-Crew/CrazyVouchers/issues">Report Bug</a>
@@ -49,7 +49,7 @@
 
 ### Resource Page
 <a href="https://modrinth.com/plugin/crazyvouchers">![Modrinth](https://raw.githubusercontent.com/intergrav/devins-badges/v3/assets/compact/available/modrinth_46h.png)</a>
-<!-- <a href="https://hangar.papermc.io/CrazyCrew/CrazyVouchers">![Hangar](https://raw.githubusercontent.com/intergrav/devins-badges/v3/assets/compact/available/hangar_46h.png)</a> -->
+<a href="https://hangar.papermc.io/CrazyCrew/CrazyVouchers">![Hangar](https://raw.githubusercontent.com/intergrav/devins-badges/v3/assets/compact/available/hangar_46h.png)</a>
 
 ## Getting Started
 
@@ -71,8 +71,9 @@ A list of things necessary to make sure you can build CrazyVouchers properly.
 2. Open the repository using Intellij IDEA & wait until it finishes downloading/indexing.
 3. Run the build task.
    ```gradle
-   ./gradlew build
+   ./gradlew assemble
    ```
+4. Look in `jars` folder
 
 ## Roadmap
 

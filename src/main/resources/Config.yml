@@ -67,10 +67,10 @@ Vouchers: #Where you make your vouchers.
     Lore:
       - '&7Use this voucher to rank up to &c%Arg%&7.'
       - '&7&l(&6&l!&7&l) &7Right click to redeem.'
-    Player: ''
+    Player: '' # Cannot be empty if item is PLAYER_HEAD.
     Glowing: false
     Commands:
-      - 'pex user %Player% group set %Arg%'
+      - 'lp user %Player% parent group set %Arg%'
     Options:
       Message: '&7Congratulations, you have just ranked up to &6%Arg%&7.'
       Whitelist-Worlds:
@@ -106,7 +106,7 @@ Vouchers: #Where you make your vouchers.
     Lore:
       - '&7Use this voucher to get a god set.'
       - '&7&l(&6&l!&7&l) &7Right click to redeem.'
-    Player: ''
+    Player: '' # Cannot be empty if item is PLAYER_HEAD.
     Glowing: true
     Items:
       - 'Item:DIAMOND_HELMET, Amount:1, Name:&bGod Helmet, Protection:4, Respiration:1, Aqua_Affinity:3, Unbreaking:3, Thorns:3'
@@ -160,7 +160,7 @@ Vouchers: #Where you make your vouchers.
       - '&6&l#5: &a$1,000,000'
       - ''
       - '&7&l(&6&l!&7&l) &7Right click to redeem.'
-    Player: ''
+    Player: '' # Cannot be empty if item is PLAYER_HEAD.
     Glowing: false
     Random-Commands: #Picks a random prize. There is no chance system for this only a random prize.
       - 'eco give %Player% 100'
@@ -185,7 +185,7 @@ Vouchers: #Where you make your vouchers.
       - '&6&l#5: &a$1,000,000 &c5%'
       - ''
       - '&7&l(&6&l!&7&l) &7Right click to redeem.'
-    Player: ''
+    Player: '' # Cannot be empty if item is PLAYER_HEAD.
     Glowing: false
     #Chance Command Layout: - '<Chance> <Command goes after>'
     Chance-Commands: #Picks a prizes based on a chance system. Chance-System wiki: https://github.com/badbones69/Vouchers/wiki/Chance-System-Wiki
@@ -194,6 +194,51 @@ Vouchers: #Where you make your vouchers.
       - '15 eco give %Player% 10000'
       - '10 eco give %Player% 100000'
       - '5 eco give %Player% 1000000'
+    Options:
+      Firework:
+        Toggle: true
+        Colors: 'Black, Green'
+  Trims:
+    Item: 'DIAMOND_HELMET'
+    Name: '&8&l>&7&l>&cTrim Example&7&l<&8&l<'
+    # Only works on items with durability. This will make the item appear more damaged.
+    # It does not set the durability but subtracts this number from the durability
+    # Durability is 100, It subtracts 50.
+    # It cannot be 0.
+    DisplayDamage: 50
+    DisplayTrim:
+      # Available Materials: https://jd.papermc.io/paper/1.20/org/bukkit/inventory/meta/trim/TrimMaterial.html
+      Material: 'QUARTZ'
+      # Available Patterns: https://jd.papermc.io/paper/1.20/org/bukkit/inventory/meta/trim/TrimPattern.html
+      Pattern: 'SENTRY'
+    Lore:
+      - '&7Use this voucher to get fancy trims.'
+      - '&7&l(&6&l!&7&l) &7Right click to redeem.'
+    Player: '' # Cannot be empty if item is PLAYER_HEAD.
+    Glowing: true
+    # Available Materials: https://jd.papermc.io/paper/1.20/org/bukkit/inventory/meta/trim/TrimMaterial.html
+    # Available Patterns: https://jd.papermc.io/paper/1.20/org/bukkit/inventory/meta/trim/TrimPattern.html
+    Items:
+      - 'Item:DIAMOND_HELMET, Damage: 50, Trim-Pattern:SENTRY, Trim-Material:QUARTZ, Amount:1, Protection:4, Respiration:1, Aqua_Affinity:3, Unbreaking:3, Thorns:3'
+      - 'Item:DIAMOND_CHESTPLATE, Damage: 50, Trim-Pattern:DUNE, Trim-Material:REDSTONE, Amount:1, Protection:4, Unbreaking:3, Thorns:3'
+    Options:
+      Message: '&7Congratulations, you have yourself fancy trims'
+      Sound:
+        Toggle: true
+        Sounds:
+          - 'CLICK'
+      Firework:
+        Toggle: true
+        Colors: 'Black, Gray, Aqua'
+  Player-Head:
+    Item: 'PLAYER_HEAD'
+    Player: 'http://textures.minecraft.net/texture/b20657e24b56e1b2f8fc219da1de788c0c24f36388b1a409d0cd2d8dba44aa3b'
+    Name: '&8&l>&7&l>&cPlayer Head &6&l#2&7&l<&8&l<'
+    Lore:
+      - '&7Player Head!'
+    Commands:
+      - 'msg %Player% You got head!'
+    Glowing: false
     Options:
       Firework:
         Toggle: true

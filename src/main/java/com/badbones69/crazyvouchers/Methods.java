@@ -11,6 +11,8 @@ import org.bukkit.entity.Firework;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.FireworkMeta;
+
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.regex.Matcher;
@@ -180,6 +182,20 @@ public class Methods {
         }
 
         return Color.WHITE;
+    }
+
+    public List<String> getPlaceholders(List<String> message, HashMap<String, String> lorePlaceholders) {
+        List<String> lore = new ArrayList<>();
+
+        for (String msg : message) {
+            for (String placeholder : lorePlaceholders.keySet()) {
+                msg = msg.replace(placeholder, lorePlaceholders.get(placeholder)).replace(placeholder.toLowerCase(), lorePlaceholders.get(placeholder));
+            }
+
+            lore.add(msg);
+        }
+
+        return lore;
     }
     
     public boolean isSimilar(ItemStack one, ItemStack two) {

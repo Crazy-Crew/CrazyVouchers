@@ -6,9 +6,13 @@ import com.badbones69.crazyvouchers.Methods;
 import com.badbones69.crazyvouchers.api.FileManager.Files;
 import com.badbones69.crazyvouchers.api.enums.Messages;
 import org.bukkit.Color;
+import org.bukkit.NamespacedKey;
+import org.bukkit.Registry;
 import org.bukkit.Sound;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.meta.trim.TrimMaterial;
+
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -83,12 +87,21 @@ public class Voucher {
         this.usesArgs = false;
         FileConfiguration config = Files.CONFIG.getFile();
         String path = "Vouchers." + name + ".";
+
         itemBuilder = new ItemBuilder()
         .setMaterial(config.getString(path + "Item", "Stone"))
         .setName(config.getString(path + "Name", ""))
         .setLore(config.getStringList(path + "Lore"))
         .setPlayerName(config.getString(path + "Player"))
         .setFlagsFromStrings(config.getStringList(path + "Flags"));
+
+        if (config.contains(path + "DisplayDamage")) itemBuilder.setDamage(config.getInt(path + "DisplayDamage"));
+
+        if (config.contains(path + "DisplayTrim.Material") && config.contains(path + "DisplayTrim.Pattern")) {
+            itemBuilder.setTrimMaterial(Registry.TRIM_MATERIAL.get(NamespacedKey.minecraft(config.getString(path + "DisplayTrim.Material", "QUARTZ").toLowerCase())))
+                    .setTrimPattern(Registry.TRIM_PATTERN.get(NamespacedKey.minecraft(config.getString(path + "DisplayTrim.Pattern", "SENTRY").toLowerCase())));
+        }
+
         this.glowing = config.getBoolean(path + "Glowing");
 
         if (itemBuilder.getName().toLowerCase().contains("%arg%")) this.usesArgs = true;

@@ -1,6 +1,7 @@
-package com.badbones69.crazyvouchers.api.objects;
+package com.badbones69.crazyvouchers.support;
 
 import com.badbones69.crazyvouchers.CrazyVouchers;
+import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
 import org.bukkit.block.Skull;
@@ -20,8 +21,8 @@ import java.util.UUID;
  */
 public class SkullCreator {
 
-    private static final CrazyVouchers plugin = CrazyVouchers.getPlugin();
-    
+    private final CrazyVouchers plugin = CrazyVouchers.getPlugin();
+
     /**
      * Creates a player skull based on a player's name.
      *
@@ -31,12 +32,12 @@ public class SkullCreator {
      * @deprecated names don't make for good identifiers
      */
     @Deprecated
-    public static ItemStack itemFromName(String name) {
+    public ItemStack itemFromName(String name) {
         ItemStack item = getPlayerSkullItem();
-        
+
         return itemWithName(item, name);
     }
-    
+
     /**
      * Creates a player skull based on a player's name.
      *
@@ -47,13 +48,11 @@ public class SkullCreator {
      * @deprecated names don't make for good identifiers
      */
     @Deprecated
-    public static ItemStack itemWithName(ItemStack item, String name) {
+    public ItemStack itemWithName(ItemStack item, String name) {
         notNull(item, "item");
         notNull(name, "name");
-        
-        return plugin.getServer().getUnsafe().modifyItemStack(item,
-        "{SkullOwner:\"" + name + "\"}"
-        );
+
+        return plugin.getServer().getUnsafe().modifyItemStack(item, "{SkullOwner:\"" + name + "\"}");
     }
 
     /**
@@ -62,12 +61,12 @@ public class SkullCreator {
      * @param id The Player's UUID
      * @return The head of the Player
      */
-    public static ItemStack itemFromUuid(UUID id) {
+    public ItemStack itemFromUuid(UUID id) {
         ItemStack item = getPlayerSkullItem();
 
         return itemWithUuid(item, id);
     }
-    
+
     /**
      * Creates a player skull based on a UUID. 1.13 only.
      *
@@ -75,29 +74,30 @@ public class SkullCreator {
      * @param id The Player's UUID
      * @return The head of the Player
      */
-    public static ItemStack itemWithUuid(ItemStack item, UUID id) {
+    public ItemStack itemWithUuid(ItemStack item, UUID id) {
         notNull(item, "item");
         notNull(id, "id");
-        
+
         SkullMeta meta = (SkullMeta) item.getItemMeta();
+        assert meta != null;
         meta.setOwningPlayer(plugin.getServer().getOfflinePlayer(id));
         item.setItemMeta(meta);
-        
+
         return item;
     }
-    
+
     /**
      * Creates a player skull based on a Mojang server URL.
      *
      * @param url The URL of the Mojang skin
      * @return The head associated with the URL
      */
-    public static ItemStack itemFromUrl(String url) {
+    public ItemStack itemFromUrl(String url) {
         ItemStack item = getPlayerSkullItem();
-        
+
         return itemWithUrl(item, url);
     }
-    
+
     /**
      * Creates a player skull based on a Mojang server URL.
      *
@@ -105,24 +105,25 @@ public class SkullCreator {
      * @param url The URL of the Mojang skin
      * @return The head associated with the URL
      */
-    public static ItemStack itemWithUrl(ItemStack item, String url) {
+    public ItemStack itemWithUrl(ItemStack item, String url) {
         notNull(item, "item");
         notNull(url, "url");
-        
+
         return itemWithBase64(item, urlToBase64(url));
     }
-    
+
     /**
      * Creates a player skull based on a base64 string containing the link to the skin.
      *
      * @param base64 The base64 string containing the texture
      * @return The head with a custom texture
      */
-    public static ItemStack itemFromBase64(String base64) {
+    public ItemStack itemFromBase64(String base64) {
         ItemStack item = getPlayerSkullItem();
+
         return itemWithBase64(item, base64);
     }
-    
+
     /**
      * Applies the base64 string to the ItemStack.
      *
@@ -130,16 +131,14 @@ public class SkullCreator {
      * @param base64 The base64 string containing the texture
      * @return The head with a custom texture
      */
-    public static ItemStack itemWithBase64(ItemStack item, String base64) {
+    public ItemStack itemWithBase64(ItemStack item, String base64) {
         notNull(item, "item");
         notNull(base64, "base64");
-        
+
         UUID hashAsId = new UUID(base64.hashCode(), base64.hashCode());
-        return plugin.getServer().getUnsafe().modifyItemStack(item,
-        "{SkullOwner:{Id:\"" + hashAsId + "\",Properties:{textures:[{Value:\"" + base64 + "\"}]}}}"
-        );
+        return plugin.getServer().getUnsafe().modifyItemStack(item, "{SkullOwner:{Id:\"" + hashAsId + "\",Properties:{textures:[{Value:\"" + base64 + "\"}]}}}");
     }
-    
+
     /**
      * Sets the block to a skull with the given name.
      *
@@ -149,102 +148,89 @@ public class SkullCreator {
      * @deprecated names don't make for good identifiers
      */
     @Deprecated
-    public static void blockWithName(Block block, String name) {
+    public void blockWithName(Block block, String name) {
         notNull(block, "block");
         notNull(name, "name");
-        
-        setBlockType(block);
-        ((Skull) block.getState()).setOwningPlayer(plugin.getServer().getOfflinePlayer(name));
+
+        setBlockType(block);((Skull) block.getState()).setOwningPlayer(Bukkit.getOfflinePlayer(name));
     }
-    
+
     /**
      * Sets the block to a skull with the given UUID.
      *
      * @param block The block to set
      * @param id The player to set it to
      */
-    public static void blockWithUuid(Block block, UUID id) {
+    public void blockWithUuid(Block block, UUID id) {
         notNull(block, "block");
         notNull(id, "id");
-        
-        setBlockType(block);
-        ((Skull) block.getState()).setOwningPlayer(plugin.getServer().getOfflinePlayer(id));
+
+        setBlockType(block);((Skull) block.getState()).setOwningPlayer(Bukkit.getOfflinePlayer(id));
     }
-    
+
     /**
      * Sets the block to a skull with the given UUID.
      *
      * @param block The block to set
      * @param url The mojang URL to set it to use
      */
-    public static void blockWithUrl(Block block, String url) {
+    public void blockWithUrl(Block block, String url) {
         notNull(block, "block");
         notNull(url, "url");
-        
+
         blockWithBase64(block, urlToBase64(url));
     }
-    
+
     /**
      * Sets the block to a skull with the given UUID.
      *
      * @param block The block to set
      * @param base64 The base64 to set it to use
      */
-    public static void blockWithBase64(Block block, String base64) {
+    public void blockWithBase64(Block block, String base64) {
         notNull(block, "block");
         notNull(base64, "base64");
-        
+
         UUID hashAsId = new UUID(base64.hashCode(), base64.hashCode());
-        
+
         String args = String.format(
-        "%d %d %d %s",
-        block.getX(),
-        block.getY(),
-        block.getZ(),
-        "{Owner:{Id:\"" + hashAsId + "\",Properties:{textures:[{Value:\"" + base64 + "\"}]}}}"
+                "%d %d %d %s",
+                block.getX(),
+                block.getY(),
+                block.getZ(),
+                "{Owner:{Id:\"" + hashAsId + "\",Properties:{textures:[{Value:\"" + base64 + "\"}]}}}"
         );
-        
-        if (newerApi()) {
-            plugin.getServer().dispatchCommand(plugin.getServer().getConsoleSender(), "data merge block " + args);
-        } else {
-            plugin.getServer().dispatchCommand(plugin.getServer().getConsoleSender(), "blockdata " + args);
-        }
+
+        plugin.getServer().dispatchCommand(plugin.getServer().getConsoleSender(), "data merge block " + args);
     }
-    
-    private static boolean newerApi() {
+
+    private boolean newerApi() {
         try {
             Material.valueOf("PLAYER_HEAD");
             return true;
-            
-        } catch (IllegalArgumentException e) { // If PLAYER_HEAD doesn't exist
+        } catch (IllegalArgumentException e) {
             return false;
         }
     }
-    
-    private static ItemStack getPlayerSkullItem() {
-        if (newerApi()) {
-            return new ItemStack(Material.valueOf("PLAYER_HEAD"));
-        } else {
-            return new ItemStack(Material.valueOf("SKULL_ITEM"), 1, (byte) 3);
-        }
+
+    private ItemStack getPlayerSkullItem() {
+        return new ItemStack(Material.valueOf("PLAYER_HEAD"));
     }
-    
-    private static void setBlockType(Block block) {
+
+    private void setBlockType(Block block) {
         try {
             block.setType(Material.valueOf("PLAYER_HEAD"), false);
         } catch (IllegalArgumentException e) {
             block.setType(Material.valueOf("SKULL"), false);
         }
     }
-    
-    private static void notNull(Object o, String name) {
-        if (o == null) {
-            throw new NullPointerException(name + " should not be null!");
-        }
+
+    private void notNull(Object o, String name) {
+        if (o == null) throw new NullPointerException(name + " should not be null!");
     }
-    
-    private static String urlToBase64(String url) {
-        
+
+    private String urlToBase64(String url) {
+
         URI actualUrl;
 
         try {

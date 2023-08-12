@@ -1,30 +1,14 @@
-dependencyResolutionManagement {
-    repositories.gradlePluginPortal()
-}
-
 pluginManagement {
     repositories {
-        gradlePluginPortal()
-        mavenCentral()
+        maven("https://maven.fabricmc.net/")
+
+        maven("https://maven.minecraftforge.net/")
 
         maven("https://repo.papermc.io/repository/maven-public/")
 
-        maven("https://repo.crazycrew.us/first-party/")
-        maven("https://repo.crazycrew.us/third-party/")
+        gradlePluginPortal()
+        mavenCentral()
     }
 }
 
 rootProject.name = "CrazyVouchers"
-
-val lowerCase = rootProject.name.lowercase()
-
-fun includeProject(name: String) {
-    include(name) {
-        this.name = "$lowerCase-$name"
-    }
-}
-
-fun include(name: String, block: ProjectDescriptor.() -> Unit) {
-    include(name)
-    project(":$name").apply(block)
-}
