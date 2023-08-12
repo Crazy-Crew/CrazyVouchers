@@ -1,3 +1,5 @@
+import io.papermc.hangarpublishplugin.model.Platforms
+
 plugins {
     `maven-publish`
     `java-library`
@@ -5,6 +7,7 @@ plugins {
     alias(libs.plugins.shadow)
     alias(libs.plugins.userdev)
     alias(libs.plugins.modrinth)
+    alias(libs.plugins.hangar)
 }
 
 rootProject.group = "com.badbones69.crazyvouchers"
@@ -136,9 +139,6 @@ val description = """
       - 'Item:DIAMOND_HELMET, Damage: 50, Trim-Pattern:SENTRY, Trim-Material:QUARTZ, Amount:1, Protection:4, Respiration:1, Aqua_Affinity:3, Unbreaking:3, Thorns:3'
       - 'Item:DIAMOND_CHESTPLATE, Damage: 50, Trim-Pattern:DUNE, Trim-Material:REDSTONE, Amount:1, Protection:4, Unbreaking:3, Thorns:3'
 ```
-
-## Fix:
-* N/A
     
 ## Other:
 * [Feature Requests](https://github.com/Crazy-Crew/${rootProject.name}/discussions/categories/features)
@@ -151,6 +151,8 @@ val versions = listOf(
     //"1.20.2"
 )
 
+val output = file("$directory/${rootProject.name}-${rootProject.version}.jar")
+
 modrinth {
     autoAddDependsOn.set(false)
 
@@ -158,14 +160,32 @@ modrinth {
 
     projectId.set(rootProject.name.lowercase())
 
-    versionName.set("${rootProject.name} ${project.version}")
-    versionNumber.set("${project.version}")
+    versionName.set("${rootProject.name} ${rootProject.version}")
+    versionNumber.set("${rootProject.version}")
 
-    uploadFile.set("$directory/${rootProject.name}-${rootProject.version}.jar")
+    uploadFile.set(output)
 
     gameVersions.addAll(versions)
 
     changelog.set(description)
 
     loaders.addAll("paper", "purpur")
+}
+
+hangarPublish {
+    publications.register("plugin") {
+        version.set(rootProject.version as String)
+        namespace("CrazyCrew", rootProject.name)
+        channel.set("Release")
+        changelog.set(description)
+
+        apiKey.set(System.getenv("hangar_key"))
+
+        platforms {
+            register(Platforms.PAPER) {
+                jar.set(output)
+                platformVersions.set(versions)
+            }
+        }
+    }
 }
