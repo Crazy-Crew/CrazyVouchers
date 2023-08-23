@@ -23,8 +23,6 @@ dependencies {
     implementation("de.tr7zw", "item-nbt-api", "2.11.3")
     implementation("org.bstats", "bstats-bukkit", "3.0.2")
 
-    paperweight.paperDevBundle("1.20.1-R0.1-SNAPSHOT")
-
     compileOnly("me.clip", "placeholderapi", "2.11.3")
 }
 
@@ -78,6 +76,10 @@ val other = if (isSnapshot) "Beta" else "Release"
 val file = file("${rootProject.rootDir}/jars/${rootProject.name}-${rootProject.version}.jar")
 
 val description = """
+## New Features:
+ * Added the ability to color maps.
+   * https://docs.crazycrew.us/crazyvouchers/info/prizes/items/colored-map
+    
 ## Other:
  * [Feature Requests](https://github.com/Crazy-Crew/${rootProject.name}/issues)
  * [Bug Reports](https://github.com/Crazy-Crew/${rootProject.name}/issues)
