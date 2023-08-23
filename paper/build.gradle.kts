@@ -1,11 +1,13 @@
 import io.papermc.hangarpublishplugin.model.Platforms
 
 plugins {
-    alias(libs.plugins.shadow)
-    alias(libs.plugins.userdev)
     alias(libs.plugins.modrinth)
     alias(libs.plugins.hangar)
+
+    id("paper-plugin")
 }
+
+project.group = "${rootProject.group}.paper"
 
 repositories {
     maven("https://repo.extendedclip.com/content/repositories/placeholderapi/")
@@ -32,7 +34,7 @@ tasks {
     publishing {
         publications {
             create<MavenPublication>("maven") {
-                groupId = rootProject.group.toString()
+                groupId = project.group.toString()
                 artifactId = "${rootProject.name.lowercase()}-api"
                 version = rootProject.version.toString()
 
@@ -41,19 +43,7 @@ tasks {
         }
     }
 
-    reobfJar {
-        outputJar.set(file("$buildDir/libs/${rootProject.name}-${project.version}.jar"))
-    }
-
-    assemble {
-        dependsOn(reobfJar)
-    }
-
     shadowJar {
-        archiveClassifier.set("")
-
-        exclude("META-INF/**")
-
         listOf(
             "dev.triumphteam",
             "org.jetbrains",
@@ -68,7 +58,7 @@ tasks {
         filesMatching("plugin.yml") {
             val props = mapOf(
                 "name" to rootProject.name,
-                "group" to rootProject.group,
+                "group" to project.group.toString(),
                 "version" to rootProject.version,
                 "description" to rootProject.description,
                 "authors" to rootProject.properties["authors"],
@@ -81,26 +71,23 @@ tasks {
     }
 }
 
+val isSnapshot = rootProject.version.toString().contains("snapshot")
+val type = if (isSnapshot) "beta" else "release"
+val other = if (isSnapshot) "Beta" else "Release"
+
+val file = file("${rootProject.rootDir}/jars/${rootProject.name}-${rootProject.version}.jar")
+
 val description = """
-## Fix:
-* Properly apply the damage to the items given to you when you right click the voucher
- * Change `Damage: 50` to `Damage:50` as it will not work with this.
-    
 ## Other:
-* [Feature Requests](https://github.com/Crazy-Crew/${rootProject.name}/discussions/categories/features)
-* [Bug Reports](https://github.com/Crazy-Crew/${rootProject.name}/issues)
+ * [Feature Requests](https://github.com/Crazy-Crew/${rootProject.name}/issues)
+ * [Bug Reports](https://github.com/Crazy-Crew/${rootProject.name}/issues)
 """.trimIndent()
 
 val versions = listOf(
     "1.20",
-    "1.20.1"
+    "1.20.1",
     //"1.20.2"
 )
-
-val output = file("${rootProject.rootDir}/jars/${rootProject.name}-${project.version}.jar")
-
-val isSnapshot = rootProject.version.toString().contains("snapshot")
-val type = if (isSnapshot) "beta" else "release"
 
 modrinth {
     autoAddDependsOn.set(false)
@@ -112,7 +99,9 @@ modrinth {
     versionName.set("${rootProject.name} ${rootProject.version}")
     versionNumber.set("${rootProject.version}")
 
-    uploadFile.set(output)
+    versionType.set(type)
+
+    uploadFile.set(file)
 
     gameVersions.addAll(versions)
 
@@ -125,14 +114,14 @@ hangarPublish {
     publications.register("plugin") {
         version.set(rootProject.version as String)
         namespace("CrazyCrew", rootProject.name)
-        channel.set("Release")
+        channel.set(other)
         changelog.set(description)
 
         apiKey.set(System.getenv("hangar_key"))
 
         platforms {
             register(Platforms.PAPER) {
-                jar.set(output)
+                jar.set(file)
                 platformVersions.set(versions)
             }
         }
