@@ -49,7 +49,7 @@ public class Voucher {
     private List<String> commands = new ArrayList<>();
     private final List<VoucherCommand> randomCommands = new ArrayList<>();
     private final List<VoucherCommand> chanceCommands = new ArrayList<>();
-    private final List<ItemBuilder> items = new ArrayList<ItemBuilder>();
+    private final List<ItemBuilder> items = new ArrayList<>();
     private final Map<String, String> requiredPlaceholders = new HashMap<>();
     private String requiredPlaceholdersMessage;
 
