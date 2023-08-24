@@ -19,6 +19,8 @@ import java.util.Map;
 import java.util.stream.Collectors;
 
 public class Voucher {
+
+    private final ItemBuilder itemBuilder;
     
     private final String name;
     private boolean usesArgs;
@@ -64,6 +66,7 @@ public class Voucher {
     public Voucher(int number) {
         this.name = number + "";
         this.usesArgs = false;
+        this.itemBuilder = new ItemBuilder().setMaterial("Stone").setName(number + "");
         this.usedMessage = "";
         this.whitelistPermissionToggle = false;
         this.whitelistPermissionMessage = "";
@@ -83,34 +86,30 @@ public class Voucher {
     public Voucher(String name) {
         this.name = name;
         this.usesArgs = false;
-    }
 
-    public ItemBuilder build() {
         FileConfiguration config = Files.CONFIG.getFile();
         String path = "Vouchers." + name;
 
-        ItemBuilder itemBuilder;
-
-        itemBuilder = new ItemBuilder()
+        this.itemBuilder = new ItemBuilder()
                 .setMaterial(config.getString(path + ".Item", "Stone"))
                 .setName(config.getString(path + ".Name", ""))
                 .setLore(config.getStringList(path + ".Lore"))
                 .setPlayerName(config.getString(path + ".Player"))
                 .setFlagsFromStrings(config.getStringList(path + ".Flags"));
 
-        if (config.contains(path + ".DisplayDamage")) itemBuilder.setDamage(config.getInt(path + ".DisplayDamage"));
+        if (config.contains(path + ".DisplayDamage")) this.itemBuilder.setDamage(config.getInt(path + ".DisplayDamage"));
 
         if (config.contains(path + ".DisplayTrim.Material") && config.contains(path + ".DisplayTrim.Pattern")) {
-            itemBuilder.setTrimMaterial(Registry.TRIM_MATERIAL.get(NamespacedKey.minecraft(config.getString(path + ".DisplayTrim.Material", "QUARTZ").toLowerCase())))
+            this.itemBuilder.setTrimMaterial(Registry.TRIM_MATERIAL.get(NamespacedKey.minecraft(config.getString(path + ".DisplayTrim.Material", "QUARTZ").toLowerCase())))
                     .setTrimPattern(Registry.TRIM_PATTERN.get(NamespacedKey.minecraft(config.getString(path + ".DisplayTrim.Pattern", "SENTRY").toLowerCase())));
         }
 
         this.glowing = config.getBoolean(path + ".Glowing");
 
-        if (itemBuilder.getName().toLowerCase().contains("%arg%")) this.usesArgs = true;
+        if (this.itemBuilder.getName().toLowerCase().contains("%arg%")) this.usesArgs = true;
 
-        if (!usesArgs) {
-            for (String lore : itemBuilder.getLore()) {
+        if (!this.usesArgs) {
+            for (String lore : this.itemBuilder.getLore()) {
                 if (lore.toLowerCase().contains("%arg%")) {
                     this.usesArgs = true;
                     break;
@@ -130,10 +129,10 @@ public class Voucher {
                 VoucherCommand voucherCommand = new VoucherCommand(line.substring(split[0].length() + 1));
 
                 for (int i = 1; i <= Integer.parseInt(split[0]); i++) {
-                    chanceCommands.add(voucherCommand);
+                    this.chanceCommands.add(voucherCommand);
                 }
             } catch (Exception e) {
-                plugin.getLogger().info("An issue occurred when trying to use chance commands.");
+                this.plugin.getLogger().info("An issue occurred when trying to use chance commands.");
                 e.printStackTrace();
             }
         }
@@ -145,9 +144,9 @@ public class Voucher {
         if (config.contains(path + ".Options.Permission.Whitelist-Permission")) {
             this.whitelistPermissionToggle = config.getBoolean(path + ".Options.Permission.Whitelist-Permission.Toggle");
 
-            if (config.contains(path + ".Options.Permission.Whitelist-Permission.Node")) whitelistPermissions.add("voucher." + config.getString(path + ".Options.Permission.Whitelist-Permission.Node").toLowerCase());
+            if (config.contains(path + ".Options.Permission.Whitelist-Permission.Node")) this.whitelistPermissions.add("voucher." + config.getString(path + ".Options.Permission.Whitelist-Permission.Node").toLowerCase());
 
-            whitelistPermissions.addAll(config.getStringList(path + ".Options.Permission.Whitelist-Permission.Permissions").stream().map(String :: toLowerCase).collect(Collectors.toList()));
+            this.whitelistPermissions.addAll(config.getStringList(path + ".Options.Permission.Whitelist-Permission.Permissions").stream().map(String :: toLowerCase).collect(Collectors.toList()));
             this.whitelistCommands = config.getStringList(path + ".Options.Permission.Whitelist-Permission.Commands");
             this.whitelistPermissionMessage = config.contains(path + ".Options.Permission.Whitelist-Permission.Message") ? getMessage(path + ".Options.Permission.Whitelist-Permission.Message") : Messages.NO_PERMISSION_TO_VOUCHER.getMessageNoPrefix();
         } else {
@@ -230,20 +229,18 @@ public class Voucher {
         if (config.getBoolean(path + ".Options.Is-Edible")) {
             this.isEdible = itemBuilder.build().getType().isEdible();
 
-            switch (itemBuilder.getMaterial().toString()) {
+            switch (this.itemBuilder.getMaterial().toString()) {
                 case "MILK_BUCKET", "POTION" -> this.isEdible = true;
             }
         }
-
-        return itemBuilder;
     }
     
     public String getName() {
-        return name;
+        return this.name;
     }
     
     public boolean usesArguments() {
-        return usesArgs;
+        return this.usesArgs;
     }
     
     public ItemStack buildItem() {
@@ -251,9 +248,9 @@ public class Voucher {
     }
     
     public ItemStack buildItem(int amount) {
-        ItemStack item = build().setAmount(amount).setGlow(glowing).build();
+        ItemStack item = this.itemBuilder.setAmount(amount).setGlow(this.glowing).build();
         NBTItem nbt = new NBTItem(item);
-        nbt.setString("voucher", name);
+        nbt.setString("voucher", this.name);
 
         return nbt.getItem();
     }
@@ -263,122 +260,122 @@ public class Voucher {
     }
     
     public ItemStack buildItem(String argument, int amount) {
-        ItemStack item = build().setAmount(amount).addLorePlaceholder("%Arg%", argument).addNamePlaceholder("%Arg%", argument).setGlow(glowing).build();
+        ItemStack item = this.itemBuilder.setAmount(amount).addLorePlaceholder("%Arg%", argument).addNamePlaceholder("%Arg%", argument).setGlow(this.glowing).build();
 
         NBTItem nbt = new NBTItem(item);
 
-        nbt.setString("voucher", name);
+        nbt.setString("voucher", this.name);
         nbt.setString("argument", argument);
 
         return nbt.getItem();
     }
     
     public String getVoucherUsedMessage() {
-        return usedMessage;
+        return this.usedMessage;
     }
     
     public boolean useWhiteListPermissions() {
-        return whitelistPermissionToggle;
+        return this.whitelistPermissionToggle;
     }
     
     public List<String> getWhitelistPermissions() {
-        return whitelistPermissions;
+        return this.whitelistPermissions;
     }
     
     public List<String> getWhitelistCommands() {
-        return whitelistCommands;
+        return this.whitelistCommands;
     }
     
     public String getWhitelistPermissionMessage() {
-        return whitelistPermissionMessage;
+        return this.whitelistPermissionMessage;
     }
     
     public boolean usesWhitelistWorlds() {
-        return whitelistWorldsToggle;
+        return this.whitelistWorldsToggle;
     }
     
     public List<String> getWhitelistWorlds() {
-        return whitelistWorlds;
+        return this.whitelistWorlds;
     }
     
     public String getWhitelistWorldMessage() {
-        return whitelistWorldMessage;
+        return this.whitelistWorldMessage;
     }
     
     public List<String> getWhitelistWorldCommands() {
-        return whitelistWorldCommands;
+        return this.whitelistWorldCommands;
     }
     
     public boolean useBlackListPermissions() {
-        return blacklistPermissionsToggle;
+        return this.blacklistPermissionsToggle;
     }
     
     public List<String> getBlackListPermissions() {
-        return blacklistPermissions;
+        return this.blacklistPermissions;
     }
     
     public String getBlackListMessage() {
-        return blacklistPermissionMessage;
+        return this.blacklistPermissionMessage;
     }
     
     public List<String> getBlacklistCommands() {
-        return blacklistCommands;
+        return this.blacklistCommands;
     }
     
     public boolean useLimiter() {
-        return limiterToggle;
+        return this.limiterToggle;
     }
     
     public int getLimiterLimit() {
-        return limiterLimit;
+        return this.limiterLimit;
     }
     
     public boolean useTwoStepAuthentication() {
-        return twoStepAuthentication;
+        return this.twoStepAuthentication;
     }
     
     public boolean playSounds() {
-        return soundToggle;
+        return this.soundToggle;
     }
     
     public List<Sound> getSounds() {
-        return sounds;
+        return this.sounds;
     }
     
     public boolean useFirework() {
-        return fireworkToggle;
+        return this.fireworkToggle;
     }
     
     public List<Color> getFireworkColors() {
-        return fireworkColors;
+        return this.fireworkColors;
     }
     
     public List<String> getCommands() {
-        return commands;
+        return this.commands;
     }
     
     public List<VoucherCommand> getRandomCommands() {
-        return randomCommands;
+        return this.randomCommands;
     }
     
     public List<VoucherCommand> getChanceCommands() {
-        return chanceCommands;
+        return this.chanceCommands;
     }
     
     public List<ItemBuilder> getItems() {
-        return items;
+        return this.items;
     }
 
     public Map<String, String> getRequiredPlaceholders() {
-        return requiredPlaceholders;
+        return this.requiredPlaceholders;
     }
 
     public String getRequiredPlaceholdersMessage() {
-        return requiredPlaceholdersMessage;
+        return this.requiredPlaceholdersMessage;
     }
 
     public boolean isEdible() {
-        return isEdible;
+        return this.isEdible;
     }
     
     private String getMessage(String path) {
@@ -386,10 +383,10 @@ public class Voucher {
         String messageString;
 
         if (isList(path)) {
-            messageString = methods.color(Messages.convertList(config.getStringList(path)));
+            messageString = this.methods.color(Messages.convertList(config.getStringList(path)));
         } else {
             messageString = config.getString(path, "");
-            if (!messageString.isEmpty()) messageString = methods.getPrefix(messageString);
+            if (!messageString.isEmpty()) messageString = this.methods.getPrefix(messageString);
         }
 
         return messageString;
