@@ -2,8 +2,11 @@ package com.badbones69.crazyvouchers.paper.api.objects;
 
 import com.badbones69.crazyvouchers.paper.CrazyVouchers;
 import com.badbones69.crazyvouchers.paper.Methods;
+import com.badbones69.crazyvouchers.paper.support.PluginSupport;
 import com.badbones69.crazyvouchers.paper.support.SkullCreator;
 import de.tr7zw.changeme.nbtapi.NBTItem;
+import dev.lone.itemsadder.api.CustomStack;
+import io.th0rgal.oraxen.api.OraxenItems;
 import org.bukkit.*;
 import org.bukkit.block.Banner;
 import org.bukkit.block.banner.Pattern;
@@ -38,6 +41,7 @@ public class ItemBuilder {
     private String itemName;
     private final List<String> itemLore;
     private int itemAmount;
+    private String customMaterial;
 
     // Player
     private String player;
@@ -350,6 +354,18 @@ public class ItemBuilder {
 
         ItemStack item = referenceItem;
 
+        if (item == null) {
+            if (PluginSupport.ITEMS_ADDER.isPluginEnabled()) {
+                CustomStack customStack = CustomStack.getInstance("ia:" + this.customMaterial);
+
+                if (customStack != null) item = customStack.getItemStack();
+            } else if (PluginSupport.ORAXEN.isPluginEnabled()) {
+                io.th0rgal.oraxen.items.ItemBuilder oraxenItem = OraxenItems.getItemById(this.customMaterial);
+
+                if (oraxenItem != null) item = oraxenItem.build();
+            }
+        }
+
         if (item == null) item = new ItemStack(material);
 
         if (item.getType() != Material.AIR) {
@@ -478,6 +494,8 @@ public class ItemBuilder {
      */
     public ItemBuilder setMaterial(String material) {
         String metaData;
+        //Store material inside iaNamespace (e.g. ia:myblock)
+        this.customMaterial = material;
 
         if (material.contains(":")) { // Sets the durability or another value option.
             String[] b = material.split(":");

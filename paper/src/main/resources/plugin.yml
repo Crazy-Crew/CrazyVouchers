@@ -7,7 +7,7 @@ version: '${version}'
 api-version: '${apiVersion}'
 description: '${description}'
 
-softdepend: [PlaceholderAPI]
+softdepend: [PlaceholderAPI, Oraxen, ItemsAdder]
 
 commands:
   vouchers:

@@ -24,6 +24,10 @@ dependencies {
     implementation("org.bstats", "bstats-bukkit", "3.0.2")
 
     compileOnly("me.clip", "placeholderapi", "2.11.3")
+
+    compileOnly("com.github.LoneDev6", "API-ItemsAdder", "3.5.0b")
+
+    compileOnly("com.github.oraxen", "oraxen", "1.160.0")
 }
 
 val component: SoftwareComponent = components["java"]
