@@ -11,12 +11,6 @@ project.group = "${rootProject.group}.paper"
 
 repositories {
     maven("https://repo.extendedclip.com/content/repositories/placeholderapi/")
-
-    maven("https://repo.codemc.io/repository/maven-public/")
-
-    maven("https://jitpack.io/")
-
-    mavenCentral()
 }
 
 dependencies {
@@ -80,11 +74,8 @@ val other = if (isSnapshot) "Beta" else "Release"
 val file = file("${rootProject.rootDir}/jars/${rootProject.name}-${rootProject.version}.jar")
 
 val description = """
-## New Features:
- * Added direct support for Oraxen/ItemsAdder
-   * https://docs.crazycrew.us/crazyvouchers/info/prizes/options#custom-items
- * Added the ability to color maps.
-   * https://docs.crazycrew.us/crazyvouchers/info/prizes/items/colored-map
+## Changes:
+* Added 1.20.2 support.
     
 ## Other:
  * [Feature Requests](https://github.com/Crazy-Crew/${rootProject.name}/issues)
@@ -94,7 +85,7 @@ val description = """
 val versions = listOf(
     "1.20",
     "1.20.1",
-    //"1.20.2"
+    "1.20.2"
 )
 
 modrinth {
@@ -121,8 +112,11 @@ modrinth {
 hangarPublish {
     publications.register("plugin") {
         version.set(rootProject.version as String)
-        namespace("CrazyCrew", rootProject.name)
-        channel.set(other)
+
+        id.set(rootProject.name)
+
+        channel.set(if (isSnapshot) "Beta" else "Release")
+
         changelog.set(description)
 
         apiKey.set(System.getenv("hangar_key"))
