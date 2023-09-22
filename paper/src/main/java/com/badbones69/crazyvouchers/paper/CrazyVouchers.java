@@ -13,14 +13,13 @@ import com.badbones69.crazyvouchers.paper.support.SkullCreator;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.PluginCommand;
 import org.bukkit.command.TabCompleter;
-import org.bukkit.event.Listener;
 import org.bukkit.plugin.PluginManager;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.jetbrains.annotations.NotNull;
 import us.crazycrew.crazyenvoys.common.config.types.Config;
 import us.crazycrew.crazyvouchers.paper.api.plugin.CrazyHandler;
 
-public class CrazyVouchers extends JavaPlugin implements Listener {
+public class CrazyVouchers extends JavaPlugin {
 
     private CrazyHandler crazyHandler;
 
@@ -73,7 +72,6 @@ public class CrazyVouchers extends JavaPlugin implements Listener {
 
         PluginManager pluginManager = getServer().getPluginManager();
 
-        pluginManager.registerEvents(this, this);
         pluginManager.registerEvents(new VoucherClick(), this);
         pluginManager.registerEvents(new VoucherCraftListener(), this);
         pluginManager.registerEvents(this.gui = new GUI(), this);
