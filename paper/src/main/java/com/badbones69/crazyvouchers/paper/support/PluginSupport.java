@@ -1,25 +1,27 @@
 package com.badbones69.crazyvouchers.paper.support;
 
 import com.badbones69.crazyvouchers.paper.CrazyVouchers;
+import org.bukkit.plugin.java.JavaPlugin;
 
 public enum PluginSupport {
 
     ORAXEN("Oraxen"),
-    ITEMS_ADDER("ItemsAdder");
+    ITEMS_ADDER("ItemsAdder"),
+    PLACEHOLDERAPI("PlaceholderAPI");
 
     private final String name;
 
-    private static final CrazyVouchers plugin = CrazyVouchers.getPlugin();
+    private final CrazyVouchers plugin = JavaPlugin.getPlugin(CrazyVouchers.class);
 
     PluginSupport(String name) {
         this.name = name;
     }
 
     public String getName() {
-        return name;
+        return this.name;
     }
 
     public boolean isPluginEnabled() {
-        return plugin.getServer().getPluginManager().isPluginEnabled(name);
+        return this.plugin.getServer().getPluginManager().isPluginEnabled(this.name);
     }
 }
