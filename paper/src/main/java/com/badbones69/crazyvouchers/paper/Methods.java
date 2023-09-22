@@ -1,8 +1,8 @@
 package com.badbones69.crazyvouchers.paper;
 
-import com.badbones69.crazyvouchers.paper.api.FileManager.Files;
-import com.badbones69.crazyvouchers.paper.api.enums.Messages;
-import org.bukkit.ChatColor;
+import ch.jalu.configme.SettingsManager;
+import com.badbones69.crazyvouchers.paper.api.enums.Translation;
+import com.ryderbelserion.cluster.bukkit.utils.LegacyUtils;
 import org.bukkit.Color;
 import org.bukkit.FireworkEffect;
 import org.bukkit.Location;
@@ -11,18 +11,21 @@ import org.bukkit.entity.Firework;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.FireworkMeta;
+import org.bukkit.plugin.java.JavaPlugin;
+import us.crazycrew.crazyenvoys.common.config.ConfigManager;
+import us.crazycrew.crazyenvoys.common.config.types.Config;
+import us.crazycrew.crazyvouchers.paper.api.plugin.CrazyHandler;
 
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 public class Methods {
 
-    private final CrazyVouchers plugin = CrazyVouchers.getPlugin();
-    
-    public final Pattern HEX_PATTERN = Pattern.compile("#[a-fA-F\\d]{6}");
+    private final CrazyVouchers plugin = JavaPlugin.getPlugin(CrazyVouchers.class);
+    private final CrazyHandler crazyHandler = this.plugin.getCrazyHandler();
+    private final ConfigManager configManager = this.crazyHandler.getConfigManager();
+    private final SettingsManager config = this.configManager.getConfig();
     
     public void removeItem(ItemStack item, Player player) {
         if (item.getAmount() <= 1) {
@@ -33,18 +36,7 @@ public class Methods {
     }
     
     public String getPrefix(String message) {
-        return color(Files.CONFIG.getFile().getString("Settings.Prefix") + message);
-    }
-
-    public String color(String message) {
-        Matcher matcher = HEX_PATTERN.matcher(message);
-        StringBuilder buffer = new StringBuilder();
-
-        while (matcher.find()) {
-            matcher.appendReplacement(buffer, net.md_5.bungee.api.ChatColor.of(matcher.group()).toString());
-        }
-
-        return ChatColor.translateAlternateColorCodes('&', matcher.appendTail(buffer).toString());
+        return LegacyUtils.color(this.config.getProperty(Config.command_prefix) + message);
     }
     
     public boolean isInt(String s) {
@@ -64,25 +56,47 @@ public class Methods {
             HashMap<String, String> placeholders = new HashMap<>();
             placeholders.put("%Arg%", s);
             placeholders.put("%arg%", s);
-            sender.sendMessage(Messages.NOT_A_NUMBER.getMessage(placeholders));
+            Translation.not_a_number.sendMessage(sender, placeholders);
             return false;
         }
 
         return true;
     }
+
+    public String replacePlaceholders(HashMap<String, String> placeholders, String message) {
+        for (String placeholder : placeholders.keySet()) {
+            message = message.replaceAll(placeholder, placeholders.get(placeholder))
+                    .replaceAll(placeholder.toLowerCase(), placeholders.get(placeholder));
+        }
+
+        return message;
+    }
+
+    public List<String> replacePlaceholders(HashMap<String, String> placeholders, List<String> messageList) {
+        List<String> newMessageList = new ArrayList<>();
+
+        for (String message : messageList) {
+            for (String placeholder : placeholders.keySet()) {
+                newMessageList.add(message.replaceAll(placeholder, placeholders.get(placeholder))
+                        .replaceAll(placeholder.toLowerCase(), placeholders.get(placeholder)));
+            }
+        }
+
+        return newMessageList;
+    }
     
     public boolean isOnline(CommandSender sender, String name) {
-        for (Player player : plugin.getServer().getOnlinePlayers()) {
+        for (Player player : this.plugin.getServer().getOnlinePlayers()) {
             if (player.getName().equalsIgnoreCase(name)) return true;
         }
 
-        sender.sendMessage(Messages.NOT_ONLINE.getMessage());
+        Translation.not_online.sendMessage(sender);
         return false;
     }
     
     public boolean hasPermission(Player player, String perm) {
         if (!player.hasPermission("voucher." + perm)) {
-            player.sendMessage(Messages.NO_PERMISSION.getMessage());
+            Translation.no_permission.sendMessage(player);
             return false;
         }
 
@@ -92,7 +106,7 @@ public class Methods {
     public boolean hasPermission(CommandSender sender, String perm) {
         if (sender instanceof Player player) {
             if (!player.hasPermission("voucher." + perm)) {
-                player.sendMessage(Messages.NO_PERMISSION.getMessage());
+                Translation.no_permission.sendMessage(player);
                 return false;
             } else {
                 return true;
@@ -114,88 +128,9 @@ public class Methods {
         meta.addEffects(FireworkEffect.builder().with(FireworkEffect.Type.BALL_LARGE).withColor(list).trail(false).flicker(false).build());
         meta.setPower(0);
         firework.setFireworkMeta(meta);
-        plugin.getFireworkDamageAPI().addFirework(firework);
+        this.plugin.getFireworkDamageAPI().addFirework(firework);
 
-        plugin.getServer().getScheduler().scheduleSyncDelayedTask(plugin, firework::detonate, 2);
-    }
-
-    public Color getColor(String color) {
-        if (color != null) {
-            switch (color.toUpperCase()) {
-                case "AQUA" -> {
-                    return Color.AQUA;
-                }
-                case "BLACK" -> {
-                    return Color.BLACK;
-                }
-                case "BLUE" -> {
-                    return Color.BLUE;
-                }
-                case "FUCHSIA" -> {
-                    return Color.FUCHSIA;
-                }
-                case "GRAY" -> {
-                    return Color.GRAY;
-                }
-                case "GREEN" -> {
-                    return Color.GREEN;
-                }
-                case "LIME" -> {
-                    return Color.LIME;
-                }
-                case "MAROON" -> {
-                    return Color.MAROON;
-                }
-                case "NAVY" -> {
-                    return Color.NAVY;
-                }
-                case "OLIVE" -> {
-                    return Color.OLIVE;
-                }
-                case "ORANGE" -> {
-                    return Color.ORANGE;
-                }
-                case "PURPLE" -> {
-                    return Color.PURPLE;
-                }
-                case "RED" -> {
-                    return Color.RED;
-                }
-                case "SILVER" -> {
-                    return Color.SILVER;
-                }
-                case "TEAL" -> {
-                    return Color.TEAL;
-                }
-                case "WHITE" -> {
-                    return Color.WHITE;
-                }
-                case "YELLOW" -> {
-                    return Color.YELLOW;
-                }
-            }
-
-            try {
-                String[] rgb = color.split(",");
-                return Color.fromRGB(Integer.parseInt(rgb[0]), Integer.parseInt(rgb[1]), Integer.parseInt(rgb[2]));
-            } catch (Exception ignore) {}
-        }
-
-        return Color.WHITE;
-    }
-
-    public List<String> getPlaceholders(List<String> message, HashMap<String, String> lorePlaceholders) {
-        List<String> lore = new ArrayList<>();
-
-        for (String msg : message) {
-            for (String placeholder : lorePlaceholders.keySet()) {
-                msg = msg.replace(placeholder, lorePlaceholders.get(placeholder)).replace(placeholder.toLowerCase(), lorePlaceholders.get(placeholder));
-            }
-
-            lore.add(msg);
-        }
-
-        return lore;
+        this.plugin.getServer().getScheduler().scheduleSyncDelayedTask(this.plugin, firework::detonate, 2);
     }
     
     public boolean isSimilar(ItemStack one, ItemStack two) {

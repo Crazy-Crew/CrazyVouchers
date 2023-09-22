@@ -5,6 +5,7 @@ import com.badbones69.crazyvouchers.paper.api.objects.Voucher;
 import com.badbones69.crazyvouchers.paper.Methods;
 import com.badbones69.crazyvouchers.paper.api.CrazyManager;
 import com.badbones69.crazyvouchers.paper.api.objects.ItemBuilder;
+import com.ryderbelserion.cluster.bukkit.utils.LegacyUtils;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
@@ -12,22 +13,27 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
-import java.util.*;
+import org.bukkit.plugin.java.JavaPlugin;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.HashMap;
+import java.util.List;
+import java.util.UUID;
 
 public class GUI implements Listener {
     
-    private final CrazyVouchers plugin = CrazyVouchers.getPlugin();
+    private final CrazyVouchers plugin = JavaPlugin.getPlugin(CrazyVouchers.class);
     
-    private final CrazyManager crazyManager = plugin.getCrazyManager();
+    private final CrazyManager crazyManager = this.plugin.getCrazyManager();
 
-    private final Methods methods = plugin.getMethods();
+    private final Methods methods = this.plugin.getMethods();
     
-    private final String inventoryName = methods.color("&8&l&nVouchers");
+    private final String inventoryName = LegacyUtils.color("&8&l&nVouchers");
     private final HashMap<UUID, Integer> playerPage = new HashMap<>();
     
     public void openGUI(Player player) {
         int page = getPage(player);
-        Inventory inv = plugin.getServer().createInventory(null, 54, inventoryName);
+        Inventory inv = this.plugin.getServer().createInventory(null, 54, this.inventoryName);
         setDefaultItems(player, inv);
 
         for (Voucher i : getPageVouchers(page)) {
@@ -40,7 +46,7 @@ public class GUI implements Listener {
     public void openGUI(Player player, int pageNumber) {
         setPage(player, pageNumber);
         pageNumber = getPage(player);
-        Inventory inv = plugin.getServer().createInventory(null, 54, inventoryName);
+        Inventory inv = this.plugin.getServer().createInventory(null, 54, this.inventoryName);
         setDefaultItems(player, inv);
 
         for (Voucher i : getPageVouchers(pageNumber)) {
@@ -52,44 +58,46 @@ public class GUI implements Listener {
     
     @EventHandler
     public void invClick(InventoryClickEvent e) {
-        Inventory inv = e.getInventory();
+        Inventory inv = e.getClickedInventory();
         Player player = (Player) e.getWhoClicked();
         ItemStack item = e.getCurrentItem();
 
-        if (inv != null) {
-            if (e.getView().getTitle().equals(inventoryName)) {
-                e.setCancelled(true);
+        if (inv == null) return;
 
-                if (e.getRawSlot() < 54) {
-                    if (e.getCurrentItem() != null) {
-                        if (item.hasItemMeta()) {
-                            if (item.getItemMeta().hasDisplayName()) {
-                                if (item.getItemMeta().getDisplayName().equals(methods.color("&6&l<< Back"))) {
-                                    backPage(player);
-                                    openGUI(player);
-                                    return;
-                                } else if (item.getItemMeta().getDisplayName().equals(methods.color("&6&lNext >>"))) {
-                                    nextPage(player);
-                                    openGUI(player);
-                                    return;
-                                }
-                            }
-                        }
+        if (!e.getView().getTitle().equals(inventoryName)) return;
 
-                        for (Voucher voucher : crazyManager.getVouchers()) {
-                            if (methods.isSimilar(item, voucher.buildItem())) {
-                                player.getInventory().addItem(item);
-                                return;
-                            }
-                        }
-                    }
-                }
+        e.setCancelled(true);
+
+        if (e.getRawSlot() > 54) return;
+
+        if (e.getCurrentItem() == null) return;
+
+        if (item == null) return;
+
+        if (item.getItemMeta() == null || !item.hasItemMeta()) return;
+
+        if (item.getItemMeta().hasDisplayName()) {
+            if (item.getItemMeta().getDisplayName().equals(LegacyUtils.color("&6&l<< Back"))) {
+                backPage(player);
+                openGUI(player);
+                return;
+            } else if (item.getItemMeta().getDisplayName().equals(LegacyUtils.color("&6&lNext >>"))) {
+                nextPage(player);
+                openGUI(player);
+                return;
+            }
+        }
+
+        for (Voucher voucher : this.crazyManager.getVouchers()) {
+            if (this.methods.isSimilar(item, voucher.buildItem())) {
+                player.getInventory().addItem(item);
+                return;
             }
         }
     }
     
     private int getPage(Player player) {
-        if (playerPage.containsKey(player.getUniqueId())) return playerPage.get(player.getUniqueId());
+        if (this.playerPage.containsKey(player.getUniqueId())) return this.playerPage.get(player.getUniqueId());
 
         return 1;
     }
@@ -103,7 +111,7 @@ public class GUI implements Listener {
             pageNumber = max;
         }
 
-        playerPage.put(player.getUniqueId(), pageNumber);
+        this.playerPage.put(player.getUniqueId(), pageNumber);
     }
     
     private void nextPage(Player player) {
@@ -116,13 +124,13 @@ public class GUI implements Listener {
     
     public int getMaxPage() {
         int maxPage = 1;
-        int amount = crazyManager.getVouchers().size();
+        int amount = this.crazyManager.getVouchers().size();
         for (; amount > 36; amount -= 36, maxPage++) ;
         return maxPage;
     }
     
     private List<Voucher> getPageVouchers(Integer page) {
-        List<Voucher> list = crazyManager.getVouchers();
+        List<Voucher> list = this.crazyManager.getVouchers();
         List<Voucher> vouchers = new ArrayList<>();
         if (page <= 0) page = 1;
         int max = 36;
@@ -133,7 +141,7 @@ public class GUI implements Listener {
             if (index < list.size()) vouchers.add(list.get(index));
         }
 
-        for (; vouchers.size() == 0; page--) {
+        for (; vouchers.isEmpty(); page--) {
             if (page <= 0) break;
             index = page * max - max;
             endIndex = index >= list.size() ? list.size() - 1 : index + max;

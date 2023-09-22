@@ -2,16 +2,22 @@ package com.badbones69.crazyvouchers.paper.api.objects;
 
 import com.badbones69.crazyvouchers.paper.CrazyVouchers;
 import com.badbones69.crazyvouchers.paper.api.CrazyManager;
+import com.badbones69.crazyvouchers.paper.api.enums.Translation;
+import com.ryderbelserion.cluster.bukkit.items.utils.DyeUtils;
+import com.ryderbelserion.cluster.bukkit.utils.LegacyLogger;
+import com.ryderbelserion.cluster.bukkit.utils.LegacyUtils;
 import de.tr7zw.changeme.nbtapi.NBTItem;
 import com.badbones69.crazyvouchers.paper.Methods;
 import com.badbones69.crazyvouchers.paper.api.FileManager.Files;
-import com.badbones69.crazyvouchers.paper.api.enums.Messages;
 import org.bukkit.Color;
 import org.bukkit.NamespacedKey;
 import org.bukkit.Registry;
 import org.bukkit.Sound;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.plugin.java.JavaPlugin;
+import us.crazycrew.crazyenvoys.common.utils.MiscUtils;
+
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -25,25 +31,25 @@ public class Voucher {
     private final String name;
     private boolean usesArgs;
     private boolean glowing;
-    private String usedMessage;
-    private boolean whitelistPermissionToggle;
+    private final String usedMessage;
+    private final boolean whitelistPermissionToggle;
     private final List<String> whitelistPermissions = new ArrayList<>();
     private List<String> whitelistCommands = new ArrayList<>();
     private String whitelistPermissionMessage;
-    private boolean whitelistWorldsToggle;
+    private final boolean whitelistWorldsToggle;
     private String whitelistWorldMessage;
     private final List<String> whitelistWorlds = new ArrayList<>();
     private List<String> whitelistWorldCommands = new ArrayList<>();
-    private boolean blacklistPermissionsToggle;
+    private final boolean blacklistPermissionsToggle;
     private String blacklistPermissionMessage;
     private List<String> blacklistCommands = new ArrayList<>();
     private List<String> blacklistPermissions = new ArrayList<>();
-    private boolean limiterToggle;
+    private final boolean limiterToggle;
     private int limiterLimit;
-    private boolean twoStepAuthentication;
-    private boolean soundToggle;
+    private final boolean twoStepAuthentication;
+    private final boolean soundToggle;
     private final List<Sound> sounds = new ArrayList<>();
-    private boolean fireworkToggle;
+    private final boolean fireworkToggle;
     private final List<Color> fireworkColors = new ArrayList<>();
     private boolean isEdible;
     private List<String> commands = new ArrayList<>();
@@ -53,10 +59,10 @@ public class Voucher {
     private final Map<String, String> requiredPlaceholders = new HashMap<>();
     private String requiredPlaceholdersMessage;
 
-    private final CrazyVouchers plugin = CrazyVouchers.getPlugin();
+    private final CrazyVouchers plugin = JavaPlugin.getPlugin(CrazyVouchers.class);
     private final CrazyManager crazyManager = this.plugin.getCrazyManager();
 
-    private final Methods methods = plugin.getMethods();
+    private final Methods methods = this.plugin.getMethods();
 
     /**
      * This is just used for imputing fake vouchers.
@@ -131,9 +137,8 @@ public class Voucher {
                 for (int i = 1; i <= Integer.parseInt(split[0]); i++) {
                     this.chanceCommands.add(voucherCommand);
                 }
-            } catch (Exception e) {
-                this.plugin.getLogger().info("An issue occurred when trying to use chance commands.");
-                e.printStackTrace();
+            } catch (Exception exception) {
+                LegacyLogger.error("An issue occured when trying to use chance commands.", exception);
             }
         }
 
@@ -148,18 +153,18 @@ public class Voucher {
 
             this.whitelistPermissions.addAll(config.getStringList(path + ".Options.Permission.Whitelist-Permission.Permissions").stream().map(String :: toLowerCase).collect(Collectors.toList()));
             this.whitelistCommands = config.getStringList(path + ".Options.Permission.Whitelist-Permission.Commands");
-            this.whitelistPermissionMessage = config.contains(path + ".Options.Permission.Whitelist-Permission.Message") ? getMessage(path + ".Options.Permission.Whitelist-Permission.Message") : Messages.NO_PERMISSION_TO_VOUCHER.getMessageNoPrefix();
+            this.whitelistPermissionMessage = config.contains(path + ".Options.Permission.Whitelist-Permission.Message") ? getMessage(path + ".Options.Permission.Whitelist-Permission.Message") : Translation.no_permission_to_use_voucher.getString();
         } else {
             this.whitelistPermissionToggle = false;
         }
 
         if (config.contains(path + ".Options.Whitelist-Worlds.Toggle")) {
-            this.whitelistWorlds.addAll(config.getStringList(path + ".Options.Whitelist-Worlds.Worlds").stream().map(String :: toLowerCase).collect(Collectors.toList()));
+            this.whitelistWorlds.addAll(config.getStringList(path + ".Options.Whitelist-Worlds.Worlds").stream().map(String :: toLowerCase).toList());
 
             if (config.contains(path + ".Options.Whitelist-Worlds.Message")) {
                 this.whitelistWorldMessage = getMessage(path + ".Options.Whitelist-Worlds.Message");
             } else {
-                this.whitelistWorldMessage = Messages.NOT_IN_WHITELISTED_WORLD.getMessageNoPrefix();
+                this.whitelistWorldMessage = Translation.not_in_whitelisted_world.getString();
             }
 
             this.whitelistWorldCommands = config.getStringList(path + ".Options.Whitelist-Worlds.Commands");
@@ -174,7 +179,7 @@ public class Voucher {
             if (config.contains(path + ".Options.Permission.Blacklist-Permissions.Message")) {
                 this.blacklistPermissionMessage = getMessage(path + ".Options.Permission.Blacklist-Permissions.Message");
             } else {
-                this.blacklistPermissionMessage = Messages.HAS_BLACKLIST_PERMISSION.getMessageNoPrefix();
+                this.blacklistPermissionMessage = Translation.has_blacklist_permission.getString();
             }
 
             this.blacklistPermissions = config.getStringList(path + ".Options.Permission.Blacklist-Permissions.Permissions");
@@ -218,7 +223,7 @@ public class Voucher {
 
         if (config.getBoolean(path + ".Options.Firework.Toggle")) {
             for (String color : config.getString(path + ".Options.Firework.Colors", "").split(", ")) {
-                this.fireworkColors.add(methods.getColor(color));
+                this.fireworkColors.add(DyeUtils.getColor(color));
             }
 
             this.fireworkToggle = !fireworkColors.isEmpty();
@@ -377,13 +382,14 @@ public class Voucher {
     public boolean isEdible() {
         return this.isEdible;
     }
-    
+
+    //TODO() Move to their own config file.
     private String getMessage(String path) {
         FileConfiguration config = Files.CONFIG.getFile();
         String messageString;
 
         if (isList(path)) {
-            messageString = this.methods.color(Messages.convertList(config.getStringList(path)));
+            messageString = LegacyUtils.color(MiscUtils.convertList(config.getStringList(path)));
         } else {
             messageString = config.getString(path, "");
             if (!messageString.isEmpty()) messageString = this.methods.getPrefix(messageString);

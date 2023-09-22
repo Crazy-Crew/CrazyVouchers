@@ -2,29 +2,27 @@ package com.badbones69.crazyvouchers.paper.listeners;
 
 import com.badbones69.crazyvouchers.paper.CrazyVouchers;
 import com.badbones69.crazyvouchers.paper.api.CrazyManager;
-import com.badbones69.crazyvouchers.paper.api.FileManager.Files;
-import com.badbones69.crazyvouchers.paper.api.enums.Messages;
+import com.badbones69.crazyvouchers.paper.api.enums.Translation;
 import com.badbones69.crazyvouchers.paper.api.objects.Voucher;
 import de.tr7zw.changeme.nbtapi.NBTItem;
 import org.bukkit.Material;
-import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.inventory.*;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.plugin.java.JavaPlugin;
+import us.crazycrew.crazyenvoys.common.config.types.Config;
 
 public class VoucherCraftListener implements Listener {
 
-    private final CrazyVouchers plugin = CrazyVouchers.getPlugin();
+    private final CrazyVouchers plugin = JavaPlugin.getPlugin(CrazyVouchers.class);
 
-    private final CrazyManager crazyManager = plugin.getCrazyManager();
+    private final CrazyManager crazyManager = this.plugin.getCrazyManager();
 
     @EventHandler(priority = EventPriority.NORMAL, ignoreCancelled = true)
     public void prepareItemCraft(PrepareItemCraftEvent event) {
-        FileConfiguration config = Files.CONFIG.getFile();
-
-        if (!config.getBoolean("Settings.Prevent-Using-Vouchers-In-Recipes.Toggle")) return;
+        if (!this.plugin.getCrazyHandler().getConfigManager().getConfig().getProperty(Config.prevent_using_vouchers_in_recipes_toggle)) return;
 
         for (ItemStack itemStack : event.getInventory().getMatrix()) {
             if (itemStack != null) {
@@ -35,9 +33,9 @@ public class VoucherCraftListener implements Listener {
                 if (voucher != null && nbt.hasTag("voucher")) {
                     event.getInventory().setResult(new ItemStack(Material.AIR));
 
-                    boolean sendMsg = config.getBoolean("Settings.Prevent-Using-Vouchers-In-Recipes.Alert");
+                    boolean sendMsg = this.plugin.getCrazyHandler().getConfigManager().getConfig().getProperty(Config.prevent_using_vouchers_in_recipes_alert);
 
-                    if (sendMsg) event.getView().getPlayer().sendMessage(Messages.CANNOT_PUT_ITEMS_IN_CRAFTING_TABLE.getMessage());
+                    if (sendMsg) Translation.cannot_put_items_in_crafting_table.sendMessage(event.getView().getPlayer());
 
                     break;
                 }

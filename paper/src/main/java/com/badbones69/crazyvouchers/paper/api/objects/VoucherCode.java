@@ -3,7 +3,6 @@ package com.badbones69.crazyvouchers.paper.api.objects;
 import com.badbones69.crazyvouchers.paper.Methods;
 import com.badbones69.crazyvouchers.paper.CrazyVouchers;
 import com.badbones69.crazyvouchers.paper.api.FileManager;
-import com.badbones69.crazyvouchers.paper.api.enums.Messages;
 import org.bukkit.Color;
 import org.bukkit.Sound;
 import org.bukkit.configuration.file.FileConfiguration;
