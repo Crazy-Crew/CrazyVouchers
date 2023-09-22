@@ -39,6 +39,7 @@ public class CrazyHandler extends CrazyVouchersPlugin {
         this.fileManager = new FileManager();
         this.fileManager
                 .registerDefaultGenerateFiles("Example.yml", "/vouchers", "/vouchers")
+                .registerDefaultGenerateFiles("Example-Arg.yml", "/vouchers", "/vouchers")
                 .registerDefaultGenerateFiles("PlayerHead.yml", "/vouchers", "/vouchers")
                 .registerCustomFilesFolder("/vouchers")
                 .setup();

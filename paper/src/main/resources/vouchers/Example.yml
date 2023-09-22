@@ -57,6 +57,10 @@ voucher:
     sound:
       # If the sounds should be enabled.
       toggle: true
+      # The volume pitch
+      volume: 1.0
+      # The sound pitch
+      pitch: 1.0
       # The sound or sounds to use.
       # https://jd.papermc.io/paper/1.20/org/bukkit/Sound.html
       sounds:

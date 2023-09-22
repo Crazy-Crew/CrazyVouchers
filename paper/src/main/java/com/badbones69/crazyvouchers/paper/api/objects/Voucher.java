@@ -187,10 +187,13 @@ public class Voucher {
 
         this.twoStepAuthentication = this.file.contains(path + ".options.two-step-authentication") && this.file.getBoolean(path + ".options.two-step-authentication.toggle");
 
-        if (this.file.contains(path + ".options.sound")) {
-            this.soundToggle = this.file.getBoolean(path + ".options.sound.toggle");
+        if (fileConfiguration.contains(path + ".options.sound")) {
+            this.soundToggle = fileConfiguration.getBoolean(path + ".options.sound.toggle");
 
-            for (String sound : this.file.getStringList(path + ".options.sound.sounds")) {
+            this.volume = (float) fileConfiguration.getDouble(path + ".options.sound.volume");
+            this.pitch = (float) fileConfiguration.getDouble(path + ".options.sound.pitch");
+
+            for (String sound : fileConfiguration.getStringList(path + ".options.sound.sounds")) {
                 try {
                     this.sounds.add(Sound.valueOf(sound));
                 } catch (Exception ignored) {}
@@ -324,7 +327,15 @@ public class Voucher {
     public List<Sound> getSounds() {
         return this.sounds;
     }
-    
+
+    public float getPitch() {
+        return this.pitch;
+    }
+
+    public float getVolume() {
+        return this.volume;
+    }
+
     public boolean useFirework() {
         return this.fireworkToggle;
     }

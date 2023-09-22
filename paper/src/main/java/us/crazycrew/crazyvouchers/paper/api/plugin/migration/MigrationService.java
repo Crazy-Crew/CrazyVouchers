@@ -174,6 +174,8 @@ public class MigrationService {
             voucher.set("voucher.options.two-step-authentication", twoStep);
 
             voucher.set("voucher.options.sound.toggle", soundToggle);
+            voucher.set("voucher.options.sound.pitch", 1.0);
+            voucher.set("voucher.options.sound.volume", 1.0);
             voucher.set("voucher.options.sound.sounds", sounds);
 
             voucher.set("voucher.options.firework.toggle", fireworkToggle);

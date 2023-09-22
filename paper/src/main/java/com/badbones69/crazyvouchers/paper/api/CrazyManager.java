@@ -13,6 +13,7 @@ import org.bukkit.plugin.java.JavaPlugin;
 import us.crazycrew.crazyenvoys.common.config.types.Config;
 import us.crazycrew.crazyvouchers.paper.api.MetricsHandler;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Random;
 

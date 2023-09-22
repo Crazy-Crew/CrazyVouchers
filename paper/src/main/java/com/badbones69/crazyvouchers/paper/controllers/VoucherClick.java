@@ -251,7 +251,7 @@ public class VoucherClick implements Listener {
 
         if (voucher.playSounds()) {
             for (Sound sound : voucher.getSounds()) {
-                player.playSound(player.getLocation(), sound, SoundCategory.PLAYERS,1f, 1f);
+                player.playSound(player.getLocation(), sound, SoundCategory.PLAYERS, voucher.getVolume(), voucher.getPitch());
             }
         }
 
