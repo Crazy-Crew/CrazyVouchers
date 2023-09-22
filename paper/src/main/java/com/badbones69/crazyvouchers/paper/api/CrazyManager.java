@@ -3,6 +3,7 @@ package com.badbones69.crazyvouchers.paper.api;
 import com.badbones69.crazyvouchers.paper.CrazyVouchers;
 import com.badbones69.crazyvouchers.paper.api.objects.ItemBuilder;
 import com.badbones69.crazyvouchers.paper.api.objects.Voucher;
+import com.ryderbelserion.cluster.bukkit.utils.LegacyLogger;
 import de.tr7zw.changeme.nbtapi.NBTItem;
 import com.badbones69.crazyvouchers.paper.api.objects.VoucherCode;
 import org.bukkit.configuration.file.FileConfiguration;
@@ -15,7 +16,6 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Random;
-import java.util.concurrent.ThreadLocalRandom;
 
 public class CrazyManager {
 
@@ -36,12 +36,17 @@ public class CrazyManager {
     }
 
     private void loadVouchers() {
-        for (String voucherName : Files.CONFIG.getFile().getConfigurationSection("Vouchers").getKeys(false)) {
-            this.vouchers.add(new Voucher(voucherName));
+        for (String voucherName : this.plugin.getFileManager().getAllVoucherItems()) {
+            try {
+                FileConfiguration file = this.plugin.getFileManager().getFile(voucherName).getFile();
+                this.vouchers.add(new Voucher(file, voucherName));
+            } catch (Exception exception) {
+                LegacyLogger.error("There was an error while loading the " + voucherName + ".yml file.", exception);
+            }
         }
 
-        if (Files.VOUCHER_CODES.getFile().contains("Voucher-Codes")) {
-            for (String voucherName : Files.VOUCHER_CODES.getFile().getConfigurationSection("Voucher-Codes").getKeys(false)) {
+        if (Files.voucher_codes.getFile().contains("Voucher-Codes")) {
+            for (String voucherName : Files.voucher_codes.getFile().getConfigurationSection("Voucher-Codes").getKeys(false)) {
                 this.voucherCodes.add(new VoucherCode(voucherName));
             }
         }
@@ -80,7 +85,9 @@ public class CrazyManager {
     
     public Voucher getVoucher(String voucherName) {
         for (Voucher voucher : getVouchers()) {
-            if (voucher.getName().equalsIgnoreCase(voucherName)) return voucher;
+            if (voucher.getName().equalsIgnoreCase(voucherName)) {
+                return voucher;
+            }
         }
 
         return null;
@@ -116,13 +123,11 @@ public class CrazyManager {
     }
     
     public Voucher getVoucherFromItem(ItemStack item) {
-        try {
-            NBTItem nbt = new NBTItem(item);
+        NBTItem nbt = new NBTItem(item);
 
-            if (nbt.hasTag("voucher")) return getVoucher(nbt.getString("voucher"));
+        if (!nbt.hasTag("voucher")) return null;
 
-        } catch (Exception ignored) {}
-        return null;
+        return getVoucher(nbt.getString("voucher"));
     }
     
     public String getArgument(ItemStack item, Voucher voucher) {
@@ -145,8 +150,8 @@ public class CrazyManager {
             StringBuilder stringBuilder = new StringBuilder();
 
             for (String word : newString.split(" ")) {
-                if (word.toLowerCase().startsWith("%random%:")) {
-                    word = word.toLowerCase().replace("%random%:", "");
+                if (word.toLowerCase().startsWith("{random}:")) {
+                    word = word.toLowerCase().replace("{random}:", "");
 
                     try {
                         long min = Long.parseLong(word.split("-")[0]);
@@ -169,11 +174,11 @@ public class CrazyManager {
     }
 
     public List<ItemBuilder> getItems(FileConfiguration file, String voucher) {
-        return ItemBuilder.convertStringList(file.getStringList("Vouchers." + voucher + ".Items"), voucher);
+        return ItemBuilder.convertStringList(file.getStringList("voucher.items"), voucher);
     }
     
     private boolean usesRandom(String string) {
-        return string.toLowerCase().contains("%random%:");
+        return string.toLowerCase().contains("{random}:");
     }
     
     private long pickNumber(long min, long max) {

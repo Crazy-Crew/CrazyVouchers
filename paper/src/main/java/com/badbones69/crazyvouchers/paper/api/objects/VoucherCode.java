@@ -44,7 +44,7 @@ public class VoucherCode {
 
     public VoucherCode(String name) {
         this.name = name;
-        FileConfiguration config = FileManager.Files.VOUCHER_CODES.getFile();
+        FileConfiguration config = FileManager.Files.voucher_codes.getFile();
         String path = "Voucher-Codes." + name + ".";
         this.enabled = config.getBoolean(path + "Options.Enabled");
         this.code = config.getString(path + "Code", "");

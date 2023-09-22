@@ -293,14 +293,28 @@ public class FileManager {
         }
     }
 
+    public List<String> getAllVoucherItems() {
+        ArrayList<String> files = new ArrayList<>();
+
+        String[] file = new File(this.plugin.getDataFolder(), "/vouchers").list();
+
+        if (file != null) {
+            for (String name : file) {
+                if (!name.endsWith(".yml")) continue;
+
+                files.add(name.replaceAll(".yml", ""));
+            }
+        }
+
+        return Collections.unmodifiableList(files);
+    }
+
     public enum Files {
 
         // ENUM_NAME("fileName.yml", "fileLocation.yml"),
         // ENUM_NAME("fileName.yml", "newFileLocation.yml", "oldFileLocation.yml"),
-        CONFIG("config.yml", "config.yml"),
-        MESSAGES("Messages.yml", "Messages.yml"),
-        VOUCHER_CODES("VoucherCodes.yml", "VoucherCodes.yml"),
-        DATA("Data.yml", "Data.yml");
+        voucher_codes("voucher-codes.yml", "voucher-codes.yml"),
+        users("users.yml", "users.yml");
 
         private final String fileName;
         private final String fileJar;

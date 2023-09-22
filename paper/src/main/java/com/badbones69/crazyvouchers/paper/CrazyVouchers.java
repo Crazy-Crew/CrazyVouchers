@@ -66,9 +66,9 @@ public class CrazyVouchers extends JavaPlugin implements Listener {
 
         this.skullCreator = new SkullCreator();
 
-        if (!Files.DATA.getFile().contains("Players")) {
-            Files.DATA.getFile().set("Players.Clear", null);
-            Files.DATA.saveFile();
+        if (!Files.users.getFile().contains("Players")) {
+            Files.users.getFile().set("Players.Clear", null);
+            Files.users.saveFile();
         }
 
         PluginManager pluginManager = getServer().getPluginManager();

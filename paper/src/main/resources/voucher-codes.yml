@@ -18,7 +18,7 @@ Voucher-Codes: #Where you make your vouchers.
   Starter-Money: #The name of the voucher.
     Code: 'startermoney' #The code the player has to use to redeem it.
     Commands: #The commands that are run when redeemed.
-      - 'eco give %player% 10000'
+      - 'eco give {player} 10000'
     Options:
       Enabled: true #If the code is currently available.
       Case-Sensitive: false #If the code has to be case-sensitive or not.
@@ -37,7 +37,7 @@ Voucher-Codes: #Where you make your vouchers.
           Commands: [] #Run commands if the player doesn't have the permission.
         Blacklist-Permissions: #If the player has any of these permissions then they can't use the voucher.
           Toggle: false #Toggle if it checks for black listed permissions.
-          Message: '&cYou have a blacklisted permission and can''t use this voucher.' #The message that is sent to the player if they have a blacklisted message. Use %permission% if you wise to show the permission they need.
+          Message: '&cYou have a blacklisted permission and can''t use this voucher.' #The message that is sent to the player if they have a blacklisted message. Use {permission} if you wise to show the permission they need.
           Permissions: #List all the blacklisted permissions here.
             - 'voucher.blacklist.startermoney'
           Commands: [] #Run commands if the player doesn't have the permission.

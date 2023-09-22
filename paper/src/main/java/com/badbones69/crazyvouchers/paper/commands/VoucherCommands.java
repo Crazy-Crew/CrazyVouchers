@@ -53,13 +53,13 @@ public class VoucherCommands implements CommandExecutor {
                         this.fileManager.reloadAllFiles();
                         this.fileManager.setup();
 
-                        if (!Files.DATA.getFile().contains("Players")) {
-                            Files.DATA.getFile().set("Players.Clear", null);
-                            Files.DATA.saveFile();
+                        if (!Files.users.getFile().contains("Players")) {
+                            Files.users.getFile().set("Players.Clear", null);
+                            Files.users.saveFile();
                         }
 
                         this.crazyManager.reload(false);
-                        Translation.reload.sendMessage(sender);
+                        Translation.config_reload.sendMessage(sender);
                     }
                     return true;
                 }
@@ -107,12 +107,12 @@ public class VoucherCommands implements CommandExecutor {
 
                             HashMap<String, String> placeholders = new HashMap<>();
 
-                            placeholders.put("%Arg%", code);
-                            placeholders.put("%Player%", player.getName());
-                            placeholders.put("%World%", player.getWorld().getName());
-                            placeholders.put("%X%", player.getLocation().getBlockX() + "");
-                            placeholders.put("%Y%", player.getLocation().getBlockY() + "");
-                            placeholders.put("%Z%", player.getLocation().getBlockZ() + "");
+                            placeholders.put("{arg}", code);
+                            placeholders.put("{player}", player.getName());
+                            placeholders.put("{world}", player.getWorld().getName());
+                            placeholders.put("{x}", player.getLocation().getBlockX() + "");
+                            placeholders.put("{y}", player.getLocation().getBlockY() + "");
+                            placeholders.put("{z}", player.getLocation().getBlockZ() + "");
 
                             if (this.crazyManager.isVoucherCode(code)) {
                                 VoucherCode voucherCode = this.crazyManager.getVoucherCode(code);
@@ -161,7 +161,7 @@ public class VoucherCommands implements CommandExecutor {
                                 }
 
                                 // Has permission to continue.
-                                FileConfiguration data = Files.DATA.getFile();
+                                FileConfiguration data = Files.users.getFile();
                                 String uuid = player.getUniqueId().toString();
                                 // Checking if the player has used the code before.
 
@@ -187,7 +187,7 @@ public class VoucherCommands implements CommandExecutor {
                                         data.set("Voucher-Limit." + voucherCode.getName(), (voucherCode.getLimit() - 1));
                                     }
 
-                                    Files.DATA.saveFile();
+                                    Files.users.saveFile();
                                 }
 
                                 // Gives the reward to the player.
@@ -196,7 +196,7 @@ public class VoucherCommands implements CommandExecutor {
 
                                 if (!event.isCancelled()) {
                                     data.set("Players." + uuid + ".Codes." + voucherCode.getName(), "used");
-                                    Files.DATA.saveFile();
+                                    Files.users.saveFile();
 
                                     for (String command : voucherCode.getCommands()) {
                                         this.plugin.getServer().dispatchCommand(this.plugin.getServer().getConsoleSender(), this.methods.replacePlaceholders(placeholders, crazyManager.replaceRandom(command)));
@@ -272,8 +272,8 @@ public class VoucherCommands implements CommandExecutor {
 
                             if (args.length >= 5) {
                                 // Gives a random number as the argument.
-                                // /Voucher give test 1 %player% %random%:1-1000
-                                argument = crazyManager.replaceRandom(args[4]);
+                                // /Voucher give test 1 {player} {random}:1-1000
+                                argument = crazyManager.replaceRandom(args[4].replace("%random%", "{random}"));
                             }
 
                             ItemStack item = args.length >= 5 ? voucher.buildItem(argument, amount) : voucher.buildItem(amount);
@@ -286,8 +286,8 @@ public class VoucherCommands implements CommandExecutor {
                             }
 
                             HashMap<String, String> placeholders = new HashMap<>();
-                            placeholders.put("%Player%", player.getName());
-                            placeholders.put("%Voucher%", voucher.getName());
+                            placeholders.put("{player}", player.getName());
+                            placeholders.put("{voucher}", voucher.getName());
 
                             if (!Translation.sent_voucher.isBlank()) Translation.sent_voucher.sendMessage(sender, placeholders);
 
@@ -301,9 +301,7 @@ public class VoucherCommands implements CommandExecutor {
                 }
                 case "giveall" -> { // /Voucher 0GiveAll 1<Type> 2[Amount] 3[Arguments]
                     if (this.methods.hasPermission(sender, "admin")) {
-
                         if (args.length > 1) {
-
                             if (this.crazyManager.isVoucherName(args[1])) {
                                 Translation.not_a_voucher.sendMessage(sender);
                                 return true;
@@ -321,8 +319,8 @@ public class VoucherCommands implements CommandExecutor {
 
                             if (args.length >= 4) {
                                 // Gives a random number as the argument.
-                                // /voucher give test 1 %player% %random%:1-1000
-                                argument = this.crazyManager.replaceRandom(args[3]);
+                                // /voucher give test 1 {player} {random}:1-1000
+                                argument = this.crazyManager.replaceRandom(args[3].replace("%random%", "{random}"));
                             }
 
                             ItemStack item = args.length >= 4 ? voucher.buildItem(argument, amount) : voucher.buildItem(amount);
@@ -337,7 +335,7 @@ public class VoucherCommands implements CommandExecutor {
                             }
 
                             HashMap<String, String> placeholders = new HashMap<>();
-                            placeholders.put("%Voucher%", voucher.getName());
+                            placeholders.put("{voucher}", voucher.getName());
                             Translation.sent_everyone_voucher.sendMessage(sender, placeholders);
                             return true;
                         }

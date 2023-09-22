@@ -10,6 +10,7 @@ import com.ryderbelserion.cluster.bukkit.BukkitPlugin;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.jetbrains.annotations.NotNull;
 import us.crazycrew.crazyenvoys.common.CrazyVouchersPlugin;
+import us.crazycrew.crazyvouchers.paper.api.plugin.migration.MigrationService;
 import java.io.File;
 
 public class CrazyHandler extends CrazyVouchersPlugin {
@@ -28,9 +29,12 @@ public class CrazyHandler extends CrazyVouchersPlugin {
         this.bukkitPlugin = new BukkitPlugin(this.plugin);
         this.bukkitPlugin.enable();
 
+        MigrationService migrationService = new MigrationService();
+        migrationService.migrate();
+
         super.enable();
 
-        LegacyLogger.setName(getConfigManager().getConfig().getProperty(Config.command_prefix));
+        LegacyLogger.setName(getConfigManager().getConfig().getProperty(Config.console_prefix));
 
         this.fileManager = new FileManager();
         this.fileManager

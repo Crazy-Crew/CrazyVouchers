@@ -19,7 +19,7 @@ import java.util.Map;
 
 public enum Translation {
 
-    reload(Messages.config_reload),
+    config_reload(Messages.config_reload),
     not_online(Messages.not_online),
     player_only(Messages.player_only),
     not_a_number(Messages.not_a_number),
@@ -146,7 +146,7 @@ public enum Translation {
     }
 
     public String asString() {
-        return LegacyUtils.color(this.message.replaceAll("%prefix%", this.configManager.getConfig().getProperty(Config.command_prefix)));
+        return LegacyUtils.color(this.message.replaceAll("\\{prefix}", this.configManager.getConfig().getProperty(Config.command_prefix)));
     }
 
     public List<String> toListString() {

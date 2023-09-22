@@ -100,7 +100,7 @@ public class VoucherClick implements Listener {
     }
     
     private void useVoucher(Player player, Voucher voucher, ItemStack item) {
-        FileConfiguration data = Files.DATA.getFile();
+        FileConfiguration data = Files.users.getFile();
         String argument = this.crazyManager.getArgument(item, voucher);
 
         if (player.getGameMode() == GameMode.CREATIVE && this.plugin.getCrazyHandler().getConfigManager().getConfig().getProperty(Config.must_be_in_survival)) {
@@ -167,7 +167,7 @@ public class VoucherClick implements Listener {
 
             if (voucher.useWhiteListPermissions()) {
                 for (String permission : voucher.getWhitelistPermissions()) {
-                    if (!player.hasPermission(permission.toLowerCase().replace("%arg%", argument != null ? argument : "%arg%"))) {
+                    if (!player.hasPermission(permission.toLowerCase().replace("{arg}", argument != null ? argument : "{arg}"))) {
                         player.sendMessage(this.methods.replacePlaceholders(this.placeholders, voucher.getWhitelistPermissionMessage()));
 
                         for (String command : voucher.getWhitelistCommands()) {
@@ -191,7 +191,7 @@ public class VoucherClick implements Listener {
 
             if (voucher.useBlackListPermissions()) {
                 for (String permission : voucher.getBlackListPermissions()) {
-                    if (player.hasPermission(permission.toLowerCase().replace("%arg%", argument != null ? argument : "%arg%"))) {
+                    if (player.hasPermission(permission.toLowerCase().replace("{arg}", argument != null ? argument : "{arg}"))) {
                         player.sendMessage(this.methods.replacePlaceholders(this.placeholders, voucher.getBlackListMessage()));
 
                         for (String command : voucher.getBlacklistCommands()) {
@@ -253,19 +253,20 @@ public class VoucherClick implements Listener {
         }
 
         if (voucher.useLimiter()) {
-            Files.DATA.getFile().set("Players." + player.getUniqueId() + ".UserName", player.getName());
-            Files.DATA.getFile().set("Players." + player.getUniqueId() + ".Vouchers." + voucher.getName(), Files.DATA.getFile().getInt("Players." + player.getUniqueId() + ".Vouchers." + voucher.getName()) + 1);
-            Files.DATA.saveFile();
+            Files.users.getFile().set("Players." + player.getUniqueId() + ".UserName", player.getName());
+            Files.users.getFile().set("Players." + player.getUniqueId() + ".Vouchers." + voucher.getName(), Files.users.getFile().getInt("Players." + player.getUniqueId() + ".Vouchers." + voucher.getName()) + 1);
+            Files.users.saveFile();
         }
     }
 
     private void fillMap(Player player, String argument) {
-        this.placeholders.put("%Arg%", argument != null ? argument : "%arg%");
-        this.placeholders.put("%Player%", player.getName());
-        this.placeholders.put("%World%", player.getWorld().getName());
-        this.placeholders.put("%X%", player.getLocation().getBlockX() + "");
-        this.placeholders.put("%Y%", player.getLocation().getBlockY() + "");
-        this.placeholders.put("%Z%", player.getLocation().getBlockZ() + "");
+        this.placeholders.put("{arg}", argument != null ? argument : "{arg}");
+        this.placeholders.put("{player}", player.getName());
+        this.placeholders.put("{world}", player.getWorld().getName());
+        this.placeholders.put("{x}", String.valueOf(player.getLocation().getBlockX()));
+        this.placeholders.put("{y}", String.valueOf(player.getLocation().getBlockY()));
+        this.placeholders.put("{z}", String.valueOf(player.getLocation().getBlockZ()));
+        this.placeholders.put("{prefix}", this.plugin.getCrazyHandler().getConfigManager().getConfig().getProperty(Config.command_prefix));
     }
 
     private String replacePlaceholders(String string, Player player) {

@@ -19,20 +19,24 @@ public class ConfigManager {
     private SettingsManager config;
 
     public void load() {
-        File messagesFile = new File(this.dataFolder, "messages.yml");
-
-        this.messages = SettingsManagerBuilder
-                .withYamlFile(messagesFile)
-                .useDefaultMigrationService()
-                .configurationData(Messages.class)
-                .create();
-
         File configFile = new File(this.dataFolder, "config.yml");
 
         this.config = SettingsManagerBuilder
                 .withYamlFile(configFile)
                 .useDefaultMigrationService()
                 .configurationData(ConfigurationDataBuilder.createConfiguration(Config.class))
+                .create();
+
+        File localeDir = new File(this.dataFolder, "locale");
+
+        if (!localeDir.exists()) localeDir.mkdirs();
+
+        File messagesFile = new File(localeDir, "en-US.yml");
+
+        this.messages = SettingsManagerBuilder
+                .withYamlFile(messagesFile)
+                .useDefaultMigrationService()
+                .configurationData(Messages.class)
                 .create();
     }
 
