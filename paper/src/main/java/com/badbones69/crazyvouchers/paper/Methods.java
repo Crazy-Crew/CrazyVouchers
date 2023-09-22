@@ -54,8 +54,7 @@ public class Methods {
             Integer.parseInt(s);
         } catch (NumberFormatException nfe) {
             HashMap<String, String> placeholders = new HashMap<>();
-            placeholders.put("%Arg%", s);
-            placeholders.put("%arg%", s);
+            placeholders.put("{arg}", s);
             Translation.not_a_number.sendMessage(sender, placeholders);
             return false;
         }
@@ -65,24 +64,10 @@ public class Methods {
 
     public String replacePlaceholders(HashMap<String, String> placeholders, String message) {
         for (String placeholder : placeholders.keySet()) {
-            message = message.replaceAll(placeholder, placeholders.get(placeholder))
-                    .replaceAll(placeholder.toLowerCase(), placeholders.get(placeholder));
+            message = message.replace(placeholder, placeholders.get(placeholder)).replace(placeholder.toLowerCase(), placeholders.get(placeholder));
         }
 
         return message;
-    }
-
-    public List<String> replacePlaceholders(HashMap<String, String> placeholders, List<String> messageList) {
-        List<String> newMessageList = new ArrayList<>();
-
-        for (String message : messageList) {
-            for (String placeholder : placeholders.keySet()) {
-                newMessageList.add(message.replaceAll(placeholder, placeholders.get(placeholder))
-                        .replaceAll(placeholder.toLowerCase(), placeholders.get(placeholder)));
-            }
-        }
-
-        return newMessageList;
     }
     
     public boolean isOnline(CommandSender sender, String name) {
