@@ -3,6 +3,7 @@ package com.badbones69.crazyvouchers.paper.api.objects;
 import com.badbones69.crazyvouchers.paper.CrazyVouchers;
 import com.badbones69.crazyvouchers.paper.support.PluginSupport;
 import com.badbones69.crazyvouchers.paper.support.SkullCreator;
+import com.ryderbelserion.cluster.bukkit.items.utils.DyeUtils;
 import com.ryderbelserion.cluster.bukkit.utils.LegacyUtils;
 import de.tr7zw.changeme.nbtapi.NBTItem;
 import dev.lone.itemsadder.api.CustomStack;
@@ -515,9 +516,9 @@ public class ItemBuilder {
                 this.damage = Integer.parseInt(metaData);
             } else { // Value is something else.
                 this.potionType = getPotionType(PotionEffectType.getByName(metaData));
-                this.potionColor = getColor(metaData);
-                this.armorColor = getColor(metaData);
-                this.mapColor = getColor(metaData);
+                this.potionColor = DyeUtils.getColor(metaData);
+                this.armorColor = DyeUtils.getColor(metaData);
+                this.mapColor = DyeUtils.getColor(metaData);
             }
         } else if (material.contains("#")) {
             String[] b = material.split("#");
@@ -705,7 +706,7 @@ public class ItemBuilder {
             for (PatternType pattern : PatternType.values()) {
 
                 if (split[0].equalsIgnoreCase(pattern.name()) || split[0].equalsIgnoreCase(pattern.getIdentifier())) {
-                    DyeColor color = getDyeColor(split[1]);
+                    DyeColor color = DyeUtils.getDyeColor(split[1]);
 
                     if (color != null) addPattern(new Pattern(color, pattern));
 
@@ -1053,7 +1054,7 @@ public class ItemBuilder {
                         try {
                             for (PatternType pattern : PatternType.values()) {
                                 if (option.equalsIgnoreCase(pattern.name()) || value.equalsIgnoreCase(pattern.getIdentifier())) {
-                                    DyeColor color = getDyeColor(value);
+                                    DyeColor color = DyeUtils.getDyeColor(value);
                                     if (color != null) itemBuilder.addPattern(new Pattern(color, pattern));
                                     break;
                                 }
@@ -1149,98 +1150,6 @@ public class ItemBuilder {
                 return PotionType.WATER_BREATHING;
             } else if (type.equals(PotionEffectType.WEAKNESS)) {
                 return PotionType.WEAKNESS;
-            }
-        }
-
-        return null;
-    }
-
-    /**
-     * Get the Color from a string.
-     *
-     * @param color The string of the color.
-     * @return The color from the string.
-     */
-    private static Color getColor(String color) {
-        if (color != null) {
-            switch (color.toUpperCase()) {
-                case "AQUA" -> {
-                    return Color.AQUA;
-                }
-                case "BLACK" -> {
-                    return Color.BLACK;
-                }
-                case "BLUE" -> {
-                    return Color.BLUE;
-                }
-                case "FUCHSIA" -> {
-                    return Color.FUCHSIA;
-                }
-                case "GRAY" -> {
-                    return Color.GRAY;
-                }
-                case "GREEN" -> {
-                    return Color.GREEN;
-                }
-                case "LIME" -> {
-                    return Color.LIME;
-                }
-                case "MAROON" -> {
-                    return Color.MAROON;
-                }
-                case "NAVY" -> {
-                    return Color.NAVY;
-                }
-                case "OLIVE" -> {
-                    return Color.OLIVE;
-                }
-                case "ORANGE" -> {
-                    return Color.ORANGE;
-                }
-                case "PURPLE" -> {
-                    return Color.PURPLE;
-                }
-                case "RED" -> {
-                    return Color.RED;
-                }
-                case "SILVER" -> {
-                    return Color.SILVER;
-                }
-                case "TEAL" -> {
-                    return Color.TEAL;
-                }
-                case "WHITE" -> {
-                    return Color.WHITE;
-                }
-                case "YELLOW" -> {
-                    return Color.YELLOW;
-                }
-            }
-
-            try {
-                String[] rgb = color.split(",");
-                return Color.fromRGB(Integer.parseInt(rgb[0]), Integer.parseInt(rgb[1]), Integer.parseInt(rgb[2]));
-            } catch (Exception ignore) {}
-        }
-
-        return null;
-    }
-
-    /**
-     * Get the dye color from a string.
-     *
-     * @param color The string of the color.
-     * @return The dye color from the string.
-     */
-    public static DyeColor getDyeColor(String color) {
-        if (color != null) {
-            try {
-                return DyeColor.valueOf(color.toUpperCase());
-            } catch (Exception e) {
-                try {
-                    String[] rgb = color.split(",");
-                    return DyeColor.getByColor(Color.fromRGB(Integer.parseInt(rgb[0]), Integer.parseInt(rgb[1]), Integer.parseInt(rgb[2])));
-                } catch (Exception ignore) {}
             }
         }
 
