@@ -91,8 +91,9 @@ val description = """
 * Added volume/pitch controls to each sound section in the vouchers.
 
 ## Breaking Changes:
-* Vouchers have been moved out of the Config.yml into a folder called `vouchers`
+* Vouchers have been moved out of the `Config.yml` into a folder called `vouchers`
  * All the configurations should auto migrate. Let me know if I missed something.
+* Voucher codes have been moved from `VoucherCodes.yml` to the `codes` folder.
 
 ## Performance:
 * No longer use the player object in hashmap's/arrays just the uuid as god intended.
@@ -100,6 +101,7 @@ val description = """
 ## Developers / API:
 ### This is nerd talk so only read this if you need to.
 * Cleaned up some internals, reduce duplicated code.
+* The api artifact id is now crazyvouchers-paper-api
     
 ## Other:
  * [Feature Requests](https://github.com/Crazy-Crew/${rootProject.name}/issues)
