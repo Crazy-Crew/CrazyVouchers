@@ -13,6 +13,7 @@ import com.badbones69.crazyvouchers.paper.api.events.RedeemVoucherCodeEvent;
 import com.badbones69.crazyvouchers.paper.api.objects.VoucherCode;
 import com.ryderbelserion.cluster.bukkit.utils.LegacyUtils;
 import org.bukkit.Sound;
+import org.bukkit.SoundCategory;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
@@ -223,7 +224,7 @@ public class VoucherCommands implements CommandExecutor {
 
                                     if (voucherCode.useSounds()) {
                                         for (Sound sound : voucherCode.getSounds()) {
-                                            player.playSound(player.getLocation(), sound, 1, 1);
+                                            player.playSound(player.getLocation(), sound, SoundCategory.PLAYERS, 1f, 1f);
                                         }
                                     }
 

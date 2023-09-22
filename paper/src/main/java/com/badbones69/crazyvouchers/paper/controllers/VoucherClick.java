@@ -13,6 +13,7 @@ import me.clip.placeholderapi.PlaceholderAPI;
 import org.bukkit.GameMode;
 import org.bukkit.Material;
 import org.bukkit.Sound;
+import org.bukkit.SoundCategory;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
@@ -240,7 +241,7 @@ public class VoucherClick implements Listener {
 
         if (voucher.playSounds()) {
             for (Sound sound : voucher.getSounds()) {
-                player.playSound(player.getLocation(), sound, 1, 1);
+                player.playSound(player.getLocation(), sound, SoundCategory.PLAYERS,1f, 1f);
             }
         }
 
