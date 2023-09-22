@@ -102,6 +102,7 @@ val description = """
 ### This is nerd talk so only read this if you need to.
 * Cleaned up some internals, reduce duplicated code.
 * The api artifact id is now crazyvouchers-paper-api
+* Bumped nbt-api
     
 ## Other:
  * [Feature Requests](https://github.com/Crazy-Crew/${rootProject.name}/issues)
