@@ -83,6 +83,13 @@ val file = file("${rootProject.rootDir}/jars/${rootProject.name}-${rootProject.v
 val description = """
 ## Changes:
 * Added 1.20.2 support.
+* Moved all vouchers out of Config.yml into the vouchers folder. It will automatically convert
+* Made sounds respect client side sound settings.
+* Properly handle how Metrics shuts down and turns on when you change the true/false.
+* Add more verbose logging with an option to turn off the spammy garbage.
+
+## Performance:
+* No longer use the player object in hashmap's/arrays just the uuid as god intended.
     
 ## Other:
  * [Feature Requests](https://github.com/Crazy-Crew/${rootProject.name}/issues)
