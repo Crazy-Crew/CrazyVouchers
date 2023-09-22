@@ -3,6 +3,7 @@ package com.badbones69.crazyvouchers.paper.api.enums;
 import ch.jalu.configme.SettingsManager;
 import ch.jalu.configme.properties.Property;
 import com.badbones69.crazyvouchers.paper.CrazyVouchers;
+import com.ryderbelserion.cluster.bukkit.utils.LegacyLogger;
 import com.ryderbelserion.cluster.bukkit.utils.LegacyUtils;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;

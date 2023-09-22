@@ -41,7 +41,9 @@ public class CrazyHandler extends CrazyVouchersPlugin {
                 .registerDefaultGenerateFiles("Example.yml", "/vouchers", "/vouchers")
                 .registerDefaultGenerateFiles("Example-Arg.yml", "/vouchers", "/vouchers")
                 .registerDefaultGenerateFiles("PlayerHead.yml", "/vouchers", "/vouchers")
+                .registerDefaultGenerateFiles("Starter-Money.yml", "/codes", "/codes")
                 .registerCustomFilesFolder("/vouchers")
+                .registerCustomFilesFolder("/codes")
                 .setup();
 
         boolean metrics = this.plugin.getCrazyHandler().getConfigManager().getConfig().getProperty(Config.toggle_metrics);

@@ -3,7 +3,20 @@
 # A) Use your permissions plugin like LuckPerms, You can run /lp user {player} permission set your_permission
 
 # Q) Do I need everything in this config?
-# A) No, You can view PlayerHead.yml for an example where as much as possible can be removed.
+# A) No, You can view PlayerHead.yml for an example whereas much as possible can be removed.
+
+###################################
+#             Items: Options
+# Item: <ID:MD> - You can choose the item with its id and meta data.
+# Amount: <Number> - Choose how many of the item you get.
+# Name: <Name> - The display name that goes on the item.
+# Lore: <Line 1>,<Line 2>,<Line 3>,<Line 4> - The lore that will go under the enchantments. Split lines with a ','
+# <Enchantment>:<Level> - Choose the enchantment you want to add to the item. You can use the in-game names of the enchantment if you want. Replace the spaces in the name with a "_".
+###################################################################
+#                         Firework Colors:                        #
+#      Aqua, Black, Blue, Fuchsia, Gray, Green, Lime, Maroon,     #
+#  Navy, Olive, Orange, Purple, Red, Silver, Teal, White, Yellow  #
+###################################################################
 voucher:
   # The material.
   item: 'DIAMOND_HELMET'
@@ -20,10 +33,39 @@ voucher:
   commands:
     - 'msg {player} wow you claimed a voucher.'
     - 'msg {player} #FCFCFDwew multiple commands with &ccolors'
+  # The items to give when claiming the voucher.
+  items:
+    - 'Item:DIAMOND_HELMET, Damage:50, Trim-Pattern:SENTRY, Trim-Material:QUARTZ, Amount:1, Protection:4, Respiration:1, Aqua_Affinity:3, Unbreaking:3, Thorns:3'
+    - 'Item:DIAMOND_CHESTPLATE, Damage:50, Trim-Pattern:DUNE, Trim-Material:REDSTONE, Amount:1, Protection:4, Unbreaking:3, Thorns:3'
+  # Random Commands is completely random.
+  random-commands:
+    - 'eco give 50000'
+    - 'eco give 5000'
+    - 'eco give 1000'
+    - 'give {player} diamond 5'
+  # https://docs.crazycrew.us/crazyvouchers/info/chance-system
+  # Lets you run commands with % chances.
+  chance-commands:
+    - '45 eco give {player} 100'
+    - '25 eco give {player} 1000'
+    - '15 eco give {player} 10000'
+    - '10 eco give {player} 100000'
+    - '5 eco give {player} 1000000'
+
+  # The durability or damage to the item given in the preview gui.
+  display-damage: 50
+
+  # The trim applied to the item in the preview gui.
+  display-trim:
+    material: QUARTZ
+    pattern: SENTRY
+
   options:
     # The message sent when they right-click it.
     message: '&7Congratulations, you have yourself fancy trims'
     whitelist-worlds:
+      # Should we check the worlds players have to be in?
+      toggle: false
       # The message to send.
       message: '{prefix}You are not in any of the whitelisted worlds.'
       # The list of worlds they have to be in.
@@ -73,30 +115,3 @@ voucher:
 
     # If the voucher is edible
     is-edible: false
-
-  # The items to give when claiming the voucher.
-  items:
-  - 'Item:DIAMOND_HELMET, Damage:50, Trim-Pattern:SENTRY, Trim-Material:QUARTZ, Amount:1, Protection:4, Respiration:1, Aqua_Affinity:3, Unbreaking:3, Thorns:3'
-  - 'Item:DIAMOND_CHESTPLATE, Damage:50, Trim-Pattern:DUNE, Trim-Material:REDSTONE, Amount:1, Protection:4, Unbreaking:3, Thorns:3'
-  # Random Commands is completely random, It'll run one of these commands.
-  random-commands:
-    - 'eco give 50000'
-    - 'eco give 5000'
-    - 'eco give 1000'
-    - 'give {player} diamond 5'
-  # https://docs.crazycrew.us/crazyvouchers/info/chance-system
-  # Lets you run commands with % chances
-  chance-commands:
-    - '45 eco give {player} 100'
-    - '25 eco give {player} 1000'
-    - '15 eco give {player} 10000'
-    - '10 eco give {player} 100000'
-    - '5 eco give {player} 1000000'
-
-  # The durability or damage to the item given in the preview gui.
-  display-damage: 50
-
-  # The trim applied to the item in the preview gui.
-  display-trim:
-    material: QUARTZ
-    pattern: SENTRY

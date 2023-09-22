@@ -11,6 +11,8 @@ import com.badbones69.crazyvouchers.paper.api.FileManager.Files;
 import com.badbones69.crazyvouchers.paper.api.CrazyManager;
 import com.badbones69.crazyvouchers.paper.api.events.RedeemVoucherCodeEvent;
 import com.badbones69.crazyvouchers.paper.api.objects.VoucherCode;
+import com.ryderbelserion.cluster.api.adventure.FancyLogger;
+import com.ryderbelserion.cluster.bukkit.utils.LegacyLogger;
 import com.ryderbelserion.cluster.bukkit.utils.LegacyUtils;
 import org.bukkit.Sound;
 import org.bukkit.SoundCategory;
@@ -22,6 +24,8 @@ import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.jetbrains.annotations.NotNull;
+import us.crazycrew.crazyenvoys.common.config.types.Config;
+
 import java.util.HashMap;
 import java.util.Random;
 
@@ -110,9 +114,10 @@ public class VoucherCommands implements CommandExecutor {
                             placeholders.put("{arg}", code);
                             placeholders.put("{player}", player.getName());
                             placeholders.put("{world}", player.getWorld().getName());
-                            placeholders.put("{x}", player.getLocation().getBlockX() + "");
-                            placeholders.put("{y}", player.getLocation().getBlockY() + "");
-                            placeholders.put("{z}", player.getLocation().getBlockZ() + "");
+                            placeholders.put("{x}", String.valueOf(player.getLocation().getBlockX()));
+                            placeholders.put("{y}", String.valueOf(player.getLocation().getBlockY()));
+                            placeholders.put("{z}", String.valueOf(player.getLocation().getBlockZ()));
+                            placeholders.put("{prefix}", this.plugin.getCrazyHandler().getConfigManager().getConfig().getProperty(Config.command_prefix));
 
                             if (this.crazyManager.isVoucherCode(code)) {
                                 VoucherCode voucherCode = this.crazyManager.getVoucherCode(code);
@@ -224,7 +229,7 @@ public class VoucherCommands implements CommandExecutor {
 
                                     if (voucherCode.useSounds()) {
                                         for (Sound sound : voucherCode.getSounds()) {
-                                            player.playSound(player.getLocation(), sound, SoundCategory.PLAYERS, 1f, 1f);
+                                            player.playSound(player.getLocation(), sound, SoundCategory.PLAYERS, voucherCode.getVolume(), voucherCode.getPitch());
                                         }
                                     }
 

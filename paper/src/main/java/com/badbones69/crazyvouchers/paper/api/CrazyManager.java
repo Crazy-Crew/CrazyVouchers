@@ -45,9 +45,12 @@ public class CrazyManager {
             }
         }
 
-        if (Files.voucher_codes.getFile().contains("Voucher-Codes")) {
-            for (String voucherName : Files.voucher_codes.getFile().getConfigurationSection("Voucher-Codes").getKeys(false)) {
-                this.voucherCodes.add(new VoucherCode(voucherName));
+        for (String voucherCode : this.plugin.getFileManager().getAllVoucherCodes()) {
+            try {
+                FileConfiguration file = this.plugin.getFileManager().getFile(voucherCode).getFile();
+                this.voucherCodes.add(new VoucherCode(file, voucherCode));
+            } catch (Exception exception) {
+                LegacyLogger.error("There was an error while loading the " + voucherCode + ".yml file.", exception);
             }
         }
     }

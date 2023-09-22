@@ -309,11 +309,25 @@ public class FileManager {
         return Collections.unmodifiableList(files);
     }
 
-    public enum Files {
+    public List<String> getAllVoucherCodes() {
+        ArrayList<String> files = new ArrayList<>();
 
+        String[] file = new File(this.plugin.getDataFolder(), "/codes").list();
+
+        if (file != null) {
+            for (String name : file) {
+                if (!name.endsWith(".yml")) continue;
+
+                files.add(name.replaceAll(".yml", ""));
+            }
+        }
+
+        return Collections.unmodifiableList(files);
+    }
+
+    public enum Files {
         // ENUM_NAME("fileName.yml", "fileLocation.yml"),
         // ENUM_NAME("fileName.yml", "newFileLocation.yml", "oldFileLocation.yml"),
-        voucher_codes("voucher-codes.yml", "voucher-codes.yml"),
         users("users.yml", "users.yml");
 
         private final String fileName;
