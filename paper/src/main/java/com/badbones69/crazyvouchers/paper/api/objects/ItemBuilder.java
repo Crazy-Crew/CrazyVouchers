@@ -4,6 +4,7 @@ import com.badbones69.crazyvouchers.paper.CrazyVouchers;
 import com.badbones69.crazyvouchers.paper.Methods;
 import com.badbones69.crazyvouchers.paper.support.PluginSupport;
 import com.badbones69.crazyvouchers.paper.support.SkullCreator;
+import com.ryderbelserion.cluster.bukkit.utils.LegacyUtils;
 import de.tr7zw.changeme.nbtapi.NBTItem;
 import dev.lone.itemsadder.api.CustomStack;
 import io.th0rgal.oraxen.api.OraxenItems;
@@ -566,7 +567,7 @@ public class ItemBuilder {
      * @return The ItemBuilder with an updated name.
      */
     public ItemBuilder setName(String itemName) {
-        if (itemName != null) this.itemName = methods.color(itemName);
+        if (itemName != null) this.itemName = LegacyUtils.color(itemName);
 
         return this;
     }
@@ -614,7 +615,7 @@ public class ItemBuilder {
             this.itemLore.clear();
 
             for (String line : lore) {
-                this.itemLore.add(methods.color(line));
+                this.itemLore.add(LegacyUtils.color(line));
             }
         }
 
@@ -628,7 +629,7 @@ public class ItemBuilder {
      * @return The ItemBuilder with updated info.
      */
     public ItemBuilder addLore(String lore) {
-        if (lore != null) this.itemLore.add(methods.color(lore));
+        if (lore != null) this.itemLore.add(LegacyUtils.color(lore));
         return this;
     }
 

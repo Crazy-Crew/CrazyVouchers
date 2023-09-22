@@ -1,8 +1,9 @@
 package com.badbones69.crazyvouchers.paper.api.objects;
 
-import com.badbones69.crazyvouchers.paper.Methods;
-import com.badbones69.crazyvouchers.paper.CrazyVouchers;
 import com.badbones69.crazyvouchers.paper.api.FileManager;
+import com.badbones69.crazyvouchers.paper.api.enums.Translation;
+import com.ryderbelserion.cluster.bukkit.items.utils.DyeUtils;
+import com.ryderbelserion.cluster.bukkit.utils.LegacyLogger;
 import org.bukkit.Color;
 import org.bukkit.Sound;
 import org.bukkit.configuration.file.FileConfiguration;
@@ -41,10 +42,6 @@ public class VoucherCode {
     private final List<VoucherCommand> chanceCommands = new ArrayList<>();
     private final List<ItemBuilder> items = new ArrayList<>();
 
-    private final CrazyVouchers plugin = CrazyVouchers.getPlugin();
-
-    private final Methods methods = plugin.getMethods();
-    
     public VoucherCode(String name) {
         this.name = name;
         FileConfiguration config = FileManager.Files.VOUCHER_CODES.getFile();
@@ -65,9 +62,8 @@ public class VoucherCode {
                 for (int i = 1; i <= Integer.parseInt(split[0]); i++) {
                     chanceCommands.add(voucherCommand);
                 }
-            } catch (Exception e) {
-                plugin.getLogger().info("An issue occurred when trying to use chance commands.");
-                e.printStackTrace();
+            } catch (Exception exception) {
+                LegacyLogger.error("An issued occurred when trying to use chance commands.", exception);
             }
         }
 
@@ -101,7 +97,7 @@ public class VoucherCode {
             if (config.contains(path + "Options.Whitelist-Worlds.Message")) {
                 this.whitelistWorldMessage = config.getString(path + "Options.Whitelist-Worlds.Message");
             } else {
-                this.whitelistWorldMessage = Messages.NOT_IN_WHITELISTED_WORLD.getMessageNoPrefix();
+                this.whitelistWorldMessage = Translation.not_in_whitelisted_world.getString();
             }
 
             this.whitelistWorldCommands = config.getStringList(path + "Options.Whitelist-Worlds.Commands");
@@ -116,7 +112,7 @@ public class VoucherCode {
             if (config.contains(path + "Options.Permission.Blacklist-Permissions.Message")) {
                 this.blacklistPermissionMessage = config.getString(path + "Options.Permission.Blacklist-Permissions.Message");
             } else {
-                this.blacklistPermissionMessage = Messages.HAS_BLACKLIST_PERMISSION.getMessageNoPrefix();
+                this.blacklistPermissionMessage = Translation.has_blacklist_permission.getString();
             }
 
             this.blacklistPermissions = config.getStringList(path + "Options.Permission.Blacklist-Permissions.Permissions");
@@ -148,7 +144,7 @@ public class VoucherCode {
             this.fireworkToggle = config.getBoolean(path + "Options.Firework.Toggle");
 
             for (String color : config.getString(path + "Options.Firework.Colors").split(", ")) {
-                this.fireworkColors.add(methods.getColor(color));
+                this.fireworkColors.add(DyeUtils.getColor(color));
             }
         } else {
             this.fireworkToggle = false;
@@ -156,106 +152,106 @@ public class VoucherCode {
     }
     
     public String getName() {
-        return name;
+        return this.name;
     }
     
     public String getCode() {
-        return code;
+        return this.code;
     }
     
     public boolean isEnabled() {
-        return enabled;
+        return this.enabled;
     }
     
     public boolean isCaseSensitive() {
-        return caseSensitive;
+        return this.caseSensitive;
     }
     
     public String getMessage() {
-        return message;
+        return this.message;
     }
     
     public List<String> getCommands() {
-        return commands;
+        return this.commands;
     }
     
     public boolean useWhiteListPermissions() {
-        return whitelistPermissionToggle;
+        return this.whitelistPermissionToggle;
     }
     
     public List<String> getWhitelistPermissions() {
-        return whitelistPermissions;
+        return this.whitelistPermissions;
     }
     
     public List<String> getWhitelistCommands() {
-        return whitelistCommands;
+        return this.whitelistCommands;
     }
     
     public boolean useWhitelistWorlds() {
-        return whitelistWorldsToggle;
+        return this.whitelistWorldsToggle;
     }
     
     public String getWhitelistWorldMessage() {
-        return whitelistWorldMessage;
+        return this.whitelistWorldMessage;
     }
     
     public List<String> getWhitelistWorlds() {
-        return whitelistWorlds;
+        return this.whitelistWorlds;
     }
     
     public boolean useBlacklistPermissions() {
-        return blacklistPermissionsToggle;
+        return this.blacklistPermissionsToggle;
     }
     
     public List<String> getWhitelistWorldCommands() {
-        return whitelistWorldCommands;
+        return this.whitelistWorldCommands;
     }
     
     public String getBlacklistMessage() {
-        return blacklistPermissionMessage;
+        return this.blacklistPermissionMessage;
     }
     
     public List<String> getBlacklistPermissions() {
-        return blacklistPermissions;
+        return this.blacklistPermissions;
     }
     
     public List<String> getBlacklistCommands() {
-        return blacklistCommands;
+        return this.blacklistCommands;
     }
     
     public boolean useLimiter() {
-        return limiterToggle;
+        return this.limiterToggle;
     }
     
     public int getLimit() {
-        return limiterLimit;
+        return this.limiterLimit;
     }
     
     public boolean useSounds() {
-        return soundToggle;
+        return this.soundToggle;
     }
     
     public List<Sound> getSounds() {
-        return sounds;
+        return this.sounds;
     }
     
     public boolean useFireworks() {
-        return fireworkToggle;
+        return this.fireworkToggle;
     }
     
     public List<Color> getFireworkColors() {
-        return fireworkColors;
+        return this.fireworkColors;
     }
     
     public List<VoucherCommand> getRandomCommands() {
-        return randomCommands;
+        return this.randomCommands;
     }
     
     public List<VoucherCommand> getChanceCommands() {
-        return chanceCommands;
+        return this.chanceCommands;
     }
     
     public List<ItemBuilder> getItems() {
-        return items;
+        return this.items;
     }
 }
