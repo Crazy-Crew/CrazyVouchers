@@ -132,32 +132,4 @@ public class Methods {
 
         this.plugin.getServer().getScheduler().scheduleSyncDelayedTask(this.plugin, firework::detonate, 2);
     }
-    
-    public boolean isSimilar(ItemStack one, ItemStack two) {
-        if (one.getType() == two.getType()) {
-            if (one.hasItemMeta()) {
-                if (one.getItemMeta().hasDisplayName()) {
-                    if (one.getItemMeta().getDisplayName().equalsIgnoreCase(two.getItemMeta().getDisplayName())) {
-                        if (one.getItemMeta().hasLore()) {
-                            if (one.getItemMeta().getLore().size() == two.getItemMeta().getLore().size()) {
-                                int i = 0;
-
-                                for (String lore : one.getItemMeta().getLore()) {
-                                    if (!lore.equals(two.getItemMeta().getLore().get(i))) {
-                                        return false;
-                                    }
-
-                                    i++;
-                                }
-
-                                return true;
-                            }
-                        }
-                    }
-                }
-            }
-        }
-
-        return false;
-    }
 }
