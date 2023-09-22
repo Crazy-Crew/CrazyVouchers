@@ -156,7 +156,7 @@ public class MigrationService {
 
             voucher.set("voucher.options.message", convert("{prefix}" + message));
 
-            voucher.set("voucher.options.whitelist-worlds", worldsToggle);
+            voucher.set("voucher.options.whitelist-worlds.toggle", worldsToggle);
             voucher.set("voucher.options.whitelist-worlds.message", convert("{prefix}" + worldsMessage));
             voucher.set("voucher.options.whitelist-worlds.worlds", worldsList);
 
