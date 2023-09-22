@@ -11,6 +11,7 @@ rootProject.name = "CrazyVouchers"
 
 listOf(
     "paper",
+    "common"
 ).forEach {
     include(it)
 }
