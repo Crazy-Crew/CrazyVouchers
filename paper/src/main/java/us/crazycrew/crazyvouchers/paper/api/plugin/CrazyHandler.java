@@ -33,7 +33,11 @@ public class CrazyHandler extends CrazyVouchersPlugin {
         LegacyLogger.setName(getConfigManager().getConfig().getProperty(Config.command_prefix));
 
         this.fileManager = new FileManager();
-        this.fileManager.setup();
+        this.fileManager
+                .registerDefaultGenerateFiles("Example.yml", "/vouchers", "/vouchers")
+                .registerDefaultGenerateFiles("PlayerHead.yml", "/vouchers", "/vouchers")
+                .registerCustomFilesFolder("/vouchers")
+                .setup();
 
         boolean metrics = this.plugin.getCrazyHandler().getConfigManager().getConfig().getProperty(Config.toggle_metrics);
 
