@@ -87,9 +87,19 @@ val description = """
 * Made sounds respect client side sound settings.
 * Properly handle how Metrics shuts down and turns on when you change the true/false.
 * Add more verbose logging with an option to turn off the spammy garbage.
+* Internal placeholders like %random% have been changed to {random}, All internal usage's of the placeholders have been changed. I cannot change that for where you use the commands.
+ * I do however still take those as valid input, I simply convert %random% to {random} under the hood but please change it. I won't be doing that forever!
+
+## Breaking Changes:
+* Vouchers have been moved out of the Config.yml into a folder called `vouchers`
+ * All the configurations should auto migrate. Let me know if I missed something.
 
 ## Performance:
 * No longer use the player object in hashmap's/arrays just the uuid as god intended.
+
+## Developers / API:
+### This is nerd talk so only read this if you need to.
+* Cleaned up some internals, reduce duplicated code.
     
 ## Other:
  * [Feature Requests](https://github.com/Crazy-Crew/${rootProject.name}/issues)
