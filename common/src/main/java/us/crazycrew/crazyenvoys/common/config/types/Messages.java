@@ -22,14 +22,14 @@ public class Messages implements SettingsHolder {
                 "Features: https://github.com/Crazy-Crew/CrazyVouchers/issues",
                 "",
                 "Tips:",
-                " 1. Make sure to use the %prefix% to add the prefix in front of messages.",
+                " 1. Make sure to use the {prefix} to add the prefix in front of messages.",
                 " 2. If you wish to use more than one line for a message just go from a line to a list.",
                 "Examples:",
                 "  Line:",
-                "    No-Permission: '%prefix%&cYou do not have permission to use that command.'",
+                "    No-Permission: '{prefix}&cYou do not have permission to use that command.'",
                 "  List:",
                 "    No-Permission:",
-                "      - '%prefix%&cYou do not have permission'",
+                "      - '{prefix}&cYou do not have permission'",
                 "      - '&cto use that command. Please try another.'"
         };
 
@@ -40,7 +40,7 @@ public class Messages implements SettingsHolder {
                 ""
         };
         
-        conf.setComment("Messages", header);
+        conf.setComment("player", header);
     }
 
     public static final Property<String> survival_mode = newProperty("player.survival-only", "{prefix}&cYou must be in survival mode to use vouchers.");

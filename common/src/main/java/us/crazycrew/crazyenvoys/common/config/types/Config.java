@@ -30,7 +30,7 @@ public class Config implements SettingsHolder {
                 ""
         };
         
-        conf.setComment("Settings", header);
+        conf.setComment("settings", header);
     }
     
     @Comment("The prefix that shows up for all commands.")
