@@ -48,10 +48,10 @@ tasks {
 
     shadowJar {
         listOf(
+            "de.tr7zw.changeme.nbtapi",
             "dev.triumphteam",
             "org.jetbrains",
-            "org.bstats",
-            "de.tr7zw"
+            "org.bstats"
         ).forEach {
             relocate(it, "libs.$it")
         }
