@@ -247,7 +247,7 @@ public class Voucher {
 
         NBTItem nbt = new NBTItem(item);
 
-        nbt.setString("voucher", this.file.getName());
+        nbt.setString("voucher", getName());
         nbt.setString("argument", argument);
 
         return nbt.getItem();

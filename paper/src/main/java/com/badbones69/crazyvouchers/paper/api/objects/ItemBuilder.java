@@ -1,7 +1,6 @@
 package com.badbones69.crazyvouchers.paper.api.objects;
 
 import com.badbones69.crazyvouchers.paper.CrazyVouchers;
-import com.badbones69.crazyvouchers.paper.Methods;
 import com.badbones69.crazyvouchers.paper.support.PluginSupport;
 import com.badbones69.crazyvouchers.paper.support.SkullCreator;
 import com.ryderbelserion.cluster.bukkit.utils.LegacyUtils;
@@ -29,7 +28,6 @@ import java.util.stream.Collectors;
 public class ItemBuilder {
 
     private final CrazyVouchers plugin = CrazyVouchers.getPlugin(CrazyVouchers.class);
-    private final Methods methods = this.plugin.getMethods();
     private final SkullCreator skullCreator = this.plugin.getSkullCreator();
 
     private NBTItem nbtItem;

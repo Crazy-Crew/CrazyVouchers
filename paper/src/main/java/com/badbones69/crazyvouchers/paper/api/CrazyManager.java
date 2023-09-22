@@ -13,7 +13,6 @@ import org.bukkit.plugin.java.JavaPlugin;
 import us.crazycrew.crazyenvoys.common.config.types.Config;
 import us.crazycrew.crazyvouchers.paper.api.MetricsHandler;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 import java.util.Random;
 
@@ -119,17 +118,19 @@ public class CrazyManager {
                 }
             }
         }
+
         return false;
     }
-    
+
     public Voucher getVoucherFromItem(ItemStack item) {
-        NBTItem nbt = new NBTItem(item);
+        try {
+            NBTItem nbt = new NBTItem(item);
 
-        if (!nbt.hasTag("voucher")) return null;
-
-        return getVoucher(nbt.getString("voucher"));
+            if (nbt.hasTag("voucher")) return getVoucher(nbt.getString("voucher"));
+        } catch (Exception ignored) {}
+        return null;
     }
-    
+
     public String getArgument(ItemStack item, Voucher voucher) {
         if (voucher.usesArguments()) {
             // Checks to see if the voucher uses nbt tags.

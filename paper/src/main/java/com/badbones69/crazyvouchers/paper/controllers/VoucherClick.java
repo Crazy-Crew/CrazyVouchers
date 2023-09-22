@@ -9,6 +9,7 @@ import com.badbones69.crazyvouchers.paper.api.events.RedeemVoucherEvent;
 import com.badbones69.crazyvouchers.paper.api.objects.ItemBuilder;
 import com.badbones69.crazyvouchers.paper.api.objects.Voucher;
 import com.badbones69.crazyvouchers.paper.support.PluginSupport;
+import com.ryderbelserion.cluster.bukkit.utils.LegacyLogger;
 import me.clip.placeholderapi.PlaceholderAPI;
 import org.bukkit.GameMode;
 import org.bukkit.Material;
@@ -155,16 +156,15 @@ public class VoucherClick implements Listener {
             if (!event.isCancelled()) voucherClick(player, item, voucher, argument);
         }
     }
-    
-    @SuppressWarnings({"squid:CallToDeprecatedMethod"})
+
     private ItemStack getItemInHand(Player player) {
         return player.getInventory().getItemInMainHand();
     }
 
     private boolean passesPermissionChecks(Player player, Voucher voucher, String argument) {
-        if (!player.isOp()) {
-            fillMap(player, argument);
+        populate(player, argument);
 
+        if (!player.isOp()) {
             if (voucher.useWhiteListPermissions()) {
                 for (String permission : voucher.getWhitelistPermissions()) {
                     if (!player.hasPermission(permission.toLowerCase().replace("{arg}", argument != null ? argument : "{arg}"))) {
@@ -206,11 +206,21 @@ public class VoucherClick implements Listener {
 
         return true;
     }
-    
+
+    private void populate(Player player, String argument) {
+        this.placeholders.put("{arg}", argument != null ? argument : "{arg}");
+        this.placeholders.put("{player}", player.getName());
+        this.placeholders.put("{world}", player.getWorld().getName());
+        this.placeholders.put("{x}", String.valueOf(player.getLocation().getBlockX()));
+        this.placeholders.put("{y}", String.valueOf(player.getLocation().getBlockY()));
+        this.placeholders.put("{z}", String.valueOf(player.getLocation().getBlockZ()));
+        this.placeholders.put("{prefix}", this.plugin.getCrazyHandler().getConfigManager().getConfig().getProperty(Config.command_prefix));
+    }
+
     private void voucherClick(Player player, ItemStack item, Voucher voucher, String argument) {
         this.methods.removeItem(item, player);
 
-        fillMap(player, argument);
+        populate(player, argument);
 
         for (String command : voucher.getCommands()) {
             command = replacePlaceholders(command, player);
@@ -257,16 +267,6 @@ public class VoucherClick implements Listener {
             Files.users.getFile().set("Players." + player.getUniqueId() + ".Vouchers." + voucher.getName(), Files.users.getFile().getInt("Players." + player.getUniqueId() + ".Vouchers." + voucher.getName()) + 1);
             Files.users.saveFile();
         }
-    }
-
-    private void fillMap(Player player, String argument) {
-        this.placeholders.put("{arg}", argument != null ? argument : "{arg}");
-        this.placeholders.put("{player}", player.getName());
-        this.placeholders.put("{world}", player.getWorld().getName());
-        this.placeholders.put("{x}", String.valueOf(player.getLocation().getBlockX()));
-        this.placeholders.put("{y}", String.valueOf(player.getLocation().getBlockY()));
-        this.placeholders.put("{z}", String.valueOf(player.getLocation().getBlockZ()));
-        this.placeholders.put("{prefix}", this.plugin.getCrazyHandler().getConfigManager().getConfig().getProperty(Config.command_prefix));
     }
 
     private String replacePlaceholders(String string, Player player) {

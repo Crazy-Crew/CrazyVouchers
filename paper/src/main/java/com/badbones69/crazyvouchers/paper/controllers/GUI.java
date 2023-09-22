@@ -2,20 +2,16 @@ package com.badbones69.crazyvouchers.paper.controllers;
 
 import com.badbones69.crazyvouchers.paper.CrazyVouchers;
 import com.badbones69.crazyvouchers.paper.api.objects.Voucher;
-import com.badbones69.crazyvouchers.paper.Methods;
 import com.badbones69.crazyvouchers.paper.api.CrazyManager;
 import com.badbones69.crazyvouchers.paper.api.objects.ItemBuilder;
 import com.ryderbelserion.cluster.bukkit.utils.LegacyUtils;
 import org.bukkit.Material;
-import org.bukkit.NamespacedKey;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
-import org.bukkit.inventory.meta.ItemMeta;
-import org.bukkit.persistence.PersistentDataType;
 import org.bukkit.plugin.java.JavaPlugin;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -29,8 +25,6 @@ public class GUI implements Listener {
     private final CrazyVouchers plugin = JavaPlugin.getPlugin(CrazyVouchers.class);
     
     private final CrazyManager crazyManager = this.plugin.getCrazyManager();
-
-    private final Methods methods = this.plugin.getMethods();
     
     private final String inventoryName = LegacyUtils.color("&8&l&nVouchers");
     private final HashMap<UUID, Integer> playerPage = new HashMap<>();
@@ -94,9 +88,9 @@ public class GUI implements Listener {
 
         ItemStack stack = inv.getItem(e.getRawSlot());
 
-        ItemStack voucherBuilt = this.crazyManager.getVoucherFromItem(stack).buildItem();
-
-        if (stack != null) player.getInventory().addItem(voucherBuilt);
+        if (stack != null) {
+            if (this.crazyManager.getVoucherFromItem(stack) != null) player.getInventory().addItem(this.crazyManager.getVoucherFromItem(stack).buildItem());
+        }
     }
     
     private int getPage(Player player) {
@@ -158,7 +152,6 @@ public class GUI implements Listener {
     }
     
     private void setDefaultItems(Player player, Inventory inv) {
-
         for (int i : Arrays.asList(0, 1, 2, 3, 4, 5, 6, 7, 8, 45, 46, 47, 49, 51, 52, 53)) {
             inv.setItem(i, new ItemBuilder()
             .setMaterial(Material.BLUE_STAINED_GLASS_PANE)
