@@ -4,6 +4,7 @@ import com.badbones69.crazyvouchers.paper.CrazyVouchers;
 import com.badbones69.crazyvouchers.paper.support.PluginSupport;
 import com.badbones69.crazyvouchers.paper.support.SkullCreator;
 import com.ryderbelserion.cluster.bukkit.items.utils.DyeUtils;
+import com.ryderbelserion.cluster.bukkit.utils.LegacyLogger;
 import com.ryderbelserion.cluster.bukkit.utils.LegacyUtils;
 import de.tr7zw.changeme.nbtapi.NBTItem;
 import dev.lone.itemsadder.api.CustomStack;
@@ -458,10 +459,6 @@ public class ItemBuilder {
         }
     }
 
-    /*
-      Class based extensions.
-     */
-
     /**
      * Set the type of item the builder is set to.
      *
@@ -885,7 +882,7 @@ public class ItemBuilder {
      * @return The ItemBuilder with an updated Item.
      */
     public ItemStack hideItemFlags(ItemStack item) {
-        if (hideItemFlags) {
+        if (this.hideItemFlags) {
             if (item != null && item.hasItemMeta() && item.getItemMeta() != null) {
                 ItemMeta itemMeta = item.getItemMeta();
                 itemMeta.addItemFlags(ItemFlag.values());
@@ -933,11 +930,7 @@ public class ItemBuilder {
      * @return The ItemStack as an ItemBuilder with all the info from the item.
      */
     public static ItemBuilder convertItemStack(ItemStack item) {
-        ItemBuilder itemBuilder = new ItemBuilder()
-                .setReferenceItem(item)
-                .setAmount(item.getAmount())
-                .setMaterial(item.getType())
-                .setEnchantments(new HashMap<>(item.getEnchantments()));
+        ItemBuilder itemBuilder = new ItemBuilder().setReferenceItem(item).setAmount(item.getAmount()).setMaterial(item.getType()).setEnchantments(new HashMap<>(item.getEnchantments()));
 
         if (item.hasItemMeta() && item.getItemMeta() != null) {
             ItemMeta itemMeta = item.getItemMeta();
@@ -1034,9 +1027,9 @@ public class ItemBuilder {
                     }
                 }
             }
-        } catch (Exception e) {
+        } catch (Exception exception) {
             itemBuilder.setMaterial(Material.RED_TERRACOTTA).setName("&c&lERROR").setLore(Arrays.asList("&cThere is an error", "&cFor : &c" + (placeHolder != null ? placeHolder : "")));
-            e.printStackTrace();
+            LegacyLogger.warn("There is an error with " + placeHolder, exception);
         }
 
         return itemBuilder;
@@ -1069,7 +1062,7 @@ public class ItemBuilder {
      * @param item The item to add glow to.
      */
     private void addGlow(ItemStack item) {
-        if (glowing) {
+        if (this.glowing) {
             try {
                 if (item != null && item.getItemMeta() != null) {
                     if (item.hasItemMeta()) {
