@@ -927,35 +927,6 @@ public class ItemBuilder {
     }
 
     /**
-     * The text that will be displayed on the item.
-     *
-     * @param texture The skull texture.
-     * @param profileUUID The uuid of the profile.
-     * @return The ItemBuilder.
-     */
-    public ItemBuilder texture(String texture, UUID profileUUID) {
-        return this;
-    }
-
-    /**
-     * @param texture The skull texture.
-     * @return The ItemBuilder.
-     */
-    public ItemBuilder texture(String texture) {
-        return this;
-    }
-
-    /**
-     * @param texture The owner of the skull.
-     * @return The ItemBuilder.
-     */
-    public ItemBuilder owner(String texture) {
-        return this;
-    }
-
-    // Other misc shit
-
-    /**
      * Convert an ItemStack to an ItemBuilder to allow easier editing of the ItemStack.
      *
      * @param item The ItemStack you wish to convert into an ItemBuilder.
