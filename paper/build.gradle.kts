@@ -86,8 +86,7 @@ val description = """
 * Made sounds respect client side sound settings.
 * Properly handle how Metrics shuts down and turns on when you change the true/false.
 * Add more verbose logging with an option to turn off the spammy garbage.
-* Internal placeholders like %random% have been changed to {random}, All internal usage's of the placeholders have been changed. I cannot change that for where you use the commands.
- * I do however still take those as valid input since I simply convert %random% to {random} under the hood but please change it, I won't be doing that forever though...
+* Internal placeholders such as %random% or %player% which are handled by us have been changed to {random} or {player}.
 * Added volume/pitch controls to each sound section in the vouchers.
 
 ## Breaking Changes:
