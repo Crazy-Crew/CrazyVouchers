@@ -1,16 +1,20 @@
 package com.badbones69.crazyvouchers.paper;
 
 import ch.jalu.configme.SettingsManager;
+import com.badbones69.crazyvouchers.paper.api.enums.DataKeys;
 import com.badbones69.crazyvouchers.paper.api.enums.Translation;
 import com.ryderbelserion.cluster.bukkit.utils.LegacyUtils;
 import org.bukkit.Color;
 import org.bukkit.FireworkEffect;
 import org.bukkit.Location;
 import org.bukkit.command.CommandSender;
+import org.bukkit.entity.Entity;
 import org.bukkit.entity.Firework;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.FireworkMeta;
+import org.bukkit.persistence.PersistentDataContainer;
+import org.bukkit.persistence.PersistentDataType;
 import org.bukkit.plugin.java.JavaPlugin;
 import us.crazycrew.crazyenvoys.common.config.ConfigManager;
 import us.crazycrew.crazyenvoys.common.config.types.Config;
@@ -113,8 +117,18 @@ public class Methods {
         meta.addEffects(FireworkEffect.builder().with(FireworkEffect.Type.BALL_LARGE).withColor(list).trail(false).flicker(false).build());
         meta.setPower(0);
         firework.setFireworkMeta(meta);
-        this.plugin.getFireworkDamageAPI().addFirework(firework);
+
+        addFirework(firework);
 
         this.plugin.getServer().getScheduler().scheduleSyncDelayedTask(this.plugin, firework::detonate, 2);
+    }
+
+    /**
+     * @param firework The firework you want to add.
+     */
+    public void addFirework(Entity firework) {
+        PersistentDataContainer container = firework.getPersistentDataContainer();
+
+        container.set(DataKeys.NO_FIREWORK_DAMAGE.getKey(), PersistentDataType.BOOLEAN, true);
     }
 }

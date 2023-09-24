@@ -1,4 +1,4 @@
-package com.badbones69.crazyvouchers.paper.controllers;
+package com.badbones69.crazyvouchers.paper.listeners;
 
 import com.badbones69.crazyvouchers.paper.CrazyVouchers;
 import com.badbones69.crazyvouchers.paper.Methods;
@@ -9,7 +9,6 @@ import com.badbones69.crazyvouchers.paper.api.events.RedeemVoucherEvent;
 import com.badbones69.crazyvouchers.paper.api.objects.ItemBuilder;
 import com.badbones69.crazyvouchers.paper.api.objects.Voucher;
 import com.badbones69.crazyvouchers.paper.support.PluginSupport;
-import com.ryderbelserion.cluster.bukkit.utils.LegacyLogger;
 import me.clip.placeholderapi.PlaceholderAPI;
 import org.bukkit.GameMode;
 import org.bukkit.Material;
@@ -33,7 +32,7 @@ import java.util.UUID;
 import java.util.concurrent.ThreadLocalRandom;
 import java.util.concurrent.atomic.AtomicBoolean;
 
-public class VoucherClick implements Listener {
+public class VoucherClickListener implements Listener {
     
     private final CrazyVouchers plugin = JavaPlugin.getPlugin(CrazyVouchers.class);
     

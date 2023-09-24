@@ -1,4 +1,4 @@
-package com.badbones69.crazyvouchers.paper.controllers;
+package com.badbones69.crazyvouchers.paper.listeners;
 
 import com.badbones69.crazyvouchers.paper.CrazyVouchers;
 import com.badbones69.crazyvouchers.paper.api.objects.Voucher;
@@ -17,10 +17,9 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
-import java.util.Objects;
 import java.util.UUID;
 
-public class GUI implements Listener {
+public class VoucherMenuListener implements Listener {
     
     private final CrazyVouchers plugin = JavaPlugin.getPlugin(CrazyVouchers.class);
     

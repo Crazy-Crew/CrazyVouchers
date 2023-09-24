@@ -1,13 +1,13 @@
 package com.badbones69.crazyvouchers.paper;
 
 import com.badbones69.crazyvouchers.paper.api.FileManager;
-import com.badbones69.crazyvouchers.paper.controllers.GUI;
+import com.badbones69.crazyvouchers.paper.listeners.FireworkDamageListener;
+import com.badbones69.crazyvouchers.paper.listeners.VoucherMenuListener;
 import com.badbones69.crazyvouchers.paper.api.FileManager.Files;
 import com.badbones69.crazyvouchers.paper.api.CrazyManager;
 import com.badbones69.crazyvouchers.paper.commands.VoucherCommands;
 import com.badbones69.crazyvouchers.paper.commands.VoucherTab;
-import com.badbones69.crazyvouchers.paper.controllers.FireworkDamageAPI;
-import com.badbones69.crazyvouchers.paper.controllers.VoucherClick;
+import com.badbones69.crazyvouchers.paper.listeners.VoucherClickListener;
 import com.badbones69.crazyvouchers.paper.listeners.VoucherCraftListener;
 import com.badbones69.crazyvouchers.paper.support.SkullCreator;
 import org.bukkit.command.CommandExecutor;
@@ -27,11 +27,9 @@ public class CrazyVouchers extends JavaPlugin {
 
     private Methods methods;
 
-    private FireworkDamageAPI fireworkDamageAPI;
-
     private SkullCreator skullCreator;
 
-    private GUI gui;
+    private VoucherMenuListener voucherMenuListener;
 
     @Override
     public void onEnable() {
@@ -72,10 +70,10 @@ public class CrazyVouchers extends JavaPlugin {
 
         PluginManager pluginManager = getServer().getPluginManager();
 
-        pluginManager.registerEvents(new VoucherClick(), this);
+        pluginManager.registerEvents(new VoucherClickListener(), this);
         pluginManager.registerEvents(new VoucherCraftListener(), this);
-        pluginManager.registerEvents(this.gui = new GUI(), this);
-        pluginManager.registerEvents(this.fireworkDamageAPI = new FireworkDamageAPI(), this);
+        pluginManager.registerEvents(this.voucherMenuListener = new VoucherMenuListener(), this);
+        pluginManager.registerEvents(new FireworkDamageListener(), this);
 
         registerCommand(getCommand("vouchers"), new VoucherTab(), new VoucherCommands());
 
@@ -102,11 +100,7 @@ public class CrazyVouchers extends JavaPlugin {
         return this.skullCreator;
     }
 
-    public FireworkDamageAPI getFireworkDamageAPI() {
-        return this.fireworkDamageAPI;
-    }
-
-    public GUI getGui() {
-        return this.gui;
+    public VoucherMenuListener getGui() {
+        return this.voucherMenuListener;
     }
 }

@@ -5,14 +5,12 @@ import com.badbones69.crazyvouchers.paper.CrazyVouchers;
 import com.badbones69.crazyvouchers.paper.api.enums.Translation;
 import com.badbones69.crazyvouchers.paper.api.objects.ItemBuilder;
 import com.badbones69.crazyvouchers.paper.api.objects.Voucher;
-import com.badbones69.crazyvouchers.paper.controllers.GUI;
+import com.badbones69.crazyvouchers.paper.listeners.VoucherMenuListener;
 import com.badbones69.crazyvouchers.paper.api.FileManager;
 import com.badbones69.crazyvouchers.paper.api.FileManager.Files;
 import com.badbones69.crazyvouchers.paper.api.CrazyManager;
 import com.badbones69.crazyvouchers.paper.api.events.RedeemVoucherCodeEvent;
 import com.badbones69.crazyvouchers.paper.api.objects.VoucherCode;
-import com.ryderbelserion.cluster.api.adventure.FancyLogger;
-import com.ryderbelserion.cluster.bukkit.utils.LegacyLogger;
 import com.ryderbelserion.cluster.bukkit.utils.LegacyUtils;
 import org.bukkit.Sound;
 import org.bukkit.SoundCategory;
@@ -39,7 +37,7 @@ public class VoucherCommands implements CommandExecutor {
 
     private final Methods methods = this.plugin.getMethods();
 
-    private final GUI gui = this.plugin.getGui();
+    private final VoucherMenuListener voucherMenuListener = this.plugin.getGui();
 
     @Override
     public boolean onCommand(@NotNull CommandSender sender, @NotNull Command cmd, @NotNull String commandLabel, String[] args) {
@@ -75,7 +73,7 @@ public class VoucherCommands implements CommandExecutor {
                             page = this.methods.isInt(args[1]) ? Integer.parseInt(args[1]) : 1;
                         }
 
-                        this.gui.openGUI((Player) sender, page);
+                        this.voucherMenuListener.openGUI((Player) sender, page);
                     }
                     return true;
                 }

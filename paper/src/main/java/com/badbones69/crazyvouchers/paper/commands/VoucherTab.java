@@ -1,7 +1,7 @@
 package com.badbones69.crazyvouchers.paper.commands;
 
 import com.badbones69.crazyvouchers.paper.CrazyVouchers;
-import com.badbones69.crazyvouchers.paper.controllers.GUI;
+import com.badbones69.crazyvouchers.paper.listeners.VoucherMenuListener;
 import com.badbones69.crazyvouchers.paper.api.CrazyManager;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
@@ -19,7 +19,7 @@ public class VoucherTab implements TabCompleter {
 
     private final CrazyManager crazyManager = this.plugin.getCrazyManager();
 
-    private final GUI gui = this.plugin.getGui();
+    private final VoucherMenuListener voucherMenuListener = this.plugin.getGui();
     
     @Override
     public List<String> onTabComplete(@NotNull CommandSender sender, @NotNull Command command, @NotNull String commandLabel, String[] args) {
@@ -41,7 +41,7 @@ public class VoucherTab implements TabCompleter {
                 }
                 case "open" -> {
                     if (hasPermission(sender, "admin"))
-                        for (int i = 1; i <= gui.getMaxPage(); i++) completions.add(i + "");
+                        for (int i = 1; i <= voucherMenuListener.getMaxPage(); i++) completions.add(i + "");
                 }
                 case "give", "giveall" -> {
                     if (hasPermission(sender, "admin")) this.crazyManager.getVouchers().forEach(voucher -> completions.add(voucher.getName()));
