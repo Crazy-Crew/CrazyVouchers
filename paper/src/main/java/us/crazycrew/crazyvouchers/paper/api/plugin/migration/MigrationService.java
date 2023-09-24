@@ -1,62 +1,80 @@
 package us.crazycrew.crazyvouchers.paper.api.plugin.migration;
 
+import ch.jalu.configme.SettingsManager;
+import ch.jalu.configme.SettingsManagerBuilder;
 import com.badbones69.crazyvouchers.paper.CrazyVouchers;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.plugin.java.JavaPlugin;
+import us.crazycrew.crazyenvoys.common.config.types.Config;
+import us.crazycrew.crazyenvoys.common.config.types.Messages;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
+import java.util.concurrent.CompletableFuture;
 
 public class MigrationService {
 
     private final CrazyVouchers plugin = JavaPlugin.getPlugin(CrazyVouchers.class);
 
+    private SettingsManager config;
+
     public void migrate() {
+        // Copy all vouchers into their own directory.
         copyVouchers();
 
-        File codes = new File(this.plugin.getDataFolder(), "VoucherCodes.yml");
-
-        if (codes.exists()) codes.renameTo(new File(this.plugin.getDataFolder(), "voucher-codes.yml"));
-
+        // Copy all codes into their own directory.
         copyCodes();
 
+        // Migrate what's left from the voucher-backup to the new config.yml
         copyConfig();
 
+        // Migrate all messages to en-US.yml then delete Messages.yml
         copyMessages();
 
+        // Rename file if found.
         File file = new File(this.plugin.getDataFolder(), "data.yml");
-
         if (file.exists()) file.renameTo(new File(this.plugin.getDataFolder(), "users.yml"));
+
+        // Delete file if found.
+        File codes = new File(this.plugin.getDataFolder(), "VoucherCodes.yml");
+        if (codes.exists()) codes.delete();
+
+        // Delete file if found.
+        File backupFile = new File(this.plugin.getDataFolder(), "Vouchers-Backup.yml");
+        if (backupFile.exists()) backupFile.delete();
     }
 
-    public void copyVouchers() {
+    private void copyVouchers() {
         File file = new File(this.plugin.getDataFolder(), "Config.yml");
 
-        if (!file.exists()) return;
+        // Load configuration of input.
+        YamlConfiguration config = CompletableFuture.supplyAsync(() -> YamlConfiguration.loadConfiguration(file)).join();
 
-        YamlConfiguration config = YamlConfiguration.loadConfiguration(file);
-
+        // Get the configuration section.
         ConfigurationSection vouchers = config.getConfigurationSection("Vouchers");
 
+        // If we can't see the section in the config.yml, we do nothing.
         if (vouchers == null) return;
 
         File backupFile = new File(this.plugin.getDataFolder(), "Vouchers-Backup.yml");
 
+        // Rename to back up file.
         file.renameTo(backupFile);
-        if (file.exists()) file.delete();
 
-        YamlConfiguration backup = YamlConfiguration.loadConfiguration(backupFile);
-        
+        // Load configuration of backup.
+        YamlConfiguration backup = CompletableFuture.supplyAsync(() -> YamlConfiguration.loadConfiguration(backupFile)).join();
+
+        // check if vouchers folder exists.
         File newFolder = new File(this.plugin.getDataFolder(), "vouchers");
-
         if (!newFolder.exists()) newFolder.mkdirs();
 
+        // Loop through voucher section.
         vouchers.getKeys(false).forEach(name -> {
+            // Create voucher file in vouchers folder based on voucher name.
             File newFile = new File(newFolder, name + ".yml");
-
             if (!newFile.exists()) {
                 try {
                     newFile.createNewFile();
@@ -258,6 +276,7 @@ public class MigrationService {
             }
 
             try {
+                // Save to each file.
                 voucher.save(newFile);
             } catch (IOException e) {
                 e.printStackTrace();
@@ -265,24 +284,29 @@ public class MigrationService {
         });
     }
 
-    public void copyCodes() {
-        File file = new File(this.plugin.getDataFolder(), "voucher-codes.yml");
+    private void copyCodes() {
+        File input = new File(this.plugin.getDataFolder(), "VoucherCodes.yml");
 
-        if (!file.exists()) return;
+        // If the input does not exist, We don't need to do anything else.
+        if (!input.exists()) return;
 
-        YamlConfiguration config = YamlConfiguration.loadConfiguration(file);
+        // Load configuration of input.
+        YamlConfiguration config = CompletableFuture.supplyAsync(() -> YamlConfiguration.loadConfiguration(input)).join();
 
+        // Get the configuration section.
         ConfigurationSection vouchers = config.getConfigurationSection("Voucher-Codes");
 
+        // If the path is not found, return.
         if (vouchers == null) return;
 
+        // If dir does not exist, create it.
         File newFolder = new File(this.plugin.getDataFolder(), "codes");
-
         if (!newFolder.exists()) newFolder.mkdirs();
 
+        // Loop through the configuration section.
         vouchers.getKeys(false).forEach(name -> {
+            // Create the new file based on the voucher name
             File newFile = new File(newFolder, name + ".yml");
-
             if (!newFile.exists()) {
                 try {
                     newFile.createNewFile();
@@ -291,6 +315,7 @@ public class MigrationService {
                 }
             }
 
+            // Get the configuration path.
             String path = "Voucher-Codes." + name + ".";
 
             // Default content.
@@ -439,149 +464,147 @@ public class MigrationService {
             }
 
             try {
+                // Save to the new file.
                 voucher.save(newFile);
-
-                file.delete();
             } catch (IOException e) {
                 e.printStackTrace();
             }
         });
     }
 
-    public void copyConfig() {
-        File backupFile = new File(this.plugin.getDataFolder(), "Vouchers-Backup.yml");
+    private void copyConfig() {
+        File input = new File(this.plugin.getDataFolder(), "Vouchers-Backup.yml");
 
-        if (!backupFile.exists()) return;
+        // If the input does not exist, We don't need to do anything else.
+        if (!input.exists()) return;
 
-        YamlConfiguration backup = YamlConfiguration.loadConfiguration(backupFile);
+        YamlConfiguration file = CompletableFuture.supplyAsync(() -> YamlConfiguration.loadConfiguration(input)).join();
 
-        String prefix = backup.getString("Settings.Prefix");
+        String prefix = file.getString("Settings.Prefix");
 
-        boolean mustBeInSurvival = backup.getBoolean("Settings.Must-Be-In-Survival");
+        boolean mustBeInSurvival = file.getBoolean("Settings.Must-Be-In-Survival");
 
-        boolean voucherRecipes = backup.getBoolean("Settings.Prevent-Using-Vouchers-In-Recipes.Toggle");
-        boolean voucherAlert = backup.getBoolean("Settings.Prevent-Using-Vouchers-In-Recipes.Alert");
+        boolean voucherRecipes = file.getBoolean("Settings.Prevent-Using-Vouchers-In-Recipes.Toggle");
+        boolean voucherAlert = file.getBoolean("Settings.Prevent-Using-Vouchers-In-Recipes.Alert");
 
-        boolean toggleMetrics = backup.getBoolean("Settings.Toggle-Metrics");
+        boolean toggleMetrics = file.getBoolean("Settings.Toggle-Metrics");
 
-        backup.set("settings.prefix", prefix);
+        File configFile = new File(this.plugin.getDataFolder(), "config.yml");
 
-        backup.set("settings.survival-only", mustBeInSurvival);
+        this.config = SettingsManagerBuilder
+                .withYamlFile(configFile)
+                .useDefaultMigrationService()
+                .configurationData(Config.class)
+                .create();
 
-        backup.set("settings.recipes.toggle", voucherRecipes);
-        backup.set("settings.recipes.alert", voucherAlert);
-
-        backup.set("settings.toggle_metrics", toggleMetrics);
-
-        try {
-            backup.save(backupFile);
-
-            backup.set("Vouchers", null);
-        } catch (IOException e) {
-            e.printStackTrace();
+        if (prefix != null) {
+            this.config.setProperty(Config.command_prefix, prefix);
         }
 
-        backupFile.renameTo(new File(this.plugin.getDataFolder(), "config.yml"));
+        this.config.setProperty(Config.must_be_in_survival, mustBeInSurvival);
+        this.config.setProperty(Config.prevent_using_vouchers_in_recipes_toggle, voucherRecipes);
+        this.config.setProperty(Config.prevent_using_vouchers_in_recipes_alert, voucherAlert);
+
+        this.config.setProperty(Config.toggle_metrics, toggleMetrics);
+
+        // Save the config file.
+        this.config.save();
+
+        // Delete the input.
+        input.delete();
     }
 
-    public void copyMessages() {
-        File oldFile = new File(this.plugin.getDataFolder(), "Messages.yml");
+    private void copyMessages() {
+        File input = new File(this.plugin.getDataFolder(), "Messages.yml");
 
+        // If the input does not exist, We don't need to do anything else.
+        if (!input.exists()) return;
+
+        // Load configuration of input.
+        YamlConfiguration file = CompletableFuture.supplyAsync(() -> YamlConfiguration.loadConfiguration(input)).join();
+
+        // Check if directory exists and create it if not.
         File localeDir = new File(this.plugin.getDataFolder(), "locale");
-
         if (!localeDir.exists()) localeDir.mkdirs();
 
-        File newFile = new File(localeDir, "en-US.yml");
+        // Create messages file.
+        File messagesFile = new File(localeDir, this.config.getProperty(Config.locale_file) + ".yml");
+        SettingsManager messages = SettingsManagerBuilder
+                .withYamlFile(messagesFile)
+                .useDefaultMigrationService()
+                .configurationData(Messages.class)
+                .create();
 
-        if (newFile.exists()) return;
+        String configReload = convert("{prefix}" + file.getString("Messages.Config-Reload"));
 
-        if (!newFile.exists()) {
-            try {
-                newFile.createNewFile();
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-        }
+        String survivalOnly = convert("{prefix}" + file.getString("Messages.Survival-Mode"));
 
-        YamlConfiguration config = YamlConfiguration.loadConfiguration(oldFile);
+        String playerOnly = convert("{prefix}" + file.getString("Messages.Players-Only"));
 
-        String configReload = config.getString("Messages.Config-Reload");
+        String noPermission = convert("{prefix}" + file.getString("Messages.No-Permission"));
 
-        String survivalOnly = config.getString("Messages.Survival-Mode");
+        String noPermissionUse = convert("{prefix}" + file.getString("Messages.No-Permission-To-Voucher"));
 
-        String playerOnly = config.getString("Messages.Players-Only");
+        String noPermOffHand = convert("{prefix}" + file.getString("Messages.No-Permission-To-Use-Voucher-In-OffHand"));
 
-        String noPermission = config.getString("Messages.No-Permission");
+        String cannotPutTable = convert("{prefix}" + file.getString("Messages.Cannot-Put-Items-In-Crafting-Table"));
 
-        String noPermissionUse = config.getString("Messages.No-Permission-To-Voucher");
+        String notOnline = convert("{prefix}" + file.getString("Messages.Not-Online"));
 
-        String noPermOffHand = config.getString("Messages.No-Permission-To-Use-Voucher-In-OffHand");
+        String notANumber = convert("{prefix}" + file.getString("Messages.Not-A-Number"));
 
-        String cannotPutTable = config.getString("Messages.Cannot-Put-Items-In-Crafting-Table");
+        String notAVoucher = convert("{prefix}" + file.getString("Messages.Not-A-Voucher"));
 
-        String notOnline = config.getString("Messages.Not-Online");
+        String codeUnavailable = convert("{prefix}" + file.getString("Messages.Code-UnAvailable"));
 
-        String notANumber = config.getString("Messages.Not-A-Number");
+        String codeUsed = convert("{prefix}" + file.getString("Messages.Code-Used"));
 
-        String notAVoucher = config.getString("Messages.Not-A-Voucher");
+        String sentVoucher = convert("{prefix}" + file.getString("Messages.Given-A-Voucher"));
 
-        String codeUnavailable = config.getString("Messages.Code-UnAvailable");
+        String sentEveryoneVoucher = convert("{prefix}" + file.getString("Messages.Given-All-Players-Voucher"));
 
-        String codeUsed = config.getString("Messages.Code-Used");
+        String hitLimit = convert("{prefix}" + file.getString("Messages.Hit-Limit"));
 
-        String sentVoucher = config.getString("Messages.Given-A-Voucher");
+        String twoStep = convert("{prefix}" + file.getString("Messages.Two-Step-Authentication"));
 
-        String sentEveryoneVoucher = config.getString("Messages.Given-All-Players-Voucher");
+        String hasBlacklistPerm = convert("{prefix}" + file.getString("Messages.Has-Blacklist-Permission"));
 
-        String hitLimit = config.getString("Messages.Hit-Limit");
+        String notInWorld = convert("{prefix}" + file.getString("Messages.Not-In-Whitelisted-World"));
 
-        String twoStep = config.getString("Messages.Two-Step-Authentication");
+        String unstack = convert("{prefix}" + file.getString("Messages.Unstack-Item"));
 
-        String hasBlacklistPerm = config.getString("Messages.Has-Blacklist-Permission");
+        List<String> help = file.getStringList("Messages.Help");
 
-        String notInWorld = config.getString("Messages.Not-In-Whitelisted-World");
+        messages.setProperty(Messages.no_permission, noPermission);
+        messages.setProperty(Messages.no_permission_to_use_voucher, noPermissionUse);
 
-        String unstack = config.getString("Messages.Unstack-Item");
+        messages.setProperty(Messages.no_permission_to_use_voucher_in_offhand, noPermOffHand);
+        messages.setProperty(Messages.cannot_put_items_in_crafting_table, cannotPutTable);
+        messages.setProperty(Messages.survival_mode, survivalOnly);
 
-        List<String> help = config.getStringList("Messages.Help");
+        messages.setProperty(Messages.not_online, notOnline);
+        messages.setProperty(Messages.two_step_authentication, twoStep);
+        messages.setProperty(Messages.hit_voucher_limit, hitLimit);
 
-        YamlConfiguration newConfig = YamlConfiguration.loadConfiguration(newFile);
+        messages.setProperty(Messages.not_a_number, notANumber);
+        messages.setProperty(Messages.not_a_voucher, notAVoucher);
+        messages.setProperty(Messages.not_in_whitelist_world, notInWorld);
+        messages.setProperty(Messages.unstack_item, unstack);
+        messages.setProperty(Messages.has_blacklist_permission, hasBlacklistPerm);
+        messages.setProperty(Messages.code_used, codeUsed);
+        messages.setProperty(Messages.code_unavailable, codeUnavailable);
+        messages.setProperty(Messages.sent_voucher, sentVoucher);
+        messages.setProperty(Messages.sent_everyone_voucher, sentEveryoneVoucher);
 
-        newConfig.set("player.no-permission", convert("{prefix}" + noPermission));
-        newConfig.set("player.voucher.no-permission", convert("{prefix}" + noPermissionUse));
-        newConfig.set("player.voucher.no-permission-offhand", convert("{prefix}" + noPermOffHand));
-        newConfig.set("player.voucher.cant-put-in-crafting-table", convert("{prefix}" + cannotPutTable));
-        newConfig.set("player.survival-only", convert("{prefix}" + survivalOnly));
+        messages.setProperty(Messages.player_only, playerOnly);
+        messages.setProperty(Messages.config_reload, configReload);
+        messages.setProperty(Messages.help, help);
 
-        newConfig.set("player.target-not-online", convert("{prefix}" + notOnline));
+        // Save the file.
+        messages.save();
 
-        newConfig.set("player.two-step-authentication", convert("{prefix}" + twoStep));
-        newConfig.set("player.hit-limit", convert("{prefix}" + hitLimit));
-        
-        newConfig.set("voucher.requirements.not-a-number", convert("{prefix}" + notANumber));
-        newConfig.set("voucher.requirements.not-a-voucher", convert("{prefix}" + notAVoucher));
-
-        newConfig.set("voucher.requirements.not-in-world", convert("{prefix}" + notInWorld));
-        newConfig.set("voucher.requirements.un-stack-item", convert("{prefix}" + unstack));
-        newConfig.set("voucher.requirements.has-blacklist-perm",convert("{prefix}" + hasBlacklistPerm));
-
-        newConfig.set("voucher.code.used", convert("{prefix}" + codeUsed));
-        newConfig.set("voucher.code.unavailable", convert("{prefix}" + codeUnavailable));
-
-        newConfig.set("voucher.sent-voucher", convert("{prefix}" + sentVoucher));
-        newConfig.set("voucher.sent-everyone-voucher", convert("{prefix}" + sentEveryoneVoucher));
-
-        newConfig.set("misc.player-only", convert("{prefix}" + playerOnly));
-        newConfig.set("misc.config-reload", convert("{prefix}" + configReload));
-        newConfig.set("misc.help", help);
-
-        try {
-            newConfig.save(newFile);
-
-            oldFile.delete();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+        // Delete the Messages.yml
+        input.delete();
     }
 
     private String convert(String message) {
