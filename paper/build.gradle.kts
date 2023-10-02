@@ -24,11 +24,13 @@ dependencies {
         exclude("com.ryderbelserion.cluster", "cluster-api")
     }
 
-    compileOnly("me.clip", "placeholderapi", "2.11.3")
+    compileOnly("me.clip", "placeholderapi", "2.11.4")
 
     compileOnly("com.github.LoneDev6", "API-ItemsAdder", "3.5.0b")
 
-    compileOnly("com.github.oraxen", "oraxen", "1.160.0")
+    compileOnly("com.github.oraxen", "oraxen", "1.160.0") {
+        exclude("org.jetbrains", "annotations")
+    }
 }
 
 val component: SoftwareComponent = components["java"]
