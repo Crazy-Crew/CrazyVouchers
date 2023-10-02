@@ -29,7 +29,7 @@ dependencies {
     compileOnly("com.github.LoneDev6", "API-ItemsAdder", "3.5.0b")
 
     compileOnly("com.github.oraxen", "oraxen", "1.160.0") {
-        exclude("org.jetbrains", "annotations")
+        exclude("*", "*")
     }
 }
 
