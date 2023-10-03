@@ -1,107 +1,83 @@
 package com.badbones69.crazyvouchers.paper;
 
-import com.badbones69.crazyvouchers.paper.api.enums.Messages;
-import com.badbones69.crazyvouchers.paper.controllers.GUI;
 import com.badbones69.crazyvouchers.paper.api.FileManager;
+import com.badbones69.crazyvouchers.paper.listeners.FireworkDamageListener;
+import com.badbones69.crazyvouchers.paper.listeners.VoucherMenuListener;
 import com.badbones69.crazyvouchers.paper.api.FileManager.Files;
 import com.badbones69.crazyvouchers.paper.api.CrazyManager;
 import com.badbones69.crazyvouchers.paper.commands.VoucherCommands;
 import com.badbones69.crazyvouchers.paper.commands.VoucherTab;
-import com.badbones69.crazyvouchers.paper.controllers.FireworkDamageAPI;
-import com.badbones69.crazyvouchers.paper.controllers.VoucherClick;
+import com.badbones69.crazyvouchers.paper.listeners.VoucherClickListener;
 import com.badbones69.crazyvouchers.paper.listeners.VoucherCraftListener;
-import com.badbones69.crazyvouchers.paper.support.MetricsHandler;
 import com.badbones69.crazyvouchers.paper.support.SkullCreator;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.PluginCommand;
 import org.bukkit.command.TabCompleter;
-import org.bukkit.configuration.file.FileConfiguration;
-import org.bukkit.event.Listener;
 import org.bukkit.plugin.PluginManager;
 import org.bukkit.plugin.java.JavaPlugin;
+import org.jetbrains.annotations.NotNull;
+import us.crazycrew.crazyenvoys.common.config.types.Config;
+import us.crazycrew.crazyvouchers.paper.api.plugin.CrazyHandler;
 
-public class CrazyVouchers extends JavaPlugin implements Listener {
+public class CrazyVouchers extends JavaPlugin {
 
-    private static CrazyVouchers plugin;
-
-    private FileManager fileManager;
+    private CrazyHandler crazyHandler;
 
     private CrazyManager crazyManager;
 
     private Methods methods;
 
-    private FireworkDamageAPI fireworkDamageAPI;
-
     private SkullCreator skullCreator;
 
-    private GUI gui;
+    private VoucherMenuListener voucherMenuListener;
 
     @Override
     public void onEnable() {
-        plugin = this;
+        this.crazyHandler = new CrazyHandler(getDataFolder());
+        this.crazyHandler.install();
 
-        fileManager = new FileManager();
+        enable();
+    }
 
-        crazyManager = new CrazyManager();
+    @Override
+    public void onDisable() {
+        this.crazyHandler.uninstall();
+    }
 
-        methods = new Methods();
+    public @NotNull CrazyHandler getCrazyHandler() {
+        return this.crazyHandler;
+    }
 
-        skullCreator = new SkullCreator();
+    public @NotNull FileManager getFileManager() {
+        return this.crazyHandler.getFileManager();
+    }
 
-        fileManager.logInfo(true).setup();
+    public boolean isLogging() {
+        return this.crazyHandler.getConfigManager().getConfig().getProperty(Config.verbose_logging);
+    }
 
-        if (!Files.DATA.getFile().contains("Players")) {
-            Files.DATA.getFile().set("Players.Clear", null);
-            Files.DATA.saveFile();
+    private void enable() {
+        this.crazyManager = new CrazyManager();
+
+        this.methods = new Methods();
+
+        this.skullCreator = new SkullCreator();
+
+        if (!Files.users.getFile().contains("Players")) {
+            Files.users.getFile().set("Players.Clear", null);
+            Files.users.saveFile();
         }
 
         PluginManager pluginManager = getServer().getPluginManager();
 
-        pluginManager.registerEvents(this, this);
-        pluginManager.registerEvents(new VoucherClick(), this);
+        pluginManager.registerEvents(new VoucherClickListener(), this);
         pluginManager.registerEvents(new VoucherCraftListener(), this);
-        pluginManager.registerEvents(gui = new GUI(), this);
-        pluginManager.registerEvents(fireworkDamageAPI = new FireworkDamageAPI(), this);
+        pluginManager.registerEvents(this.voucherMenuListener = new VoucherMenuListener(), this);
+        pluginManager.registerEvents(new FireworkDamageListener(), this);
 
         registerCommand(getCommand("vouchers"), new VoucherTab(), new VoucherCommands());
 
-        Messages.addMissingMessages();
-
-        FileConfiguration config = Files.CONFIG.getFile();
-
-        boolean metricsEnabled = Files.CONFIG.getFile().getBoolean("Settings.Toggle-Metrics");
-        String metricsPath = Files.CONFIG.getFile().getString("Settings.Toggle-Metrics");
-
-        String useVouchers = Files.CONFIG.getFile().getString("Settings.Prevent-Using-Vouchers-In-Recipes");
-
-        String path = Files.CONFIG.getFile().getString("Settings.Must-Be-In-Survival");
-
-        if (useVouchers == null) {
-            config.set("Settings.Prevent-Using-Vouchers-In-Recipes.Toggle", true);
-            config.set("Settings.Prevent-Using-Vouchers-In-Recipes.Alert", false);
-
-            Files.CONFIG.saveFile();
-        }
-
-        if (path == null) {
-            config.set("Settings.Must-Be-In-Survival", true);
-
-            Files.CONFIG.saveFile();
-        }
-
-        if (metricsPath == null) {
-            config.set("Settings.Toggle-Metrics", false);
-
-            Files.CONFIG.saveFile();
-        }
-
-        if (metricsEnabled) {
-            MetricsHandler metricsHandler = new MetricsHandler();
-
-            metricsHandler.start();
-        }
-
-        crazyManager.load();
+        this.crazyManager.load(true);
     }
 
     private void registerCommand(PluginCommand pluginCommand, TabCompleter tabCompleter, CommandExecutor commandExecutor) {
@@ -112,31 +88,19 @@ public class CrazyVouchers extends JavaPlugin implements Listener {
         }
     }
 
-    public static CrazyVouchers getPlugin() {
-        return plugin;
-    }
-
     public CrazyManager getCrazyManager() {
-        return crazyManager;
-    }
-
-    public FileManager getFileManager() {
-        return fileManager;
+        return this.crazyManager;
     }
 
     public Methods getMethods() {
-        return methods;
+        return this.methods;
     }
 
     public SkullCreator getSkullCreator() {
-        return skullCreator;
+        return this.skullCreator;
     }
 
-    public FireworkDamageAPI getFireworkDamageAPI() {
-        return fireworkDamageAPI;
-    }
-
-    public GUI getGui() {
-        return gui;
+    public VoucherMenuListener getGui() {
+        return this.voucherMenuListener;
     }
 }

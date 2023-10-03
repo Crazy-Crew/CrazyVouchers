@@ -2,48 +2,53 @@ package com.badbones69.crazyvouchers.paper.api.objects;
 
 import com.badbones69.crazyvouchers.paper.CrazyVouchers;
 import com.badbones69.crazyvouchers.paper.api.CrazyManager;
+import com.badbones69.crazyvouchers.paper.api.enums.Translation;
+import com.ryderbelserion.cluster.api.utils.MiscUtils;
+import com.ryderbelserion.cluster.bukkit.items.utils.DyeUtils;
+import com.ryderbelserion.cluster.bukkit.utils.LegacyLogger;
+import com.ryderbelserion.cluster.bukkit.utils.LegacyUtils;
 import de.tr7zw.changeme.nbtapi.NBTItem;
 import com.badbones69.crazyvouchers.paper.Methods;
-import com.badbones69.crazyvouchers.paper.api.FileManager.Files;
-import com.badbones69.crazyvouchers.paper.api.enums.Messages;
 import org.bukkit.Color;
 import org.bukkit.NamespacedKey;
 import org.bukkit.Registry;
 import org.bukkit.Sound;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.plugin.java.JavaPlugin;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.stream.Collectors;
 
 public class Voucher {
 
     private final ItemBuilder itemBuilder;
-    
+
     private final String name;
     private boolean usesArgs;
-    private boolean glowing;
-    private String usedMessage;
-    private boolean whitelistPermissionToggle;
+    private final boolean glowing;
+    private final String usedMessage;
+    private final boolean whitelistPermissionToggle;
     private final List<String> whitelistPermissions = new ArrayList<>();
     private List<String> whitelistCommands = new ArrayList<>();
     private String whitelistPermissionMessage;
-    private boolean whitelistWorldsToggle;
+    private final boolean whitelistWorldsToggle;
     private String whitelistWorldMessage;
     private final List<String> whitelistWorlds = new ArrayList<>();
     private List<String> whitelistWorldCommands = new ArrayList<>();
-    private boolean blacklistPermissionsToggle;
+    private final boolean blacklistPermissionsToggle;
     private String blacklistPermissionMessage;
     private List<String> blacklistCommands = new ArrayList<>();
     private List<String> blacklistPermissions = new ArrayList<>();
-    private boolean limiterToggle;
+    private final boolean limiterToggle;
     private int limiterLimit;
-    private boolean twoStepAuthentication;
-    private boolean soundToggle;
+    private final boolean twoStepAuthentication;
+    private final boolean soundToggle;
+    private float volume;
+    private float pitch;
     private final List<Sound> sounds = new ArrayList<>();
-    private boolean fireworkToggle;
+    private final boolean fireworkToggle;
     private final List<Color> fireworkColors = new ArrayList<>();
     private boolean isEdible;
     private List<String> commands = new ArrayList<>();
@@ -53,161 +58,141 @@ public class Voucher {
     private final Map<String, String> requiredPlaceholders = new HashMap<>();
     private String requiredPlaceholdersMessage;
 
-    private final CrazyVouchers plugin = CrazyVouchers.getPlugin();
-    private final CrazyManager crazyManager = this.plugin.getCrazyManager();
+    private final CrazyVouchers plugin = JavaPlugin.getPlugin(CrazyVouchers.class);
 
-    private final Methods methods = plugin.getMethods();
-
-    /**
-     * This is just used for imputing fake vouchers.
-     *
-     * @param number Fake Voucher Number.
-     */
-    public Voucher(int number) {
-        this.name = number + "";
-        this.usesArgs = false;
-        this.itemBuilder = new ItemBuilder().setMaterial("Stone").setName(number + "");
-        this.usedMessage = "";
-        this.whitelistPermissionToggle = false;
-        this.whitelistPermissionMessage = "";
-        this.whitelistWorldsToggle = false;
-        this.whitelistWorldMessage = "";
-        this.blacklistPermissionsToggle = false;
-        this.blacklistPermissionMessage = "blacklistPermissionMessage";
-        this.limiterToggle = false;
-        this.limiterLimit = 0;
-        this.twoStepAuthentication = false;
-        this.soundToggle = false;
-        this.fireworkToggle = false;
-        this.isEdible = false;
-        this.requiredPlaceholdersMessage = "";
-    }
+    private final Methods methods = this.plugin.getMethods();
     
-    public Voucher(String name) {
+    public Voucher(FileConfiguration fileConfiguration, String name) {
         this.name = name;
         this.usesArgs = false;
 
-        FileConfiguration config = Files.CONFIG.getFile();
-        String path = "Vouchers." + name;
+        String path = "voucher.";
 
         this.itemBuilder = new ItemBuilder()
-                .setMaterial(config.getString(path + ".Item", "Stone"))
-                .setName(config.getString(path + ".Name", ""))
-                .setLore(config.getStringList(path + ".Lore"))
-                .setPlayerName(config.getString(path + ".Player"))
-                .setFlagsFromStrings(config.getStringList(path + ".Flags"));
+                .setMaterial(fileConfiguration.getString(path + ".item", "Stone"))
+                .setName(fileConfiguration.getString(path + ".name", ""))
+                .setLore(fileConfiguration.getStringList(path + ".lore"))
+                .setPlayerName(fileConfiguration.getString(path + ".player"))
+                .setFlagsFromStrings(fileConfiguration.getStringList(path + ".flags"));
 
-        if (config.contains(path + ".DisplayDamage")) this.itemBuilder.setDamage(config.getInt(path + ".DisplayDamage"));
+        if (fileConfiguration.contains(path + ".display-damage")) this.itemBuilder.setDamage(fileConfiguration.getInt(path + ".display-damage"));
 
-        if (config.contains(path + ".DisplayTrim.Material") && config.contains(path + ".DisplayTrim.Pattern")) {
-            this.itemBuilder.setTrimMaterial(Registry.TRIM_MATERIAL.get(NamespacedKey.minecraft(config.getString(path + ".DisplayTrim.Material", "QUARTZ").toLowerCase())))
-                    .setTrimPattern(Registry.TRIM_PATTERN.get(NamespacedKey.minecraft(config.getString(path + ".DisplayTrim.Pattern", "SENTRY").toLowerCase())));
+        if (fileConfiguration.contains(path + ".display-trim.material") && fileConfiguration.contains(path + ".display-trim.pattern")) {
+            this.itemBuilder.setTrimMaterial(Registry.TRIM_MATERIAL.get(NamespacedKey.minecraft(fileConfiguration.getString(path + ".display-trim.material", "QUARTZ").toLowerCase())))
+                    .setTrimPattern(Registry.TRIM_PATTERN.get(NamespacedKey.minecraft(fileConfiguration.getString(path + ".display-trim.pattern", "SENTRY").toLowerCase())));
         }
 
-        this.glowing = config.getBoolean(path + ".Glowing");
+        this.glowing = fileConfiguration.getBoolean(path + ".glowing");
 
-        if (this.itemBuilder.getName().toLowerCase().contains("%arg%")) this.usesArgs = true;
+        if (this.itemBuilder.getName().toLowerCase().contains("{arg}")) this.usesArgs = true;
 
         if (!this.usesArgs) {
             for (String lore : this.itemBuilder.getLore()) {
-                if (lore.toLowerCase().contains("%arg%")) {
+                if (lore.toLowerCase().contains("{arg}")) {
                     this.usesArgs = true;
                     break;
                 }
             }
         }
 
-        this.commands = config.getStringList(path + ".Commands");
+        if (fileConfiguration.contains(path + ".commands")) this.commands = fileConfiguration.getStringList(path + ".commands");
 
-        for (String commands : config.getStringList(path + ".Random-Commands")) {
-            this.randomCommands.add(new VoucherCommand(commands));
-        }
-
-        for (String line : config.getStringList(path + ".Chance-Commands")) { // - '%chance% %command%, %command%, %command%, ... etc'
-            try {
-                String[] split = line.split(" ");
-                VoucherCommand voucherCommand = new VoucherCommand(line.substring(split[0].length() + 1));
-
-                for (int i = 1; i <= Integer.parseInt(split[0]); i++) {
-                    this.chanceCommands.add(voucherCommand);
-                }
-            } catch (Exception e) {
-                this.plugin.getLogger().info("An issue occurred when trying to use chance commands.");
-                e.printStackTrace();
+        if (fileConfiguration.contains(path + ".random-commands")) {
+            for (String commands : fileConfiguration.getStringList(path + ".random-commands")) {
+                this.randomCommands.add(new VoucherCommand(commands));
             }
         }
 
-        this.items.addAll(this.crazyManager.getItems(config, this.name));
+        if (fileConfiguration.contains(path + ".chance-commands")) {
+            for (String line : fileConfiguration.getStringList(path + ".chance-commands")) { // - '{chance} {command}, {command}, {command}, ... etc'
+                try {
+                    String[] split = line.split(" ");
+                    VoucherCommand voucherCommand = new VoucherCommand(line.substring(split[0].length() + 1));
 
-        this.usedMessage = getMessage(path + ".Options.Message");
+                    for (int i = 1; i <= Integer.parseInt(split[0]); i++) {
+                        this.chanceCommands.add(voucherCommand);
+                    }
+                } catch (Exception exception) {
+                    LegacyLogger.error("An issue occurred when trying to use chance commands.", exception);
+                }
+            }
+        }
 
-        if (config.contains(path + ".Options.Permission.Whitelist-Permission")) {
-            this.whitelistPermissionToggle = config.getBoolean(path + ".Options.Permission.Whitelist-Permission.Toggle");
+        CrazyManager crazyManager = this.plugin.getCrazyManager();
+        this.items.addAll(crazyManager.getItems(fileConfiguration, this.name));
 
-            if (config.contains(path + ".Options.Permission.Whitelist-Permission.Node")) this.whitelistPermissions.add("voucher." + config.getString(path + ".Options.Permission.Whitelist-Permission.Node").toLowerCase());
+        this.usedMessage = getMessage(path + ".options.message", fileConfiguration);
 
-            this.whitelistPermissions.addAll(config.getStringList(path + ".Options.Permission.Whitelist-Permission.Permissions").stream().map(String :: toLowerCase).collect(Collectors.toList()));
-            this.whitelistCommands = config.getStringList(path + ".Options.Permission.Whitelist-Permission.Commands");
-            this.whitelistPermissionMessage = config.contains(path + ".Options.Permission.Whitelist-Permission.Message") ? getMessage(path + ".Options.Permission.Whitelist-Permission.Message") : Messages.NO_PERMISSION_TO_VOUCHER.getMessageNoPrefix();
+        if (fileConfiguration.contains(path + ".options.permission.whitelist-permission")) {
+            this.whitelistPermissionToggle = fileConfiguration.getBoolean(path + ".options.permission.whitelist-permission.toggle");
+
+            if (fileConfiguration.contains(path + ".options.permission.whitelist-permission.node")) this.whitelistPermissions.add(fileConfiguration.getString(path + ".options.permission.whitelist-permission.node").toLowerCase());
+
+            this.whitelistPermissions.addAll(fileConfiguration.getStringList(path + ".options.permission.whitelist-permission.permissions").stream().map(String::toLowerCase).toList());
+            this.whitelistCommands = fileConfiguration.getStringList(path + ".options.permission.whitelist-permission.commands");
+            this.whitelistPermissionMessage = fileConfiguration.contains(path + ".options.permission.whitelist-permission.message") ? getMessage(path + ".options.permission.whitelist-permission.message", fileConfiguration) : Translation.no_permission_to_use_voucher.getString();
         } else {
             this.whitelistPermissionToggle = false;
         }
 
-        if (config.contains(path + ".Options.Whitelist-Worlds.Toggle")) {
-            this.whitelistWorlds.addAll(config.getStringList(path + ".Options.Whitelist-Worlds.Worlds").stream().map(String :: toLowerCase).collect(Collectors.toList()));
+        if (fileConfiguration.contains(path + ".options.whitelist-worlds.toggle")) {
+            this.whitelistWorlds.addAll(fileConfiguration.getStringList(path + ".options.whitelist-worlds.worlds").stream().map(String :: toLowerCase).toList());
 
-            if (config.contains(path + ".Options.Whitelist-Worlds.Message")) {
-                this.whitelistWorldMessage = getMessage(path + ".Options.Whitelist-Worlds.Message");
+            if (fileConfiguration.contains(path + ".options.whitelist-worlds.message")) {
+                this.whitelistWorldMessage = getMessage(path + ".options.whitelist-worlds.message", fileConfiguration);
             } else {
-                this.whitelistWorldMessage = Messages.NOT_IN_WHITELISTED_WORLD.getMessageNoPrefix();
+                this.whitelistWorldMessage = Translation.not_in_whitelisted_world.getString();
             }
 
-            this.whitelistWorldCommands = config.getStringList(path + ".Options.Whitelist-Worlds.Commands");
-            this.whitelistWorldsToggle = !this.whitelistWorlds.isEmpty() && config.getBoolean(path + ".Options.Whitelist-Worlds.Toggle");
+            this.whitelistWorldCommands = fileConfiguration.getStringList(path + ".options.whitelist-worlds.commands");
+            this.whitelistWorldsToggle = !this.whitelistWorlds.isEmpty() && fileConfiguration.getBoolean(path + ".options.whitelist-worlds.toggle");
         } else {
             this.whitelistWorldsToggle = false;
         }
 
-        if (config.contains(path + ".Options.Permission.Blacklist-Permissions")) {
-            this.blacklistPermissionsToggle = config.getBoolean(path + ".Options.Permission.Blacklist-Permissions.Toggle");
+        if (fileConfiguration.contains(path + ".options.permission.blacklist-permission")) {
+            this.blacklistPermissionsToggle = fileConfiguration.getBoolean(path + ".Options.Permission.blacklist-Permission.toggle");
 
-            if (config.contains(path + ".Options.Permission.Blacklist-Permissions.Message")) {
-                this.blacklistPermissionMessage = getMessage(path + ".Options.Permission.Blacklist-Permissions.Message");
+            if (fileConfiguration.contains(path + ".options.permission.blacklist-permission.message")) {
+                this.blacklistPermissionMessage = getMessage(path + ".options.permission.blacklist-permission.message", fileConfiguration);
             } else {
-                this.blacklistPermissionMessage = Messages.HAS_BLACKLIST_PERMISSION.getMessageNoPrefix();
+                this.blacklistPermissionMessage = Translation.has_blacklist_permission.getString();
             }
 
-            this.blacklistPermissions = config.getStringList(path + ".Options.Permission.Blacklist-Permissions.Permissions");
-            this.blacklistCommands = config.getStringList(path + ".Options.Permission.Blacklist-Permissions.Commands");
+            this.blacklistPermissions = fileConfiguration.getStringList(path + ".options.permission.blacklist-permission.permissions");
+            this.blacklistCommands = fileConfiguration.getStringList(path + ".options.permission.blacklist-permission.commands");
         } else {
             this.blacklistPermissionsToggle = false;
         }
 
-        if (config.contains(path + ".Options.Limiter")) {
-            this.limiterToggle = config.getBoolean(path + ".Options.Limiter.Toggle");
-            this.limiterLimit = config.getInt(path + ".Options.Limiter.Limit");
+        if (fileConfiguration.contains(path + ".options.limiter")) {
+            this.limiterToggle = fileConfiguration.getBoolean(path + ".options.limiter.toggle");
+            this.limiterLimit = fileConfiguration.getInt(path + ".options.limiter.limit");
         } else {
             this.limiterToggle = false;
         }
 
-        if (config.contains(path + ".Options.Required-Placeholders-Message")) {
-            this.requiredPlaceholdersMessage = getMessage(path + ".Options.Required-Placeholders-Message");
+        if (fileConfiguration.contains(path + ".options.required-placeholders-message")) {
+            this.requiredPlaceholdersMessage = getMessage(path + ".options.required-placeholders-message", fileConfiguration);
         }
 
-        if (config.contains(path + ".Options.Required-Placeholders")) {
-            for (String key : config.getConfigurationSection(path + ".Options.Required-Placeholders").getKeys(false)) {
-                String placeholder = config.getString(path + ".Options.Required-Placeholders." + key + ".Placeholder");
-                String value = config.getString(path + ".Options.Required-Placeholders." + key + ".Value");
+        if (fileConfiguration.contains(path + ".options.required-placeholders")) {
+            for (String key : fileConfiguration.getConfigurationSection(path + ".options.required-placeholders").getKeys(false)) {
+                String placeholder = fileConfiguration.getString(path + ".options.required-placeholders." + key + ".placeholder");
+                String value = fileConfiguration.getString(path + ".options.required-placeholders." + key + ".value");
                 this.requiredPlaceholders.put(placeholder, value);
             }
         }
 
-        this.twoStepAuthentication = config.contains(path + ".Options.Two-Step-Authentication") && config.getBoolean(path + ".Options.Two-Step-Authentication.Toggle");
+        this.twoStepAuthentication = fileConfiguration.contains(path + ".options.two-step-authentication") && fileConfiguration.getBoolean(path + ".options.two-step-authentication.toggle");
 
-        if (config.contains(path + ".Options.Sound")) {
-            this.soundToggle = config.getBoolean(path + ".Options.Sound.Toggle");
+        if (fileConfiguration.contains(path + ".options.sound")) {
+            this.soundToggle = fileConfiguration.getBoolean(path + ".options.sound.toggle");
 
-            for (String sound : config.getStringList(path + ".Options.Sound.Sounds")) {
+            this.volume = (float) fileConfiguration.getDouble(path + ".options.sound.volume");
+            this.pitch = (float) fileConfiguration.getDouble(path + ".options.sound.pitch");
+
+            for (String sound : fileConfiguration.getStringList(path + ".options.sound.sounds")) {
                 try {
                     this.sounds.add(Sound.valueOf(sound));
                 } catch (Exception ignored) {}
@@ -216,9 +201,9 @@ public class Voucher {
             this.soundToggle = false;
         }
 
-        if (config.getBoolean(path + ".Options.Firework.Toggle")) {
-            for (String color : config.getString(path + ".Options.Firework.Colors", "").split(", ")) {
-                this.fireworkColors.add(methods.getColor(color));
+        if (fileConfiguration.getBoolean(path + ".options.firework.toggle")) {
+            for (String color : fileConfiguration.getString(path + ".options.firework.colors", "").split(", ")) {
+                this.fireworkColors.add(DyeUtils.getColor(color));
             }
 
             this.fireworkToggle = !fireworkColors.isEmpty();
@@ -226,7 +211,7 @@ public class Voucher {
             this.fireworkToggle = false;
         }
 
-        if (config.getBoolean(path + ".Options.Is-Edible")) {
+        if (fileConfiguration.getBoolean(path + ".options.is-edible")) {
             this.isEdible = itemBuilder.build().getType().isEdible();
 
             switch (this.itemBuilder.getMaterial().toString()) {
@@ -260,11 +245,11 @@ public class Voucher {
     }
     
     public ItemStack buildItem(String argument, int amount) {
-        ItemStack item = this.itemBuilder.setAmount(amount).addLorePlaceholder("%Arg%", argument).addNamePlaceholder("%Arg%", argument).setGlow(this.glowing).build();
+        ItemStack item = this.itemBuilder.setAmount(amount).addLorePlaceholder("{arg}", argument).addNamePlaceholder("{arg}", argument).setGlow(this.glowing).build();
 
         NBTItem nbt = new NBTItem(item);
 
-        nbt.setString("voucher", this.name);
+        nbt.setString("voucher", getName());
         nbt.setString("argument", argument);
 
         return nbt.getItem();
@@ -341,7 +326,15 @@ public class Voucher {
     public List<Sound> getSounds() {
         return this.sounds;
     }
-    
+
+    public float getPitch() {
+        return this.pitch;
+    }
+
+    public float getVolume() {
+        return this.volume;
+    }
+
     public boolean useFirework() {
         return this.fireworkToggle;
     }
@@ -377,22 +370,21 @@ public class Voucher {
     public boolean isEdible() {
         return this.isEdible;
     }
-    
-    private String getMessage(String path) {
-        FileConfiguration config = Files.CONFIG.getFile();
+
+    private String getMessage(String path, FileConfiguration file) {
         String messageString;
 
-        if (isList(path)) {
-            messageString = this.methods.color(Messages.convertList(config.getStringList(path)));
+        if (isList(path, file)) {
+            messageString = LegacyUtils.color(MiscUtils.convertList(file.getStringList(path)));
         } else {
-            messageString = config.getString(path, "");
+            messageString = file.getString(path, "");
             if (!messageString.isEmpty()) messageString = this.methods.getPrefix(messageString);
         }
 
         return messageString;
     }
     
-    private boolean isList(String path) {
-        return Files.CONFIG.getFile().contains(path) && !Files.CONFIG.getFile().getStringList(path).isEmpty();
+    private boolean isList(String path, FileConfiguration file) {
+        return file.contains(path) && !file.getStringList(path).isEmpty();
     }
 }

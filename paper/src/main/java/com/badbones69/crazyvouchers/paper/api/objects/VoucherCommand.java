@@ -15,14 +15,14 @@ public class VoucherCommand {
     }
     
     public int getUUID() {
-        return uuid;
+        return this.uuid;
     }
     
     public List<String> getCommands() {
-        return commands;
+        return this.commands;
     }
     
     public boolean isSimilar(VoucherCommand voucherCommand) {
-        return uuid.equals(voucherCommand.getUUID());
+        return this.uuid.equals(voucherCommand.getUUID());
     }
 }

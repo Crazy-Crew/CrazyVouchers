@@ -31,26 +31,26 @@ public class RedeemVoucherEvent extends Event implements Cancellable {
      * @return The player redeeming the voucher.
      */
     public Player getPlayer() {
-        return player;
+        return this.player;
     }
     
     /**
      * @return Voucher object used in the event.
      */
     public Voucher getVoucher() {
-        return voucher;
+        return this.voucher;
     }
     
     /**
      * @return The argument used by the voucher. If not used it will be a blank string.
      */
     public String getArgument() {
-        return argument;
+        return this.argument;
     }
     
     @Override
     public boolean isCancelled() {
-        return cancelled;
+        return this.cancelled;
     }
     
     @Override
