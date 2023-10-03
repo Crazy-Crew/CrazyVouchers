@@ -83,27 +83,8 @@ val other = if (isSnapshot) "Beta" else "Release"
 val description = """
 # Please take a backup of your CrazyVouchers folder before updating!    
     
-## Changes:
-* Added 1.20.2 support.
-* Made sounds respect client side sound settings.
-* Properly handle how Metrics shuts down and turns on when you change the true/false.
-* Add more verbose logging with an option to turn off the spammy garbage.
-* Internal placeholders such as %random% or %player% which are handled by us have been changed to {random} or {player}.
-* Added volume/pitch controls to each sound section in the vouchers.
-
-## Breaking Changes:
-* Vouchers have been moved out of the `Config.yml` into a folder called `vouchers`
- * All the configurations should auto migrate. Let me know if I missed something.
-* Voucher codes have been moved from `VoucherCodes.yml` to the `codes` folder.
-
-## Performance:
-* No longer use the player object in hashmap's/arrays just the uuid as god intended.
-
-## Developers / API:
-### This is nerd talk so only read this if you need to.
-* Cleaned up some internals, reduce duplicated code.
-* The api artifact id is now crazyvouchers-paper-api
-* Bumped nbt-api
+## Bugs Fixed:
+ * Fixed locale reloading.
     
 ## Other:
  * [Feature Requests](https://github.com/Crazy-Crew/${rootProject.name}/issues)
