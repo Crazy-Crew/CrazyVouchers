@@ -80,8 +80,6 @@ val isSnapshot = rootProject.version.toString().contains("snapshot")
 val type = if (isSnapshot) "beta" else "release"
 val other = if (isSnapshot) "Beta" else "Release"
 
-val file = file("${rootProject.rootDir}/jars/${rootProject.name}-${rootProject.version}.jar")
-
 val description = """
 # Please take a backup of your CrazyVouchers folder before updating!    
     
@@ -121,7 +119,7 @@ val versions = listOf(
 modrinth {
     autoAddDependsOn.set(false)
 
-    token.set(System.getenv("MODRINTH_TOKEN"))
+    token.set(System.getenv("modrinth_token"))
 
     projectId.set(rootProject.name.lowercase())
 
@@ -130,7 +128,7 @@ modrinth {
 
     versionType.set(type)
 
-    uploadFile.set(file)
+    uploadFile.set(file("${rootProject.rootDir}/jars/${rootProject.name}-${rootProject.version}.jar"))
 
     gameVersions.addAll(versions)
 
@@ -153,7 +151,7 @@ hangarPublish {
 
         platforms {
             register(Platforms.PAPER) {
-                jar.set(file)
+                jar.set(file("${rootProject.rootDir}/jars/${rootProject.name}-${rootProject.version}.jar"))
                 platformVersions.set(versions)
             }
         }
