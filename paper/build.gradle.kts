@@ -84,7 +84,7 @@ val description = """
 # Please take a backup of your CrazyVouchers folder before updating!    
     
 ## Bugs Fixed:
- * Fixed locale reloading.
+ * Fixed a bug where vouchers were stone.
     
 ## Other:
  * [Feature Requests](https://github.com/Crazy-Crew/${rootProject.name}/issues)
