@@ -77,7 +77,7 @@ voucher:
         # If we should check players for this.
         toggle: false
         # If they don't have the permission, send this message.
-        message: '{prefix}You do not have the permission {permission} to use this voucher.'
+        message: '{prefix}You do not have the permission &c{permission} &7to use this voucher.'
         # If they don't have this permission, they can't use the voucher.
         permissions:
           - 'your-permission'
@@ -85,7 +85,7 @@ voucher:
         # If we should check players for this.
         toggle: false
         # The message to send to a player if they can't use the voucher.
-        message: '{prefix}You already have the permission {permission} so you can''t use this voucher.'
+        message: '{prefix}You already have the permission &c{permission} &7so you can''t use this voucher.'
         # If they have this permission, they can't use the voucher.
         permissions:
           - 'your-permission'

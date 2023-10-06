@@ -81,10 +81,19 @@ val type = if (isSnapshot) "beta" else "release"
 val other = if (isSnapshot) "Beta" else "Release"
 
 val description = """
-# Please take a backup of your CrazyVouchers folder before updating!    
+Please read the changelogs for v3.1-3.1.3 for any other information which you will likely need.
     
+## Misc:
+ * Changed default permission messages in `Example.yml` when plugin first enables.
+
 ## Bugs Fixed:
- * Fixed a bug where vouchers were stone.
+ * Fixed a bug when migrating old configs to the new format
+   * If you have a backup of your CrazyVouchers files pre-update, You can delete your current CrazyVouchers folder
+   * You can then just drop in your old CrazyVouchers folder and hit start, It should auto convert properly
+   * If you don't have a backup, You can contact us in Discord and we'll help you get sorted.
+ * Fixed duplicate prefixes in messages
+ * Fixed coloring in certain messages
+ * Fixed two-step-authentication
     
 ## Other:
  * [Feature Requests](https://github.com/Crazy-Crew/${rootProject.name}/issues)

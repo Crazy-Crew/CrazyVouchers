@@ -147,7 +147,7 @@ public class MigrationService {
 
             YamlConfiguration voucher = YamlConfiguration.loadConfiguration(newFile);
             
-            String newPath = path + "voucher.";
+            String newPath = "voucher.";
 
             voucher.set(newPath + "item", item);
             voucher.set(newPath + "name", convert(itemName));

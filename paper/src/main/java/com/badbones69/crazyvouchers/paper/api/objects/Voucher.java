@@ -136,7 +136,7 @@ public class Voucher {
         }
 
         if (fileConfiguration.contains(path + "options.whitelist-worlds.toggle")) {
-            this.whitelistWorlds.addAll(fileConfiguration.getStringList(path + "options.whitelist-worlds.worlds").stream().map(String :: toLowerCase).toList());
+            this.whitelistWorlds.addAll(fileConfiguration.getStringList(path + "options.whitelist-worlds.worlds").stream().map(String::toLowerCase).toList());
 
             if (fileConfiguration.contains(path + "options.whitelist-worlds.message")) {
                 this.whitelistWorldMessage = getMessage(path + "options.whitelist-worlds.message", fileConfiguration);
@@ -184,7 +184,7 @@ public class Voucher {
             }
         }
 
-        this.twoStepAuthentication = fileConfiguration.contains(path + "options.two-step-authentication") && fileConfiguration.getBoolean(path + "options.two-step-authentication.toggle");
+        this.twoStepAuthentication = fileConfiguration.contains(path + "options.two-step-authentication") && fileConfiguration.getBoolean(path + "options.two-step-authentication");
 
         if (fileConfiguration.contains(path + "options.sound")) {
             this.soundToggle = fileConfiguration.getBoolean(path + "options.sound.toggle");
@@ -378,7 +378,6 @@ public class Voucher {
             messageString = LegacyUtils.color(MiscUtils.convertList(file.getStringList(path)));
         } else {
             messageString = file.getString(path, "");
-            if (!messageString.isEmpty()) messageString = this.methods.getPrefix(messageString);
         }
 
         return messageString;

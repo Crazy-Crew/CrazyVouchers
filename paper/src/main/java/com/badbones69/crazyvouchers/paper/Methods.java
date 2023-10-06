@@ -66,12 +66,12 @@ public class Methods {
         return true;
     }
 
-    public String replacePlaceholders(HashMap<String, String> placeholders, String message) {
+    public String replacePlaceholders(HashMap<String, String> placeholders, String message, boolean isCommand) {
         for (String placeholder : placeholders.keySet()) {
             message = message.replace(placeholder, placeholders.get(placeholder)).replace(placeholder.toLowerCase(), placeholders.get(placeholder));
         }
 
-        return message;
+        if (isCommand) return message; else return LegacyUtils.color(message);
     }
     
     public boolean isOnline(CommandSender sender, String name) {

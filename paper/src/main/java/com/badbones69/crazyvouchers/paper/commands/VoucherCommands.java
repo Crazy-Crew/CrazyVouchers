@@ -128,7 +128,7 @@ public class VoucherCommands implements CommandExecutor {
                                                 Translation.no_permission_to_use_voucher.sendMessage(player, placeholders);
 
                                                 for (String command : voucherCode.getWhitelistCommands()) {
-                                                    this.plugin.getServer().dispatchCommand(this.plugin.getServer().getConsoleSender(), this.methods.replacePlaceholders(placeholders, this.crazyManager.replaceRandom(command)));
+                                                    this.plugin.getServer().dispatchCommand(this.plugin.getServer().getConsoleSender(), this.methods.replacePlaceholders(placeholders, this.crazyManager.replaceRandom(command), true));
                                                 }
 
                                                 return true;
@@ -138,10 +138,10 @@ public class VoucherCommands implements CommandExecutor {
 
                                     if (voucherCode.useWhitelistWorlds()) {
                                         if (voucherCode.getWhitelistWorlds().contains(player.getWorld().getName().toLowerCase())) {
-                                            player.sendMessage(this.methods.getPrefix(this.methods.replacePlaceholders(placeholders, voucherCode.getWhitelistWorldMessage())));
+                                            player.sendMessage(this.methods.replacePlaceholders(placeholders, voucherCode.getWhitelistWorldMessage(), true));
 
                                             for (String command : voucherCode.getWhitelistWorldCommands()) {
-                                                this.plugin.getServer().dispatchCommand(this.plugin.getServer().getConsoleSender(), this.methods.replacePlaceholders(placeholders, this.crazyManager.replaceRandom(command)));
+                                                this.plugin.getServer().dispatchCommand(this.plugin.getServer().getConsoleSender(), this.methods.replacePlaceholders(placeholders, this.crazyManager.replaceRandom(command), true));
                                             }
 
                                             return true;
@@ -151,10 +151,10 @@ public class VoucherCommands implements CommandExecutor {
                                     if (voucherCode.useBlacklistPermissions()) {
                                         for (String permission : voucherCode.getBlacklistPermissions()) {
                                             if (player.hasPermission(permission.toLowerCase())) {
-                                                player.sendMessage(this.methods.getPrefix(this.methods.replacePlaceholders(placeholders, voucherCode.getBlacklistMessage())));
+                                                player.sendMessage(this.methods.replacePlaceholders(placeholders, voucherCode.getBlacklistMessage(), true));
 
                                                 for (String command : voucherCode.getBlacklistCommands()) {
-                                                    this.plugin.getServer().dispatchCommand(this.plugin.getServer().getConsoleSender(), this.methods.replacePlaceholders(placeholders, this.crazyManager.replaceRandom(command)));
+                                                    this.plugin.getServer().dispatchCommand(this.plugin.getServer().getConsoleSender(), this.methods.replacePlaceholders(placeholders, this.crazyManager.replaceRandom(command), true));
                                                 }
 
                                                 return true;
@@ -202,18 +202,18 @@ public class VoucherCommands implements CommandExecutor {
                                     Files.users.saveFile();
 
                                     for (String command : voucherCode.getCommands()) {
-                                        this.plugin.getServer().dispatchCommand(this.plugin.getServer().getConsoleSender(), this.methods.replacePlaceholders(placeholders, crazyManager.replaceRandom(command)));
+                                        this.plugin.getServer().dispatchCommand(this.plugin.getServer().getConsoleSender(), this.methods.replacePlaceholders(placeholders, crazyManager.replaceRandom(command), true));
                                     }
 
                                     if (!voucherCode.getRandomCommands().isEmpty()) { // Picks a random command from the Random-Commands list.
                                         for (String command : voucherCode.getRandomCommands().get(new Random().nextInt(voucherCode.getRandomCommands().size())).getCommands()) {
-                                            this.plugin.getServer().dispatchCommand(this.plugin.getServer().getConsoleSender(), this.methods.replacePlaceholders(placeholders, this.crazyManager.replaceRandom(command)));
+                                            this.plugin.getServer().dispatchCommand(this.plugin.getServer().getConsoleSender(), this.methods.replacePlaceholders(placeholders, this.crazyManager.replaceRandom(command), true));
                                         }
                                     }
 
                                     if (!voucherCode.getChanceCommands().isEmpty()) { // Picks a command based on the chance system of the Chance-Commands list.
                                         for (String command : voucherCode.getChanceCommands().get(new Random().nextInt(voucherCode.getChanceCommands().size())).getCommands()) {
-                                            this.plugin.getServer().dispatchCommand(this.plugin.getServer().getConsoleSender(), this.methods.replacePlaceholders(placeholders, this.crazyManager.replaceRandom(command)));
+                                            this.plugin.getServer().dispatchCommand(this.plugin.getServer().getConsoleSender(), this.methods.replacePlaceholders(placeholders, this.crazyManager.replaceRandom(command), true));
                                         }
                                     }
 
@@ -233,7 +233,7 @@ public class VoucherCommands implements CommandExecutor {
 
                                     if (voucherCode.useFireworks()) this.methods.fireWork(player.getLocation(), voucherCode.getFireworkColors());
 
-                                    if (!voucherCode.getMessage().isEmpty()) player.sendMessage(LegacyUtils.color(this.methods.replacePlaceholders(placeholders, voucherCode.getMessage())));
+                                    if (!voucherCode.getMessage().isEmpty()) player.sendMessage(LegacyUtils.color(this.methods.replacePlaceholders(placeholders, voucherCode.getMessage(), true)));
                                 }
                             } else {
                                 Translation.code_unavailable.sendMessage(player, placeholders);
