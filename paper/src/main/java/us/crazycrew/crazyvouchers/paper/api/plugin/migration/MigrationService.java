@@ -187,92 +187,92 @@ public class MigrationService {
             }
 
             if (backup.contains(path + "Options.Whitelist-Worlds")) {
-                voucher.set(path + "options.whitelist-worlds.toggle", worldsToggle);
-                voucher.set(path + "options.whitelist-worlds.message", convert("{prefix}" + worldsMessage));
-                voucher.set(path + "options.whitelist-worlds.worlds", worldsList);
+                voucher.set(newPath + "options.whitelist-worlds.toggle", worldsToggle);
+                voucher.set(newPath + "options.whitelist-worlds.message", convert("{prefix}" + worldsMessage));
+                voucher.set(newPath + "options.whitelist-worlds.worlds", worldsList);
             }
 
             if (backup.contains(path + "Options.Permission.Whitelist-Permission")) {
-                voucher.set(path + "options.permission.whitelist-permission.toggle", whitelistPermissionToggle);
-                voucher.set(path + "options.permission.whitelist-permission.message", convert("{prefix}" + whitelistMessage));
-                voucher.set(path + "options.permission.whitelist-permission.permissions", whiteListPermissions);
+                voucher.set(newPath + "options.permission.whitelist-permission.toggle", whitelistPermissionToggle);
+                voucher.set(newPath + "options.permission.whitelist-permission.message", convert("{prefix}" + whitelistMessage));
+                voucher.set(newPath + "options.permission.whitelist-permission.permissions", whiteListPermissions);
             }
 
             if (backup.contains(path + "Options.Permission.Blacklist-Permissions")) {
-                voucher.set(path + "options.permission.blacklist-permission.toggle", blacklistPermissionToggle);
-                voucher.set(path + "options.permission.blacklist-permission.message", convert("{prefix}" + blacklistMessage));
-                voucher.set(path + "options.permission.blacklist-permission.permissions", blackListPermissions);
+                voucher.set(newPath + "options.permission.blacklist-permission.toggle", blacklistPermissionToggle);
+                voucher.set(newPath + "options.permission.blacklist-permission.message", convert("{prefix}" + blacklistMessage));
+                voucher.set(newPath + "options.permission.blacklist-permission.permissions", blackListPermissions);
             }
 
             if (backup.contains(path + "Options.Limiter")) {
-                voucher.set(path + "options.limiter.toggle", limiterToggle);
-                voucher.set(path + "options.limiter.amount", limiterAmount);
+                voucher.set(newPath + "options.limiter.toggle", limiterToggle);
+                voucher.set(newPath + "options.limiter.amount", limiterAmount);
             }
 
             if (backup.contains(path + "Options.Two-Step-Authentication")) {
-                voucher.set(path + "options.two-step-authentication", twoStep);
+                voucher.set(newPath + "options.two-step-authentication", twoStep);
             }
 
             if (backup.contains(path + "Options.Sound")) {
-                voucher.set(path + "options.sound.toggle", soundToggle);
-                voucher.set(path + "options.sound.pitch", 1.0);
-                voucher.set(path + "options.sound.volume", 1.0);
-                voucher.set(path + "options.sound.sounds", sounds);
+                voucher.set(newPath + "options.sound.toggle", soundToggle);
+                voucher.set(newPath + "options.sound.pitch", 1.0);
+                voucher.set(newPath + "options.sound.volume", 1.0);
+                voucher.set(newPath + "options.sound.sounds", sounds);
             }
 
             if (backup.contains(path + "Options.Firework")) {
-                voucher.set(path + "options.firework.toggle", fireworkToggle);
-                voucher.set(path + "options.firework.colors", fireworkColors);
+                voucher.set(newPath + "options.firework.toggle", fireworkToggle);
+                voucher.set(newPath + "options.firework.colors", fireworkColors);
             }
 
             if (backup.contains(path + "Options.Is-Edible")) {
-                voucher.set(path + "options.is-edible", isEdible);
+                voucher.set(newPath + "options.is-edible", isEdible);
             }
 
             if (backup.contains(path + "Items")) {
-                voucher.set(path + "items", items);
+                voucher.set(newPath + "items", items);
             }
 
             if (backup.contains(path + "Commands")) {
                 ArrayList<String> commandList = new ArrayList<>();
                 commands.forEach(line -> commandList.add(convert(line)));
-                voucher.set(path + "commands", commandList);
+                voucher.set(newPath + "commands", commandList);
             }
 
             if (backup.contains(path + "Random-Commands")) {
                 ArrayList<String> randomCommandList = new ArrayList<>();
                 randomCommands.forEach(line -> randomCommandList.add(convert(line)));
-                voucher.set(path + "random-commands", randomCommandList);
+                voucher.set(newPath + "random-commands", randomCommandList);
             }
 
             if (backup.contains(path + "Chance-Commands")) {
                 ArrayList<String> chanceCommandList = new ArrayList<>();
                 chanceCommands.forEach(line -> chanceCommandList.add(convert(line)));
-                voucher.set(path + "chance-commands", chanceCommandList);
+                voucher.set(newPath + "chance-commands", chanceCommandList);
             }
 
             if (backup.contains(path + "DisplayDamage")) {
                 int displayDamage = backup.getInt(path + "DisplayDamage");
                 // do your thing.
-                voucher.set(path + "display-damage", displayDamage);
+                voucher.set(newPath + "display-damage", displayDamage);
             }
 
             if (backup.contains(path + "DisplayTrim.Material")) {
                 String trimMaterial = backup.getString(path + "DisplayTrim.Material");
                 // do your thing.
-                voucher.set(path + "display-trim.material", trimMaterial);
+                voucher.set(newPath + "display-trim.material", trimMaterial);
             }
 
             if (backup.contains(path + "Options.Permission.Whitelist-Permission.Node")) {
                 String singleNode = backup.getString(path + "Options.Permission.Whitelist-Permission.Node");
 
-                voucher.set(path + "options.permission.whitelist-permission.node", singleNode);
+                voucher.set(newPath + "options.permission.whitelist-permission.node", singleNode);
             }
 
             if (backup.contains(path + "DisplayTrim.Pattern")) {
                 String trimPattern = backup.getString(path + "DisplayTrim.Pattern");
                 // do your thing.
-                voucher.set(path + "display-trim.pattern", trimPattern);
+                voucher.set(newPath + "display-trim.pattern", trimPattern);
             }
 
             try {
