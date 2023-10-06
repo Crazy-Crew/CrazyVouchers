@@ -18,8 +18,8 @@ voucher:
   code:
     used: '{prefix}&cThe voucher code &6{arg} &chas already been redeemed.'
     unavailable: '{prefix}&cThe voucher code &6{arg} &chas already been redeemed.'
-  sent-voucher: '{prefix}&3You have just given &6{player} &3a &6%voucher% &3voucher.'
-  sent-everyone-voucher: '{prefix}&3You have just given all players a &6%voucher% &3voucher.'
+  sent-voucher: '{prefix}&3You have just given &6{player} &3a &6{voucher} &3voucher.'
+  sent-everyone-voucher: '{prefix}&3You have just given all players a &6{voucher} &3voucher.'
 misc:
   player-only: '{prefix}&cOnly players can use this command.'
   config-reload: '{prefix}&7You have just reloaded the Config.yml'
