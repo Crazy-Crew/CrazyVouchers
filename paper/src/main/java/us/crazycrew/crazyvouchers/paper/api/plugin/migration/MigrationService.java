@@ -619,6 +619,8 @@ public class MigrationService {
                 .replaceAll("%random%", "{random}")
                 .replaceAll("%World%", "{world}")
                 .replaceAll("%world%", "{world}")
+                .replaceAll("%voucher%", "{voucher}")
+                .replaceAll("%Voucher%", "{voucher}")
                 .replaceAll("%X%", "{x}")
                 .replaceAll("%x%", "{x}")
                 .replaceAll("%Y%", "{y}")
