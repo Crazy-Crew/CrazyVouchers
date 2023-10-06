@@ -16,11 +16,10 @@ import org.bukkit.inventory.meta.FireworkMeta;
 import org.bukkit.persistence.PersistentDataContainer;
 import org.bukkit.persistence.PersistentDataType;
 import org.bukkit.plugin.java.JavaPlugin;
-import us.crazycrew.crazyenvoys.common.config.ConfigManager;
-import us.crazycrew.crazyenvoys.common.config.types.Config;
+import us.crazycrew.crazyvouchers.common.config.ConfigManager;
+import us.crazycrew.crazyvouchers.common.config.types.Config;
 import us.crazycrew.crazyvouchers.paper.api.plugin.CrazyHandler;
 
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 

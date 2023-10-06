@@ -3,13 +3,13 @@ package us.crazycrew.crazyvouchers.paper.api.plugin;
 import com.badbones69.crazyvouchers.paper.CrazyVouchers;
 import com.badbones69.crazyvouchers.paper.api.FileManager;
 import com.ryderbelserion.cluster.bukkit.utils.LegacyLogger;
-import us.crazycrew.crazyenvoys.common.config.ConfigManager;
-import us.crazycrew.crazyenvoys.common.config.types.Config;
+import us.crazycrew.crazyvouchers.common.config.ConfigManager;
+import us.crazycrew.crazyvouchers.common.config.types.Config;
 import us.crazycrew.crazyvouchers.paper.api.MetricsHandler;
 import com.ryderbelserion.cluster.bukkit.BukkitPlugin;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.jetbrains.annotations.NotNull;
-import us.crazycrew.crazyenvoys.common.CrazyVouchersPlugin;
+import us.crazycrew.crazyvouchers.common.CrazyVouchersPlugin;
 import us.crazycrew.crazyvouchers.paper.api.plugin.migration.MigrationService;
 import java.io.File;
 

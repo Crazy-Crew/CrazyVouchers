@@ -1,10 +1,10 @@
-package us.crazycrew.crazyenvoys.common.config;
+package us.crazycrew.crazyvouchers.common.config;
 
 import ch.jalu.configme.SettingsManager;
 import ch.jalu.configme.SettingsManagerBuilder;
 import ch.jalu.configme.configurationdata.ConfigurationDataBuilder;
-import us.crazycrew.crazyenvoys.common.config.types.Config;
-import us.crazycrew.crazyenvoys.common.config.types.Messages;
+import us.crazycrew.crazyvouchers.common.config.types.Config;
+import us.crazycrew.crazyvouchers.common.config.types.Messages;
 import java.io.File;
 
 public class ConfigManager {

@@ -12,7 +12,7 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.inventory.*;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.plugin.java.JavaPlugin;
-import us.crazycrew.crazyenvoys.common.config.types.Config;
+import us.crazycrew.crazyvouchers.common.config.types.Config;
 
 public class VoucherCraftListener implements Listener {
 

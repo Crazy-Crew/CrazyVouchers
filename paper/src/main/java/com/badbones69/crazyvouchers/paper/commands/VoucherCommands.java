@@ -22,7 +22,7 @@ import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.jetbrains.annotations.NotNull;
-import us.crazycrew.crazyenvoys.common.config.types.Config;
+import us.crazycrew.crazyvouchers.common.config.types.Config;
 
 import java.util.HashMap;
 import java.util.Random;

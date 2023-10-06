@@ -1,7 +1,7 @@
-package us.crazycrew.crazyenvoys.common;
+package us.crazycrew.crazyvouchers.common;
 
-import us.crazycrew.crazyenvoys.common.api.AbstractPlugin;
-import us.crazycrew.crazyenvoys.common.config.ConfigManager;
+import us.crazycrew.crazyvouchers.common.api.AbstractPlugin;
+import us.crazycrew.crazyvouchers.common.config.ConfigManager;
 import java.io.File;
 
 public class CrazyVouchersPlugin extends AbstractPlugin {
