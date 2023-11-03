@@ -6,7 +6,7 @@ defaultTasks("build")
 
 rootProject.group = "com.badbones69.crazyvouchers"
 rootProject.description = "Want to make a paper that can give you an axolotl with a pretty firework display, Look no further!"
-rootProject.version = "3.1.5"
+rootProject.version = "3.1.6"
 
 tasks {
     assemble {
