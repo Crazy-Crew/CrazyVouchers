@@ -82,16 +82,8 @@ val type = if (isSnapshot) "beta" else "release"
 val other = if (isSnapshot) "Beta" else "Release"
 
 val description = """
-Please read the changelogs for v3.1-3.1.3 for any other information which you will likely need.
-    
-## Misc:
- * Changed default permission messages in `Example.yml` when plugin first enables.
-
 ## Bugs Fixed:
- * Actually fixed all the bugs when migrating old configs to the new format
-   * If you have a backup of your CrazyVouchers files pre-update, You can delete your current CrazyVouchers folder
-   * You can then just drop in your old CrazyVouchers folder and hit start, It should auto convert properly
-   * If you don't have a backup, You can contact us in Discord and we'll help you get sorted.
+ * Fixed two step not converting with the migrator.
     
 ## Other:
  * [Feature Requests](https://github.com/Crazy-Crew/${rootProject.name}/issues)
