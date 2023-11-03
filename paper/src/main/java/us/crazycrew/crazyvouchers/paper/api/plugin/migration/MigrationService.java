@@ -129,7 +129,7 @@ public class MigrationService {
             int limiterAmount = backup.getInt(path + "Options.Limiter.Limit", 10);
 
             // Two Step
-            boolean twoStep = backup.getBoolean(path + "Options.Two-Step-Authentication", false);
+            boolean twoStep = backup.getBoolean(path + "Options.Two-Step-Authentication.Toggle", false);
 
             // Sounds
             boolean soundToggle = backup.getBoolean(path + "Options.Sound.Toggle", false);
