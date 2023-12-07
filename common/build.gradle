@@ -1,0 +1,14 @@
+project.group = "${rootProject.group}.common"
+project.version = "${rootProject.version}"
+
+base {
+    archivesName = "${rootProject.name}-${project.name}"
+}
+
+dependencies {
+    api(libs.config.me) {
+        exclude group: 'org.yaml', module: 'snakeyaml'
+    }
+
+    compileOnly(libs.cluster.api)
+}
