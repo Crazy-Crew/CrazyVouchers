@@ -7,7 +7,7 @@ import de.tr7zw.changeme.nbtapi.NBTItem;
 import com.badbones69.crazyvouchers.api.objects.VoucherCode;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.inventory.ItemStack;
-import us.crazycrew.crazyvouchers.common.config.types.Config;
+import us.crazycrew.crazyvouchers.common.config.types.ConfigKeys;
 import us.crazycrew.crazyvouchers.api.MetricsHandler;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -62,7 +62,7 @@ public class CrazyManager {
 
         this.plugin.getCrazyHandler().getConfigManager().reload();
 
-        boolean metrics = this.plugin.getCrazyHandler().getConfigManager().getConfig().getProperty(Config.toggle_metrics);
+        boolean metrics = this.plugin.getCrazyHandler().getConfigManager().getConfig().getProperty(ConfigKeys.toggle_metrics);
 
         if (metrics) {
             metricsHandler.start();

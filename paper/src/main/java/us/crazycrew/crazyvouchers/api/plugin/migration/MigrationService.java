@@ -5,9 +5,8 @@ import ch.jalu.configme.SettingsManagerBuilder;
 import com.badbones69.crazyvouchers.CrazyVouchers;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.file.YamlConfiguration;
-import org.bukkit.plugin.java.JavaPlugin;
-import us.crazycrew.crazyvouchers.common.config.types.Config;
-import us.crazycrew.crazyvouchers.common.config.types.Messages;
+import us.crazycrew.crazyvouchers.common.config.types.ConfigKeys;
+import us.crazycrew.crazyvouchers.common.config.types.MessageKeys;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
@@ -494,18 +493,18 @@ public class MigrationService {
         this.config = SettingsManagerBuilder
                 .withYamlFile(configFile)
                 .useDefaultMigrationService()
-                .configurationData(Config.class)
+                .configurationData(ConfigKeys.class)
                 .create();
 
         if (prefix != null) {
-            this.config.setProperty(Config.command_prefix, prefix);
+            this.config.setProperty(ConfigKeys.command_prefix, prefix);
         }
 
-        this.config.setProperty(Config.must_be_in_survival, mustBeInSurvival);
-        this.config.setProperty(Config.prevent_using_vouchers_in_recipes_toggle, voucherRecipes);
-        this.config.setProperty(Config.prevent_using_vouchers_in_recipes_alert, voucherAlert);
+        this.config.setProperty(ConfigKeys.must_be_in_survival, mustBeInSurvival);
+        this.config.setProperty(ConfigKeys.prevent_using_vouchers_in_recipes_toggle, voucherRecipes);
+        this.config.setProperty(ConfigKeys.prevent_using_vouchers_in_recipes_alert, voucherAlert);
 
-        this.config.setProperty(Config.toggle_metrics, toggleMetrics);
+        this.config.setProperty(ConfigKeys.toggle_metrics, toggleMetrics);
 
         // Save the config file.
         this.config.save();
@@ -528,11 +527,11 @@ public class MigrationService {
         if (!localeDir.exists()) localeDir.mkdirs();
 
         // Create messages file.
-        File messagesFile = new File(localeDir, this.config.getProperty(Config.locale_file) + ".yml");
+        File messagesFile = new File(localeDir, this.config.getProperty(ConfigKeys.locale_file) + ".yml");
         SettingsManager messages = SettingsManagerBuilder
                 .withYamlFile(messagesFile)
                 .useDefaultMigrationService()
-                .configurationData(Messages.class)
+                .configurationData(MessageKeys.class)
                 .create();
 
         String configReload = convert("{prefix}" + file.getString("Messages.Config-Reload"));
@@ -575,30 +574,30 @@ public class MigrationService {
 
         List<String> help = file.getStringList("Messages.Help");
 
-        messages.setProperty(Messages.no_permission, noPermission);
-        messages.setProperty(Messages.no_permission_to_use_voucher, noPermissionUse);
+        messages.setProperty(MessageKeys.no_permission, noPermission);
+        messages.setProperty(MessageKeys.no_permission_to_use_voucher, noPermissionUse);
 
-        messages.setProperty(Messages.no_permission_to_use_voucher_in_offhand, noPermOffHand);
-        messages.setProperty(Messages.cannot_put_items_in_crafting_table, cannotPutTable);
-        messages.setProperty(Messages.survival_mode, survivalOnly);
+        messages.setProperty(MessageKeys.no_permission_to_use_voucher_in_offhand, noPermOffHand);
+        messages.setProperty(MessageKeys.cannot_put_items_in_crafting_table, cannotPutTable);
+        messages.setProperty(MessageKeys.survival_mode, survivalOnly);
 
-        messages.setProperty(Messages.not_online, notOnline);
-        messages.setProperty(Messages.two_step_authentication, twoStep);
-        messages.setProperty(Messages.hit_voucher_limit, hitLimit);
+        messages.setProperty(MessageKeys.not_online, notOnline);
+        messages.setProperty(MessageKeys.two_step_authentication, twoStep);
+        messages.setProperty(MessageKeys.hit_voucher_limit, hitLimit);
 
-        messages.setProperty(Messages.not_a_number, notANumber);
-        messages.setProperty(Messages.not_a_voucher, notAVoucher);
-        messages.setProperty(Messages.not_in_whitelist_world, notInWorld);
-        messages.setProperty(Messages.unstack_item, unstack);
-        messages.setProperty(Messages.has_blacklist_permission, hasBlacklistPerm);
-        messages.setProperty(Messages.code_used, codeUsed);
-        messages.setProperty(Messages.code_unavailable, codeUnavailable);
-        messages.setProperty(Messages.sent_voucher, sentVoucher);
-        messages.setProperty(Messages.sent_everyone_voucher, sentEveryoneVoucher);
+        messages.setProperty(MessageKeys.not_a_number, notANumber);
+        messages.setProperty(MessageKeys.not_a_voucher, notAVoucher);
+        messages.setProperty(MessageKeys.not_in_whitelist_world, notInWorld);
+        messages.setProperty(MessageKeys.unstack_item, unstack);
+        messages.setProperty(MessageKeys.has_blacklist_permission, hasBlacklistPerm);
+        messages.setProperty(MessageKeys.code_used, codeUsed);
+        messages.setProperty(MessageKeys.code_unavailable, codeUnavailable);
+        messages.setProperty(MessageKeys.sent_voucher, sentVoucher);
+        messages.setProperty(MessageKeys.sent_everyone_voucher, sentEveryoneVoucher);
 
-        messages.setProperty(Messages.player_only, playerOnly);
-        messages.setProperty(Messages.config_reload, configReload);
-        messages.setProperty(Messages.help, help);
+        messages.setProperty(MessageKeys.player_only, playerOnly);
+        messages.setProperty(MessageKeys.config_reload, configReload);
+        messages.setProperty(MessageKeys.help, help);
 
         // Save the file.
         messages.save();

@@ -4,7 +4,7 @@ import com.badbones69.crazyvouchers.CrazyVouchers;
 import com.badbones69.crazyvouchers.Methods;
 import com.badbones69.crazyvouchers.api.CrazyManager;
 import com.badbones69.crazyvouchers.api.FileManager.Files;
-import com.badbones69.crazyvouchers.api.enums.Translation;
+import com.badbones69.crazyvouchers.api.enums.Messages;
 import com.badbones69.crazyvouchers.api.events.RedeemVoucherEvent;
 import com.badbones69.crazyvouchers.api.objects.ItemBuilder;
 import com.badbones69.crazyvouchers.api.objects.Voucher;
@@ -26,7 +26,7 @@ import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.event.player.PlayerItemConsumeEvent;
 import org.bukkit.inventory.EquipmentSlot;
 import org.bukkit.inventory.ItemStack;
-import us.crazycrew.crazyvouchers.common.config.types.Config;
+import us.crazycrew.crazyvouchers.common.config.types.ConfigKeys;
 import java.util.HashMap;
 import java.util.UUID;
 import java.util.concurrent.ThreadLocalRandom;
@@ -57,7 +57,7 @@ public class VoucherClickListener implements Listener {
 
             if (voucher != null && !voucher.isEdible()) {
                 e.setCancelled(true);
-                Translation.no_permission_to_use_voucher_offhand.sendMessage(player);
+                Messages.no_permission_to_use_voucher_offhand.sendMessage(player);
             }
 
             return;
@@ -87,7 +87,7 @@ public class VoucherClickListener implements Listener {
             e.setCancelled(true);
             
             if (item.getAmount() > 1) {
-                Translation.unstack_item.sendMessage(player);
+                Messages.unstack_item.sendMessage(player);
             } else {
                 useVoucher(player, voucher, item);
             }
@@ -103,8 +103,8 @@ public class VoucherClickListener implements Listener {
         FileConfiguration data = Files.users.getFile();
         String argument = this.crazyManager.getArgument(item, voucher);
 
-        if (player.getGameMode() == GameMode.CREATIVE && this.plugin.getCrazyHandler().getConfigManager().getConfig().getProperty(Config.must_be_in_survival)) {
-            Translation.survival_mode.sendMessage(player);
+        if (player.getGameMode() == GameMode.CREATIVE && this.plugin.getCrazyHandler().getConfigManager().getConfig().getProperty(ConfigKeys.must_be_in_survival)) {
+            Messages.survival_mode.sendMessage(player);
             return;
         }
 
@@ -115,7 +115,7 @@ public class VoucherClickListener implements Listener {
                 int amount = data.getInt("Players." + uuid + ".Vouchers." + voucher.getName());
 
                 if (amount >= voucher.getLimiterLimit()) {
-                    Translation.hit_voucher_limit.sendMessage(player);
+                    Messages.hit_voucher_limit.sendMessage(player);
                     return;
                 }
             }
@@ -137,12 +137,12 @@ public class VoucherClickListener implements Listener {
             if (!voucher.isEdible() && voucher.useTwoStepAuthentication()) {
                 if (this.twoAuth.containsKey(player.getUniqueId())) {
                     if (!this.twoAuth.get(player.getUniqueId()).equalsIgnoreCase(voucher.getName())) {
-                        Translation.two_step_authentication.sendMessage(player);
+                        Messages.two_step_authentication.sendMessage(player);
                         this.twoAuth.put(player.getUniqueId(), voucher.getName());
                         return;
                     }
                 } else {
-                    Translation.two_step_authentication.sendMessage(player);
+                    Messages.two_step_authentication.sendMessage(player);
                     this.twoAuth.put(player.getUniqueId(), voucher.getName());
                     return;
                 }
@@ -217,7 +217,7 @@ public class VoucherClickListener implements Listener {
         this.placeholders.put("{x}", String.valueOf(player.getLocation().getBlockX()));
         this.placeholders.put("{y}", String.valueOf(player.getLocation().getBlockY()));
         this.placeholders.put("{z}", String.valueOf(player.getLocation().getBlockZ()));
-        this.placeholders.put("{prefix}", this.plugin.getCrazyHandler().getConfigManager().getConfig().getProperty(Config.command_prefix));
+        this.placeholders.put("{prefix}", this.plugin.getCrazyHandler().getConfigManager().getConfig().getProperty(ConfigKeys.command_prefix));
     }
 
     private void voucherClick(Player player, ItemStack item, Voucher voucher, String argument) {

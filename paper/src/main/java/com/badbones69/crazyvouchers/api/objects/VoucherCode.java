@@ -1,7 +1,7 @@
 package com.badbones69.crazyvouchers.api.objects;
 
 import com.badbones69.crazyvouchers.CrazyVouchers;
-import com.badbones69.crazyvouchers.api.enums.Translation;
+import com.badbones69.crazyvouchers.api.enums.Messages;
 import com.ryderbelserion.cluster.paper.utils.DyeUtils;
 import org.bukkit.Color;
 import org.bukkit.Sound;
@@ -100,7 +100,7 @@ public class VoucherCode {
             if (file.contains(path + "options.whitelist-worlds.message")) {
                 this.whitelistWorldMessage = file.getString(path + "options.whitelist-worlds.message");
             } else {
-                this.whitelistWorldMessage = Translation.not_in_whitelisted_world.getString();
+                this.whitelistWorldMessage = Messages.not_in_whitelisted_world.getString();
             }
 
             this.whitelistWorldCommands = file.getStringList(path + "options.whitelist-worlds.commands");
@@ -115,7 +115,7 @@ public class VoucherCode {
             if (file.contains(path + "options.permission.blacklist-permissions.message")) {
                 this.blacklistPermissionMessage = file.getString(path + "options.permission.blacklist-permissions.message");
             } else {
-                this.blacklistPermissionMessage = Translation.has_blacklist_permission.getString();
+                this.blacklistPermissionMessage = Messages.has_blacklist_permission.getString();
             }
 
             this.blacklistPermissions = file.getStringList(path + "options.permission.blacklist-permissions.permissions");

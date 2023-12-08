@@ -6,7 +6,7 @@ import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
-import us.crazycrew.crazyvouchers.common.config.types.Config;
+import us.crazycrew.crazyvouchers.common.config.types.ConfigKeys;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import static java.util.regex.Matcher.quoteReplacement;
@@ -43,7 +43,7 @@ public class MsgUtils {
     }
 
     public static String getPrefix() {
-        return color(plugin.getCrazyHandler().getConfigManager().getConfig().getProperty(Config.command_prefix));
+        return color(plugin.getCrazyHandler().getConfigManager().getConfig().getProperty(ConfigKeys.command_prefix));
     }
 
     public static String getPrefix(String msg) {
