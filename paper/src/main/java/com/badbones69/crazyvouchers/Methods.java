@@ -2,7 +2,7 @@ package com.badbones69.crazyvouchers;
 
 import ch.jalu.configme.SettingsManager;
 import com.badbones69.crazyvouchers.api.enums.DataKeys;
-import com.badbones69.crazyvouchers.api.enums.Translation;
+import com.badbones69.crazyvouchers.api.enums.Messages;
 import com.badbones69.crazyvouchers.other.MsgUtils;
 import org.bukkit.Color;
 import org.bukkit.FireworkEffect;
@@ -16,7 +16,7 @@ import org.bukkit.inventory.meta.FireworkMeta;
 import org.bukkit.persistence.PersistentDataContainer;
 import org.bukkit.persistence.PersistentDataType;
 import us.crazycrew.crazyvouchers.common.config.ConfigManager;
-import us.crazycrew.crazyvouchers.common.config.types.Config;
+import us.crazycrew.crazyvouchers.common.config.types.ConfigKeys;
 import us.crazycrew.crazyvouchers.api.plugin.CrazyHandler;
 import java.util.HashMap;
 import java.util.List;
@@ -37,7 +37,7 @@ public class Methods {
     }
     
     public String getPrefix(String message) {
-        return MsgUtils.color(this.config.getProperty(Config.command_prefix) + message);
+        return MsgUtils.color(this.config.getProperty(ConfigKeys.command_prefix) + message);
     }
     
     public boolean isInt(String s) {
@@ -56,7 +56,7 @@ public class Methods {
         } catch (NumberFormatException nfe) {
             HashMap<String, String> placeholders = new HashMap<>();
             placeholders.put("{arg}", s);
-            Translation.not_a_number.sendMessage(sender, placeholders);
+            Messages.not_a_number.sendMessage(sender, placeholders);
             return false;
         }
 
@@ -76,13 +76,13 @@ public class Methods {
             if (player.getName().equalsIgnoreCase(name)) return true;
         }
 
-        Translation.not_online.sendMessage(sender);
+        Messages.not_online.sendMessage(sender);
         return false;
     }
     
     public boolean hasPermission(Player player, String perm) {
         if (!player.hasPermission("voucher." + perm)) {
-            Translation.no_permission.sendMessage(player);
+            Messages.no_permission.sendMessage(player);
             return false;
         }
 
@@ -92,7 +92,7 @@ public class Methods {
     public boolean hasPermission(CommandSender sender, String perm) {
         if (sender instanceof Player player) {
             if (!player.hasPermission("voucher." + perm)) {
-                Translation.no_permission.sendMessage(player);
+                Messages.no_permission.sendMessage(player);
                 return false;
             } else {
                 return true;

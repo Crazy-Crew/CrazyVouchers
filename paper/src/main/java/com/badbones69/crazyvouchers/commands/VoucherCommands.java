@@ -2,7 +2,7 @@ package com.badbones69.crazyvouchers.commands;
 
 import com.badbones69.crazyvouchers.Methods;
 import com.badbones69.crazyvouchers.CrazyVouchers;
-import com.badbones69.crazyvouchers.api.enums.Translation;
+import com.badbones69.crazyvouchers.api.enums.Messages;
 import com.badbones69.crazyvouchers.api.objects.ItemBuilder;
 import com.badbones69.crazyvouchers.api.objects.Voucher;
 import com.badbones69.crazyvouchers.listeners.VoucherMenuListener;
@@ -21,7 +21,7 @@ import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.jetbrains.annotations.NotNull;
-import us.crazycrew.crazyvouchers.common.config.types.Config;
+import us.crazycrew.crazyvouchers.common.config.types.ConfigKeys;
 import java.util.HashMap;
 import java.util.Random;
 
@@ -40,12 +40,12 @@ public class VoucherCommands implements CommandExecutor {
     @Override
     public boolean onCommand(@NotNull CommandSender sender, @NotNull Command cmd, @NotNull String commandLabel, String[] args) {
         if (args.length == 0) {
-            if (this.methods.hasPermission(sender, "access")) Translation.help.sendMessage(sender);
+            if (this.methods.hasPermission(sender, "access")) Messages.help.sendMessage(sender);
             return true;
         } else {
             switch (args[0].toLowerCase()) {
                 case "help" -> {
-                    if (this.methods.hasPermission(sender, "access")) Translation.help.sendMessage(sender);
+                    if (this.methods.hasPermission(sender, "access")) Messages.help.sendMessage(sender);
                     return true;
                 }
                 case "reload" -> {
@@ -59,7 +59,7 @@ public class VoucherCommands implements CommandExecutor {
                         }
 
                         this.crazyManager.reload(false);
-                        Translation.config_reload.sendMessage(sender);
+                        Messages.config_reload.sendMessage(sender);
                     }
                     return true;
                 }
@@ -101,7 +101,7 @@ public class VoucherCommands implements CommandExecutor {
                             String code = args[1];
 
                             if (!(sender instanceof Player player)) {
-                                Translation.player_only.sendMessage(sender);
+                                Messages.player_only.sendMessage(sender);
                                 return true;
                             }
 
@@ -113,7 +113,7 @@ public class VoucherCommands implements CommandExecutor {
                             placeholders.put("{x}", String.valueOf(player.getLocation().getBlockX()));
                             placeholders.put("{y}", String.valueOf(player.getLocation().getBlockY()));
                             placeholders.put("{z}", String.valueOf(player.getLocation().getBlockZ()));
-                            placeholders.put("{prefix}", this.plugin.getCrazyHandler().getConfigManager().getConfig().getProperty(Config.command_prefix));
+                            placeholders.put("{prefix}", this.plugin.getCrazyHandler().getConfigManager().getConfig().getProperty(ConfigKeys.command_prefix));
 
                             if (this.crazyManager.isVoucherCode(code)) {
                                 VoucherCode voucherCode = this.crazyManager.getVoucherCode(code);
@@ -123,7 +123,7 @@ public class VoucherCommands implements CommandExecutor {
                                     if (voucherCode.useWhiteListPermissions()) {
                                         for (String permission : voucherCode.getWhitelistPermissions()) {
                                             if (!player.hasPermission(permission)) {
-                                                Translation.no_permission_to_use_voucher.sendMessage(player, placeholders);
+                                                Messages.no_permission_to_use_voucher.sendMessage(player, placeholders);
 
                                                 for (String command : voucherCode.getWhitelistCommands()) {
                                                     this.plugin.getServer().dispatchCommand(this.plugin.getServer().getConsoleSender(), this.methods.replacePlaceholders(placeholders, this.crazyManager.replaceRandom(command), true));
@@ -169,7 +169,7 @@ public class VoucherCommands implements CommandExecutor {
                                 if (data.contains("Players." + uuid)) {
                                     if (data.contains("Players." + uuid + ".Codes." + voucherCode.getName())) {
                                         if (data.getString("Players." + uuid + ".Codes." + voucherCode.getName()).equalsIgnoreCase("used")) {
-                                            Translation.code_used.sendMessage(player, placeholders);
+                                            Messages.code_used.sendMessage(player, placeholders);
                                             return true;
                                         }
                                     }
@@ -179,7 +179,7 @@ public class VoucherCommands implements CommandExecutor {
                                 if (voucherCode.useLimiter()) {
                                     if (data.contains("Voucher-Limit." + voucherCode.getName())) {
                                         if (data.getInt("Voucher-Limit." + voucherCode.getName()) < 1) {
-                                            Translation.code_unavailable.sendMessage(player, placeholders);
+                                            Messages.code_unavailable.sendMessage(player, placeholders);
                                             return true;
                                         }
 
@@ -234,7 +234,7 @@ public class VoucherCommands implements CommandExecutor {
                                     if (!voucherCode.getMessage().isEmpty()) player.sendMessage(MsgUtils.color(this.methods.replacePlaceholders(placeholders, voucherCode.getMessage(), true)));
                                 }
                             } else {
-                                Translation.code_unavailable.sendMessage(player, placeholders);
+                                Messages.code_unavailable.sendMessage(player, placeholders);
                                 return true;
                             }
 
@@ -251,7 +251,7 @@ public class VoucherCommands implements CommandExecutor {
                             String name = sender.getName();
 
                             if (this.crazyManager.isVoucherName(args[1])) {
-                                Translation.not_a_voucher.sendMessage(sender);
+                                Messages.not_a_voucher.sendMessage(sender);
                                 return true;
                             }
 
@@ -290,7 +290,7 @@ public class VoucherCommands implements CommandExecutor {
                             placeholders.put("{player}", player.getName());
                             placeholders.put("{voucher}", voucher.getName());
 
-                            if (!Translation.sent_voucher.isBlank()) Translation.sent_voucher.sendMessage(sender, placeholders);
+                            if (!Messages.sent_voucher.isBlank()) Messages.sent_voucher.sendMessage(sender, placeholders);
 
                             return true;
                         }
@@ -304,7 +304,7 @@ public class VoucherCommands implements CommandExecutor {
                     if (this.methods.hasPermission(sender, "admin")) {
                         if (args.length > 1) {
                             if (this.crazyManager.isVoucherName(args[1])) {
-                                Translation.not_a_voucher.sendMessage(sender);
+                                Messages.not_a_voucher.sendMessage(sender);
                                 return true;
                             }
 
@@ -337,7 +337,7 @@ public class VoucherCommands implements CommandExecutor {
 
                             HashMap<String, String> placeholders = new HashMap<>();
                             placeholders.put("{voucher}", voucher.getName());
-                            Translation.sent_everyone_voucher.sendMessage(sender, placeholders);
+                            Messages.sent_everyone_voucher.sendMessage(sender, placeholders);
                             return true;
                         }
 

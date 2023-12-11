@@ -16,7 +16,7 @@ import org.bukkit.command.TabCompleter;
 import org.bukkit.plugin.PluginManager;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.jetbrains.annotations.NotNull;
-import us.crazycrew.crazyvouchers.common.config.types.Config;
+import us.crazycrew.crazyvouchers.common.config.types.ConfigKeys;
 import us.crazycrew.crazyvouchers.api.plugin.CrazyHandler;
 
 public class CrazyVouchers extends JavaPlugin {
@@ -57,7 +57,7 @@ public class CrazyVouchers extends JavaPlugin {
     }
 
     public boolean isLogging() {
-        return this.crazyHandler.getConfigManager().getConfig().getProperty(Config.verbose_logging);
+        return this.crazyHandler.getConfigManager().getConfig().getProperty(ConfigKeys.verbose_logging);
     }
 
     private void enable() {

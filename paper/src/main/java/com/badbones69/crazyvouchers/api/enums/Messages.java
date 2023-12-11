@@ -8,36 +8,36 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
 import us.crazycrew.crazyvouchers.common.config.ConfigManager;
-import us.crazycrew.crazyvouchers.common.config.types.Config;
-import us.crazycrew.crazyvouchers.common.config.types.Messages;
+import us.crazycrew.crazyvouchers.common.config.types.ConfigKeys;
+import us.crazycrew.crazyvouchers.common.config.types.MessageKeys;
 import us.crazycrew.crazyvouchers.common.utils.StringUtils;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-public enum Translation {
+public enum Messages {
 
-    config_reload(Messages.config_reload),
-    not_online(Messages.not_online),
-    player_only(Messages.player_only),
-    not_a_number(Messages.not_a_number),
-    no_permission(Messages.no_permission),
-    survival_mode(Messages.survival_mode),
-    no_permission_to_use_voucher(Messages.no_permission_to_use_voucher),
-    no_permission_to_use_voucher_offhand(Messages.no_permission_to_use_voucher_in_offhand),
-    not_a_voucher(Messages.not_a_voucher),
-    code_unavailable(Messages.code_unavailable),
-    code_used(Messages.code_used),
-    sent_voucher(Messages.sent_voucher),
-    sent_everyone_voucher(Messages.sent_everyone_voucher),
-    hit_voucher_limit(Messages.hit_voucher_limit),
-    two_step_authentication(Messages.two_step_authentication),
-    has_blacklist_permission(Messages.has_blacklist_permission),
-    not_in_whitelisted_world(Messages.not_in_whitelist_world),
-    unstack_item(Messages.unstack_item),
-    cannot_put_items_in_crafting_table(Messages.cannot_put_items_in_crafting_table),
-    help(Messages.help, true);
+    config_reload(MessageKeys.config_reload),
+    not_online(MessageKeys.not_online),
+    player_only(MessageKeys.player_only),
+    not_a_number(MessageKeys.not_a_number),
+    no_permission(MessageKeys.no_permission),
+    survival_mode(MessageKeys.survival_mode),
+    no_permission_to_use_voucher(MessageKeys.no_permission_to_use_voucher),
+    no_permission_to_use_voucher_offhand(MessageKeys.no_permission_to_use_voucher_in_offhand),
+    not_a_voucher(MessageKeys.not_a_voucher),
+    code_unavailable(MessageKeys.code_unavailable),
+    code_used(MessageKeys.code_used),
+    sent_voucher(MessageKeys.sent_voucher),
+    sent_everyone_voucher(MessageKeys.sent_everyone_voucher),
+    hit_voucher_limit(MessageKeys.hit_voucher_limit),
+    two_step_authentication(MessageKeys.two_step_authentication),
+    has_blacklist_permission(MessageKeys.has_blacklist_permission),
+    not_in_whitelisted_world(MessageKeys.not_in_whitelist_world),
+    unstack_item(MessageKeys.unstack_item),
+    cannot_put_items_in_crafting_table(MessageKeys.cannot_put_items_in_crafting_table),
+    help(MessageKeys.help, true);
 
     private Property<String> property;
 
@@ -52,7 +52,7 @@ public enum Translation {
      *
      * @param property the property
      */
-    Translation(Property<String> property) {
+    Messages(Property<String> property) {
         this.property = property;
     }
 
@@ -62,7 +62,7 @@ public enum Translation {
      * @param listProperty the list property
      * @param isList Defines if it's a list or not.
      */
-    Translation(Property<List<String>> listProperty, boolean isList) {
+    Messages(Property<List<String>> listProperty, boolean isList) {
         this.listProperty = listProperty;
 
         this.isList = isList;
@@ -88,7 +88,7 @@ public enum Translation {
         return getMessage().toString();
     }
 
-    public Translation getMessage() {
+    public Messages getMessage() {
         return getMessage(new HashMap<>());
     }
 
@@ -100,14 +100,14 @@ public enum Translation {
         return getMessage().toListString().isEmpty();
     }
 
-    public Translation getMessage(String placeholder, String replacement) {
+    public Messages getMessage(String placeholder, String replacement) {
         Map<String, String> placeholders = new HashMap<>();
         placeholders.put(placeholder, replacement);
 
         return getMessage(placeholders);
     }
 
-    public Translation getMessage(Map<String, String> placeholders) {
+    public Messages getMessage(Map<String, String> placeholders) {
         // Get the string first.
         String message;
 
@@ -145,7 +145,7 @@ public enum Translation {
     }
 
     public String asString() {
-        return MsgUtils.color(this.message.replaceAll("\\{prefix}", this.configManager.getConfig().getProperty(Config.command_prefix)));
+        return MsgUtils.color(this.message.replaceAll("\\{prefix}", this.configManager.getConfig().getProperty(ConfigKeys.command_prefix)));
     }
 
     public List<String> toListString() {

@@ -7,9 +7,9 @@ import ch.jalu.configme.properties.Property;
 import ch.jalu.configme.properties.PropertyInitializer;
 import static ch.jalu.configme.properties.PropertyInitializer.newProperty;
 
-public class Config implements SettingsHolder {
+public class ConfigKeys implements SettingsHolder {
     
-    protected Config() {}
+    protected ConfigKeys() {}
 
     @Override
     public void registerComments(CommentsConfiguration conf) {
