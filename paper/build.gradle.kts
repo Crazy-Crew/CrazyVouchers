@@ -46,8 +46,7 @@ val type = if (isBeta) "Beta" else "Release"
 
 val description = """
 ## Changes:
- * Bumped to 1.20.4
- * Bumped nbt api
+ * N/A
 
 ## Other:
  * [Feature Requests](https://github.com/Crazy-Crew/${rootProject.name}/issues)
