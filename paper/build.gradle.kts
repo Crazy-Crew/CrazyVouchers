@@ -46,18 +46,19 @@ val type = if (isBeta) "Beta" else "Release"
 
 val description = """
 ## Changes:
- * N/A
+ * Bumped to 1.20.4
+ * Bumped nbt api
 
 ## Other:
  * [Feature Requests](https://github.com/Crazy-Crew/${rootProject.name}/issues)
  * [Bug Reports](https://github.com/Crazy-Crew/${rootProject.name}/issues)
 """
 
-val file = project.layout.buildDirectory.file("libs/${rootProject.name}-${rootProject.version}.jar").get().asFile
-
 val component: SoftwareComponent = components["java"]
 
 tasks {
+    val file = project.layout.buildDirectory.file("libs/${rootProject.name}-${rootProject.version}.jar").get()
+
     // Publish to hangar.papermc.io.
     hangarPublish {
         publications.register("plugin") {
