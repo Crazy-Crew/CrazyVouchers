@@ -512,7 +512,10 @@ public class ItemBuilder {
             if (isInt(metaData)) { // Value is durability.
                 this.damage = Integer.parseInt(metaData);
             } else { // Value is something else.
-                this.potionType = getPotionType(PotionEffectType.getByName(metaData));
+                try {
+                    this.potionType = getPotionType(PotionEffectType.getByName(metaData));
+                } catch (Exception ignored) {}
+
                 this.potionColor = DyeUtils.getColor(metaData);
                 this.armorColor = DyeUtils.getColor(metaData);
                 this.mapColor = DyeUtils.getColor(metaData);
@@ -1000,6 +1003,7 @@ public class ItemBuilder {
                     }
                     default -> {
                         Enchantment enchantment = getEnchantment(option);
+
                         if (enchantment != null && enchantment.getName() != null) {
                             try {
                                 itemBuilder.addEnchantments(enchantment, Integer.parseInt(value));
@@ -1009,12 +1013,14 @@ public class ItemBuilder {
 
                             break;
                         }
+
                         for (ItemFlag itemFlag : ItemFlag.values()) {
                             if (itemFlag.name().equalsIgnoreCase(option)) {
                                 itemBuilder.addItemFlag(itemFlag);
                                 break;
                             }
                         }
+
                         try {
                             for (PatternType pattern : PatternType.values()) {
                                 if (option.equalsIgnoreCase(pattern.name()) || value.equalsIgnoreCase(pattern.getIdentifier())) {
