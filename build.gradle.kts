@@ -2,6 +2,10 @@ plugins {
     `java-library`
 }
 
+val pluginVersion = rootProject.properties["version"] as String
+
+rootProject.version = if (System.getenv("BUILD_NUMBER") != null) "$pluginVersion-${System.getenv("BUILD_NUMBER")}" else pluginVersion
+
 tasks {
     assemble {
         val jarsDir = File("$rootDir/jars")
