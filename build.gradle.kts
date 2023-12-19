@@ -2,7 +2,7 @@ plugins {
     `java-library`
 }
 
-val pluginVersion = rootProject.properties["version"] as String
+val pluginVersion = rootProject.properties["pluginVersion"] as String
 
 rootProject.version = if (System.getenv("BUILD_NUMBER") != null) "$pluginVersion-${System.getenv("BUILD_NUMBER")}" else pluginVersion
 
