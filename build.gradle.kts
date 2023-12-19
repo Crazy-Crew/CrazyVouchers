@@ -2,9 +2,7 @@ plugins {
     `java-library`
 }
 
-val pluginVersion = rootProject.properties["pluginVersion"] as String
-
-rootProject.version = if (System.getenv("BUILD_NUMBER") != null) "$pluginVersion-${System.getenv("BUILD_NUMBER")}" else pluginVersion
+rootProject.version = if (System.getenv("BUILD_NUMBER") != null) "${rootProject.version}-${System.getenv("BUILD_NUMBER")}" else rootProject.version
 
 tasks {
     assemble {
@@ -21,8 +19,6 @@ tasks {
 
             doLast {
                 runCatching {
-                    if (project.name == "common" || project.name == "api") return@doLast
-
                     copy {
                         from(project.layout.buildDirectory.file("libs/${rootProject.name}-${rootProject.version}.jar"))
                         into(jarsDir)
