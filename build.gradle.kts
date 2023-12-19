@@ -2,7 +2,9 @@ plugins {
     `java-library`
 }
 
-rootProject.version = if (System.getenv("BUILD_NUMBER") != null) "${rootProject.version}-${System.getenv("BUILD_NUMBER")}" else rootProject.version
+val specialVersion = if (System.getenv("BUILD_NUMBER") != null) "${rootProject.version}-${System.getenv("BUILD_NUMBER")}" else rootProject.version
+
+rootProject.version = specialVersion
 
 tasks {
     assemble {
@@ -20,7 +22,7 @@ tasks {
             doLast {
                 runCatching {
                     copy {
-                        from(project.layout.buildDirectory.file("libs/${rootProject.name}-${rootProject.version}.jar"))
+                        from(project.layout.buildDirectory.file("libs/${rootProject.name}-${specialVersion}.jar"))
                         into(jarsDir)
                     }
                 }.onSuccess {
