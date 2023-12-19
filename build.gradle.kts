@@ -2,10 +2,6 @@ plugins {
     `java-library`
 }
 
-val specialVersion = "3.2.1"
-
-rootProject.version = if (System.getenv("BUILD_NUMBER") != null) "$specialVersion-${System.getenv("BUILD_NUMBER")}" else specialVersion
-
 tasks {
     assemble {
         val jarsDir = File("$rootDir/jars")
@@ -22,7 +18,7 @@ tasks {
             doLast {
                 runCatching {
                     copy {
-                        from(project.layout.buildDirectory.file("libs/${rootProject.name}-${rootProject.version}.jar"))
+                        from(project.layout.buildDirectory.file("libs/${rootProject.name}-${project.version}.jar"))
                         into(jarsDir)
                     }
                 }.onSuccess {
@@ -48,6 +44,8 @@ tasks {
         }
 
         if (name == "paper") {
+            project.version = if (System.getenv("BUILD_NUMBER") != null) "${rootProject.version}-${System.getenv("BUILD_NUMBER")}" else rootProject.version
+
             repositories {
                 maven("https://repo.extendedclip.com/content/repositories/placeholderapi/")
 
