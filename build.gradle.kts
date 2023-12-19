@@ -27,8 +27,8 @@ tasks {
                     }
                 }.onSuccess {
                     // Delete to save space on jenkins.
-                    delete(project.layout.buildDirectory.get())
-                    delete(rootProject.layout.buildDirectory.get())
+                    //delete(project.layout.buildDirectory.get())
+                    //delete(rootProject.layout.buildDirectory.get())
                 }.onFailure {
                     println("Failed to copy file out of build folder into jars directory: Likely does not exist.")
                 }
