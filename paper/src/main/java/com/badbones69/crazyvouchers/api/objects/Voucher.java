@@ -4,7 +4,7 @@ import com.badbones69.crazyvouchers.CrazyVouchers;
 import com.badbones69.crazyvouchers.api.CrazyManager;
 import com.badbones69.crazyvouchers.api.enums.Messages;
 import com.badbones69.crazyvouchers.other.MsgUtils;
-import com.ryderbelserion.cluster.paper.utils.DyeUtils;
+import com.ryderbelserion.cluster.utils.DyeUtils;
 import de.tr7zw.changeme.nbtapi.NBTItem;
 import com.badbones69.crazyvouchers.Methods;
 import org.bukkit.Color;

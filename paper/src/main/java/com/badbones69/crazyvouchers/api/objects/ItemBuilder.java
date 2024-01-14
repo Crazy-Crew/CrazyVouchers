@@ -4,7 +4,7 @@ import com.badbones69.crazyvouchers.CrazyVouchers;
 import com.badbones69.crazyvouchers.other.MsgUtils;
 import com.badbones69.crazyvouchers.support.PluginSupport;
 import com.badbones69.crazyvouchers.support.SkullCreator;
-import com.ryderbelserion.cluster.paper.utils.DyeUtils;
+import com.ryderbelserion.cluster.utils.DyeUtils;
 import de.tr7zw.changeme.nbtapi.NBTItem;
 import dev.lone.itemsadder.api.CustomStack;
 import io.th0rgal.oraxen.api.OraxenItems;
