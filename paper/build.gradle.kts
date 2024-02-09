@@ -46,7 +46,7 @@ val type = if (isBeta) "Beta" else "Release"
 
 val description = """
 ## Fixes:
- * Fix an NPE with item builder
+ * Fixed a critical bug, It is recommended you update.
 
 ## Other:
  * [Feature Requests](https://github.com/Crazy-Crew/${rootProject.name}/issues)
@@ -56,7 +56,8 @@ val description = """
 val component: SoftwareComponent = components["java"]
 
 tasks {
-    val file = project.layout.buildDirectory.file("libs/${rootProject.name}-${rootProject.version}.jar").get()
+    val directory = File("$rootDir/jars")
+    val file = file("$directory/${rootProject.name}-${rootProject.version}.jar")
 
     // Publish to hangar.papermc.io.
     hangarPublish {
