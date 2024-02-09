@@ -29,6 +29,8 @@ public abstract class InventoryBuilder implements InventoryHolder {
 
     public abstract InventoryBuilder build();
 
+    public abstract InventoryBuilder build(int pageNumber);
+
     public void size(int size) {
         this.size = size;
     }

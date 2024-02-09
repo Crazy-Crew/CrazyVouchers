@@ -2,6 +2,7 @@ package com.badbones69.crazyvouchers.commands;
 
 import com.badbones69.crazyvouchers.Methods;
 import com.badbones69.crazyvouchers.CrazyVouchers;
+import com.badbones69.crazyvouchers.api.builders.types.VoucherGuiMenu;
 import com.badbones69.crazyvouchers.api.enums.Messages;
 import com.badbones69.crazyvouchers.api.objects.ItemBuilder;
 import com.badbones69.crazyvouchers.api.objects.Voucher;
@@ -71,7 +72,11 @@ public class VoucherCommands implements CommandExecutor {
                             page = this.methods.isInt(args[1]) ? Integer.parseInt(args[1]) : 1;
                         }
 
-                        this.voucherMenuListener.openGUI((Player) sender, page);
+                        Player player = (Player) sender;
+
+                        VoucherGuiMenu menu = new VoucherGuiMenu(player, 54, MsgUtils.color("&8&l&nVouchers"));
+
+                        player.openInventory(menu.build(page).getInventory());
                     }
                     return true;
                 }

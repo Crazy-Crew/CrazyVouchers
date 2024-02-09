@@ -1,6 +1,7 @@
 package com.badbones69.crazyvouchers.commands;
 
 import com.badbones69.crazyvouchers.CrazyVouchers;
+import com.badbones69.crazyvouchers.api.builders.types.VoucherGuiMenu;
 import com.badbones69.crazyvouchers.listeners.VoucherMenuListener;
 import com.badbones69.crazyvouchers.api.CrazyManager;
 import org.bukkit.command.Command;
@@ -41,7 +42,7 @@ public class VoucherTab implements TabCompleter {
                 }
                 case "open" -> {
                     if (hasPermission(sender, "admin"))
-                        for (int i = 1; i <= voucherMenuListener.getMaxPage(); i++) completions.add(i + "");
+                        for (int i = 1; i <= VoucherGuiMenu.getMaxPage(); i++) completions.add(i + "");
                 }
                 case "give", "giveall" -> {
                     if (hasPermission(sender, "admin")) this.crazyManager.getVouchers().forEach(voucher -> completions.add(voucher.getName()));

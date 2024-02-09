@@ -10,7 +10,9 @@ import org.jetbrains.annotations.NotNull;
 public enum DataKeys {
 
     NO_FIREWORK_DAMAGE("voucher_firework", PersistentDataType.BOOLEAN),
-    VOUCHER_ITEM_ADMIN("voucher_item_admin", PersistentDataType.STRING);
+    VOUCHER_ITEM_ADMIN("voucher_item_admin", PersistentDataType.STRING),
+    BACK_BUTTON("voucher_back_button", PersistentDataType.STRING),
+    NEXT_BUTTON("voucher_next_button", PersistentDataType.STRING);
 
     private final @NotNull CrazyVouchers plugin = CrazyVouchers.get();
 
