@@ -126,6 +126,6 @@ public class Methods {
     public void addFirework(Entity firework) {
         PersistentDataContainer container = firework.getPersistentDataContainer();
 
-        container.set(DataKeys.NO_FIREWORK_DAMAGE.getKey(), PersistentDataType.BOOLEAN, true);
+        container.set(DataKeys.NO_FIREWORK_DAMAGE.getNamespacedKey(), PersistentDataType.BOOLEAN, true);
     }
 }

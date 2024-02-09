@@ -60,7 +60,7 @@ public class VoucherMenuListener implements Listener {
 
         if (inv == null) return;
 
-        if (!e.getView().getTitle().equals(inventoryName)) return;
+        if (!e.getView().getTitle().equals(this.inventoryName)) return;
 
         e.setCancelled(true);
 
@@ -73,11 +73,11 @@ public class VoucherMenuListener implements Listener {
         if (item.getItemMeta() == null || !item.hasItemMeta()) return;
 
         if (item.getItemMeta().hasDisplayName()) {
-            if (item.getItemMeta().getDisplayName().equals(MsgUtils.color("&6&l<< Back"))) {
+            if (item.getItemMeta().getDisplayName().equals(MsgUtils.color("&6&l<< Back")) && player.hasPermission("voucher.admin")) {
                 backPage(player);
                 openGUI(player);
                 return;
-            } else if (item.getItemMeta().getDisplayName().equals(MsgUtils.color("&6&lNext >>"))) {
+            } else if (item.getItemMeta().getDisplayName().equals(MsgUtils.color("&6&lNext >>")) && player.hasPermission("voucher.admin")) {
                 nextPage(player);
                 openGUI(player);
                 return;

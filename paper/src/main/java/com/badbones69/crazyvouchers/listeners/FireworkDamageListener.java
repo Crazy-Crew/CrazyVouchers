@@ -15,7 +15,7 @@ public class FireworkDamageListener implements Listener {
         if (event.getDamager() instanceof Firework firework) {
             PersistentDataContainer container = firework.getPersistentDataContainer();
 
-            if (container.has(DataKeys.NO_FIREWORK_DAMAGE.getKey(), PersistentDataType.BOOLEAN)) event.setCancelled(true);
+            if (container.has(DataKeys.NO_FIREWORK_DAMAGE.getNamespacedKey(), PersistentDataType.BOOLEAN)) event.setCancelled(true);
         }
     }
 }
