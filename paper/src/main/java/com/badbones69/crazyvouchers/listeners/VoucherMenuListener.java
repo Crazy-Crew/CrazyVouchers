@@ -2,7 +2,7 @@ package com.badbones69.crazyvouchers.listeners;
 
 import com.badbones69.crazyvouchers.CrazyVouchers;
 import com.badbones69.crazyvouchers.api.builders.types.VoucherGuiMenu;
-import com.badbones69.crazyvouchers.api.enums.DataKeys;
+import com.badbones69.crazyvouchers.api.enums.PersistentKeys;
 import com.badbones69.crazyvouchers.api.CrazyManager;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
@@ -40,13 +40,13 @@ public class VoucherMenuListener implements Listener {
 
         PersistentDataContainer container = item.getItemMeta().getPersistentDataContainer();
 
-        if (container.has(DataKeys.BACK_BUTTON.getNamespacedKey())) {
+        if (container.has(PersistentKeys.back_button.getNamespacedKey())) {
             menu.backPage(player);
             player.openInventory(menu.build().getInventory());
             return;
         }
 
-        if (container.has(DataKeys.NEXT_BUTTON.getNamespacedKey())) {
+        if (container.has(PersistentKeys.next_button.getNamespacedKey())) {
             menu.nextPage(player);
             player.openInventory(menu.build().getInventory());
             return;
@@ -57,7 +57,7 @@ public class VoucherMenuListener implements Listener {
         if (stack != null) {
             PersistentDataContainer persistentDataContainer = stack.getItemMeta().getPersistentDataContainer();
 
-            if (persistentDataContainer.has(DataKeys.VOUCHER_ITEM_ADMIN.getNamespacedKey())) {
+            if (persistentDataContainer.has(PersistentKeys.voucher_item_admin.getNamespacedKey())) {
                 if (this.crazyManager.getVoucherFromItem(stack) != null) player.getInventory().addItem(this.crazyManager.getVoucherFromItem(stack).buildItem());
             }
         }

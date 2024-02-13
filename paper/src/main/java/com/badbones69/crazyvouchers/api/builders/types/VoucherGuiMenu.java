@@ -2,7 +2,7 @@ package com.badbones69.crazyvouchers.api.builders.types;
 
 import com.badbones69.crazyvouchers.CrazyVouchers;
 import com.badbones69.crazyvouchers.api.builders.InventoryBuilder;
-import com.badbones69.crazyvouchers.api.enums.DataKeys;
+import com.badbones69.crazyvouchers.api.enums.PersistentKeys;
 import com.badbones69.crazyvouchers.api.objects.ItemBuilder;
 import com.badbones69.crazyvouchers.api.objects.Voucher;
 import org.bukkit.Material;
@@ -39,7 +39,7 @@ public class VoucherGuiMenu extends InventoryBuilder {
 
         PersistentDataContainer container = itemMeta.getPersistentDataContainer();
 
-        container.set(DataKeys.VOUCHER_ITEM_ADMIN.getNamespacedKey(), PersistentDataType.STRING, voucher.getName());
+        container.set(PersistentKeys.voucher_item_admin.getNamespacedKey(), PersistentDataType.STRING, voucher.getName());
 
         itemStack.setItemMeta(itemMeta);
 
@@ -82,7 +82,7 @@ public class VoucherGuiMenu extends InventoryBuilder {
 
             PersistentDataContainer container = itemMeta.getPersistentDataContainer();
 
-            container.set(DataKeys.BACK_BUTTON.getNamespacedKey(), PersistentDataType.STRING, "none");
+            container.set(PersistentKeys.back_button.getNamespacedKey(), PersistentDataType.STRING, "none");
 
             backButton.setItemMeta(itemMeta);
 
@@ -102,7 +102,7 @@ public class VoucherGuiMenu extends InventoryBuilder {
 
             PersistentDataContainer container = itemMeta.getPersistentDataContainer();
 
-            container.set(DataKeys.NEXT_BUTTON.getNamespacedKey(), PersistentDataType.STRING, "none");
+            container.set(PersistentKeys.next_button.getNamespacedKey(), PersistentDataType.STRING, "none");
 
             nextButton.setItemMeta(itemMeta);
 

@@ -1,14 +1,13 @@
 package com.badbones69.crazyvouchers;
 
 import ch.jalu.configme.SettingsManager;
-import com.badbones69.crazyvouchers.api.enums.DataKeys;
+import com.badbones69.crazyvouchers.api.enums.PersistentKeys;
 import com.badbones69.crazyvouchers.api.enums.Messages;
 import com.badbones69.crazyvouchers.other.MsgUtils;
 import org.bukkit.Color;
 import org.bukkit.FireworkEffect;
 import org.bukkit.Location;
 import org.bukkit.command.CommandSender;
-import org.bukkit.entity.Entity;
 import org.bukkit.entity.Firework;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
@@ -115,17 +114,10 @@ public class Methods {
         meta.setPower(0);
         firework.setFireworkMeta(meta);
 
-        addFirework(firework);
-
-        this.plugin.getServer().getScheduler().scheduleSyncDelayedTask(this.plugin, firework::detonate, 2);
-    }
-
-    /**
-     * @param firework The firework you want to add.
-     */
-    public void addFirework(Entity firework) {
         PersistentDataContainer container = firework.getPersistentDataContainer();
 
-        container.set(DataKeys.NO_FIREWORK_DAMAGE.getNamespacedKey(), PersistentDataType.BOOLEAN, true);
+        container.set(PersistentKeys.no_firework_damage.getNamespacedKey(), PersistentDataType.BOOLEAN, true);
+
+        this.plugin.getServer().getScheduler().scheduleSyncDelayedTask(this.plugin, firework::detonate, 2);
     }
 }
