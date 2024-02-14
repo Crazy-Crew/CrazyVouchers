@@ -17,7 +17,8 @@ import java.util.logging.Level;
 
 public class FileManager {
 
-    private final @NotNull CrazyVouchers plugin = CrazyVouchers.get();
+    @NotNull
+    private final CrazyVouchers plugin = CrazyVouchers.get();
 
     private final HashMap<Files, File> files = new HashMap<>();
     private final ArrayList<String> homeFolders = new ArrayList<>();
@@ -34,6 +35,7 @@ public class FileManager {
 
         if (oldFolder.exists() && !this.plugin.getDataFolder().exists()) {
             this.plugin.getLogger().warning("Renaming " + oldFolder.getPath() + " directory to " + this.plugin.getDataFolder().getPath());
+
             if (!this.plugin.getDataFolder().exists()) this.plugin.getDataFolder().mkdirs();
 
             oldFolder.renameTo(this.plugin.getDataFolder());

@@ -1,12 +1,13 @@
 package com.badbones69.crazyvouchers.api;
 
 import com.badbones69.crazyvouchers.CrazyVouchers;
-import com.badbones69.crazyvouchers.api.objects.ItemBuilder;
+import com.badbones69.crazyvouchers.api.objects.other.ItemBuilder;
 import com.badbones69.crazyvouchers.api.objects.Voucher;
 import de.tr7zw.changeme.nbtapi.NBTItem;
 import com.badbones69.crazyvouchers.api.objects.VoucherCode;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.inventory.ItemStack;
+import org.jetbrains.annotations.NotNull;
 import us.crazycrew.crazyvouchers.common.config.types.ConfigKeys;
 import us.crazycrew.crazyvouchers.api.MetricsHandler;
 import java.util.ArrayList;
@@ -17,16 +18,13 @@ import java.util.logging.Level;
 
 public class CrazyManager {
 
+    @NotNull
     private final CrazyVouchers plugin = CrazyVouchers.get();
     
     private final ArrayList<Voucher> vouchers = new ArrayList<>();
     private final ArrayList<VoucherCode> voucherCodes = new ArrayList<>();
     
-    public void load(boolean serverStart) {
-        if (serverStart) {
-
-        }
-
+    public void load() {
         // Used for when wanting to put in fake vouchers.
         // for(int i = 1; i <= 400; i++) vouchers.add(new Voucher(i));
 

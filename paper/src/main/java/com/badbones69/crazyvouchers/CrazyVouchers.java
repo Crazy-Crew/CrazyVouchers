@@ -21,6 +21,7 @@ import us.crazycrew.crazyvouchers.api.plugin.CrazyHandler;
 
 public class CrazyVouchers extends JavaPlugin {
 
+    @NotNull
     public static CrazyVouchers get() {
         return JavaPlugin.getPlugin(CrazyVouchers.class);
     }
@@ -81,7 +82,7 @@ public class CrazyVouchers extends JavaPlugin {
 
         registerCommand(getCommand("vouchers"), new VoucherTab(), new VoucherCommands());
 
-        this.crazyManager.load(true);
+        this.crazyManager.load();
     }
 
     private void registerCommand(PluginCommand pluginCommand, TabCompleter tabCompleter, CommandExecutor commandExecutor) {

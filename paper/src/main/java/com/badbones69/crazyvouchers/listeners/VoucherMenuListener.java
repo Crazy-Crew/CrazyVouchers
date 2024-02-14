@@ -11,28 +11,31 @@ import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.persistence.PersistentDataContainer;
+import org.jetbrains.annotations.NotNull;
 
 public class VoucherMenuListener implements Listener {
-    
+
+    @NotNull
     private final CrazyVouchers plugin = CrazyVouchers.get();
-    
+
+    @NotNull
     private final CrazyManager crazyManager = this.plugin.getCrazyManager();
 
     @EventHandler
-    public void invClick(InventoryClickEvent e) {
-        Inventory inventory = e.getClickedInventory();
-        Player player = (Player) e.getWhoClicked();
-        ItemStack item = e.getCurrentItem();
+    public void invClick(InventoryClickEvent event) {
+        Inventory inventory = event.getClickedInventory();
+        Player player = (Player) event.getWhoClicked();
+        ItemStack item = event.getCurrentItem();
 
         if (inventory == null) return;
 
         if (!(inventory.getHolder() instanceof VoucherGuiMenu menu)) return;
 
-        e.setCancelled(true);
+        event.setCancelled(true);
 
-        if (e.getRawSlot() > 54) return;
+        if (event.getRawSlot() > 54) return;
 
-        if (e.getCurrentItem() == null) return;
+        if (event.getCurrentItem() == null) return;
 
         if (item == null) return;
 
@@ -52,7 +55,7 @@ public class VoucherMenuListener implements Listener {
             return;
         }
 
-        ItemStack stack = inventory.getItem(e.getRawSlot());
+        ItemStack stack = inventory.getItem(event.getRawSlot());
 
         if (stack != null) {
             PersistentDataContainer persistentDataContainer = stack.getItemMeta().getPersistentDataContainer();

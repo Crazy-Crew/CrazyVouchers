@@ -11,12 +11,15 @@ import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.inventory.*;
 import org.bukkit.inventory.ItemStack;
+import org.jetbrains.annotations.NotNull;
 import us.crazycrew.crazyvouchers.common.config.types.ConfigKeys;
 
 public class VoucherCraftListener implements Listener {
 
+    @NotNull
     private final CrazyVouchers plugin = CrazyVouchers.get();
 
+    @NotNull
     private final CrazyManager crazyManager = this.plugin.getCrazyManager();
 
     @EventHandler(priority = EventPriority.NORMAL, ignoreCancelled = true)

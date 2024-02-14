@@ -2,12 +2,10 @@ package com.badbones69.crazyvouchers.commands;
 
 import com.badbones69.crazyvouchers.CrazyVouchers;
 import com.badbones69.crazyvouchers.api.builders.types.VoucherGuiMenu;
-import com.badbones69.crazyvouchers.listeners.VoucherMenuListener;
 import com.badbones69.crazyvouchers.api.CrazyManager;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
 import org.bukkit.command.TabCompleter;
-import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.util.StringUtil;
 import org.jetbrains.annotations.NotNull;
 import java.util.ArrayList;
@@ -16,15 +14,16 @@ import java.util.List;
 
 public class VoucherTab implements TabCompleter {
 
+    @NotNull
     private final CrazyVouchers plugin = CrazyVouchers.get();
 
+    @NotNull
     private final CrazyManager crazyManager = this.plugin.getCrazyManager();
-
-    private final VoucherMenuListener voucherMenuListener = this.plugin.getGui();
     
     @Override
     public List<String> onTabComplete(@NotNull CommandSender sender, @NotNull Command command, @NotNull String commandLabel, String[] args) {
         List<String> completions = new ArrayList<>();
+
         if (args.length == 1) { // /voucher
             if (hasPermission(sender, "admin")) completions.add("help");
             if (hasPermission(sender, "admin")) completions.add("list");

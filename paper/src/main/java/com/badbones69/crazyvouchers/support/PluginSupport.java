@@ -2,6 +2,7 @@ package com.badbones69.crazyvouchers.support;
 
 import com.badbones69.crazyvouchers.CrazyVouchers;
 import org.bukkit.plugin.java.JavaPlugin;
+import org.jetbrains.annotations.NotNull;
 
 public enum PluginSupport {
 
@@ -11,6 +12,7 @@ public enum PluginSupport {
 
     private final String name;
 
+    @NotNull
     private final CrazyVouchers plugin = CrazyVouchers.get();
 
     PluginSupport(String name) {

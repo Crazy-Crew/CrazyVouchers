@@ -5,6 +5,7 @@ import ch.jalu.configme.SettingsManagerBuilder;
 import com.badbones69.crazyvouchers.CrazyVouchers;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.file.YamlConfiguration;
+import org.jetbrains.annotations.NotNull;
 import us.crazycrew.crazyvouchers.common.config.types.ConfigKeys;
 import us.crazycrew.crazyvouchers.common.config.types.MessageKeys;
 import java.io.File;
@@ -16,6 +17,7 @@ import java.util.concurrent.CompletableFuture;
 
 public class MigrationService {
 
+    @NotNull
     private final CrazyVouchers plugin = CrazyVouchers.get();
 
     private SettingsManager config;

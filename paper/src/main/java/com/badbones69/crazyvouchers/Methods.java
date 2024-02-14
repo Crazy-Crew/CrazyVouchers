@@ -14,6 +14,7 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.FireworkMeta;
 import org.bukkit.persistence.PersistentDataContainer;
 import org.bukkit.persistence.PersistentDataType;
+import org.jetbrains.annotations.NotNull;
 import us.crazycrew.crazyvouchers.common.config.ConfigManager;
 import us.crazycrew.crazyvouchers.common.config.types.ConfigKeys;
 import us.crazycrew.crazyvouchers.api.plugin.CrazyHandler;
@@ -22,9 +23,13 @@ import java.util.List;
 
 public class Methods {
 
+    @NotNull
     private final CrazyVouchers plugin = CrazyVouchers.get();
+    @NotNull
     private final CrazyHandler crazyHandler = this.plugin.getCrazyHandler();
+    @NotNull
     private final ConfigManager configManager = this.crazyHandler.getConfigManager();
+    @NotNull
     private final SettingsManager config = this.configManager.getConfig();
     
     public void removeItem(ItemStack item, Player player) {
@@ -105,7 +110,7 @@ public class Methods {
         return player.getInventory().firstEmpty() == -1;
     }
     
-    public void fireWork(Location loc, List<Color> list) {
+    public void firework(Location loc, List<Color> list) {
         if (loc.getWorld() == null) return;
 
         Firework firework = loc.getWorld().spawn(loc, Firework.class);

@@ -4,13 +4,12 @@ import com.badbones69.crazyvouchers.Methods;
 import com.badbones69.crazyvouchers.CrazyVouchers;
 import com.badbones69.crazyvouchers.api.builders.types.VoucherGuiMenu;
 import com.badbones69.crazyvouchers.api.enums.Messages;
-import com.badbones69.crazyvouchers.api.objects.ItemBuilder;
+import com.badbones69.crazyvouchers.api.objects.other.ItemBuilder;
 import com.badbones69.crazyvouchers.api.objects.Voucher;
-import com.badbones69.crazyvouchers.listeners.VoucherMenuListener;
 import com.badbones69.crazyvouchers.api.FileManager;
 import com.badbones69.crazyvouchers.api.FileManager.Files;
 import com.badbones69.crazyvouchers.api.CrazyManager;
-import com.badbones69.crazyvouchers.api.events.RedeemVoucherCodeEvent;
+import com.badbones69.crazyvouchers.api.events.VoucherRedeemCodeEvent;
 import com.badbones69.crazyvouchers.api.objects.VoucherCode;
 import com.badbones69.crazyvouchers.other.MsgUtils;
 import org.bukkit.Sound;
@@ -27,16 +26,18 @@ import java.util.HashMap;
 import java.util.Random;
 
 public class VoucherCommands implements CommandExecutor {
-    
+
+    @NotNull
     private final CrazyVouchers plugin = CrazyVouchers.get();
 
+    @NotNull
     private final FileManager fileManager = this.plugin.getFileManager();
 
+    @NotNull
     private final CrazyManager crazyManager = this.plugin.getCrazyManager();
 
+    @NotNull
     private final Methods methods = this.plugin.getMethods();
-
-    private final VoucherMenuListener voucherMenuListener = this.plugin.getGui();
 
     @Override
     public boolean onCommand(@NotNull CommandSender sender, @NotNull Command cmd, @NotNull String commandLabel, String[] args) {
@@ -47,8 +48,10 @@ public class VoucherCommands implements CommandExecutor {
             switch (args[0].toLowerCase()) {
                 case "help" -> {
                     if (this.methods.hasPermission(sender, "access")) Messages.help.sendMessage(sender);
+
                     return true;
                 }
+
                 case "reload" -> {
                     if (this.methods.hasPermission(sender, "admin")) {
                         this.fileManager.reloadAllFiles();
@@ -62,8 +65,10 @@ public class VoucherCommands implements CommandExecutor {
                         this.crazyManager.reload(false);
                         Messages.config_reload.sendMessage(sender);
                     }
+
                     return true;
                 }
+
                 case "open", "admin" -> {
                     if (this.methods.hasPermission(sender, "admin")) {
                         int page = 1;
@@ -78,10 +83,12 @@ public class VoucherCommands implements CommandExecutor {
 
                         player.openInventory(menu.build(page).getInventory());
                     }
+
                     return true;
                 }
+
                 case "types", "list" -> {
-                    if (methods.hasPermission(sender, "admin")) {
+                    if (this.methods.hasPermission(sender, "admin")) {
                         StringBuilder vouchers = new StringBuilder();
                         StringBuilder codes = new StringBuilder();
 
@@ -95,11 +102,13 @@ public class VoucherCommands implements CommandExecutor {
 
                         vouchers = new StringBuilder((vouchers.isEmpty()) ? "&cNone" : vouchers.substring(0, vouchers.length() - 2));
                         codes = new StringBuilder((codes.isEmpty()) ? "&cNone" : codes.substring(0, codes.length() - 2));
-                        sender.sendMessage(MsgUtils.color("&e&lVouchers #" + crazyManager.getVouchers().size() + ":&f " + vouchers));
-                        sender.sendMessage(MsgUtils.color("&e&lVoucher Codes #" + crazyManager.getVoucherCodes().size() + ":&f " + codes));
+                        sender.sendMessage(MsgUtils.color("&e&lVouchers #" + this.crazyManager.getVouchers().size() + ":&f " + vouchers));
+                        sender.sendMessage(MsgUtils.color("&e&lVoucher Codes #" + this.crazyManager.getVoucherCodes().size() + ":&f " + codes));
                     }
+
                     return true;
                 }
+
                 case "redeem" -> {
                     if (this.methods.hasPermission(sender, "redeem")) {
                         if (args.length >= 2) {
@@ -197,7 +206,7 @@ public class VoucherCommands implements CommandExecutor {
                                 }
 
                                 // Gives the reward to the player.
-                                RedeemVoucherCodeEvent event = new RedeemVoucherCodeEvent(player, voucherCode);
+                                VoucherRedeemCodeEvent event = new VoucherRedeemCodeEvent(player, voucherCode);
                                 this.plugin.getServer().getPluginManager().callEvent(event);
 
                                 if (!event.isCancelled()) {
@@ -234,7 +243,7 @@ public class VoucherCommands implements CommandExecutor {
                                         }
                                     }
 
-                                    if (voucherCode.useFireworks()) this.methods.fireWork(player.getLocation(), voucherCode.getFireworkColors());
+                                    if (voucherCode.useFireworks()) this.methods.firework(player.getLocation(), voucherCode.getFireworkColors());
 
                                     if (!voucherCode.getMessage().isEmpty()) player.sendMessage(MsgUtils.color(this.methods.replacePlaceholders(placeholders, voucherCode.getMessage(), true)));
                                 }
@@ -245,10 +254,13 @@ public class VoucherCommands implements CommandExecutor {
 
                             return true;
                         }
+
                         sender.sendMessage(this.methods.getPrefix("&c/voucher redeem <code>"));
                     }
+
                     return true;
                 }
+
                 case "give" -> { // /Voucher 0Give 1<Type> 2[Amount] 3[Player] 4[Arguments]
                     if (methods.hasPermission(sender, "admin")) {
 
@@ -284,27 +296,34 @@ public class VoucherCommands implements CommandExecutor {
 
                             ItemStack item = args.length >= 5 ? voucher.buildItem(argument, amount) : voucher.buildItem(amount);
 
-                            if (this.methods.isInventoryFull(player)) {
-                                player.getWorld().dropItem(player.getLocation(), item);
+                            if (player != null) {
+                                if (this.methods.isInventoryFull(player)) {
+                                    player.getWorld().dropItem(player.getLocation(), item);
+                                } else {
+                                    player.getInventory().addItem(item);
+                                    player.updateInventory();
+                                }
+
+                                HashMap<String, String> placeholders = new HashMap<>();
+                                placeholders.put("{player}", player.getName());
+                                placeholders.put("{voucher}", voucher.getName());
+
+                                if (!Messages.sent_voucher.isBlank()) Messages.sent_voucher.sendMessage(sender, placeholders);
                             } else {
-                                player.getInventory().addItem(item);
-                                player.updateInventory();
+                                Messages.not_online.sendMessage(sender);
                             }
-
-                            HashMap<String, String> placeholders = new HashMap<>();
-                            placeholders.put("{player}", player.getName());
-                            placeholders.put("{voucher}", voucher.getName());
-
-                            if (!Messages.sent_voucher.isBlank()) Messages.sent_voucher.sendMessage(sender, placeholders);
 
                             return true;
                         }
 
                         sender.sendMessage(this.methods.getPrefix("&c/voucher give <type> [amount] [player] [arguments]"));
+
                         return true;
                     }
+
                     return true;
                 }
+
                 case "giveall" -> { // /Voucher 0GiveAll 1<Type> 2[Amount] 3[Arguments]
                     if (this.methods.hasPermission(sender, "admin")) {
                         if (args.length > 1) {
@@ -347,10 +366,13 @@ public class VoucherCommands implements CommandExecutor {
                         }
 
                         sender.sendMessage(this.methods.getPrefix("&c/voucher giveall <type> [amount] [arguments]"));
+
                         return true;
                     }
+
                     return true;
                 }
+
                 default -> {
                     sender.sendMessage(this.methods.getPrefix("&cPlease do /voucher help for more information."));
                     return true;

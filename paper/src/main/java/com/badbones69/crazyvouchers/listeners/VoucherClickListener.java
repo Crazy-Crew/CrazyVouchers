@@ -5,8 +5,8 @@ import com.badbones69.crazyvouchers.Methods;
 import com.badbones69.crazyvouchers.api.CrazyManager;
 import com.badbones69.crazyvouchers.api.FileManager.Files;
 import com.badbones69.crazyvouchers.api.enums.Messages;
-import com.badbones69.crazyvouchers.api.events.RedeemVoucherEvent;
-import com.badbones69.crazyvouchers.api.objects.ItemBuilder;
+import com.badbones69.crazyvouchers.api.events.VoucherRedeemEvent;
+import com.badbones69.crazyvouchers.api.objects.other.ItemBuilder;
 import com.badbones69.crazyvouchers.api.objects.Voucher;
 import com.badbones69.crazyvouchers.other.MsgUtils;
 import com.badbones69.crazyvouchers.support.PluginSupport;
@@ -26,6 +26,7 @@ import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.event.player.PlayerItemConsumeEvent;
 import org.bukkit.inventory.EquipmentSlot;
 import org.bukkit.inventory.ItemStack;
+import org.jetbrains.annotations.NotNull;
 import us.crazycrew.crazyvouchers.common.config.types.ConfigKeys;
 import java.util.HashMap;
 import java.util.UUID;
@@ -33,11 +34,14 @@ import java.util.concurrent.ThreadLocalRandom;
 import java.util.concurrent.atomic.AtomicBoolean;
 
 public class VoucherClickListener implements Listener {
-    
+
+    @NotNull
     private final CrazyVouchers plugin = CrazyVouchers.get();
-    
+
+    @NotNull
     private final CrazyManager crazyManager = this.plugin.getCrazyManager();
 
+    @NotNull
     private final Methods methods = this.plugin.getMethods();
     
     private final HashMap<UUID, String> twoAuth = new HashMap<>();
@@ -47,16 +51,16 @@ public class VoucherClickListener implements Listener {
     // This must run as highest, so it doesn't cause other plugins to check
     // the items that were added to the players inventory and replaced the item in the player's hand.
     @EventHandler(priority = EventPriority.HIGHEST)
-    public void onVoucherClick(PlayerInteractEvent e) {
-        ItemStack item = getItemInHand(e.getPlayer());
-        Player player = e.getPlayer();
-        Action action = e.getAction();
+    public void onVoucherClick(PlayerInteractEvent event) {
+        ItemStack item = getItemInHand(event.getPlayer());
+        Player player = event.getPlayer();
+        Action action = event.getAction();
 
-        if (e.getHand() == EquipmentSlot.OFF_HAND && e.getHand() != null) {
+        if (event.getHand() == EquipmentSlot.OFF_HAND && event.getHand() != null) {
             Voucher voucher = this.crazyManager.getVoucherFromItem(player.getInventory().getItemInOffHand());
 
             if (voucher != null && !voucher.isEdible()) {
-                e.setCancelled(true);
+                event.setCancelled(true);
                 Messages.no_permission_to_use_voucher_offhand.sendMessage(player);
             }
 
@@ -64,13 +68,13 @@ public class VoucherClickListener implements Listener {
         }
 
         if (item.getType() != Material.AIR) {
-            if (e.getHand() != EquipmentSlot.HAND) return;
+            if (event.getHand() != EquipmentSlot.HAND) return;
 
             if (action == Action.RIGHT_CLICK_BLOCK || action == Action.RIGHT_CLICK_AIR) {
                 Voucher voucher = this.crazyManager.getVoucherFromItem(item);
 
                 if (voucher != null && !voucher.isEdible()) {
-                    e.setCancelled(true);
+                    event.setCancelled(true);
                     useVoucher(player, voucher, item);
                 }
             }
@@ -78,13 +82,13 @@ public class VoucherClickListener implements Listener {
     }
     
     @EventHandler(ignoreCancelled = true)
-    public void onItemConsume(PlayerItemConsumeEvent e) {
-        ItemStack item = e.getItem();
+    public void onItemConsume(PlayerItemConsumeEvent event) {
+        ItemStack item = event.getItem();
         Voucher voucher = this.crazyManager.getVoucherFromItem(item);
 
         if (voucher != null && voucher.isEdible()) {
-            Player player = e.getPlayer();
-            e.setCancelled(true);
+            Player player = event.getPlayer();
+            event.setCancelled(true);
             
             if (item.getAmount() > 1) {
                 Messages.unstack_item.sendMessage(player);
@@ -95,8 +99,8 @@ public class VoucherClickListener implements Listener {
     }
     
     @EventHandler(priority = EventPriority.LOW, ignoreCancelled = true)
-    public void onArmorStandClick(PlayerInteractEntityEvent e) {
-        if (e.getHand() == EquipmentSlot.HAND && this.crazyManager.getVoucherFromItem(getItemInHand(e.getPlayer())) != null) e.setCancelled(true);
+    public void onArmorStandClick(PlayerInteractEntityEvent event) {
+        if (event.getHand() == EquipmentSlot.HAND && this.crazyManager.getVoucherFromItem(getItemInHand(event.getPlayer())) != null) event.setCancelled(true);
     }
     
     private void useVoucher(Player player, Voucher voucher, ItemStack item) {
@@ -149,7 +153,7 @@ public class VoucherClickListener implements Listener {
             }
 
             this.twoAuth.remove(player.getUniqueId());
-            RedeemVoucherEvent event = new RedeemVoucherEvent(player, voucher, argument);
+            VoucherRedeemEvent event = new VoucherRedeemEvent(player, voucher, argument);
             this.plugin.getServer().getPluginManager().callEvent(event);
 
             if (!event.isCancelled()) voucherClick(player, item, voucher, argument);
@@ -258,7 +262,7 @@ public class VoucherClickListener implements Listener {
             }
         }
 
-        if (voucher.useFirework()) this.methods.fireWork(player.getLocation(), voucher.getFireworkColors());
+        if (voucher.useFirework()) this.methods.firework(player.getLocation(), voucher.getFireworkColors());
 
         if (!voucher.getVoucherUsedMessage().isEmpty()) {
             String message = replacePlaceholders(voucher.getVoucherUsedMessage(), player);

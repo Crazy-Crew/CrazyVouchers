@@ -1,14 +1,13 @@
 package us.crazycrew.crazyvouchers.api;
 
 import com.badbones69.crazyvouchers.CrazyVouchers;
-
 import org.bstats.bukkit.Metrics;
-import org.bukkit.plugin.java.JavaPlugin;
 import org.jetbrains.annotations.NotNull;
 
 public class MetricsHandler {
 
-    private final @NotNull CrazyVouchers plugin = CrazyVouchers.get();
+    @NotNull
+    private final CrazyVouchers plugin = CrazyVouchers.get();
 
     private Metrics metrics;
 
