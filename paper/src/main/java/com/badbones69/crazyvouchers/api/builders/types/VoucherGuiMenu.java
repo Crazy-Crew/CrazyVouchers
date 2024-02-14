@@ -3,7 +3,7 @@ package com.badbones69.crazyvouchers.api.builders.types;
 import com.badbones69.crazyvouchers.CrazyVouchers;
 import com.badbones69.crazyvouchers.api.builders.InventoryBuilder;
 import com.badbones69.crazyvouchers.api.enums.PersistentKeys;
-import com.badbones69.crazyvouchers.api.objects.ItemBuilder;
+import com.badbones69.crazyvouchers.api.objects.other.ItemBuilder;
 import com.badbones69.crazyvouchers.api.objects.Voucher;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
@@ -91,9 +91,9 @@ public class VoucherGuiMenu extends InventoryBuilder {
 
         if (page == maxPage) {
             getInventory().setItem(50, new ItemBuilder()
+                    .setName(" ")
                     .setMaterial(Material.GRAY_STAINED_GLASS_PANE)
                     .setDamage(0)
-                    .setName(" ")
                     .build());
         } else {
             ItemStack nextButton = new ItemBuilder().setMaterial(Material.FEATHER).setName("&6&lNext >>").addLore("&7&lPage: &b" + (getPage(getPlayer()) + 1)).build();

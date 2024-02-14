@@ -3,6 +3,7 @@ package com.badbones69.crazyvouchers.api.objects;
 import com.badbones69.crazyvouchers.CrazyVouchers;
 import com.badbones69.crazyvouchers.api.CrazyManager;
 import com.badbones69.crazyvouchers.api.enums.Messages;
+import com.badbones69.crazyvouchers.api.objects.other.ItemBuilder;
 import com.badbones69.crazyvouchers.other.MsgUtils;
 import com.ryderbelserion.cluster.utils.DyeUtils;
 import de.tr7zw.changeme.nbtapi.NBTItem;
@@ -57,10 +58,6 @@ public class Voucher {
     private final Map<String, String> requiredPlaceholders = new HashMap<>();
     private String requiredPlaceholdersMessage;
 
-    private final CrazyVouchers plugin = CrazyVouchers.get();
-
-    private final Methods methods = this.plugin.getMethods();
-    
     public Voucher(FileConfiguration fileConfiguration, String name) {
         this.name = name;
         this.usesArgs = false;
@@ -77,7 +74,8 @@ public class Voucher {
         if (fileConfiguration.contains(path + "display-damage")) this.itemBuilder.setDamage(fileConfiguration.getInt(path + "display-damage"));
 
         if (fileConfiguration.contains(path + "display-trim.material") && fileConfiguration.contains(path + "display-trim.pattern")) {
-            this.itemBuilder.setTrimMaterial(Registry.TRIM_MATERIAL.get(NamespacedKey.minecraft(fileConfiguration.getString(path + "display-trim.material", "QUARTZ").toLowerCase())))
+            this.itemBuilder
+                    .setTrimMaterial(Registry.TRIM_MATERIAL.get(NamespacedKey.minecraft(fileConfiguration.getString(path + "display-trim.material", "QUARTZ").toLowerCase())))
                     .setTrimPattern(Registry.TRIM_PATTERN.get(NamespacedKey.minecraft(fileConfiguration.getString(path + "display-trim.pattern", "SENTRY").toLowerCase())));
         }
 
@@ -102,6 +100,7 @@ public class Voucher {
             }
         }
 
+        CrazyVouchers plugin = CrazyVouchers.get();
         if (fileConfiguration.contains(path + "chance-commands")) {
             for (String line : fileConfiguration.getStringList(path + "chance-commands")) { // - '{chance} {command}, {command}, {command}, ... etc'
                 try {
@@ -112,12 +111,12 @@ public class Voucher {
                         this.chanceCommands.add(voucherCommand);
                     }
                 } catch (Exception exception) {
-                    this.plugin.getLogger().log(Level.SEVERE,"An issue occurred when trying to use chance commands.", exception);
+                    plugin.getLogger().log(Level.SEVERE,"An issue occurred when trying to use chance commands.", exception);
                 }
             }
         }
 
-        CrazyManager crazyManager = this.plugin.getCrazyManager();
+        CrazyManager crazyManager = plugin.getCrazyManager();
         this.items.addAll(crazyManager.getItems(fileConfiguration, this.name));
 
         this.usedMessage = getMessage(path + "options.message", fileConfiguration);
