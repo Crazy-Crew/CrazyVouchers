@@ -52,6 +52,20 @@ tasks {
         }
     }
 
+    shadowJar {
+        archiveClassifier.set("")
+
+        exclude("META-INF/**")
+
+        listOf(
+            "com.ryderbelserion.cluster.paper",
+            "de.tr7zw.changeme.nbtapi",
+            "org.bstats"
+        ).forEach {
+            relocate(it, "libs.$it")
+        }
+    }
+
     processResources {
         val properties = hashMapOf(
                 "name" to rootProject.name,
