@@ -32,7 +32,7 @@ public class CrazyManager {
     }
 
     private void loadVouchers() {
-        for (String voucherName : this.plugin.getFileManager().getAllVoucherItems()) {
+        for (String voucherName : this.plugin.getFileManager().getVouchers()) {
             try {
                 FileConfiguration file = this.plugin.getFileManager().getFile(voucherName).getFile();
                 this.vouchers.add(new Voucher(file, voucherName));
@@ -41,7 +41,7 @@ public class CrazyManager {
             }
         }
 
-        for (String voucherCode : this.plugin.getFileManager().getAllVoucherCodes()) {
+        for (String voucherCode : this.plugin.getFileManager().getCodes()) {
             try {
                 FileConfiguration file = this.plugin.getFileManager().getFile(voucherCode).getFile();
                 this.voucherCodes.add(new VoucherCode(file, voucherCode));

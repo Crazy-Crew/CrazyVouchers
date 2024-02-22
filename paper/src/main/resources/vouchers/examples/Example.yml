@@ -32,7 +32,6 @@ voucher:
   # The commands to send.
   commands:
     - 'msg {player} wow you claimed a voucher.'
-    - 'msg {player} #FCFCFDwew multiple commands with &ccolors'
   # The items to give when claiming the voucher.
   items:
     - 'Item:DIAMOND_HELMET, Damage:50, Trim-Pattern:SENTRY, Trim-Material:QUARTZ, Amount:1, Protection:4, Respiration:1, Aqua_Affinity:3, Unbreaking:3, Thorns:3'
