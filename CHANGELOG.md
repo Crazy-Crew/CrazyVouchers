@@ -1,5 +1,7 @@
 ## Changes:
-* Updated to use recently added damage source api. The previous way to prevent firework damage stopped working.
+### Ability to have files categorized by folder in both `vouchers` and `codes`.
+* It will search for folders in `vouchers/codes` such as `vouchers/sub_folder`
+    * It will not search for folders inside `vouchers/sub_folder` such as `vouchers/sub_folder/secondary_folder`
 
 ## Other:
 * [Feature Requests](https://github.com/Crazy-Crew/CrazyVouchers/issues)
