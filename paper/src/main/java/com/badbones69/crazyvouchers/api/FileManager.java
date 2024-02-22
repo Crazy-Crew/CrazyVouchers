@@ -3,7 +3,6 @@ package com.badbones69.crazyvouchers.api;
 import com.badbones69.crazyvouchers.CrazyVouchers;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
-import org.bukkit.plugin.java.JavaPlugin;
 import org.jetbrains.annotations.NotNull;
 import java.io.File;
 import java.io.FileOutputStream;
@@ -13,19 +12,24 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.logging.Level;
+import java.util.logging.Logger;
 
 public class FileManager {
 
     @NotNull
     private final CrazyVouchers plugin = CrazyVouchers.get();
 
-    private final HashMap<Files, File> files = new HashMap<>();
-    private final ArrayList<String> homeFolders = new ArrayList<>();
-    private final ArrayList<CustomFile> customFiles = new ArrayList<>();
-    private final HashMap<String, String> jarHomeFolders = new HashMap<>();
-    private final HashMap<String, String> autoGenerateFiles = new HashMap<>();
-    private final HashMap<Files, FileConfiguration> configurations = new HashMap<>();
+    private final Map<Files, File> files = new HashMap<>();
+    private final List<String> homeFolders = new ArrayList<>();
+    private final List<CustomFile> customFiles = new ArrayList<>();
+    private final Map<String, String> jarHomeFolders = new HashMap<>();
+    private final Map<String, String> autoGenerateFiles = new HashMap<>();
+    private final Map<Files, FileConfiguration> configurations = new HashMap<>();
+
+    private final Logger logger = this.plugin.getLogger();
+    private final boolean isLogging = this.plugin.isLogging();
 
     /**
      * Sets up the plugin and loads all necessary files.
@@ -33,22 +37,24 @@ public class FileManager {
     public void setup() {
         File oldFolder = new File(this.plugin.getServer().getPluginsFolder() + "/Vouchers");
 
-        if (oldFolder.exists() && !this.plugin.getDataFolder().exists()) {
-            this.plugin.getLogger().warning("Renaming " + oldFolder.getPath() + " directory to " + this.plugin.getDataFolder().getPath());
+        File dataFolder = this.plugin.getDataFolder();
 
-            if (!this.plugin.getDataFolder().exists()) this.plugin.getDataFolder().mkdirs();
+        if (oldFolder.exists() && !dataFolder.exists()) {
+            this.logger.warning("Renaming " + oldFolder.getPath() + " directory to " + dataFolder.getPath());
 
-            oldFolder.renameTo(this.plugin.getDataFolder());
+            if (!dataFolder.exists()) dataFolder.mkdirs();
+
+            oldFolder.renameTo(dataFolder);
             oldFolder.delete();
         } else {
-            if (this.plugin.getDataFolder().exists() && oldFolder.exists()) {
-                this.plugin.getLogger().warning("The folder does exist which prevents " + oldFolder.getName() + " from being renamed.");
-                this.plugin.getLogger().warning("You must delete or take a backup of " + this.plugin.getDataFolder().getName() + " if you wish to have it automatically convert");
-                this.plugin.getLogger().warning("You can run /vouchers reload after deleting or taking a backup of " + this.plugin.getDataFolder().getName() + " if needed.");
+            if (dataFolder.exists() && oldFolder.exists()) {
+                this.logger.warning("The folder does exist which prevents " + oldFolder.getName() + " from being renamed.");
+                this.logger.warning("You must delete or take a backup of " + dataFolder.getName() + " if you wish to have it automatically convert");
+                this.logger.warning("You can run /vouchers reload after deleting or taking a backup of " + dataFolder.getName() + " if needed.");
             }
         }
 
-        if (!this.plugin.getDataFolder().exists()) this.plugin.getDataFolder().mkdirs();
+        if (!dataFolder.exists()) dataFolder.mkdirs();
 
         this.files.clear();
         this.customFiles.clear();
@@ -56,134 +62,166 @@ public class FileManager {
 
         // Loads all the normal static files.
         for (Files file : Files.values()) {
-            File newFile = new File(this.plugin.getDataFolder(), file.getFileLocation());
+            File newFile = new File(dataFolder, file.getFileLocation());
 
-            if (this.plugin.isLogging()) this.plugin.getLogger().info("Loading the " + file.getFileName());
+            if (this.isLogging) this.logger.info("Loading the " + file.getFileName());
 
             if (!newFile.exists()) {
                 try {
-                    File serverFile = new File(this.plugin.getDataFolder(), "/" + file.getFileLocation());
+                    File serverFile = new File(dataFolder, "/" + file.getFileLocation());
                     InputStream jarFile = getClass().getResourceAsStream("/" + file.getFileJar());
+
                     copyFile(jarFile, serverFile);
                 } catch (Exception exception) {
-                    this.plugin.getLogger().log(Level.SEVERE, "Failed to load file: " + file.getFileName(), exception);
+                    this.logger.log(Level.SEVERE, "Failed to load file: " + file.getFileName(), exception);
 
                     continue;
                 }
             }
 
             this.files.put(file, newFile);
-            this.configurations.put(file, YamlConfiguration.loadConfiguration(newFile));
 
-            if (this.plugin.isLogging()) this.plugin.getLogger().info("Successfully loaded " + file.getFileName());
+            if (file.getFileName().endsWith(".yml")) this.configurations.put(file, YamlConfiguration.loadConfiguration(newFile));
+
+            if (this.isLogging) this.logger.info("Successfully loaded " + file.getFileName());
         }
 
+        if (this.homeFolders.isEmpty()) return;
+
         // Starts to load all the custom files.
-        if (!this.homeFolders.isEmpty()) {
-            if (this.plugin.isLogging()) this.plugin.getLogger().info("Loading custom files.");
+        if (this.isLogging) this.logger.info("Loading custom files.");
 
-            for (String homeFolder : this.homeFolders) {
-                File homeFile = new File(this.plugin.getDataFolder(), "/" + homeFolder);
+        for (String homeFolder : this.homeFolders) {
+            File homeFile = new File(dataFolder, "/" + homeFolder);
 
-                if (homeFile.exists()) {
-                    String[] list = homeFile.list();
+            if (homeFile.exists()) {
+                File[] filesList = homeFile.listFiles();
 
-                    if (list != null) {
-                        for (String name : list) {
-                            if (name.endsWith(".yml")) {
-                                CustomFile file = new CustomFile(name, homeFolder);
+                if (filesList != null) {
+                    for (File directory : filesList) {
+                        if (directory.isDirectory()) {
+                            String[] folder = directory.list();
 
-                                if (file.exists()) {
-                                    this.customFiles.add(file);
+                            if (folder != null) {
+                                for (String name : folder) {
+                                    if (!name.endsWith(".yml")) continue;
 
-                                    if (this.plugin.isLogging()) this.plugin.getLogger().info("Loaded new custom file: " + homeFolder + "/" + name + ".");
+                                    CustomFile file = new CustomFile(name, homeFolder + "/", directory.getName());
+
+                                    if (file.exists()) {
+                                        this.customFiles.add(file);
+
+                                        if (this.isLogging) this.logger.info("Loaded new custom file: " + homeFolder + "/" + directory.getName() + "/" + name + ".");
+                                    }
                                 }
                             }
-                        }
-                    }
-                } else {
-                    homeFile.mkdir();
+                        } else {
+                            String name = directory.getName();
 
-                    if (this.plugin.isLogging()) this.plugin.getLogger().info("The folder " + homeFolder + "/ was not found so it was created.");
+                            if (!name.endsWith(".yml")) continue;
 
-                    for (String fileName : this.autoGenerateFiles.keySet()) {
-                        if (this.autoGenerateFiles.get(fileName).equalsIgnoreCase(homeFolder)) {
-                            homeFolder = this.autoGenerateFiles.get(fileName);
+                            CustomFile file = new CustomFile(name, homeFolder);
 
-                            try {
-                                File serverFile = new File(this.plugin.getDataFolder(), homeFolder + "/" + fileName);
-                                InputStream jarFile = getClass().getResourceAsStream((this.jarHomeFolders.getOrDefault(fileName, homeFolder)) + "/" + fileName);
-                                copyFile(jarFile, serverFile);
+                            if (file.exists()) {
+                                this.customFiles.add(file);
 
-                                if (fileName.toLowerCase().endsWith(".yml")) this.customFiles.add(new CustomFile(fileName, homeFolder));
-
-                                if (this.plugin.isLogging()) this.plugin.getLogger().info("Created new default file: " + homeFolder + "/" + fileName + ".");
-                            } catch (Exception exception) {
-                                this.plugin.getLogger().log(Level.SEVERE, "Failed to create new default file: " + homeFolder + "/" + fileName + "!", exception);
+                                if (this.isLogging) this.logger.info("Loaded new custom file: " + homeFolder + "/" + name + ".");
                             }
                         }
                     }
                 }
-            }
+            } else {
+                homeFile.mkdir();
 
-            if (this.plugin.isLogging()) this.plugin.getLogger().info("Finished loading custom files.");
+                if (this.isLogging) this.logger.info("The folder " + homeFolder + "/ was not found so it was created.");
+
+                for (String fileName : this.autoGenerateFiles.keySet()) {
+                    if (this.autoGenerateFiles.get(fileName).equalsIgnoreCase(homeFolder)) {
+                        homeFolder = this.autoGenerateFiles.get(fileName);
+
+                        try (InputStream jarFile = getClass().getResourceAsStream((this.jarHomeFolders.getOrDefault(fileName, homeFolder)) + "/" + fileName)) {
+                            File serverFile = new File(dataFolder, homeFolder + "/" + fileName);
+
+                            copyFile(jarFile, serverFile);
+
+                            if (fileName.toLowerCase().endsWith(".yml")) this.customFiles.add(new CustomFile(fileName, homeFolder));
+
+                            if (this.isLogging) this.logger.info("Created new default file: " + homeFolder + "/" + fileName + ".");
+                        } catch (Exception exception) {
+                            this.logger.log(Level.SEVERE, "Failed to create new default file: " + homeFolder + "/" + fileName + "!", exception);
+                        }
+                    }
+                }
+            }
         }
 
+        if (this.isLogging) this.logger.info("Finished loading custom files.");
     }
 
     /**
      * Register a folder that has custom files in it. Make sure to have a "/" in front of the folder name.
-     * @param homeFolder The folder that has custom files in it.
+     *
+     * @param homeFolder the folder that has custom files in it.
      */
     public FileManager registerCustomFilesFolder(String homeFolder) {
         this.homeFolders.add(homeFolder);
+
         return this;
     }
 
     /**
      * Unregister a folder that has custom files in it. Make sure to have a "/" in front of the folder name.
-     * @param homeFolder The folder with custom files in it.
+     *
+     * @param homeFolder the folder with custom files in it.
      */
     public FileManager unregisterCustomFilesFolder(String homeFolder) {
         this.homeFolders.remove(homeFolder);
+
         return this;
     }
 
     /**
      * Register a file that needs to be generated when it's home folder doesn't exist. Make sure to have a "/" in front of the home folder's name.
-     * @param fileName The name of the file you want to auto-generate when the folder doesn't exist.
-     * @param homeFolder The folder that has custom files in it.
+     *
+     * @param fileName the name of the file you want to auto-generate when the folder doesn't exist.
+     * @param homeFolder the folder that has custom files in it.
      */
     public FileManager registerDefaultGenerateFiles(String fileName, String homeFolder) {
         this.autoGenerateFiles.put(fileName, homeFolder);
+
         return this;
     }
 
     /**
      * Register a file that needs to be generated when it's home folder doesn't exist. Make sure to have a "/" in front of the home folder's name.
-     * @param fileName The name of the file you want to auto-generate when the folder doesn't exist.
-     * @param homeFolder The folder that has custom files in it.
-     * @param jarHomeFolder The folder that the file is found in the jar.
+     *
+     * @param fileName the name of the file you want to auto-generate when the folder doesn't exist.
+     * @param homeFolder the folder that has custom files in it.
+     * @param jarHomeFolder the folder that the file is found in the jar.
      */
     public FileManager registerDefaultGenerateFiles(String fileName, String homeFolder, String jarHomeFolder) {
         this.autoGenerateFiles.put(fileName, homeFolder);
         this.jarHomeFolders.put(fileName, jarHomeFolder);
+
         return this;
     }
 
     /**
      * Unregister a file that doesn't need to be generated when it's home folder doesn't exist. Make sure to have a "/" in front of the home folder's name.
-     * @param fileName The file that you want to remove from auto-generating.
+     *
+     * @param fileName the file that you want to remove from auto-generating.
      */
     public FileManager unregisterDefaultGenerateFiles(String fileName) {
         this.autoGenerateFiles.remove(fileName);
         this.jarHomeFolders.remove(fileName);
+
         return this;
     }
 
     /**
      * Gets the file from the system.
-     * @return The file from the system.
+     *
+     * @return the file from the system.
      */
     public FileConfiguration getFile(Files file) {
         return this.configurations.get(file);
@@ -192,8 +230,9 @@ public class FileManager {
     /**
      * Get a custom file from the loaded custom files instead of a hardcoded one.
      * This allows you to get custom files like Per player data files.
-     * @param name Name of the crate you want. (Without the .yml)
-     * @return The custom file you wanted otherwise if not found will return null.
+     *
+     * @param name name of the crate you want. (Without the .yml)
+     * @return the custom file you wanted otherwise if not found will return null.
      */
     public CustomFile getFile(String name) {
         for (CustomFile file : this.customFiles) {
@@ -204,41 +243,62 @@ public class FileManager {
     }
 
     /**
+     * Remove a file by name.
+     *
+     * @param name name to use.
+     */
+    public void removeFile(String name) {
+        this.customFiles.remove(getFile(name));
+    }
+
+    /**
+     * Add a file by name.
+     *
+     * @param name name to use.
+     * @param folder folder to add to.
+     */
+    public void addFile(String name, String folder) {
+        this.customFiles.add(new CustomFile(name, folder));
+    }
+
+    /**
      * Saves the file from the loaded state to the file system.
      */
     public void saveFile(Files file) {
         try {
             this.configurations.get(file).save(this.files.get(file));
         } catch (IOException exception) {
-            this.plugin.getLogger().log(Level.SEVERE, "Could not save " + file.getFileName() + "!", exception);
-        }
-    }
-
-    /**
-     * Save a custom file.
-     * @param name The name of the custom file.
-     */
-    public void saveFile(String name) {
-        CustomFile customFile = getFile(name);
-
-        if (customFile == null) {
-            if (this.plugin.isLogging()) this.plugin.getLogger().warning("The file " + name + ".yml could not be found!");
-            return;
-        }
-
-        try {
-            customFile.getFile().save(new File(this.plugin.getDataFolder(), customFile.getHomeFolder() + "/" + customFile.getFileName()));
-
-            if (this.plugin.isLogging()) this.plugin.getLogger().info("Successfully saved the " + customFile.getFileName() + ".");
-        } catch (IOException exception) {
-            this.plugin.getLogger().log(Level.SEVERE, "Could not save " + customFile.getFileName() + "!", exception);
+            this.logger.log(Level.SEVERE, "Could not save " + file.getFileName() + "!", exception);
         }
     }
 
     /**
      * Save a custom file.
      *
-     * @param file The custom file you are saving.
+     * @param name the name of the custom file.
+     */
+    public void saveFile(String name) {
+        CustomFile file = getFile(name);
+
+        if (file == null) {
+            if (this.isLogging) this.logger.warning("The file " + name + ".yml could not be found!");
+
+            return;
+        }
+
+        try {
+            file.getFile().save(new File(this.plugin.getDataFolder(), file.getHomeFolder() + "/" + file.getFileName()));
+
+            if (this.isLogging) this.logger.info("Successfully saved the " + file.getFileName() + ".");
+        } catch (Exception exception) {
+            this.logger.log(Level.SEVERE, "Could not save " + file.getFileName() + "!", exception);
+        }
+    }
+
+    /**
+     * Save a custom file.
+     *
+     * @param file the custom file you are saving.
      */
     public void saveFile(CustomFile file) {
         file.saveFile();
@@ -248,25 +308,31 @@ public class FileManager {
      * Overrides the loaded state file and loads the file systems file.
      */
     public void reloadFile(Files file) {
-        this.configurations.put(file, YamlConfiguration.loadConfiguration(this.files.get(file)));
+        if (file.getFileName().endsWith(".yml")) this.configurations.put(file, YamlConfiguration.loadConfiguration(this.files.get(file)));
     }
 
     /**
      * Overrides the loaded state file and loads the file systems file.
      */
     public void reloadFile(String name) {
-        CustomFile customFile = getFile(name);
+        CustomFile file = getFile(name);
 
-        if (customFile == null) {
-            if (this.plugin.isLogging()) this.plugin.getLogger().warning("The file " + name + ".yml could not be found!");
-            return;
+        if (file != null) {
+            try {
+                file.file = YamlConfiguration.loadConfiguration(new File(this.plugin.getDataFolder(), "/" + file.getHomeFolder() + "/" + file.getFileName()));
+
+                if (this.isLogging) this.logger.info("Successfully reloaded the " + file.getFileName() + ".");
+            } catch (Exception exception) {
+                this.logger.log(Level.SEVERE, "Could not reload the " + file.getFileName() + "!", exception);
+            }
+        } else {
+            if (this.isLogging) this.logger.warning("The file " + name + ".yml could not be found!");
         }
-
-        customFile.file = YamlConfiguration.loadConfiguration(new File(this.plugin.getDataFolder(), "/" + customFile.getHomeFolder() + "/" + customFile.getFileName()));
-
-        if (this.plugin.isLogging()) this.plugin.getLogger().info("Successfully reloaded the " + customFile.getFileName() + ".");
     }
 
+    /**
+     * Reloads all files.
+     */
     public void reloadAllFiles() {
         for (Files file : Files.values()) {
             file.reloadFile();
@@ -277,8 +343,57 @@ public class FileManager {
         }
     }
 
-    public List<CustomFile> getCustomFiles() {
-        return Collections.unmodifiableList(this.customFiles);
+    /**
+     * @return A list of voucher names.
+     */
+    public List<String> getVouchers() {
+        return getFiles(new File(this.plugin.getDataFolder(), "/vouchers"));
+    }
+
+    /**
+     * @return A list of voucher codes.
+     */
+    public List<String> getCodes() {
+        return getFiles(new File(this.plugin.getDataFolder(), "/codes"));
+    }
+
+    /**
+     * @param dir the directory to look.
+     *
+     * @return the files
+     */
+    private List<String> getFiles(File dir) {
+        List<String> files = new ArrayList<>();
+
+        String[] file = dir.list();
+
+        if (file != null) {
+            File[] filesList = dir.listFiles();
+
+            if (filesList != null) {
+                for (File directory : filesList) {
+                    if (directory.isDirectory()) {
+                        String[] folder = directory.list();
+
+                        if (folder != null) {
+                            for (String name : folder) {
+                                if (!name.endsWith(".yml")) continue;
+
+                                files.add(name.replaceAll(".yml", ""));
+                            }
+                        }
+                    }
+                }
+            }
+
+            for (String name : file) {
+                if (!name.endsWith(".yml")) continue;
+
+                files.add(name.replaceAll(".yml", ""));
+            }
+        }
+
+        return Collections.unmodifiableList(files);
     }
 
     /**
@@ -295,37 +410,6 @@ public class FileManager {
         }
     }
 
-    public List<String> getAllVoucherItems() {
-        ArrayList<String> files = new ArrayList<>();
-
-        String[] file = new File(this.plugin.getDataFolder(), "/vouchers").list();
-
-        if (file != null) {
-            for (String name : file) {
-                if (!name.endsWith(".yml")) continue;
-
-                files.add(name.replaceAll(".yml", ""));
-            }
-        }
-
-        return Collections.unmodifiableList(files);
-    }
-
-    public List<String> getAllVoucherCodes() {
-        ArrayList<String> files = new ArrayList<>();
-
-        String[] file = new File(this.plugin.getDataFolder(), "/codes").list();
-
-        if (file != null) {
-            for (String name : file) {
-                if (!name.endsWith(".yml")) continue;
-
-                files.add(name.replaceAll(".yml", ""));
-            }
-        }
-
-        return Collections.unmodifiableList(files);
-    }
 
     public enum Files {
         // ENUM_NAME("fileName.yml", "fileLocation.yml"),
@@ -336,8 +420,10 @@ public class FileManager {
         private final String fileJar;
         private final String fileLocation;
 
-        private final @NotNull CrazyVouchers plugin = CrazyVouchers.get();
-        private final @NotNull FileManager fileManager = this.plugin.getFileManager();
+        @NotNull
+        private final CrazyVouchers plugin = CrazyVouchers.get();
+        @NotNull
+        private final FileManager fileManager = this.plugin.getFileManager();
 
         /**
          * The files that the server will try and load.
@@ -362,7 +448,8 @@ public class FileManager {
 
         /**
          * Get the name of the file.
-         * @return The name of the file.
+         *
+         * @return the name of the file.
          */
         public String getFileName() {
             return this.fileName;
@@ -370,7 +457,8 @@ public class FileManager {
 
         /**
          * The location the jar it is at.
-         * @return The location in the jar the file is in.
+         *
+         * @return the location in the jar the file is in.
          */
         public String getFileLocation() {
             return this.fileLocation;
@@ -378,7 +466,8 @@ public class FileManager {
 
         /**
          * Get the location of the file in the jar.
-         * @return The location of the file in the jar.
+         *
+         * @return the location of the file in the jar.
          */
         public String getFileJar() {
             return this.fileJar;
@@ -386,7 +475,8 @@ public class FileManager {
 
         /**
          * Gets the file from the system.
-         * @return The file from the system.
+         *
+         * @return the file from the system.
          */
         public FileConfiguration getFile() {
             return this.fileManager.getFile(this);
@@ -403,21 +493,23 @@ public class FileManager {
          * Overrides the loaded state file and loads the file systems file.
          */
         public void reloadFile() {
-            this.fileManager.reloadFile(this);
+            if (getFileName().endsWith(".yml")) this.fileManager.reloadFile(this);
         }
     }
 
-    public class CustomFile {
+    public static class CustomFile {
 
         private final String name;
         private final String fileName;
         private final String homeFolder;
         private FileConfiguration file;
 
-        private final @NotNull CrazyVouchers plugin = CrazyVouchers.get();
+        @NotNull
+        private final CrazyVouchers plugin = CrazyVouchers.get();
 
         /**
          * A custom file that is being made.
+         *
          * @param name Name of the file.
          * @param homeFolder The home folder of the file.
          */
@@ -450,7 +542,32 @@ public class FileManager {
         }
 
         /**
+         * A custom file that is being made.
+         *
+         * @param name name of the file.
+         * @param homeFolder the home folder of the file.
+         */
+        public CustomFile(String name, String homeFolder, String subFolder) {
+            this.name = name.replace(".yml", "");
+            this.fileName = name;
+            this.homeFolder = homeFolder + "/" + subFolder;
+
+            File root = new File(this.plugin.getDataFolder(), "/" + this.homeFolder);
+
+            File newFile = new File(root, "/" + name);
+
+            if (newFile.exists()) {
+                this.file = YamlConfiguration.loadConfiguration(newFile);
+
+                return;
+            }
+
+            this.file = null;
+        }
+
+        /**
          * Get the name of the file without the .yml part.
+         *
          * @return The name of the file without the .yml.
          */
         public String getName() {
@@ -459,6 +576,7 @@ public class FileManager {
 
         /**
          * Get the full name of the file.
+         *
          * @return Full name of the file.
          */
         public String getFileName() {
@@ -467,6 +585,7 @@ public class FileManager {
 
         /**
          * Get the name of the home folder of the file.
+         *
          * @return The name of the home folder the files are in.
          */
         public String getHomeFolder() {
@@ -475,6 +594,7 @@ public class FileManager {
 
         /**
          * Get the ConfigurationFile.
+         *
          * @return The ConfigurationFile of this file.
          */
         public FileConfiguration getFile() {
@@ -483,6 +603,7 @@ public class FileManager {
 
         /**
          * Check if the file actually exists in the file system.
+         *
          * @return True if it does and false if it doesn't.
          */
         public boolean exists() {
