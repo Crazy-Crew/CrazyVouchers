@@ -203,8 +203,8 @@ public class Voucher {
             this.soundToggle = false;
         }
 
-        if (fileConfiguration.contains(path + "hide-item-flags")) {
-            fileConfiguration.getStringList(path + "hide-item-flags").forEach(flag -> this.itemFlags.add(ItemFlag.valueOf(flag)));
+        if (fileConfiguration.contains(path + "flags")) {
+            fileConfiguration.getStringList(path + "flags").forEach(flag -> this.itemFlags.add(ItemFlag.valueOf(flag)));
         }
 
         if (fileConfiguration.getBoolean(path + "options.firework.toggle")) {

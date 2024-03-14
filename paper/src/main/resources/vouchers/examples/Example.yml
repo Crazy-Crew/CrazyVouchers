@@ -59,7 +59,7 @@ voucher:
     material: QUARTZ
     pattern: SENTRY
   # Hide item flags
-  hide-item-flags:
+  flags:
     - 'HIDE_ATTRIBUTES'
     - 'HIDE_ENCHANTS'
   # All options when they right-click it.
