@@ -1054,7 +1054,7 @@ public class ItemBuilder {
                         if (!value.isEmpty()) itemBuilder.setTrimMaterial(Registry.TRIM_MATERIAL.get(NamespacedKey.minecraft(value.toLowerCase())));
                     }
                     case "hide-item-flags" -> {
-                        if (!value.isEmpty()) itemBuilder.hideItemFlags(Boolean.parseBoolean(value));
+                        if (!value.isEmpty()) itemBuilder.hideItemFlags(Boolean.parseBoolean(value)); else itemBuilder.hideItemFlags(false);
                     }
                     default -> {
                         Enchantment enchantment = getEnchantment(option);
