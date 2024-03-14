@@ -13,6 +13,7 @@ import org.bukkit.NamespacedKey;
 import org.bukkit.Registry;
 import org.bukkit.Sound;
 import org.bukkit.configuration.file.FileConfiguration;
+import org.bukkit.inventory.ItemFlag;
 import org.bukkit.inventory.ItemStack;
 import us.crazycrew.crazyvouchers.common.utils.StringUtils;
 import java.util.ArrayList;
@@ -56,6 +57,9 @@ public class Voucher {
     private final List<VoucherCommand> chanceCommands = new ArrayList<>();
     private final List<ItemBuilder> items = new ArrayList<>();
     private final Map<String, String> requiredPlaceholders = new HashMap<>();
+
+    private final List<ItemFlag> itemFlags = new ArrayList<>();
+
     private String requiredPlaceholdersMessage;
 
     public Voucher(FileConfiguration fileConfiguration, String name) {
@@ -199,6 +203,10 @@ public class Voucher {
             this.soundToggle = false;
         }
 
+        if (fileConfiguration.contains(path + "hide-item-flags")) {
+            fileConfiguration.getStringList(path + "hide-item-flags").forEach(flag -> this.itemFlags.add(ItemFlag.valueOf(flag)));
+        }
+
         if (fileConfiguration.getBoolean(path + "options.firework.toggle")) {
             for (String color : fileConfiguration.getString(path + "options.firework.colors", "").split(", ")) {
                 this.fireworkColors.add(DyeUtils.getColor(color));
@@ -231,7 +239,7 @@ public class Voucher {
     }
     
     public ItemStack buildItem(int amount) {
-        ItemStack item = this.itemBuilder.setAmount(amount).setGlow(this.glowing).build();
+        ItemStack item = this.itemBuilder.setAmount(amount).setItemFlags(this.itemFlags).setGlow(this.glowing).build();
         NBTItem nbt = new NBTItem(item);
         nbt.setString("voucher", this.name);
 
@@ -243,7 +251,7 @@ public class Voucher {
     }
     
     public ItemStack buildItem(String argument, int amount) {
-        ItemStack item = this.itemBuilder.setAmount(amount).addLorePlaceholder("{arg}", argument).addNamePlaceholder("{arg}", argument).setGlow(this.glowing).build();
+        ItemStack item = this.itemBuilder.setAmount(amount).setItemFlags(this.itemFlags).addLorePlaceholder("{arg}", argument).addNamePlaceholder("{arg}", argument).setGlow(this.glowing).build();
 
         NBTItem nbt = new NBTItem(item);
 

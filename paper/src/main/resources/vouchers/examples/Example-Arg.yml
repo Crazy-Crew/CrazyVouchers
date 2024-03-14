@@ -21,7 +21,9 @@ voucher:
   commands:
     - 'lp user {player} parent group set {arg}'
   # Hide item flags
-  hide-item-flags: false
+  hide-item-flags:
+    - 'HIDE_ATTRIBUTES'
+    - 'HIDE_ENCHANTS'
   # All options when they right-click it.
   options:
     # The message sent when they right-click it.
