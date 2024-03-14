@@ -11,11 +11,12 @@ voucher:
   #player: 'https://textures.minecraft.net/texture/1ee3126ff2c343da525eef2b93272b9fed36273d0ea08c2616b80009948ad57e'
   # If the item should glow or not.
   glowing: true
+  # Hide item flags
+  hide-item-flags: false
   # All options when they right-click it.
   options:
     # The message sent when they right-click it.
     message: '&7Congratulations, you have yourself a fancy head.'
-
   # The items to give when claiming the voucher.
   items:
     - 'Item:PLAYER_HEAD, Player:https://textures.minecraft.net/texture/1ee3126ff2c343da525eef2b93272b9fed36273d0ea08c2616b80009948ad57e, Name:&cA fancy head, Lore:&eA fancy lore,&7with lines, Amount: 3, Glowing: true'

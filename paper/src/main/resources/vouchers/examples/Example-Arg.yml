@@ -3,7 +3,7 @@
 # A) Use your permissions plugin like LuckPerms, You can run /lp user {player} permission set your_permission
 
 # Q) Do I need everything in this config?
-# A) No, You can view PlayerHead.yml for an example where as much as possible can be removed.
+# A) No, You can view PlayerHead.yml for an example whereas much as possible can be removed.
 voucher:
   # The material.
   item: 'PAPER'
@@ -20,6 +20,9 @@ voucher:
   # The commands to send.
   commands:
     - 'lp user {player} parent group set {arg}'
+  # Hide item flags
+  hide-item-flags: false
+  # All options when they right-click it.
   options:
     # The message sent when they right-click it.
     message: '&7Congratulations, you have just ranked up to &6{arg}&7.'

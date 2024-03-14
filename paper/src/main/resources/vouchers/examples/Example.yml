@@ -58,7 +58,9 @@ voucher:
   display-trim:
     material: QUARTZ
     pattern: SENTRY
-
+  # Hide item flags
+  hide-item-flags: false
+  # All options when they right-click it.
   options:
     # The message sent when they right-click it.
     message: '&7Congratulations, you have yourself fancy trims'
