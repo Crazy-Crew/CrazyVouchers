@@ -50,7 +50,7 @@ public class VoucherClickListener implements Listener {
 
     private final HashMap<String, String> placeholders = new HashMap<>();
 
-    @EventHandler(ignoreCancelled = true)
+    @EventHandler(priority = EventPriority.HIGHEST)
     public void onSpawnerChange(PlayerInteractEvent event) {
         ItemStack item = getItemInHand(event.getPlayer());
         Player player = event.getPlayer();
