@@ -15,6 +15,8 @@ import org.bukkit.GameMode;
 import org.bukkit.Material;
 import org.bukkit.Sound;
 import org.bukkit.SoundCategory;
+import org.bukkit.block.Block;
+import org.bukkit.block.BlockState;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
@@ -47,6 +49,36 @@ public class VoucherClickListener implements Listener {
     private final HashMap<UUID, String> twoAuth = new HashMap<>();
 
     private final HashMap<String, String> placeholders = new HashMap<>();
+
+    @EventHandler(priority = EventPriority.HIGHEST)
+    public void onSpawnerChange(PlayerInteractEvent event) {
+        ItemStack item = getItemInHand(event.getPlayer());
+        Player player = event.getPlayer();
+        Action action = event.getAction();
+        Block block = event.getClickedBlock();
+
+        if (action != Action.RIGHT_CLICK_BLOCK) return;
+
+        if (block == null) return;
+
+        if (block.getType() != Material.SPAWNER) return;
+
+        if (!item.getType().toString().endsWith("SPAWN_EGG")) return;
+
+        if (event.getHand() == EquipmentSlot.OFF_HAND) {
+            Voucher voucher = this.crazyManager.getVoucherFromItem(player.getInventory().getItemInOffHand());
+
+            if (voucher != null) {
+                event.setCancelled(true);
+            }
+        }
+
+        Voucher voucher = this.crazyManager.getVoucherFromItem(player.getInventory().getItemInMainHand());
+
+        if (voucher != null) {
+            event.setCancelled(true);
+        }
+    }
     
     // This must run as highest, so it doesn't cause other plugins to check
     // the items that were added to the players inventory and replaced the item in the player's hand.
