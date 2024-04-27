@@ -8,6 +8,7 @@ import com.badbones69.crazyvouchers.commands.VoucherCommands;
 import com.badbones69.crazyvouchers.commands.VoucherTab;
 import com.badbones69.crazyvouchers.listeners.VoucherClickListener;
 import com.badbones69.crazyvouchers.listeners.VoucherCraftListener;
+import com.badbones69.crazyvouchers.platform.config.ConfigManager;
 import com.badbones69.crazyvouchers.platform.util.MiscUtil;
 import com.ryderbelserion.vital.VitalPaper;
 import com.ryderbelserion.vital.files.FileManager;
@@ -39,6 +40,8 @@ public class CrazyVouchers extends JavaPlugin {
 
             return;
         }
+
+        ConfigManager.load(getDataFolder());
 
         new VitalPaper(this);
 

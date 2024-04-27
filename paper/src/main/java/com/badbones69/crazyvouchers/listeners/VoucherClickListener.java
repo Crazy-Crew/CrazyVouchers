@@ -1,7 +1,7 @@
 package com.badbones69.crazyvouchers.listeners;
 
 import com.badbones69.crazyvouchers.CrazyVouchers;
-import com.badbones69.crazyvouchers.Methods;
+import com.badbones69.crazyvouchers.platform.util.MiscUtil;
 import com.badbones69.crazyvouchers.api.CrazyManager;
 import com.badbones69.crazyvouchers.api.enums.Files;
 import com.badbones69.crazyvouchers.api.enums.Messages;
@@ -165,7 +165,7 @@ public class VoucherClickListener implements Listener {
 
                     if (!newValue.equals(value)) {
                         String message = replacePlaceholders(voucher.getRequiredPlaceholdersMessage(), player);
-                        player.sendMessage(Methods.replacePlaceholders(this.placeholders, message, false));
+                        player.sendMessage(MiscUtil.replacePlaceholders(this.placeholders, message, false));
 
                         shouldCancel.set(true);
                     }
@@ -212,10 +212,10 @@ public class VoucherClickListener implements Listener {
                     if (!player.hasPermission(permission.toLowerCase().replace("{arg}", argument != null ? argument : "{arg}"))) {
                         this.placeholders.put("{permission}", permission);
 
-                        player.sendMessage(Methods.replacePlaceholders(this.placeholders, voucher.getWhitelistPermissionMessage(), false));
+                        player.sendMessage(MiscUtil.replacePlaceholders(this.placeholders, voucher.getWhitelistPermissionMessage(), false));
 
                         for (String command : voucher.getWhitelistCommands()) {
-                            this.plugin.getServer().dispatchCommand(this.plugin.getServer().getConsoleSender(), Methods.replacePlaceholders(this.placeholders, command, false));
+                            this.plugin.getServer().dispatchCommand(this.plugin.getServer().getConsoleSender(), MiscUtil.replacePlaceholders(this.placeholders, command, false));
                         }
 
                         return false;
@@ -224,10 +224,10 @@ public class VoucherClickListener implements Listener {
             }
 
             if (voucher.usesWhitelistWorlds() && !voucher.getWhitelistWorlds().contains(player.getWorld().getName().toLowerCase())) {
-                player.sendMessage(Methods.replacePlaceholders(this.placeholders, voucher.getWhitelistWorldMessage(), false));
+                player.sendMessage(MiscUtil.replacePlaceholders(this.placeholders, voucher.getWhitelistWorldMessage(), false));
 
                 for (String command : voucher.getWhitelistWorldCommands()) {
-                    this.plugin.getServer().dispatchCommand(this.plugin.getServer().getConsoleSender(), Methods.replacePlaceholders(this.placeholders, command, true));
+                    this.plugin.getServer().dispatchCommand(this.plugin.getServer().getConsoleSender(), MiscUtil.replacePlaceholders(this.placeholders, command, true));
                 }
 
                 return false;
@@ -238,10 +238,10 @@ public class VoucherClickListener implements Listener {
                     if (player.hasPermission(permission.toLowerCase().replace("{arg}", argument != null ? argument : "{arg}"))) {
                         this.placeholders.put("{permission}", permission);
 
-                        player.sendMessage(Methods.replacePlaceholders(this.placeholders, voucher.getBlackListMessage(), false));
+                        player.sendMessage(MiscUtil.replacePlaceholders(this.placeholders, voucher.getBlackListMessage(), false));
 
                         for (String command : voucher.getBlacklistCommands()) {
-                            this.plugin.getServer().dispatchCommand(this.plugin.getServer().getConsoleSender(), Methods.replacePlaceholders(this.placeholders, command, true));
+                            this.plugin.getServer().dispatchCommand(this.plugin.getServer().getConsoleSender(), MiscUtil.replacePlaceholders(this.placeholders, command, true));
                         }
 
                         return false;
@@ -264,21 +264,21 @@ public class VoucherClickListener implements Listener {
     }
 
     private void voucherClick(Player player, ItemStack item, Voucher voucher, String argument) {
-        Methods.removeItem(item, player);
+        MiscUtil.removeItem(item, player);
 
         populate(player, argument);
 
         for (String command : voucher.getCommands()) {
             command = replacePlaceholders(command, player);
 
-            this.plugin.getServer().dispatchCommand(this.plugin.getServer().getConsoleSender(), Methods.replacePlaceholders(this.placeholders, this.crazyManager.replaceRandom(command), true));
+            this.plugin.getServer().dispatchCommand(this.plugin.getServer().getConsoleSender(), MiscUtil.replacePlaceholders(this.placeholders, this.crazyManager.replaceRandom(command), true));
         }
 
         if (!voucher.getRandomCommands().isEmpty()) { // Picks a random command from the Random-Commands list.
             for (String command : voucher.getRandomCommands().get(getRandom(voucher.getRandomCommands().size())).getCommands()) {
                 command = replacePlaceholders(command, player);
 
-                plugin.getServer().dispatchCommand(this.plugin.getServer().getConsoleSender(), Methods.replacePlaceholders(this.placeholders, this.crazyManager.replaceRandom(command), true));
+                plugin.getServer().dispatchCommand(this.plugin.getServer().getConsoleSender(), MiscUtil.replacePlaceholders(this.placeholders, this.crazyManager.replaceRandom(command), true));
             }
         }
 
@@ -286,12 +286,12 @@ public class VoucherClickListener implements Listener {
             for (String command : voucher.getChanceCommands().get(getRandom(voucher.getChanceCommands().size())).getCommands()) {
                 command = replacePlaceholders(command, player);
 
-                this.plugin.getServer().dispatchCommand(this.plugin.getServer().getConsoleSender(), Methods.replacePlaceholders(this.placeholders, this.crazyManager.replaceRandom(command), true));
+                this.plugin.getServer().dispatchCommand(this.plugin.getServer().getConsoleSender(), MiscUtil.replacePlaceholders(this.placeholders, this.crazyManager.replaceRandom(command), true));
             }
         }
 
         for (ItemBuilder itemStack : voucher.getItems()) {
-            if (!Methods.isInventoryFull(player)) {
+            if (!MiscUtil.isInventoryFull(player)) {
                 player.getInventory().addItem(itemStack.build());
             } else {
                 player.getWorld().dropItem(player.getLocation(), itemStack.build());
@@ -304,12 +304,12 @@ public class VoucherClickListener implements Listener {
             }
         }
 
-        if (voucher.useFirework()) Methods.firework(player.getLocation(), voucher.getFireworkColors());
+        if (voucher.useFirework()) MiscUtil.firework(player.getLocation(), voucher.getFireworkColors());
 
         if (!voucher.getVoucherUsedMessage().isEmpty()) {
             String message = replacePlaceholders(voucher.getVoucherUsedMessage(), player);
 
-            player.sendMessage(Methods.replacePlaceholders(this.placeholders, message, false));
+            player.sendMessage(MiscUtil.replacePlaceholders(this.placeholders, message, false));
         }
 
         if (voucher.useLimiter()) {
