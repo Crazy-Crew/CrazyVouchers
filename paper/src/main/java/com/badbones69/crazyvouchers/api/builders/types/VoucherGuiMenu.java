@@ -1,9 +1,8 @@
 package com.badbones69.crazyvouchers.api.builders.types;
 
-import com.badbones69.crazyvouchers.CrazyVouchers;
 import com.badbones69.crazyvouchers.api.builders.InventoryBuilder;
 import com.badbones69.crazyvouchers.api.enums.PersistentKeys;
-import com.badbones69.crazyvouchers.api.objects.other.ItemBuilder;
+import com.badbones69.crazyvouchers.api.builders.ItemBuilder;
 import com.badbones69.crazyvouchers.api.objects.Voucher;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
@@ -11,11 +10,16 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.persistence.PersistentDataContainer;
 import org.bukkit.persistence.PersistentDataType;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.UUID;
 
 public class VoucherGuiMenu extends InventoryBuilder {
 
-    private final HashMap<UUID, Integer> playerPage = new HashMap<>();
+    private final Map<UUID, Integer> playerPage = new HashMap<>();
 
     public VoucherGuiMenu(Player player, int size, String title) {
         super(player, size, title);
@@ -110,8 +114,8 @@ public class VoucherGuiMenu extends InventoryBuilder {
         }
     }
 
-    private List<Voucher> getPageVouchers(Integer page) {
-        List<Voucher> list = this.plugin.getCrazyManager().getVouchers();
+    private List<Voucher> getPageVouchers(int page) {
+        List<Voucher> list = plugin.getCrazyManager().getVouchers();
         List<Voucher> vouchers = new ArrayList<>();
         if (page <= 0) page = 1;
         int max = 36;
@@ -163,8 +167,8 @@ public class VoucherGuiMenu extends InventoryBuilder {
 
     public static int getMaxPage() {
         int maxPage = 1;
-        int amount = CrazyVouchers.get().getCrazyManager().getVouchers().size();
-        for (; amount > 36; amount -= 36, maxPage++) ;
+        int amount = plugin.getCrazyManager().getVouchers().size();
+        for (; amount > 36; amount -= 36, maxPage++);
         return maxPage;
     }
 }

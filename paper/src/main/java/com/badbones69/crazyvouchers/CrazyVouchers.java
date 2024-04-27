@@ -1,111 +1,86 @@
 package com.badbones69.crazyvouchers;
 
 import com.badbones69.crazyvouchers.api.CrazyManager;
-import com.badbones69.crazyvouchers.api.FileManager;
+import com.badbones69.crazyvouchers.api.enums.Files;
 import com.badbones69.crazyvouchers.listeners.FireworkDamageListener;
 import com.badbones69.crazyvouchers.listeners.VoucherMenuListener;
-import com.badbones69.crazyvouchers.api.FileManager.Files;
 import com.badbones69.crazyvouchers.commands.VoucherCommands;
 import com.badbones69.crazyvouchers.commands.VoucherTab;
 import com.badbones69.crazyvouchers.listeners.VoucherClickListener;
 import com.badbones69.crazyvouchers.listeners.VoucherCraftListener;
-import com.badbones69.crazyvouchers.support.SkullCreator;
-import org.bukkit.command.CommandExecutor;
-import org.bukkit.command.PluginCommand;
-import org.bukkit.command.TabCompleter;
-import org.bukkit.plugin.PluginManager;
+import com.badbones69.crazyvouchers.platform.util.MiscUtil;
+import com.ryderbelserion.vital.VitalPaper;
+import com.ryderbelserion.vital.files.FileManager;
+import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.plugin.java.JavaPlugin;
-import org.jetbrains.annotations.NotNull;
-import us.crazycrew.crazyvouchers.common.config.types.ConfigKeys;
-import us.crazycrew.crazyvouchers.api.plugin.CrazyHandler;
+import java.util.List;
 
 public class CrazyVouchers extends JavaPlugin {
 
-    @NotNull
-    public static CrazyVouchers get() {
-        return JavaPlugin.getPlugin(CrazyVouchers.class);
-    }
-
-    private CrazyHandler crazyHandler;
-
     private CrazyManager crazyManager;
-
-    private Methods methods;
-
-    private SkullCreator skullCreator;
-
-    private VoucherMenuListener voucherMenuListener;
+    private FileManager fileManager;
 
     @Override
     public void onEnable() {
-        this.crazyHandler = new CrazyHandler(getDataFolder());
-        this.crazyHandler.install();
+        String version = getServer().getMinecraftVersion();
 
-        enable();
+        if (!version.equals("1.20.5")) {
+            List.of(
+                    "You are not running 1.20.5, Please download Paper or Purpur 1.20.5",
+                    "Paper Downloads: https://papermc.io/downloads/paper",
+                    "Purpur Downloads: https://purpurmc.org/downloads",
+                    "",
+                    "We only support 1.20.5, If you need older versions. You can downgrade versions of the plugin.",
+                    "All our older versions can be found in the versions tab on Modrinth",
+                    "The older versions do not get updates or fixes."
+            ).forEach(getLogger()::severe);
+
+            getServer().getPluginManager().disablePlugin(this);
+
+            return;
+        }
+
+        new VitalPaper(this);
+
+        this.fileManager = new FileManager();
+        this.fileManager
+                .addDefaultFile("vouchers", "Example.yml")
+                .addDefaultFile("vouchers", "Example-Arg.yml")
+                .addDefaultFile("vouchers", "PlayerHead.yml")
+                .addDefaultFile("codes", "Starter-Money.yml")
+                .addStaticFile("users.yml")
+                .addFolder("vouchers")
+                .addFolder("codes").create();
+
+        this.crazyManager = new CrazyManager();
+        this.crazyManager.load();
+
+        FileConfiguration configuration = Files.users.getFile();
+
+        if (!configuration.contains("Players")) {
+            configuration.set("Players.Clear", null);
+
+            Files.users.save();
+        }
+
+        getServer().getPluginManager().registerEvents(new VoucherClickListener(), this);
+        getServer().getPluginManager().registerEvents(new VoucherCraftListener(), this);
+        getServer().getPluginManager().registerEvents(new VoucherMenuListener(), this);
+        getServer().getPluginManager().registerEvents(new FireworkDamageListener(), this);
+
+        MiscUtil.registerCommand(getCommand("vouchers"), new VoucherTab(), new VoucherCommands());
     }
 
     @Override
     public void onDisable() {
-        this.crazyHandler.uninstall();
+        super.onDisable();
     }
 
-    public @NotNull CrazyHandler getCrazyHandler() {
-        return this.crazyHandler;
-    }
-
-    public @NotNull FileManager getFileManager() {
-        return this.crazyHandler.getFileManager();
-    }
-
-    public boolean isLogging() {
-        return this.crazyHandler.getConfigManager().getConfig().getProperty(ConfigKeys.verbose_logging);
-    }
-
-    private void enable() {
-        this.crazyManager = new CrazyManager();
-
-        this.methods = new Methods();
-
-        this.skullCreator = new SkullCreator();
-
-        if (!Files.users.getFile().contains("Players")) {
-            Files.users.getFile().set("Players.Clear", null);
-            Files.users.saveFile();
-        }
-
-        PluginManager pluginManager = getServer().getPluginManager();
-
-        pluginManager.registerEvents(new VoucherClickListener(), this);
-        pluginManager.registerEvents(new VoucherCraftListener(), this);
-        pluginManager.registerEvents(this.voucherMenuListener = new VoucherMenuListener(), this);
-        pluginManager.registerEvents(new FireworkDamageListener(), this);
-
-        registerCommand(getCommand("vouchers"), new VoucherTab(), new VoucherCommands());
-
-        this.crazyManager.load();
-    }
-
-    private void registerCommand(PluginCommand pluginCommand, TabCompleter tabCompleter, CommandExecutor commandExecutor) {
-        if (pluginCommand != null) {
-            pluginCommand.setExecutor(commandExecutor);
-
-            if (tabCompleter != null) pluginCommand.setTabCompleter(tabCompleter);
-        }
+    public FileManager getFileManager() {
+        return this.fileManager;
     }
 
     public CrazyManager getCrazyManager() {
         return this.crazyManager;
-    }
-
-    public Methods getMethods() {
-        return this.methods;
-    }
-
-    public SkullCreator getSkullCreator() {
-        return this.skullCreator;
-    }
-
-    public VoucherMenuListener getGui() {
-        return this.voucherMenuListener;
     }
 }

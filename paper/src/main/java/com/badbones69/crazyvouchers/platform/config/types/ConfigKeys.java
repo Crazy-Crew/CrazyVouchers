@@ -1,4 +1,4 @@
-package us.crazycrew.crazyvouchers.common.config.types;
+package com.badbones69.crazyvouchers.platform.config.types;
 
 import ch.jalu.configme.Comment;
 import ch.jalu.configme.SettingsHolder;

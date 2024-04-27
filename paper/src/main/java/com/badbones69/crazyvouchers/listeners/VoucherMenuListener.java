@@ -11,15 +11,14 @@ import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.persistence.PersistentDataContainer;
+import org.bukkit.plugin.java.JavaPlugin;
 import org.jetbrains.annotations.NotNull;
 
 public class VoucherMenuListener implements Listener {
 
-    @NotNull
-    private final CrazyVouchers plugin = CrazyVouchers.get();
+    private final @NotNull CrazyVouchers plugin = JavaPlugin.getPlugin(CrazyVouchers.class);
 
-    @NotNull
-    private final CrazyManager crazyManager = this.plugin.getCrazyManager();
+    private final @NotNull CrazyManager crazyManager = this.plugin.getCrazyManager();
 
     @EventHandler
     public void invClick(InventoryClickEvent event) {

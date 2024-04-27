@@ -1,25 +1,27 @@
 plugins {
-    id("paper-plugin")
+    id("io.github.goooler.shadow")
+
+    `paper-plugin`
 }
 
 dependencies {
-    api(project(":common"))
+    compileOnly(fileTree("$rootDir/libs/compile").include("*.jar"))
 
-    implementation(libs.cluster.paper)
+    //implementation(libs.metrics)
 
-    implementation(libs.triumphcmds)
+    implementation(libs.vital)
 
-    implementation(libs.metrics)
+    compileOnly(libs.placeholder.api)
 
-    implementation(libs.nbtapi)
+    compileOnly(libs.itemsadder.api)
 
-    compileOnly(libs.placeholderapi)
+    compileOnly(libs.triumph.cmds)
 
-    compileOnly(libs.itemsadder)
+    compileOnly(libs.oraxen.api)
 
-    compileOnly(libs.oraxen)
+    compileOnly(libs.config.me)
 
-    compileOnly(fileTree("libs").include("*.jar"))
+    compileOnly(libs.nbt.api)
 }
 
 val component: SoftwareComponent = components["java"]
@@ -28,11 +30,11 @@ tasks {
     publishing {
         repositories {
             maven {
-                url = uri("https://repo.crazycrew.us/releases/")
+                url = uri("https://repo.crazycrew.us/releases")
 
                 credentials {
-                    this.username = System.getenv("GRADLE_USERNAME")
-                    this.password = System.getenv("GRADLE_PASSWORD")
+                    this.username = System.getenv("gradle_username")
+                    this.password = System.getenv("gradle_password")
                 }
             }
         }
@@ -48,31 +50,37 @@ tasks {
         }
     }
 
+    assemble {
+        doLast {
+            copy {
+                from(shadowJar.get())
+                into(rootProject.projectDir.resolve("jars"))
+            }
+        }
+    }
+
     shadowJar {
+        archiveBaseName.set(rootProject.name)
+        archiveClassifier.set("")
+
         listOf(
-            "com.ryderbelserion.cluster.paper",
-            "de.tr7zw.changeme.nbtapi",
-            "org.bstats"
+            "com.ryderbelserion.vital",
+            //"org.bstats"
         ).forEach {
             relocate(it, "libs.$it")
         }
     }
 
     processResources {
-        val properties = hashMapOf(
-                "name" to rootProject.name,
-                "version" to rootProject.version,
-                "group" to rootProject.group,
-                "description" to rootProject.description,
-                "apiVersion" to rootProject.properties["apiVersion"],
-                "authors" to rootProject.properties["authors"],
-                "website" to rootProject.properties["website"]
-        )
+        inputs.properties("name" to rootProject.name)
+        inputs.properties("version" to project.version)
+        inputs.properties("group" to project.group)
+        //inputs.properties("authors" to project.properties["authors"])
+        inputs.properties("description" to project.properties["description"])
+        inputs.properties("website" to project.properties["website"])
 
-        inputs.properties(properties)
-
-        filesMatching("plugin.yml") {
-            expand(properties)
+        filesMatching("paper-plugin.yml") {
+            expand(inputs.properties)
         }
     }
 }

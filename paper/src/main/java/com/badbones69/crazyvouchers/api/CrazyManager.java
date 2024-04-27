@@ -1,15 +1,17 @@
 package com.badbones69.crazyvouchers.api;
 
 import com.badbones69.crazyvouchers.CrazyVouchers;
-import com.badbones69.crazyvouchers.api.objects.other.ItemBuilder;
+import com.badbones69.crazyvouchers.api.builders.ItemBuilder;
 import com.badbones69.crazyvouchers.api.objects.Voucher;
+import com.badbones69.crazyvouchers.platform.config.ConfigManager;
+import com.ryderbelserion.vital.files.FileManager;
 import de.tr7zw.changeme.nbtapi.NBTItem;
 import com.badbones69.crazyvouchers.api.objects.VoucherCode;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.plugin.java.JavaPlugin;
 import org.jetbrains.annotations.NotNull;
-import us.crazycrew.crazyvouchers.common.config.types.ConfigKeys;
-import us.crazycrew.crazyvouchers.api.MetricsHandler;
+import java.io.File;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -18,32 +20,35 @@ import java.util.logging.Level;
 
 public class CrazyManager {
 
-    @NotNull
-    private final CrazyVouchers plugin = CrazyVouchers.get();
+    private final @NotNull CrazyVouchers plugin = JavaPlugin.getPlugin(CrazyVouchers.class);
+
+    private final @NotNull FileManager fileManager = this.plugin.getFileManager();
     
-    private final ArrayList<Voucher> vouchers = new ArrayList<>();
-    private final ArrayList<VoucherCode> voucherCodes = new ArrayList<>();
+    private final List<Voucher> vouchers = new ArrayList<>();
+    private final List<VoucherCode> voucherCodes = new ArrayList<>();
     
     public void load() {
         // Used for when wanting to put in fake vouchers.
         // for(int i = 1; i <= 400; i++) vouchers.add(new Voucher(i));
 
-        loadVouchers();
+        loadvouchers();
     }
 
-    private void loadVouchers() {
-        for (String voucherName : this.plugin.getFileManager().getVouchers()) {
+    public void loadvouchers() {
+        for (String voucherName : getVouchersFiles()) {
             try {
-                FileConfiguration file = this.plugin.getFileManager().getFile(voucherName).getFile();
+                FileConfiguration file = this.fileManager.getCustomFile(voucherName).getConfiguration();
+
                 this.vouchers.add(new Voucher(file, voucherName));
             } catch (Exception exception) {
                 this.plugin.getLogger().log(Level.SEVERE, "There was an error while loading the " + voucherName + ".yml file.", exception);
             }
         }
 
-        for (String voucherCode : this.plugin.getFileManager().getCodes()) {
+        for (String voucherCode : getVoucherCodeFiles()) {
             try {
-                FileConfiguration file = this.plugin.getFileManager().getFile(voucherCode).getFile();
+                FileConfiguration file = this.fileManager.getCustomFile(voucherCode).getConfiguration();
+
                 this.voucherCodes.add(new VoucherCode(file, voucherCode));
             } catch (Exception exception) {
                 this.plugin.getLogger().log(Level.SEVERE,"There was an error while loading the " + voucherCode + ".yml file.", exception);
@@ -51,27 +56,10 @@ public class CrazyManager {
         }
     }
 
-    public void reload(boolean serverStop) {
-        MetricsHandler metricsHandler = this.plugin.getCrazyHandler().getMetrics();
+    public void reload() {
+        ConfigManager.reload();
 
-        if (serverStop) {
-            metricsHandler.stop();
-        }
-
-        this.plugin.getCrazyHandler().getConfigManager().reload();
-
-        boolean metrics = this.plugin.getCrazyHandler().getConfigManager().getConfig().getProperty(ConfigKeys.toggle_metrics);
-
-        if (metrics) {
-            metricsHandler.start();
-        } else {
-            metricsHandler.stop();
-        }
-
-        this.vouchers.clear();
-        this.voucherCodes.clear();
-
-        loadVouchers();
+        loadvouchers();
     }
     
     public List<Voucher> getVouchers() {
@@ -189,5 +177,58 @@ public class CrazyManager {
         } catch (IllegalArgumentException e) {
             return min;
         }
+    }
+
+    /**
+     * @return A list of voucher names.
+     */
+    private List<String> getVouchersFiles() {
+        return getFiles(new File(this.plugin.getDataFolder(), "/vouchers"));
+    }
+
+    /**
+     * @return A list of voucher codes.
+     */
+    private List<String> getVoucherCodeFiles() {
+        return getFiles(new File(this.plugin.getDataFolder(), "/codes"));
+    }
+
+    /**
+     * @param dir the directory to look.
+     *
+     * @return the files
+     */
+    private List<String> getFiles(File dir) {
+        List<String> files = new ArrayList<>();
+
+        String[] file = dir.list();
+
+        if (file != null) {
+            File[] filesList = dir.listFiles();
+
+            if (filesList != null) {
+                for (File directory : filesList) {
+                    if (directory.isDirectory()) {
+                        String[] folder = directory.list();
+
+                        if (folder != null) {
+                            for (String name : folder) {
+                                if (!name.endsWith(".yml")) continue;
+
+                                files.add(name.replaceAll(".yml", ""));
+                            }
+                        }
+                    }
+                }
+            }
+
+            for (String name : file) {
+                if (!name.endsWith(".yml")) continue;
+
+                files.add(name.replaceAll(".yml", ""));
+            }
+        }
+
+        return Collections.unmodifiableList(files);
     }
 }

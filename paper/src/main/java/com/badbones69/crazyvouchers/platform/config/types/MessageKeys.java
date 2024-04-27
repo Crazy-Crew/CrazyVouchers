@@ -1,4 +1,4 @@
-package us.crazycrew.crazyvouchers.common.config.types;
+package com.badbones69.crazyvouchers.platform.config.types;
 
 import ch.jalu.configme.SettingsHolder;
 import ch.jalu.configme.configurationdata.CommentsConfiguration;
@@ -60,7 +60,7 @@ public class MessageKeys implements SettingsHolder {
 
     public static final Property<String> not_a_number = newProperty("voucher.requirements.not-a-number", "{prefix}&c{arg} is not a number.");
 
-    public static final Property<String> not_a_voucher = newProperty("voucher.requirements.not-a-voucher", "{prefix}&cThat is not a Voucher Type.");
+    public static final Property<String> not_a_voucher = newProperty("voucher.requirements.not-a-voucher", "{prefix}&cThat is not a voucher type.");
     public static final Property<String> has_blacklist_permission = newProperty("voucher.requirements.un-stack-item", "{prefix}&cSorry but you can not use this voucher because you have a black-listed permission.");
 
     public static final Property<String> not_in_whitelist_world = newProperty("voucher.requirements.not-in-world", "{prefix}&cYou can not use that voucher here as you are not in a whitelisted world for this voucher.");
@@ -73,19 +73,19 @@ public class MessageKeys implements SettingsHolder {
 
     public static final Property<String> sent_voucher = newProperty("voucher.sent-voucher", "{prefix}&3You have just given &6{player} &3a &6{voucher} &3voucher.");
 
-    public static final Property<String> sent_everyone_voucher = newProperty("voucher.sent-everyone-voucher", "{prefix}&3You have just given all players a &6{voucher} &3voucher.");
+    public static final Property<String> sent_everyone_voucher = newProperty("voucher.sent-everyone-voucher", "{prefix}&3You have given all players a &6{voucher} &3voucher.");
 
-    public static final Property<String> config_reload = newProperty("misc.config-reload", "{prefix}&7You have just reloaded the configurations.");
+    public static final Property<String> config_reload = newProperty("misc.config-reload", "{prefix}&7You have reloaded the configurations.");
 
     public static final Property<String> player_only = newProperty("misc.player-only", "{prefix}&cOnly players can use this command.");
 
     public static final Property<List<String>> help = newListProperty("misc.help", List.of(
-            "&8- &6/Voucher help &3Lists all the commands for vouchers.",
-            "&8- &6/Voucher list &3Lists all available types of vouchers and codes.",
-            "&8- &6/Voucher redeem <code> &3Allows the player to redeem a voucher code.",
-            "&8- &6/Voucher give <voucher> [amount] [player] [arguments] &3Gives a player a voucher.",
-            "&8- &6/Voucher giveAll <voucher> [amount] [arguments] &3Gives all players a voucher.",
-            "&8- &6/Voucher open [page] &3Opens a GUI so you can get vouchers easily.",
-            "&8- &6/Voucher reload &3Reloaded the configuration files."
+            "&8- &6/crazyvouchers help &7- &3Lists all the commands for vouchers.",
+            "&8- &6/crazyvouchers list &7- &3Lists all available types of vouchers and codes.",
+            "&8- &6/crazyvouchers redeem <code> &7- &3Allows the player to redeem a voucher code.",
+            "&8- &6/crazyvouchers give <voucher> [amount] [player] [arguments] &7- &3Gives a player a voucher.",
+            "&8- &6/crazyvouchers giveAll <voucher> [amount] [arguments] &7- &3Gives all players a voucher.",
+            "&8- &6/crazyvouchers open [page] &7- &3Opens a GUI so you can get vouchers easily.",
+            "&8- &6/crazyvouchers reload &7- &3Reloads the configuration files."
     ));
 }

@@ -2,11 +2,12 @@ package com.badbones69.crazyvouchers.api.objects;
 
 import com.badbones69.crazyvouchers.CrazyVouchers;
 import com.badbones69.crazyvouchers.api.enums.Messages;
-import com.badbones69.crazyvouchers.api.objects.other.ItemBuilder;
-import com.ryderbelserion.cluster.utils.DyeUtils;
+import com.badbones69.crazyvouchers.api.builders.ItemBuilder;
+import com.ryderbelserion.vital.util.DyeUtil;
 import org.bukkit.Color;
 import org.bukkit.Sound;
 import org.bukkit.configuration.file.FileConfiguration;
+import org.bukkit.plugin.java.JavaPlugin;
 import org.jetbrains.annotations.NotNull;
 import java.util.ArrayList;
 import java.util.List;
@@ -14,8 +15,7 @@ import java.util.logging.Level;
 
 public class VoucherCode {
 
-    @NotNull
-    private final CrazyVouchers plugin = CrazyVouchers.get();
+    private final @NotNull CrazyVouchers plugin = JavaPlugin.getPlugin(CrazyVouchers.class);
     
     private final String name;
     private final String code;
@@ -35,7 +35,7 @@ public class VoucherCode {
     private List<String> blacklistCommands = new ArrayList<>();
     private List<String> blacklistPermissions = new ArrayList<>();
     private final boolean limiterToggle;
-    private Integer limiterLimit;
+    private int limiterLimit;
     private final boolean soundToggle;
     private final List<Sound> sounds = new ArrayList<>();
     private float volume;
@@ -151,7 +151,7 @@ public class VoucherCode {
             this.fireworkToggle = file.getBoolean(path + "options.firework.toggle");
 
             for (String color : file.getString(path + "options.firework.colors").split(", ")) {
-                this.fireworkColors.add(DyeUtils.getColor(color));
+                this.fireworkColors.add(DyeUtil.getColor(color));
             }
         } else {
             this.fireworkToggle = false;

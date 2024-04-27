@@ -2,7 +2,7 @@ package com.badbones69.crazyvouchers.api.objects;
 
 import java.util.Arrays;
 import java.util.List;
-import java.util.Random;
+import java.util.concurrent.ThreadLocalRandom;
 
 public class VoucherCommand {
     
@@ -10,7 +10,7 @@ public class VoucherCommand {
     private final List<String> commands;
     
     public VoucherCommand(String commandString) {
-        this.uuid = new Random().nextInt();
+        this.uuid = ThreadLocalRandom.current().nextInt();
         this.commands = Arrays.asList(commandString.split(", "));
     }
     

@@ -3,6 +3,7 @@ package com.badbones69.crazyvouchers.api.enums;
 import com.badbones69.crazyvouchers.CrazyVouchers;
 import org.bukkit.NamespacedKey;
 import org.bukkit.persistence.PersistentDataType;
+import org.bukkit.plugin.java.JavaPlugin;
 import org.jetbrains.annotations.NotNull;
 
 public enum PersistentKeys {
@@ -12,7 +13,7 @@ public enum PersistentKeys {
     next_button("next_button", PersistentDataType.STRING),
     no_firework_damage("firework", PersistentDataType.BOOLEAN);
 
-    private final @NotNull CrazyVouchers plugin = CrazyVouchers.get();
+    private final @NotNull CrazyVouchers plugin = JavaPlugin.getPlugin(CrazyVouchers.class);
 
     private final String NamespacedKey;
     private final PersistentDataType type;

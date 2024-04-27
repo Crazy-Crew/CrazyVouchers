@@ -3,11 +3,11 @@ package com.badbones69.crazyvouchers.api.objects;
 import com.badbones69.crazyvouchers.CrazyVouchers;
 import com.badbones69.crazyvouchers.api.CrazyManager;
 import com.badbones69.crazyvouchers.api.enums.Messages;
-import com.badbones69.crazyvouchers.api.objects.other.ItemBuilder;
-import com.badbones69.crazyvouchers.other.MsgUtils;
-import com.ryderbelserion.cluster.utils.DyeUtils;
+import com.badbones69.crazyvouchers.api.builders.ItemBuilder;
+import com.badbones69.crazyvouchers.platform.util.MsgUtil;
+import com.ryderbelserion.vital.common.util.StringUtil;
+import com.ryderbelserion.vital.util.DyeUtil;
 import de.tr7zw.changeme.nbtapi.NBTItem;
-import com.badbones69.crazyvouchers.Methods;
 import org.bukkit.Color;
 import org.bukkit.NamespacedKey;
 import org.bukkit.Registry;
@@ -15,7 +15,8 @@ import org.bukkit.Sound;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.inventory.ItemFlag;
 import org.bukkit.inventory.ItemStack;
-import us.crazycrew.crazyvouchers.common.utils.StringUtils;
+import org.bukkit.plugin.java.JavaPlugin;
+import org.jetbrains.annotations.NotNull;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -23,6 +24,8 @@ import java.util.Map;
 import java.util.logging.Level;
 
 public class Voucher {
+
+    private final @NotNull CrazyVouchers plugin = JavaPlugin.getPlugin(CrazyVouchers.class);
 
     private final ItemBuilder itemBuilder;
 
@@ -91,6 +94,7 @@ public class Voucher {
             for (String lore : this.itemBuilder.getLore()) {
                 if (lore.toLowerCase().contains("{arg}")) {
                     this.usesArgs = true;
+
                     break;
                 }
             }
@@ -104,7 +108,6 @@ public class Voucher {
             }
         }
 
-        CrazyVouchers plugin = CrazyVouchers.get();
         if (fileConfiguration.contains(path + "chance-commands")) {
             for (String line : fileConfiguration.getStringList(path + "chance-commands")) { // - '{chance} {command}, {command}, {command}, ... etc'
                 try {
@@ -209,7 +212,7 @@ public class Voucher {
 
         if (fileConfiguration.getBoolean(path + "options.firework.toggle")) {
             for (String color : fileConfiguration.getString(path + "options.firework.colors", "").split(", ")) {
-                this.fireworkColors.add(DyeUtils.getColor(color));
+                this.fireworkColors.add(DyeUtil.getColor(color));
             }
 
             this.fireworkToggle = !fireworkColors.isEmpty();
@@ -381,7 +384,7 @@ public class Voucher {
         String messageString;
 
         if (isList(path, file)) {
-            messageString = MsgUtils.color(StringUtils.convertList(file.getStringList(path)));
+            messageString = MsgUtil.color(StringUtil.convertList(file.getStringList(path)));
         } else {
             messageString = file.getString(path, "");
         }

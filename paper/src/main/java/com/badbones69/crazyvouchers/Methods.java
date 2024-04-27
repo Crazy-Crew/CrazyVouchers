@@ -3,7 +3,8 @@ package com.badbones69.crazyvouchers;
 import ch.jalu.configme.SettingsManager;
 import com.badbones69.crazyvouchers.api.enums.PersistentKeys;
 import com.badbones69.crazyvouchers.api.enums.Messages;
-import com.badbones69.crazyvouchers.other.MsgUtils;
+import com.badbones69.crazyvouchers.platform.config.ConfigManager;
+import com.badbones69.crazyvouchers.platform.util.MsgUtil;
 import org.bukkit.Color;
 import org.bukkit.FireworkEffect;
 import org.bukkit.Location;
@@ -14,25 +15,21 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.FireworkMeta;
 import org.bukkit.persistence.PersistentDataContainer;
 import org.bukkit.persistence.PersistentDataType;
+import org.bukkit.plugin.java.JavaPlugin;
 import org.jetbrains.annotations.NotNull;
-import us.crazycrew.crazyvouchers.common.config.ConfigManager;
-import us.crazycrew.crazyvouchers.common.config.types.ConfigKeys;
-import us.crazycrew.crazyvouchers.api.plugin.CrazyHandler;
+import com.badbones69.crazyvouchers.platform.config.types.ConfigKeys;
+
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 public class Methods {
 
-    @NotNull
-    private final CrazyVouchers plugin = CrazyVouchers.get();
-    @NotNull
-    private final CrazyHandler crazyHandler = this.plugin.getCrazyHandler();
-    @NotNull
-    private final ConfigManager configManager = this.crazyHandler.getConfigManager();
-    @NotNull
-    private final SettingsManager config = this.configManager.getConfig();
+    public static final @NotNull CrazyVouchers plugin = JavaPlugin.getPlugin(CrazyVouchers.class);
+
+    public static final @NotNull SettingsManager config = ConfigManager.getConfig();
     
-    public void removeItem(ItemStack item, Player player) {
+    public static void removeItem(ItemStack item, Player player) {
         if (item.getAmount() <= 1) {
             player.getInventory().removeItem(item);
         } else if (item.getAmount() > 1) {
@@ -40,11 +37,11 @@ public class Methods {
         }
     }
     
-    public String getPrefix(String message) {
-        return MsgUtils.color(this.config.getProperty(ConfigKeys.command_prefix) + message);
+    public static String getPrefix(String message) {
+        return MsgUtil.color(config.getProperty(ConfigKeys.command_prefix) + message);
     }
     
-    public boolean isInt(String s) {
+    public static boolean isInt(String s) {
         try {
             Integer.parseInt(s);
         } catch (NumberFormatException nfe) {
@@ -54,49 +51,55 @@ public class Methods {
         return true;
     }
     
-    public boolean isInt(CommandSender sender, String s) {
+    public static boolean isInt(CommandSender sender, String value) {
         try {
-            Integer.parseInt(s);
+            Integer.parseInt(value);
         } catch (NumberFormatException nfe) {
-            HashMap<String, String> placeholders = new HashMap<>();
-            placeholders.put("{arg}", s);
+            Map<String, String> placeholders = new HashMap<>();
+
+            placeholders.put("{arg}", value);
+
             Messages.not_a_number.sendMessage(sender, placeholders);
+
             return false;
         }
 
         return true;
     }
 
-    public String replacePlaceholders(HashMap<String, String> placeholders, String message, boolean isCommand) {
+    public static String replacePlaceholders(Map<String, String> placeholders, String message, boolean isCommand) {
         for (String placeholder : placeholders.keySet()) {
             message = message.replace(placeholder, placeholders.get(placeholder)).replace(placeholder.toLowerCase(), placeholders.get(placeholder));
         }
 
-        if (isCommand) return message; else return MsgUtils.color(message);
+        if (isCommand) return message; else return MsgUtil.color(message);
     }
     
-    public boolean isOnline(CommandSender sender, String name) {
-        for (Player player : this.plugin.getServer().getOnlinePlayers()) {
+    public static boolean isOnline(CommandSender sender, String name) {
+        for (Player player : plugin.getServer().getOnlinePlayers()) {
             if (player.getName().equalsIgnoreCase(name)) return true;
         }
 
         Messages.not_online.sendMessage(sender);
+
         return false;
     }
     
-    public boolean hasPermission(Player player, String perm) {
+    public static boolean hasPermission(Player player, String perm) {
         if (!player.hasPermission("voucher." + perm)) {
             Messages.no_permission.sendMessage(player);
+
             return false;
         }
 
         return true;
     }
     
-    public boolean hasPermission(CommandSender sender, String perm) {
+    public static boolean hasPermission(CommandSender sender, String perm) {
         if (sender instanceof Player player) {
             if (!player.hasPermission("voucher." + perm)) {
                 Messages.no_permission.sendMessage(player);
+
                 return false;
             } else {
                 return true;
@@ -106,11 +109,11 @@ public class Methods {
         }
     }
     
-    public boolean isInventoryFull(Player player) {
+    public static boolean isInventoryFull(Player player) {
         return player.getInventory().firstEmpty() == -1;
     }
     
-    public void firework(Location loc, List<Color> list) {
+    public static void firework(Location loc, List<Color> list) {
         if (loc.getWorld() == null) return;
 
         Firework firework = loc.getWorld().spawn(loc, Firework.class);
@@ -123,6 +126,6 @@ public class Methods {
 
         container.set(PersistentKeys.no_firework_damage.getNamespacedKey(), PersistentDataType.BOOLEAN, true);
 
-        this.plugin.getServer().getScheduler().scheduleSyncDelayedTask(this.plugin, firework::detonate, 2);
+        plugin.getServer().getScheduler().scheduleSyncDelayedTask(plugin, firework::detonate, 2);
     }
 }

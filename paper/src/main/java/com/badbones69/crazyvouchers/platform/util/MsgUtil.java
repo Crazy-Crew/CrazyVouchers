@@ -1,21 +1,22 @@
-package com.badbones69.crazyvouchers.other;
+package com.badbones69.crazyvouchers.platform.util;
 
 import com.badbones69.crazyvouchers.CrazyVouchers;
+import com.badbones69.crazyvouchers.platform.config.ConfigManager;
 import net.md_5.bungee.api.chat.TextComponent;
 import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
+import org.bukkit.plugin.java.JavaPlugin;
 import org.jetbrains.annotations.NotNull;
-import us.crazycrew.crazyvouchers.common.config.types.ConfigKeys;
+import com.badbones69.crazyvouchers.platform.config.types.ConfigKeys;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import static java.util.regex.Matcher.quoteReplacement;
 
 @SuppressWarnings("ALL")
-public class MsgUtils {
+public class MsgUtil {
 
-    @NotNull
-    private final static CrazyVouchers plugin = CrazyVouchers.get();
+    private final static @NotNull CrazyVouchers plugin = JavaPlugin.getPlugin(CrazyVouchers.class);
 
     public static String color(String message) {
         Matcher matcher = Pattern.compile("#[a-fA-F\\d]{6}").matcher(message);
@@ -43,7 +44,7 @@ public class MsgUtils {
     }
 
     public static String getPrefix() {
-        return color(plugin.getCrazyHandler().getConfigManager().getConfig().getProperty(ConfigKeys.command_prefix));
+        return color(ConfigManager.getConfig().getProperty(ConfigKeys.command_prefix));
     }
 
     public static String getPrefix(String msg) {

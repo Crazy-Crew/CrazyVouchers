@@ -3,14 +3,14 @@ package com.badbones69.crazyvouchers.api.enums;
 import ch.jalu.configme.SettingsManager;
 import ch.jalu.configme.properties.Property;
 import com.badbones69.crazyvouchers.CrazyVouchers;
-import com.badbones69.crazyvouchers.other.MsgUtils;
+import com.badbones69.crazyvouchers.platform.config.ConfigManager;
+import com.badbones69.crazyvouchers.platform.util.MsgUtil;
+import com.ryderbelserion.vital.common.util.StringUtil;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
-import us.crazycrew.crazyvouchers.common.config.ConfigManager;
-import us.crazycrew.crazyvouchers.common.config.types.ConfigKeys;
-import us.crazycrew.crazyvouchers.common.config.types.MessageKeys;
-import us.crazycrew.crazyvouchers.common.utils.StringUtils;
+import com.badbones69.crazyvouchers.platform.config.types.ConfigKeys;
+import com.badbones69.crazyvouchers.platform.config.types.MessageKeys;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -68,9 +68,7 @@ public enum Messages {
         this.isList = isList;
     }
 
-    private final CrazyVouchers plugin = CrazyVouchers.get();
-    private final ConfigManager configManager = this.plugin.getCrazyHandler().getConfigManager();
-    private final SettingsManager messages = this.configManager.getMessages();
+    private final SettingsManager messages = ConfigManager.getMessages();
 
     private boolean isList() {
         return this.isList;
@@ -112,7 +110,7 @@ public enum Messages {
         String message;
 
         if (isList()) {
-            message = StringUtils.convertList(getPropertyList(this.listProperty));
+            message = StringUtil.convertList(getPropertyList(this.listProperty));
         } else {
             message = getProperty(this.property);
         }
@@ -145,13 +143,13 @@ public enum Messages {
     }
 
     public String asString() {
-        return MsgUtils.color(this.message.replaceAll("\\{prefix}", this.configManager.getConfig().getProperty(ConfigKeys.command_prefix)));
+        return MsgUtil.color(this.message.replaceAll("\\{prefix}", ConfigManager.getConfig().getProperty(ConfigKeys.command_prefix)));
     }
 
     public List<String> toListString() {
         ArrayList<String> components = new ArrayList<>();
 
-        getPropertyList(this.listProperty).forEach(line -> components.add(MsgUtils.color(line)));
+        getPropertyList(this.listProperty).forEach(line -> components.add(MsgUtil.color(line)));
 
         return components;
     }

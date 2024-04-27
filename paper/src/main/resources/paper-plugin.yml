@@ -1,0 +1,26 @@
+name: '${name}'
+main: '${group}.CrazyVouchers'
+
+loader: '${group}.LibraryLoader'
+
+version: '${version}'
+api-version: '1.20'
+description: '${description}'
+website: '${website}'
+
+folia-supported: true
+
+dependencies:
+  server:
+    PlaceholderAPI:
+     load: BEFORE
+     required: false
+     join-classpath: true
+    ItemsAdder:
+     load: BEFORE
+     required: false
+     join-classpath: true
+    Oraxen:
+     load: BEFORE
+     required: false
+     join-classpath: true
