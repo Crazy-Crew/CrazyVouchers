@@ -7,7 +7,7 @@ plugins {
 }
 
 dependencies {
-    compileOnly(fileTree("$rootDir/libs/compile").include("*.jar"))
+    //compileOnly(fileTree("$rootDir/libs/compile").include("*.jar"))
 
     //implementation(libs.metrics)
 
