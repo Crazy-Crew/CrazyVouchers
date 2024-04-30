@@ -16,7 +16,7 @@ public class LibraryLoader implements PluginLoader {
 
         resolver.addDependency(new Dependency(new DefaultArtifact("dev.triumphteam:triumph-cmd-bukkit:2.0.0-SNAPSHOT"), null));
 
-        resolver.addDependency(new Dependency(new DefaultArtifact("de.tr7zw:item-nbt-api:2.12.3"), null));
+        resolver.addDependency(new Dependency(new DefaultArtifact("de.tr7zw:item-nbt-api:2.12.4"), null));
 
         resolver.addDependency(new Dependency(new DefaultArtifact("ch.jalu:configme:1.4.1"), null));
 
