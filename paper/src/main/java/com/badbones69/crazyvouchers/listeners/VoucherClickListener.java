@@ -6,7 +6,7 @@ import com.badbones69.crazyvouchers.api.CrazyManager;
 import com.badbones69.crazyvouchers.api.enums.Files;
 import com.badbones69.crazyvouchers.api.enums.Messages;
 import com.badbones69.crazyvouchers.api.events.VoucherRedeemEvent;
-import com.badbones69.crazyvouchers.api.builders.ItemBuilder;
+import com.badbones69.crazyvouchers.api.builders.OldBuilder;
 import com.badbones69.crazyvouchers.api.objects.Voucher;
 import com.badbones69.crazyvouchers.platform.config.ConfigManager;
 import com.badbones69.crazyvouchers.platform.util.MsgUtil;
@@ -290,7 +290,7 @@ public class VoucherClickListener implements Listener {
             }
         }
 
-        for (ItemBuilder itemStack : voucher.getItems()) {
+        for (OldBuilder itemStack : voucher.getItems()) {
             if (!MiscUtil.isInventoryFull(player)) {
                 player.getInventory().addItem(itemStack.build());
             } else {

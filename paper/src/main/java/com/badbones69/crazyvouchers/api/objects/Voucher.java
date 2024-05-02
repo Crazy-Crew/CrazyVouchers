@@ -3,7 +3,7 @@ package com.badbones69.crazyvouchers.api.objects;
 import com.badbones69.crazyvouchers.CrazyVouchers;
 import com.badbones69.crazyvouchers.api.CrazyManager;
 import com.badbones69.crazyvouchers.api.enums.Messages;
-import com.badbones69.crazyvouchers.api.builders.ItemBuilder;
+import com.badbones69.crazyvouchers.api.builders.OldBuilder;
 import com.badbones69.crazyvouchers.platform.util.MsgUtil;
 import com.ryderbelserion.vital.common.util.StringUtil;
 import com.ryderbelserion.vital.util.DyeUtil;
@@ -27,7 +27,7 @@ public class Voucher {
 
     private final @NotNull CrazyVouchers plugin = JavaPlugin.getPlugin(CrazyVouchers.class);
 
-    private final ItemBuilder itemBuilder;
+    private final OldBuilder oldBuilder;
 
     private final String name;
     private boolean usesArgs;
@@ -58,7 +58,7 @@ public class Voucher {
     private List<String> commands = new ArrayList<>();
     private final List<VoucherCommand> randomCommands = new ArrayList<>();
     private final List<VoucherCommand> chanceCommands = new ArrayList<>();
-    private final List<ItemBuilder> items = new ArrayList<>();
+    private final List<OldBuilder> items = new ArrayList<>();
     private final Map<String, String> requiredPlaceholders = new HashMap<>();
 
     private final List<ItemFlag> itemFlags = new ArrayList<>();
@@ -71,27 +71,27 @@ public class Voucher {
 
         String path = "voucher.";
 
-        this.itemBuilder = new ItemBuilder()
+        this.oldBuilder = new OldBuilder()
                 .setMaterial(fileConfiguration.getString(path + "item", "Stone"))
                 .setName(fileConfiguration.getString(path + "name", ""))
                 .setLore(fileConfiguration.getStringList(path + "lore"))
                 .setPlayerName(fileConfiguration.getString(path + "player"))
                 .setFlagsFromStrings(fileConfiguration.getStringList(path + "flags"));
 
-        if (fileConfiguration.contains(path + "display-damage")) this.itemBuilder.setDamage(fileConfiguration.getInt(path + "display-damage"));
+        if (fileConfiguration.contains(path + "display-damage")) this.oldBuilder.setDamage(fileConfiguration.getInt(path + "display-damage"));
 
         if (fileConfiguration.contains(path + "display-trim.material") && fileConfiguration.contains(path + "display-trim.pattern")) {
-            this.itemBuilder
+            this.oldBuilder
                     .setTrimMaterial(Registry.TRIM_MATERIAL.get(NamespacedKey.minecraft(fileConfiguration.getString(path + "display-trim.material", "quartz").toLowerCase())))
                     .setTrimPattern(Registry.TRIM_PATTERN.get(NamespacedKey.minecraft(fileConfiguration.getString(path + "display-trim.pattern", "sentry").toLowerCase())));
         }
 
         this.glowing = fileConfiguration.getBoolean(path + "glowing");
 
-        if (this.itemBuilder.getName().toLowerCase().contains("{arg}")) this.usesArgs = true;
+        if (this.oldBuilder.getName().toLowerCase().contains("{arg}")) this.usesArgs = true;
 
         if (!this.usesArgs) {
-            for (String lore : this.itemBuilder.getLore()) {
+            for (String lore : this.oldBuilder.getLore()) {
                 if (lore.toLowerCase().contains("{arg}")) {
                     this.usesArgs = true;
 
@@ -221,9 +221,9 @@ public class Voucher {
         }
 
         if (fileConfiguration.getBoolean(path + "options.is-edible")) {
-            this.isEdible = itemBuilder.build().getType().isEdible();
+            this.isEdible = oldBuilder.build().getType().isEdible();
 
-            switch (this.itemBuilder.getMaterial().toString()) {
+            switch (this.oldBuilder.getMaterial().toString()) {
                 case "MILK_BUCKET", "POTION" -> this.isEdible = true;
             }
         }
@@ -242,7 +242,7 @@ public class Voucher {
     }
     
     public ItemStack buildItem(int amount) {
-        ItemStack item = this.itemBuilder.setAmount(amount).setItemFlags(this.itemFlags).setGlow(this.glowing).build();
+        ItemStack item = this.oldBuilder.setAmount(amount).setItemFlags(this.itemFlags).setGlow(this.glowing).build();
         NBTItem nbt = new NBTItem(item);
         nbt.setString("voucher", this.name);
 
@@ -254,7 +254,7 @@ public class Voucher {
     }
     
     public ItemStack buildItem(String argument, int amount) {
-        ItemStack item = this.itemBuilder.setAmount(amount).setItemFlags(this.itemFlags).addLorePlaceholder("{arg}", argument).addNamePlaceholder("{arg}", argument).setGlow(this.glowing).build();
+        ItemStack item = this.oldBuilder.setAmount(amount).setItemFlags(this.itemFlags).addLorePlaceholder("{arg}", argument).addNamePlaceholder("{arg}", argument).setGlow(this.glowing).build();
 
         NBTItem nbt = new NBTItem(item);
 
@@ -364,7 +364,7 @@ public class Voucher {
         return this.chanceCommands;
     }
     
-    public List<ItemBuilder> getItems() {
+    public List<OldBuilder> getItems() {
         return this.items;
     }
 

@@ -1,7 +1,7 @@
 package com.badbones69.crazyvouchers.api;
 
 import com.badbones69.crazyvouchers.CrazyVouchers;
-import com.badbones69.crazyvouchers.api.builders.ItemBuilder;
+import com.badbones69.crazyvouchers.api.builders.OldBuilder;
 import com.badbones69.crazyvouchers.api.objects.Voucher;
 import com.badbones69.crazyvouchers.platform.config.ConfigManager;
 import com.badbones69.crazyvouchers.platform.util.ItemUtil;
@@ -168,8 +168,8 @@ public class CrazyManager {
         return newString;
     }
 
-    public List<ItemBuilder> getItems(FileConfiguration file, String voucher) {
-        return ItemBuilder.convertStringList(file.getStringList("voucher.items"), voucher);
+    public List<OldBuilder> getItems(FileConfiguration file, String voucher) {
+        return OldBuilder.convertStringList(file.getStringList("voucher.items"), voucher);
     }
     
     private boolean usesRandom(String string) {

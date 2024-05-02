@@ -3,7 +3,7 @@ package com.badbones69.crazyvouchers.api.builders.types;
 import com.badbones69.crazyvouchers.CrazyVouchers;
 import com.badbones69.crazyvouchers.api.builders.InventoryBuilder;
 import com.badbones69.crazyvouchers.api.enums.PersistentKeys;
-import com.badbones69.crazyvouchers.api.builders.ItemBuilder;
+import com.badbones69.crazyvouchers.api.builders.OldBuilder;
 import com.badbones69.crazyvouchers.api.objects.Voucher;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
@@ -65,7 +65,7 @@ public class VoucherGuiMenu extends InventoryBuilder {
 
     private void setDefaultItems() {
         for (int i : Arrays.asList(0, 1, 2, 3, 4, 5, 6, 7, 8, 45, 46, 47, 49, 51, 52, 53)) {
-            getInventory().setItem(i, new ItemBuilder()
+            getInventory().setItem(i, new OldBuilder()
                     .setMaterial(Material.BLUE_STAINED_GLASS_PANE)
                     .setDamage(0)
                     .setName(" ")
@@ -76,13 +76,13 @@ public class VoucherGuiMenu extends InventoryBuilder {
         int maxPage = getMaxPage();
 
         if (page == 1) {
-            getInventory().setItem(48, new ItemBuilder()
+            getInventory().setItem(48, new OldBuilder()
                     .setMaterial(Material.GRAY_STAINED_GLASS_PANE)
                     .setDamage(0)
                     .setName(" ")
                     .build());
         } else {
-            ItemStack backButton = new ItemBuilder().setMaterial(Material.FEATHER).setName("<gold><bold><< Back</bold>").addLore("<gray><bold>Page:</bold> <blue>" + (getPage(getPlayer()) - 1)).build();
+            ItemStack backButton = new OldBuilder().setMaterial(Material.FEATHER).setName("<gold><bold><< Back</bold>").addLore("<gray><bold>Page:</bold> <blue>" + (getPage(getPlayer()) - 1)).build();
 
             ItemMeta itemMeta = backButton.getItemMeta();
 
@@ -96,13 +96,13 @@ public class VoucherGuiMenu extends InventoryBuilder {
         }
 
         if (page == maxPage) {
-            getInventory().setItem(50, new ItemBuilder()
+            getInventory().setItem(50, new OldBuilder()
                     .setName(" ")
                     .setMaterial(Material.GRAY_STAINED_GLASS_PANE)
                     .setDamage(0)
                     .build());
         } else {
-            ItemStack nextButton = new ItemBuilder().setMaterial(Material.FEATHER).setName("<gold><bold>Next >></bold>").addLore("<gray><bold>Page:</bold> <blue>" + (getPage(getPlayer()) + 1)).build();
+            ItemStack nextButton = new OldBuilder().setMaterial(Material.FEATHER).setName("<gold><bold>Next >></bold>").addLore("<gray><bold>Page:</bold> <blue>" + (getPage(getPlayer()) + 1)).build();
 
             ItemMeta itemMeta = nextButton.getItemMeta();
 

@@ -2,7 +2,7 @@ package com.badbones69.crazyvouchers.api.objects;
 
 import com.badbones69.crazyvouchers.CrazyVouchers;
 import com.badbones69.crazyvouchers.api.enums.Messages;
-import com.badbones69.crazyvouchers.api.builders.ItemBuilder;
+import com.badbones69.crazyvouchers.api.builders.OldBuilder;
 import com.ryderbelserion.vital.util.DyeUtil;
 import org.bukkit.Color;
 import org.bukkit.Sound;
@@ -44,7 +44,7 @@ public class VoucherCode {
     private final List<Color> fireworkColors = new ArrayList<>();
     private final List<VoucherCommand> randomCommands = new ArrayList<>();
     private final List<VoucherCommand> chanceCommands = new ArrayList<>();
-    private final List<ItemBuilder> items = new ArrayList<>();
+    private final List<OldBuilder> items = new ArrayList<>();
 
     public VoucherCode(FileConfiguration file, String name) {
         this.name = name;
@@ -71,7 +71,7 @@ public class VoucherCode {
         }
 
         for (String itemString : file.getStringList(path + "items")) {
-            this.items.add(ItemBuilder.convertString(itemString));
+            this.items.add(OldBuilder.convertString(itemString));
         }
 
         this.caseSensitive = file.getBoolean(path + "options.case-sensitive", false);
@@ -266,7 +266,7 @@ public class VoucherCode {
         return this.chanceCommands;
     }
     
-    public List<ItemBuilder> getItems() {
+    public List<OldBuilder> getItems() {
         return this.items;
     }
 }

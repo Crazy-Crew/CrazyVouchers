@@ -1,6 +1,6 @@
 package com.badbones69.crazyvouchers.commands.types.player;
 
-import com.badbones69.crazyvouchers.api.builders.ItemBuilder;
+import com.badbones69.crazyvouchers.api.builders.OldBuilder;
 import com.badbones69.crazyvouchers.api.enums.Files;
 import com.badbones69.crazyvouchers.api.enums.Messages;
 import com.badbones69.crazyvouchers.api.events.VoucherRedeemCodeEvent;
@@ -137,11 +137,11 @@ public class CommandRedeem extends BaseCommand {
                     }
                 }
 
-                for (ItemBuilder itemBuilder : voucherCode.getItems()) {
+                for (OldBuilder oldBuilder : voucherCode.getItems()) {
                     if (!MiscUtil.isInventoryFull(player)) {
-                        player.getInventory().addItem(itemBuilder.build());
+                        player.getInventory().addItem(oldBuilder.build());
                     } else {
-                        player.getWorld().dropItem(player.getLocation(), itemBuilder.build());
+                        player.getWorld().dropItem(player.getLocation(), oldBuilder.build());
                     }
                 }
 
