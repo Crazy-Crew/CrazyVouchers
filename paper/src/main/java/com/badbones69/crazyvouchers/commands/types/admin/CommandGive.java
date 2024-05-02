@@ -22,7 +22,7 @@ public class CommandGive extends BaseCommand {
 
     @Command(value = "give")
     @Permission(value = "voucher.admin", def = PermissionDefault.OP)
-    public void give(CommandSender sender, String type, int amount, @Suggestion("players") String name, @Optional String argument) {
+    public void give(CommandSender sender, @Suggestion("vouchers") String type, @Suggestion("numbers") int amount, @Suggestion("players") String name, @Optional String argument) {
         if (this.crazyManager.isVoucherName(type)) {
             Messages.not_a_voucher.sendMessage(sender);
 
@@ -57,7 +57,7 @@ public class CommandGive extends BaseCommand {
 
     @Command(value = "givealll")
     @Permission(value = "voucher.admin", def = PermissionDefault.OP)
-    public void all(CommandSender sender, String type, int amount, @Optional String argument) {
+    public void all(CommandSender sender, @Suggestion("vouchers") String type, @Suggestion("numbers") int amount, @Optional String argument) {
         if (this.crazyManager.isVoucherName(type)) {
             Messages.not_a_voucher.sendMessage(sender);
 

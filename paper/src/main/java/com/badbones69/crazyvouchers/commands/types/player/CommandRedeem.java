@@ -10,6 +10,7 @@ import com.badbones69.crazyvouchers.platform.util.MiscUtil;
 import com.badbones69.crazyvouchers.platform.util.MsgUtil;
 import dev.triumphteam.cmd.bukkit.annotation.Permission;
 import dev.triumphteam.cmd.core.annotations.Command;
+import dev.triumphteam.cmd.core.annotations.Suggestion;
 import org.bukkit.Sound;
 import org.bukkit.SoundCategory;
 import org.bukkit.configuration.file.FileConfiguration;
@@ -23,7 +24,7 @@ public class CommandRedeem extends BaseCommand {
 
     @Command("redeem")
     @Permission(value = "voucher.redeem", def = PermissionDefault.TRUE)
-    public void redeem(Player player, String code) {
+    public void redeem(Player player, @Suggestion("codes") String code) {
         Map<String, String> placeholders = new HashMap<>();
 
         placeholders.put("{arg}", code);

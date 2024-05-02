@@ -12,7 +12,7 @@ public class CommandTypes extends BaseCommand {
 
     @Command(value = "types", alias = "list")
     @Permission(value = "voucher.admin", def = PermissionDefault.OP)
-    public void types(CommandSender sender, int page) {
+    public void types(CommandSender sender) {
         StringBuilder vouchers = new StringBuilder();
         StringBuilder codes = new StringBuilder();
 
