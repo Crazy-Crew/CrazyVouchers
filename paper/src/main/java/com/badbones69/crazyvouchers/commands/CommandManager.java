@@ -31,8 +31,6 @@ public class CommandManager {
      * Loads commands.
      */
     public static void load() {
-        commandManager.registerSuggestion(SuggestionKey.of("keys"), (sender, context) -> List.of("virtual", "v", "physical", "p"));
-
         commandManager.registerSuggestion(SuggestionKey.of("players"), (sender, context) -> plugin.getServer().getOnlinePlayers().stream().map(Player::getName).toList());
 
         commandManager.registerSuggestion(SuggestionKey.of("numbers"), (sender, context) -> {
