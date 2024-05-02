@@ -4,12 +4,9 @@ import com.badbones69.crazyvouchers.api.CrazyManager;
 import com.badbones69.crazyvouchers.api.enums.Files;
 import com.badbones69.crazyvouchers.listeners.FireworkDamageListener;
 import com.badbones69.crazyvouchers.listeners.VoucherMenuListener;
-import com.badbones69.crazyvouchers.commands.VoucherCommands;
-import com.badbones69.crazyvouchers.commands.VoucherTab;
 import com.badbones69.crazyvouchers.listeners.VoucherClickListener;
 import com.badbones69.crazyvouchers.listeners.VoucherCraftListener;
 import com.badbones69.crazyvouchers.platform.config.ConfigManager;
-import com.badbones69.crazyvouchers.platform.util.MiscUtil;
 import com.ryderbelserion.vital.VitalPaper;
 import com.ryderbelserion.vital.files.FileManager;
 import org.bukkit.configuration.file.FileConfiguration;
@@ -70,8 +67,6 @@ public class CrazyVouchers extends JavaPlugin {
         getServer().getPluginManager().registerEvents(new VoucherCraftListener(), this);
         getServer().getPluginManager().registerEvents(new VoucherMenuListener(), this);
         getServer().getPluginManager().registerEvents(new FireworkDamageListener(), this);
-
-        MiscUtil.registerCommand(getCommand("vouchers"), new VoucherTab(), new VoucherCommands());
     }
 
     @Override
