@@ -60,7 +60,11 @@ public class VoucherMenuListener implements Listener {
             PersistentDataContainer persistentDataContainer = stack.getItemMeta().getPersistentDataContainer();
 
             if (persistentDataContainer.has(PersistentKeys.voucher_item_admin.getNamespacedKey())) {
-                if (this.crazyManager.getVoucherFromItem(stack) != null) player.getInventory().addItem(this.crazyManager.getVoucherFromItem(stack).buildItem());
+                ItemStack itemStack = this.crazyManager.getVoucherFromItem(stack).buildItem();
+
+                if (itemStack != null) {
+                    player.getInventory().addItem(itemStack);
+                }
             }
         }
     }
