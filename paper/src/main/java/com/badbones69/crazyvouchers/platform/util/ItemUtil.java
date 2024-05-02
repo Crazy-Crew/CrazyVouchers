@@ -47,6 +47,14 @@ public class ItemUtil {
         return true;
     }
 
+    public static boolean isVoucher(ItemStack itemStack) {
+        if (!itemStack.hasItemMeta()) {
+            return false;
+        }
+
+        return itemStack.getItemMeta().getPersistentDataContainer().has(PersistentKeys.voucher_item.getNamespacedKey());
+    }
+
     public static Voucher getVoucherNameFromOldKey(ItemMeta itemMeta) {
         // Get the item meta as a string
         String value = itemMeta.getAsString();
