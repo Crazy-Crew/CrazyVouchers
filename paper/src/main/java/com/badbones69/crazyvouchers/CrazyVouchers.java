@@ -2,6 +2,7 @@ package com.badbones69.crazyvouchers;
 
 import com.badbones69.crazyvouchers.api.CrazyManager;
 import com.badbones69.crazyvouchers.api.enums.Files;
+import com.badbones69.crazyvouchers.commands.CommandManager;
 import com.badbones69.crazyvouchers.listeners.FireworkDamageListener;
 import com.badbones69.crazyvouchers.listeners.VoucherMenuListener;
 import com.badbones69.crazyvouchers.listeners.VoucherClickListener;
@@ -67,6 +68,8 @@ public class CrazyVouchers extends JavaPlugin {
         getServer().getPluginManager().registerEvents(new VoucherCraftListener(), this);
         getServer().getPluginManager().registerEvents(new VoucherMenuListener(), this);
         getServer().getPluginManager().registerEvents(new FireworkDamageListener(), this);
+
+        CommandManager.load();
     }
 
     @Override
