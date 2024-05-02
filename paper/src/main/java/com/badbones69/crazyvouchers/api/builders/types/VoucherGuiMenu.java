@@ -1,5 +1,6 @@
 package com.badbones69.crazyvouchers.api.builders.types;
 
+import com.badbones69.crazyvouchers.CrazyVouchers;
 import com.badbones69.crazyvouchers.api.builders.InventoryBuilder;
 import com.badbones69.crazyvouchers.api.enums.PersistentKeys;
 import com.badbones69.crazyvouchers.api.builders.ItemBuilder;
@@ -10,6 +11,7 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.persistence.PersistentDataContainer;
 import org.bukkit.persistence.PersistentDataType;
+import org.bukkit.plugin.java.JavaPlugin;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
@@ -80,7 +82,7 @@ public class VoucherGuiMenu extends InventoryBuilder {
                     .setName(" ")
                     .build());
         } else {
-            ItemStack backButton = new ItemBuilder().setMaterial(Material.FEATHER).setName("&6&l<< Back").addLore("&7&lPage: &b" + (getPage(getPlayer()) - 1)).build();
+            ItemStack backButton = new ItemBuilder().setMaterial(Material.FEATHER).setName("<gold><bold><< Back</bold>").addLore("<gray><bold>Page:</bold> <blue>" + (getPage(getPlayer()) - 1)).build();
 
             ItemMeta itemMeta = backButton.getItemMeta();
 
@@ -100,7 +102,7 @@ public class VoucherGuiMenu extends InventoryBuilder {
                     .setDamage(0)
                     .build());
         } else {
-            ItemStack nextButton = new ItemBuilder().setMaterial(Material.FEATHER).setName("&6&lNext >>").addLore("&7&lPage: &b" + (getPage(getPlayer()) + 1)).build();
+            ItemStack nextButton = new ItemBuilder().setMaterial(Material.FEATHER).setName("<gold><bold>Next >></bold>").addLore("<gray><bold>Page:</bold> <blue>" + (getPage(getPlayer()) + 1)).build();
 
             ItemMeta itemMeta = nextButton.getItemMeta();
 
@@ -167,7 +169,7 @@ public class VoucherGuiMenu extends InventoryBuilder {
 
     public static int getMaxPage() {
         int maxPage = 1;
-        int amount = plugin.getCrazyManager().getVouchers().size();
+        int amount = JavaPlugin.getPlugin(CrazyVouchers.class).getCrazyManager().getVouchers().size();
         for (; amount > 36; amount -= 36, maxPage++);
         return maxPage;
     }

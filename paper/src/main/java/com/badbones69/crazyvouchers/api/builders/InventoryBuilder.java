@@ -1,17 +1,16 @@
 package com.badbones69.crazyvouchers.api.builders;
 
 import com.badbones69.crazyvouchers.CrazyVouchers;
-import com.badbones69.crazyvouchers.platform.util.MsgUtil;
+import net.kyori.adventure.text.minimessage.MiniMessage;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.InventoryHolder;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.jetbrains.annotations.NotNull;
 
-@SuppressWarnings("ALL")
 public abstract class InventoryBuilder implements InventoryHolder {
 
-    protected static final @NotNull CrazyVouchers plugin = JavaPlugin.getPlugin(CrazyVouchers.class);
+    protected final @NotNull CrazyVouchers plugin = JavaPlugin.getPlugin(CrazyVouchers.class);
 
     private final Inventory inventory;
     private final Player player;
@@ -24,7 +23,7 @@ public abstract class InventoryBuilder implements InventoryHolder {
         this.player = player;
         this.size = size;
 
-        this.inventory = this.plugin.getServer().createInventory(this, this.size, MsgUtil.color(this.title));
+        this.inventory = this.plugin.getServer().createInventory(this, this.size, MiniMessage.miniMessage().deserialize(this.title));
     }
 
     public abstract InventoryBuilder build();

@@ -78,7 +78,7 @@ public class VoucherCommands implements CommandExecutor {
 
                         Player player = (Player) sender;
 
-                        VoucherGuiMenu menu = new VoucherGuiMenu(player, 54, MsgUtil.color("&8&l&nVouchers"));
+                        VoucherGuiMenu menu = new VoucherGuiMenu(player, 54, MsgUtil.color("<dark_gray><bold><underlined>Vouchers"));
 
                         player.openInventory(menu.build(page).getInventory());
                     }
@@ -92,18 +92,18 @@ public class VoucherCommands implements CommandExecutor {
                         StringBuilder codes = new StringBuilder();
 
                         for (Voucher voucher : this.crazyManager.getVouchers()) {
-                            vouchers.append("&a").append(voucher.getName()).append("&8, ");
+                            vouchers.append("<green>").append(voucher.getName()).append("<dark_gray>, ");
                         }
 
                         for (VoucherCode code : this.crazyManager.getVoucherCodes()) {
-                            codes.append("&a").append(code.getCode()).append("&8, ");
+                            codes.append("<green>").append(code.getCode()).append("<dark_gray>, ");
                         }
 
-                        vouchers = new StringBuilder((vouchers.isEmpty()) ? "&cNone" : vouchers.substring(0, vouchers.length() - 2));
-                        codes = new StringBuilder((codes.isEmpty()) ? "&cNone" : codes.substring(0, codes.length() - 2));
+                        vouchers = new StringBuilder((vouchers.isEmpty()) ? "<red>None" : vouchers.substring(0, vouchers.length() - 2));
+                        codes = new StringBuilder((codes.isEmpty()) ? "<red>None" : codes.substring(0, codes.length() - 2));
 
-                        sender.sendMessage(MsgUtil.color("&e&lVouchers #" + this.crazyManager.getVouchers().size() + ":&f " + vouchers));
-                        sender.sendMessage(MsgUtil.color("&e&lVoucher Codes #" + this.crazyManager.getVoucherCodes().size() + ":&f " + codes));
+                        sender.sendRichMessage("<bold><gold>Vouchers</bold> <gold>#" + this.crazyManager.getVouchers().size() + ":<white> " + vouchers);
+                        sender.sendRichMessage("<bold><gold>Voucher Codes</bold> <gold>#" + this.crazyManager.getVoucherCodes().size() + ":<white> " + codes);
                     }
 
                     return true;
@@ -257,7 +257,7 @@ public class VoucherCommands implements CommandExecutor {
                             return true;
                         }
 
-                        sender.sendMessage(MiscUtil.getPrefix("&c/crazyvouchers redeem <code>"));
+                        sender.sendRichMessage(MiscUtil.getPrefix("<red>/crazyvouchers redeem <code>"));
                     }
 
                     return true;
@@ -320,7 +320,7 @@ public class VoucherCommands implements CommandExecutor {
                             return true;
                         }
 
-                        sender.sendMessage(MiscUtil.getPrefix("&c/crazyvouchers give <type> [amount] [player] [arguments]"));
+                        sender.sendRichMessage(MiscUtil.getPrefix("<red>/crazyvouchers give <type> [amount] [player] [arguments]"));
 
                         return true;
                     }
@@ -373,7 +373,7 @@ public class VoucherCommands implements CommandExecutor {
                             return true;
                         }
 
-                        sender.sendMessage(MiscUtil.getPrefix("&c/voucher giveall <type> [amount] [arguments]"));
+                        sender.sendRichMessage(MiscUtil.getPrefix("<red>/voucher giveall <type> [amount] [arguments]"));
 
                         return true;
                     }
@@ -382,7 +382,7 @@ public class VoucherCommands implements CommandExecutor {
                 }
 
                 default -> {
-                    sender.sendMessage(MiscUtil.getPrefix("&cPlease do /voucher help for more information."));
+                    sender.sendRichMessage(MiscUtil.getPrefix("<red>Please do /voucher help for more information."));
 
                     return true;
                 }

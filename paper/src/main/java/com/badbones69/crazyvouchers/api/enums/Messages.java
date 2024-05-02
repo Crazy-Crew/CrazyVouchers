@@ -2,16 +2,13 @@ package com.badbones69.crazyvouchers.api.enums;
 
 import ch.jalu.configme.SettingsManager;
 import ch.jalu.configme.properties.Property;
-import com.badbones69.crazyvouchers.CrazyVouchers;
 import com.badbones69.crazyvouchers.platform.config.ConfigManager;
-import com.badbones69.crazyvouchers.platform.util.MsgUtil;
 import com.ryderbelserion.vital.common.util.StringUtil;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
 import com.badbones69.crazyvouchers.platform.config.types.ConfigKeys;
 import com.badbones69.crazyvouchers.platform.config.types.MessageKeys;
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -94,10 +91,6 @@ public enum Messages {
         return getMessage().toString().isBlank();
     }
 
-    public boolean isListBlank() {
-        return getMessage().toListString().isEmpty();
-    }
-
     public Messages getMessage(String placeholder, String replacement) {
         Map<String, String> placeholders = new HashMap<>();
         placeholders.put(placeholder, replacement);
@@ -131,7 +124,7 @@ public enum Messages {
     }
 
     public void sendMessage(Player player, Map<String, String> placeholder) {
-        player.sendMessage(getMessage(placeholder).asString());
+        player.sendRichMessage(getMessage(placeholder).asString());
     }
 
     public void sendMessage(CommandSender sender) {
@@ -139,18 +132,10 @@ public enum Messages {
     }
 
     public void sendMessage(CommandSender sender, Map<String, String> placeholder) {
-        sender.sendMessage(getMessage(placeholder).asString());
+        sender.sendRichMessage(getMessage(placeholder).asString());
     }
 
     public String asString() {
-        return MsgUtil.color(this.message.replaceAll("\\{prefix}", ConfigManager.getConfig().getProperty(ConfigKeys.command_prefix)));
-    }
-
-    public List<String> toListString() {
-        ArrayList<String> components = new ArrayList<>();
-
-        getPropertyList(this.listProperty).forEach(line -> components.add(MsgUtil.color(line)));
-
-        return components;
+        return this.message.replaceAll("\\{prefix}", ConfigManager.getConfig().getProperty(ConfigKeys.command_prefix));
     }
 }

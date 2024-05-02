@@ -33,13 +33,13 @@ public class ConfigKeys implements SettingsHolder {
     }
     
     @Comment("The prefix that shows up for all commands.")
-    public static final Property<String> command_prefix = newProperty("settings.prefix", "&7[&6CrazyVouchers&7]: ");
+    public static final Property<String> command_prefix = newProperty("settings.prefix", "<gray>[<gold>CrazyVouchers<gray>]: ");
 
     @Comment("Pick which locale you want to use if your server is in another language.")
     public static final Property<String> locale_file = newProperty("settings.locale", "en-US");
 
     @Comment("The prefix that shows up for all console logs.")
-    public static final Property<String> console_prefix = newProperty("settings.console-prefix", "&7[&cCrazyVouchers&7]: ");
+    public static final Property<String> console_prefix = newProperty("settings.console-prefix", "<gray>[<red>CrazyVouchers<gray>]: ");
 
     @Comment("Whether you should only be allowed to use vouchers in survival.")
     public static final Property<Boolean> must_be_in_survival = newProperty("settings.survival-only", true);

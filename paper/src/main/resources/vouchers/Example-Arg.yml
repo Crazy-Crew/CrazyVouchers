@@ -6,13 +6,13 @@
 # A) No, You can view PlayerHead.yml for an example whereas much as possible can be removed.
 voucher:
   # The material.
-  item: 'PAPER'
+  item: 'paper'
   # The name of the item.
-  name: '&bArg Example &3{arg}'
+  name: '<light_blue>Arg Example <green>{arg}'
   # The lore of the item.
   lore:
-  - '&7Use this voucher to rank up to &c{arg}'
-  - '&8(&e!&8) &dRight click to redeem.'
+  - '<gray>Use this voucher to rank up to <red>{arg}'
+  - '<dark_gray>(<yellow>!<dark_gray>) <light_purple>Right click to redeem.'
   # The player name
   player: ''
   # If the item should glow or not.
@@ -27,7 +27,7 @@ voucher:
   # All options when they right-click it.
   options:
     # The message sent when they right-click it.
-    message: '&7Congratulations, you have just ranked up to &6{arg}&7.'
+    message: '<gray>Congratulations, you have just ranked up to <gold>{arg}.'
     sound:
       # If the sounds should be enabled.
       toggle: true
@@ -36,6 +36,6 @@ voucher:
       # The sound pitch
       pitch: 1.0
       # The sound or sounds to use.
-      # https://jd.papermc.io/paper/1.20/org/bukkit/Sound.html
+      # https://minecraft.wiki/w/Sounds.json#Java_Edition_values
       sounds:
-      - 'BLOCK_AMETHYST_CLUSTER_STEP'
+      - 'block.amethyst_cluster.step'

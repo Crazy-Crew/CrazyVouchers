@@ -82,8 +82,8 @@ public class Voucher {
 
         if (fileConfiguration.contains(path + "display-trim.material") && fileConfiguration.contains(path + "display-trim.pattern")) {
             this.itemBuilder
-                    .setTrimMaterial(Registry.TRIM_MATERIAL.get(NamespacedKey.minecraft(fileConfiguration.getString(path + "display-trim.material", "QUARTZ").toLowerCase())))
-                    .setTrimPattern(Registry.TRIM_PATTERN.get(NamespacedKey.minecraft(fileConfiguration.getString(path + "display-trim.pattern", "SENTRY").toLowerCase())));
+                    .setTrimMaterial(Registry.TRIM_MATERIAL.get(NamespacedKey.minecraft(fileConfiguration.getString(path + "display-trim.material", "quartz").toLowerCase())))
+                    .setTrimPattern(Registry.TRIM_PATTERN.get(NamespacedKey.minecraft(fileConfiguration.getString(path + "display-trim.pattern", "sentry").toLowerCase())));
         }
 
         this.glowing = fileConfiguration.getBoolean(path + "glowing");

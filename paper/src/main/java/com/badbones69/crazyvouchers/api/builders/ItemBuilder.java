@@ -669,7 +669,7 @@ public class ItemBuilder {
     }
 
     /**
-     * Set the lore of the item in the builder. This will auto force color in all the lores that contains color code. (&a, &c, &7, etc...)
+     * Set the lore of the item in the builder. This will auto force color in all the lores that contains color code. (<green>, <red>, <gray>, etc...)
      *
      * @param lore the lore of the item in the builder.
      * @return the ItemBuilder with updated info.
@@ -687,7 +687,7 @@ public class ItemBuilder {
     }
 
     /**
-     * Add a line to the current lore of the item. This will auto force color in the lore that contains color code. (&a, &c, &7, etc...)
+     * Add a line to the current lore of the item. This will auto force color in the lore that contains color code. (<green>, <red>, <gray>, etc...)
      *
      * @param lore the new line you wish to add.
      * @return the ItemBuilder with updated info.
@@ -1103,7 +1103,7 @@ public class ItemBuilder {
                 }
             }
         } catch (Exception exception) {
-            itemBuilder.setMaterial(Material.RED_TERRACOTTA).setName("&c&lERROR").setLore(Arrays.asList("&cThere is an error", "&cFor : &c" + (placeHolder != null ? placeHolder : "")));
+            itemBuilder.setMaterial(Material.RED_TERRACOTTA).setName("<red><bold>ERROR</bold>").setLore(Arrays.asList("<red>There is an error", "<red>For : <red>" + (placeHolder != null ? placeHolder : "")));
 
             plugin.getLogger().log(Level.WARNING, "An error has occurred with the item builder: ", exception);
         }
