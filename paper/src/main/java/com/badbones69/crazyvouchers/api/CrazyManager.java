@@ -4,6 +4,7 @@ import com.badbones69.crazyvouchers.CrazyVouchers;
 import com.badbones69.crazyvouchers.api.builders.ItemBuilder;
 import com.badbones69.crazyvouchers.api.objects.Voucher;
 import com.badbones69.crazyvouchers.platform.config.ConfigManager;
+import com.badbones69.crazyvouchers.platform.util.ItemUtil;
 import com.ryderbelserion.vital.files.FileManager;
 import de.tr7zw.changeme.nbtapi.NBTItem;
 import com.badbones69.crazyvouchers.api.objects.VoucherCode;
@@ -112,10 +113,15 @@ public class CrazyManager {
 
     public Voucher getVoucherFromItem(ItemStack item) {
         try {
-            NBTItem nbt = new NBTItem(item);
+            Voucher name = ItemUtil.getVoucherNameFromOldKey(item.getItemMeta());
 
-            if (nbt.hasTag("voucher")) return getVoucher(nbt.getString("voucher"));
+            if (ItemUtil.isSimilar(item, name)) {
+                if (name != null) {
+                    return getVoucher(name.getName());
+                }
+            }
         } catch (Exception ignored) {}
+
         return null;
     }
 

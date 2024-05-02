@@ -9,6 +9,8 @@ import org.jetbrains.annotations.NotNull;
 public enum PersistentKeys {
 
     voucher_item_admin("voucher_item_admin", PersistentDataType.STRING),
+    voucher_item("voucher_item", PersistentDataType.STRING),
+    voucher_argument("voucher_argument", PersistentDataType.STRING),
     back_button("back_button", PersistentDataType.STRING),
     next_button("next_button", PersistentDataType.STRING),
     no_firework_damage("firework", PersistentDataType.BOOLEAN);
