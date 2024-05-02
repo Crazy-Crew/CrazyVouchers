@@ -38,9 +38,9 @@ public class CrazyVouchers extends JavaPlugin {
             return;
         }
 
-        ConfigManager.load(getDataFolder());
-
         new VitalPaper(this);
+
+        ConfigManager.load(getDataFolder());
 
         this.fileManager = new FileManager();
         this.fileManager
