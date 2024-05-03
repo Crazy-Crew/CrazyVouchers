@@ -1,15 +1,18 @@
 package com.badbones69.crazyvouchers.api.objects.v2;
 
 import com.badbones69.crazyvouchers.CrazyVouchers;
+import com.badbones69.crazyvouchers.api.enums.Messages;
 import com.ryderbelserion.vital.items.AbstractItemHandler;
 import com.ryderbelserion.vital.items.ItemHandler;
+import com.ryderbelserion.vital.util.DyeUtil;
 import com.ryderbelserion.vital.util.ItemUtil;
 import net.kyori.adventure.text.serializer.plain.PlainTextComponentSerializer;
+import org.bukkit.Color;
 import org.bukkit.Server;
 import org.bukkit.Sound;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.entity.Player;
-import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.ItemFlag;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.jetbrains.annotations.NotNull;
 import java.util.HashMap;
@@ -119,6 +122,9 @@ public abstract class AbstractVoucher {
                 keys.getKeys(false).forEach(key -> this.requiredPlaceholders.put(keys.getString(key + ".placeholder"), keys.getString(key + ".value")));
             }
         }
+
+        //todo() I don't think this works anymore due to recent 1.20.6 changes.
+        section.getStringList("flags").forEach(flag -> this.builder.addItemFlag(ItemFlag.valueOf(flag)));
 
         this.isEdible = this.builder.getMaterial().isEdible();
 
