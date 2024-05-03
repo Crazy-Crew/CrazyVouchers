@@ -2,11 +2,13 @@ package com.badbones69.crazyvouchers;
 
 import com.badbones69.crazyvouchers.api.CrazyHandler;
 import com.badbones69.crazyvouchers.api.CrazyManager;
+import com.badbones69.crazyvouchers.api.hooks.HeadDatabaseListener;
 import com.badbones69.crazyvouchers.commands.CommandManager;
-import com.badbones69.crazyvouchers.listeners.v2.VoucherClickListener;
-import com.badbones69.crazyvouchers.listeners.v2.VoucherRedeemListener;
+import com.badbones69.crazyvouchers.listeners.VoucherClickListener;
+import com.badbones69.crazyvouchers.listeners.VoucherRedeemListener;
 import com.badbones69.crazyvouchers.platform.config.ConfigManager;
 import com.ryderbelserion.vital.VitalPaper;
+import com.ryderbelserion.vital.enums.Support;
 import com.ryderbelserion.vital.files.FileManager;
 import org.bukkit.plugin.PluginManager;
 import org.bukkit.plugin.java.JavaPlugin;
@@ -19,6 +21,11 @@ public class CrazyVouchers extends JavaPlugin {
     @Override
     public void onEnable() {
         new VitalPaper(this);
+
+        // Register head database listener if the plugin enabled.
+        if (Support.head_database.isEnabled()) {
+            getServer().getPluginManager().registerEvents(new HeadDatabaseListener(), this);
+        }
 
         ConfigManager.load(getDataFolder());
 

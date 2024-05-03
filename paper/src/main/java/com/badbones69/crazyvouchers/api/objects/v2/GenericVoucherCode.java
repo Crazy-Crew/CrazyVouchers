@@ -13,4 +13,8 @@ public class GenericVoucherCode extends AbstractVoucher {
     public boolean execute(Player player) {
         return false;
     }
+
+    // Not needed in this class.
+    @Override
+    public boolean execute(Player player, String argument) { return false; }
 }

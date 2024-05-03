@@ -1,11 +1,11 @@
 package com.badbones69.crazyvouchers.api.objects.v2;
 
+import com.badbones69.crazyvouchers.api.builders.ItemBuilder;
 import com.badbones69.crazyvouchers.api.enums.Files;
 import com.badbones69.crazyvouchers.api.enums.Messages;
-import com.badbones69.crazyvouchers.platform.config.ConfigManager;
+import com.badbones69.crazyvouchers.api.enums.PersistentKeys;
 import com.badbones69.crazyvouchers.platform.config.types.ConfigKeys;
 import com.badbones69.crazyvouchers.platform.util.MiscUtil;
-import com.badbones69.crazyvouchers.platform.util.MsgUtil;
 import com.ryderbelserion.vital.enums.Support;
 import me.clip.placeholderapi.PlaceholderAPI;
 import org.bukkit.GameMode;
@@ -14,6 +14,7 @@ import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
@@ -22,33 +23,48 @@ public class GenericVoucher extends AbstractVoucher {
 
     private final Map<String, String> placeholders = new HashMap<>();
 
+    public Map<String, String> getPlaceholders() {
+        return Collections.unmodifiableMap(this.placeholders);
+    }
+
     public GenericVoucher(ConfigurationSection section, String file) {
         super(section, file);
     }
 
+    public boolean isEdible() {
+        return this.isEdible;
+    }
+
+    public boolean twoStep() {
+        return this.twoStep;
+    }
+
     @Override
-    public boolean execute(Player player) {
+    public boolean execute(Player player, String argument) {
         // Return if in creative mode.
-        if (player.getGameMode() == GameMode.CREATIVE && ConfigManager.getConfig().getProperty(ConfigKeys.must_be_in_survival)) {
+        if (player.getGameMode() == GameMode.CREATIVE && this.config.getProperty(ConfigKeys.must_be_in_survival)) {
             Messages.survival_mode.sendMessage(player);
 
             return true;
         }
 
+        String world = player.getWorld().getName();
+
+        this.placeholders.put("{arg}", argument != null ? argument : "{arg}");
         this.placeholders.put("{player}", player.getName());
-        this.placeholders.put("{world}", player.getWorld().getName());
+        this.placeholders.put("{world}", world);
 
         Location location = player.getLocation();
+
         this.placeholders.put("{x}", String.valueOf(location.getBlockX()));
         this.placeholders.put("{y}", String.valueOf(location.getBlockY()));
         this.placeholders.put("{z}", String.valueOf(location.getBlockZ()));
+        this.placeholders.put("{prefix}", this.config.getProperty(ConfigKeys.command_prefix));
 
-        //this.placeholders.put("{prefix}", MsgUtil.getPrefix());
+        if (this.whitelistWorldToggle && !this.whitelistWorlds.contains(world.toLowerCase())) {
+            player.sendRichMessage(MiscUtil.replacePlaceholders(this.placeholders, this.whitelistWorldMessage));
 
-        if (this.whitelistWorldToggle && !this.whitelistWorlds.contains(player.getWorld().getName().toLowerCase())) {
-            player.sendRichMessage(MiscUtil.replacePlaceholders(this.placeholders, this.whitelistWorldMessage, false));
-
-            this.whitelistWorldCommands.forEach(command -> this.server.dispatchCommand(this.server.getConsoleSender(), MiscUtil.replacePlaceholders(this.placeholders, command, true)));
+            this.whitelistWorldCommands.forEach(command -> this.server.dispatchCommand(this.server.getConsoleSender(), MiscUtil.replacePlaceholders(this.placeholders, command)));
 
             setCancelled(true);
         }
@@ -56,15 +72,15 @@ public class GenericVoucher extends AbstractVoucher {
         if (this.whitelistPermissionToggle && !isCancelled()) {
             this.whitelistPermissions.forEach(permission -> {
                 // If they have one of the permissions, return in loop.
-                if (player.hasPermission(permission)) {
+                if (player.hasPermission(permission.toLowerCase().replace("{arg}", argument != null ? argument : "{arg}"))) {
                     return;
                 }
 
                 this.placeholders.put("{permission}", permission);
 
-                player.sendRichMessage(MiscUtil.replacePlaceholders(this.placeholders, this.whitelistPermissionMessage, false));
+                player.sendRichMessage(MiscUtil.replacePlaceholders(this.placeholders, this.whitelistPermissionMessage));
 
-                this.whitelistCommands.forEach(command -> this.server.dispatchCommand(this.server.getConsoleSender(), MiscUtil.replacePlaceholders(this.placeholders, command, true)));
+                this.whitelistCommands.forEach(command -> this.server.dispatchCommand(this.server.getConsoleSender(), MiscUtil.replacePlaceholders(this.placeholders, command)));
 
                 setCancelled(true);
             });
@@ -73,15 +89,15 @@ public class GenericVoucher extends AbstractVoucher {
         if (this.blacklistPermissionToggle && !isCancelled()) {
             this.blacklistPermissions.forEach(permission -> {
                 // If they don't have the permission, return in loop.
-                if (!player.hasPermission(permission)) {
+                if (!player.hasPermission(permission.toLowerCase().replace("{arg}", argument != null ? argument : "{arg}"))) {
                     return;
                 }
 
-                player.sendRichMessage(MiscUtil.replacePlaceholders(this.placeholders, this.blacklistPermissionMessage, false));
+                player.sendRichMessage(MiscUtil.replacePlaceholders(this.placeholders, this.blacklistPermissionMessage));
 
                 this.placeholders.put("{permission}", permission);
 
-                this.blacklistCommands.forEach(command -> this.server.dispatchCommand(this.server.getConsoleSender(), MiscUtil.replacePlaceholders(this.placeholders, command, true)));
+                this.blacklistCommands.forEach(command -> this.server.dispatchCommand(this.server.getConsoleSender(), MiscUtil.replacePlaceholders(this.placeholders, command)));
 
                 setCancelled(true);
             });
@@ -94,7 +110,7 @@ public class GenericVoucher extends AbstractVoucher {
                 if (!newValue.equals(value)) {
                     String msg = replacePlaceholders(this.requiredPlaceholderMessage, player);
 
-                    player.sendRichMessage(MiscUtil.replacePlaceholders(this.placeholders, msg, false));
+                    player.sendRichMessage(MiscUtil.replacePlaceholders(this.placeholders, msg));
 
                     setCancelled(true);
                 }
@@ -122,13 +138,29 @@ public class GenericVoucher extends AbstractVoucher {
         return isCancelled();
     }
 
-    public ItemStack getItem(Player player) {
-        return this.builder.setTarget(player).build();
+    public ItemBuilder getItem(Player player, String argument, int amount) {
+        if (argument != null) {
+            this.builder.setString(PersistentKeys.voucher_argument.getNamespacedKey(), argument);
+        }
+
+        return this.builder.setTarget(player).setAmount(amount);
     }
 
-    private String replacePlaceholders(String string, Player player) {
+    public ItemStack getItem(Player player, int amount) {
+        return getItem(player, null, amount).build();
+    }
+
+    public ItemStack getItem(Player player) {
+        return getItem(player, null, 1).build();
+    }
+
+    public String replacePlaceholders(String string, Player player) {
         if (Support.placeholder_api.isEnabled()) return PlaceholderAPI.setPlaceholders(player, string);
 
-        return MsgUtil.color(string);
+        return string;
     }
+
+    // Not needed in this class
+    @Override
+    public boolean execute(Player player) { return false; }
 }

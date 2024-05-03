@@ -5,6 +5,7 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.Cancellable;
 import org.bukkit.event.Event;
 import org.bukkit.event.HandlerList;
+import org.bukkit.inventory.ItemStack;
 
 public class VoucherRedeemEvent extends Event implements Cancellable {
     
@@ -13,18 +14,22 @@ public class VoucherRedeemEvent extends Event implements Cancellable {
     private final String argument;
     private boolean cancelled;
     private static final HandlerList handlers = new HandlerList();
+
+    private final ItemStack itemStack;
     
     /**
-     *
      * @param player The player using the voucher.
      * @param voucher The voucher being used.
      * @param argument The argument that is used. If no argument is used leave it as a blank string.
+     * @param itemStack The itemstack which is the voucher.
      */
-    public VoucherRedeemEvent(Player player, GenericVoucher voucher, String argument) {
+    public VoucherRedeemEvent(Player player, GenericVoucher voucher, String argument, ItemStack itemStack) {
         this.player = player;
         this.voucher = voucher;
         this.argument = argument;
         this.cancelled = false;
+
+        this.itemStack = itemStack;
     }
     
     /**
@@ -56,9 +61,12 @@ public class VoucherRedeemEvent extends Event implements Cancellable {
     @Override
     public void setCancelled(boolean cancelled) {
         this.cancelled = cancelled;
-        
     }
-    
+
+    public ItemStack getItemStack() {
+        return this.itemStack;
+    }
+
     public HandlerList getHandlers() {
         return handlers;
     }

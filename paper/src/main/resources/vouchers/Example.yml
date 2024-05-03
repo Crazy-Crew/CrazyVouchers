@@ -34,8 +34,8 @@ voucher:
     - 'msg {player} wow you claimed a voucher.'
   # The items to give when claiming the voucher.
   items:
-    - 'Item:diamond_helmet, Damage:50, Trim-Pattern:sentry, Trim-Material:quartz, Amount:1, Protection:4, Respiration:1, Aqua_Affinity:3, Unbreaking:3, Thorns:3'
-    - 'Item:diamond_chestplate, Damage:50, Trim-Pattern:dune, Trim-Material:redstone, Amount:1, Protection:4, Unbreaking:3, Thorns:3'
+    - 'item:diamond_helmet, damage:50, trim-pattern:sentry, trim-material:quartz, amount:1, protection:4, respiration:1, aqua_affinity:3, unbreaking:3, thorns:3'
+    - 'item:diamond_chestplate, damage:50, trim-pattern:dune, trim-material:redstone, amount:1, protection:4, unbreaking:3, thorns:3'
   # Random Commands is completely random.
   random-commands:
     - 'eco give 50000'

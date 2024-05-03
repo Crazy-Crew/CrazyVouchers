@@ -13,9 +13,9 @@ import org.bukkit.plugin.java.JavaPlugin;
 import org.jetbrains.annotations.NotNull;
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+import java.util.concurrent.ThreadLocalRandom;
 
 public class CrazyHandler {
 
@@ -23,7 +23,7 @@ public class CrazyHandler {
 
     private final @NotNull FileManager fileManager = this.plugin.getFileManager();
 
-    private final Set<GenericVoucher> vouchers = new HashSet<>();
+    private final List<GenericVoucher> vouchers = new ArrayList<>();
 
     private List<String> files = new ArrayList<>();
 
@@ -80,6 +80,14 @@ public class CrazyHandler {
         return getVoucher(itemMeta.getPersistentDataContainer().get(PersistentKeys.voucher_item.getNamespacedKey(), PersistentDataType.STRING));
     }
 
+    public String getArgumentFromItem(ItemMeta itemMeta) {
+        return itemMeta.getPersistentDataContainer().get(PersistentKeys.voucher_argument.getNamespacedKey(), PersistentDataType.STRING);
+    }
+
+    public boolean hasArgument(ItemMeta itemMeta) {
+        return itemMeta.getPersistentDataContainer().has(PersistentKeys.voucher_argument.getNamespacedKey());
+    }
+
     /**
      * Checks if item is a voucher.
      *
@@ -88,6 +96,45 @@ public class CrazyHandler {
      */
     public boolean isVoucher(ItemMeta itemMeta) {
         return itemMeta.getPersistentDataContainer().has(PersistentKeys.voucher_item.getNamespacedKey());
+    }
+
+    /**
+     * Replaces {random}: in the string with random numbers.
+     *
+     * @param value the string to check.
+     * @return the new string.
+     */
+    public String replaceRandom(String value) {
+        String newString = value;
+
+        if (value.toLowerCase().contains("{random}:")) {
+            StringBuilder builder = new StringBuilder();
+
+            for (String word : newString.split(" ")) {
+                String lower = word.toLowerCase();
+
+                if (lower.startsWith("{random}:")) {
+                    word = lower.replace("{random}:", "");
+
+                    try {
+                        long min = Long.parseLong(word.split("-")[0]);
+                        long max = Long.parseLong(word.split("-")[1]);
+
+                        builder.append(randomizer(min, max)).append(" ");
+                    } catch (Exception e) {
+                        builder.append("1 ");
+                    }
+                } else {
+                    builder.append(word).append(" ");
+                }
+            }
+
+            value = builder.toString();
+
+            newString = value.substring(0, value.length() - 1);
+        }
+
+        return newString;
     }
 
     /**
@@ -100,7 +147,15 @@ public class CrazyHandler {
     /**
      * @return an unmodifiable set of vouchers.
      */
-    public Set<GenericVoucher> getVouchers() {
-        return Collections.unmodifiableSet(this.vouchers);
+    public List<GenericVoucher> getVouchers() {
+        return Collections.unmodifiableList(this.vouchers);
+    }
+
+    private long randomizer(long min, long max) {
+        try {
+            return min + ThreadLocalRandom.current().nextLong(max - min);
+        } catch (IllegalArgumentException e) {
+            return min;
+        }
     }
 }

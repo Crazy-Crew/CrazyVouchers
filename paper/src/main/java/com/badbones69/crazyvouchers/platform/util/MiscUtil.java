@@ -8,10 +8,7 @@ import com.badbones69.crazyvouchers.platform.config.ConfigManager;
 import org.bukkit.Color;
 import org.bukkit.FireworkEffect;
 import org.bukkit.Location;
-import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
-import org.bukkit.command.PluginCommand;
-import org.bukkit.command.TabCompleter;
 import org.bukkit.entity.Firework;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
@@ -21,8 +18,6 @@ import org.bukkit.persistence.PersistentDataType;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.jetbrains.annotations.NotNull;
 import com.badbones69.crazyvouchers.platform.config.types.ConfigKeys;
-
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -39,55 +34,17 @@ public class MiscUtil {
             item.setAmount(item.getAmount() - 1);
         }
     }
-    
-    public static String getPrefix(String message) {
-        return MsgUtil.color(config.getProperty(ConfigKeys.command_prefix) + message);
-    }
-    
-    public static boolean isInt(String s) {
-        try {
-            Integer.parseInt(s);
-        } catch (NumberFormatException nfe) {
-            return false;
-        }
-
-        return true;
-    }
-    
-    public static boolean isInt(CommandSender sender, String value) {
-        try {
-            Integer.parseInt(value);
-        } catch (NumberFormatException nfe) {
-            Map<String, String> placeholders = new HashMap<>();
-
-            placeholders.put("{arg}", value);
-
-            Messages.not_a_number.sendMessage(sender, placeholders);
-
-            return false;
-        }
-
-        return true;
-    }
 
     public static boolean isLogging() {
         return ConfigManager.getConfig().getProperty(ConfigKeys.verbose_logging);
     }
 
-    public static void registerCommand(PluginCommand pluginCommand, TabCompleter tabCompleter, CommandExecutor commandExecutor) {
-        if (pluginCommand != null) {
-            pluginCommand.setExecutor(commandExecutor);
-
-            if (tabCompleter != null) pluginCommand.setTabCompleter(tabCompleter);
-        }
-    }
-
-    public static String replacePlaceholders(Map<String, String> placeholders, String message, boolean isCommand) {
+    public static String replacePlaceholders(Map<String, String> placeholders, String message) {
         for (String placeholder : placeholders.keySet()) {
             message = message.replace(placeholder, placeholders.get(placeholder)).replace(placeholder.toLowerCase(), placeholders.get(placeholder));
         }
 
-        if (isCommand) return message; else return MsgUtil.color(message);
+        return message;
     }
     
     public static boolean isOnline(CommandSender sender, String name) {
@@ -98,30 +55,6 @@ public class MiscUtil {
         Messages.not_online.sendMessage(sender);
 
         return false;
-    }
-    
-    public static boolean hasPermission(Player player, String perm) {
-        if (!player.hasPermission("voucher." + perm)) {
-            Messages.no_permission.sendMessage(player);
-
-            return false;
-        }
-
-        return true;
-    }
-    
-    public static boolean hasPermission(CommandSender sender, String perm) {
-        if (sender instanceof Player player) {
-            if (!player.hasPermission("voucher." + perm)) {
-                Messages.no_permission.sendMessage(player);
-
-                return false;
-            } else {
-                return true;
-            }
-        } else {
-            return true;
-        }
     }
     
     public static boolean isInventoryFull(Player player) {

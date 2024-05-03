@@ -1,6 +1,7 @@
 package com.badbones69.crazyvouchers.commands.types.admin;
 
 import com.badbones69.crazyvouchers.api.enums.Messages;
+import com.badbones69.crazyvouchers.api.enums.PersistentKeys;
 import com.badbones69.crazyvouchers.api.objects.v2.GenericVoucher;
 import com.badbones69.crazyvouchers.commands.types.BaseCommand;
 import dev.triumphteam.cmd.bukkit.annotation.Permission;
@@ -19,7 +20,7 @@ public class CommandGive extends BaseCommand {
 
     @Command(value = "give")
     @Permission(value = "voucher.admin", def = PermissionDefault.OP)
-    public void give(Player player, @Suggestion("vouchers") String voucherName, @Suggestion("numbers") int amount) {
+    public void give(Player player, @Suggestion("vouchers") String voucherName, @Suggestion("numbers") int amount, @Optional String argument) {
         GenericVoucher voucher = this.crazyHandler.getVoucher(voucherName);
 
         if (voucher == null) {
@@ -29,7 +30,7 @@ public class CommandGive extends BaseCommand {
         }
 
         PlayerInventory inventory = player.getInventory();
-        ItemStack item = voucher.getItem(player);
+        ItemStack item = argument != null ? voucher.getItem(player, argument.replace("%random%", "{random}"), amount).setString(PersistentKeys.voucher_item.getNamespacedKey(), voucher.getFileName()).build() : voucher.getItem(player, amount);
 
         if (inventory.firstEmpty() == -1) {
             player.getWorld().dropItem(player.getLocation(), item);

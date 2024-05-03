@@ -13,6 +13,8 @@ dependencies {
 
     implementation(libs.vital)
 
+    compileOnly(libs.head.database.api)
+
     compileOnly(libs.placeholder.api)
 
     compileOnly(libs.itemsadder.api)

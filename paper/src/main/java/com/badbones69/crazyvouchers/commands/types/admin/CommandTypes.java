@@ -1,6 +1,5 @@
 package com.badbones69.crazyvouchers.commands.types.admin;
 
-import com.badbones69.crazyvouchers.api.objects.Voucher;
 import com.badbones69.crazyvouchers.api.objects.VoucherCode;
 import com.badbones69.crazyvouchers.commands.types.BaseCommand;
 import dev.triumphteam.cmd.bukkit.annotation.Permission;

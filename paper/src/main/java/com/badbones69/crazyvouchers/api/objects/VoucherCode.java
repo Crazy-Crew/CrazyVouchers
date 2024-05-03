@@ -2,7 +2,6 @@ package com.badbones69.crazyvouchers.api.objects;
 
 import com.badbones69.crazyvouchers.CrazyVouchers;
 import com.badbones69.crazyvouchers.api.enums.Messages;
-import com.badbones69.crazyvouchers.api.builders.OldBuilder;
 import com.ryderbelserion.vital.util.DyeUtil;
 import org.bukkit.Color;
 import org.bukkit.Sound;

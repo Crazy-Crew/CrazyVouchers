@@ -1,9 +1,11 @@
 package com.badbones69.crazyvouchers.api.objects.v2;
 
+import ch.jalu.configme.SettingsManager;
 import com.badbones69.crazyvouchers.CrazyVouchers;
+import com.badbones69.crazyvouchers.api.builders.ItemBuilder;
 import com.badbones69.crazyvouchers.api.enums.Messages;
-import com.ryderbelserion.vital.items.AbstractItemHandler;
-import com.ryderbelserion.vital.items.ItemHandler;
+import com.badbones69.crazyvouchers.api.objects.VoucherCommand;
+import com.badbones69.crazyvouchers.platform.config.ConfigManager;
 import com.ryderbelserion.vital.util.DyeUtil;
 import com.ryderbelserion.vital.util.ItemUtil;
 import net.kyori.adventure.text.serializer.plain.PlainTextComponentSerializer;
@@ -15,6 +17,8 @@ import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemFlag;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.jetbrains.annotations.NotNull;
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -23,11 +27,13 @@ public abstract class AbstractVoucher {
 
     protected final @NotNull CrazyVouchers plugin = JavaPlugin.getPlugin(CrazyVouchers.class);
 
+    protected final @NotNull SettingsManager config = ConfigManager.getConfig();
+
     protected final @NotNull Server server = this.plugin.getServer();
 
     protected final ConfigurationSection section;
 
-    protected AbstractItemHandler builder = null;
+    protected ItemBuilder builder = null;
 
     protected final String fileName;
 
@@ -40,18 +46,18 @@ public abstract class AbstractVoucher {
 
     protected boolean whitelistWorldToggle;
     protected String whitelistWorldMessage;
-    protected List<String> whitelistWorldCommands;
-    protected List<String> whitelistWorlds;
+    protected List<String> whitelistWorldCommands = new ArrayList<>();
+    protected List<String> whitelistWorlds = new ArrayList<>();
 
     protected boolean whitelistPermissionToggle;
     protected String whitelistPermissionMessage;
-    protected List<String> whitelistPermissions;
-    protected List<String> whitelistCommands;
+    protected List<String> whitelistPermissions = new ArrayList<>();
+    protected List<String> whitelistCommands = new ArrayList<>();
 
     protected boolean blacklistPermissionToggle;
     protected String blacklistPermissionMessage;
-    protected List<String> blacklistPermissions;
-    protected List<String> blacklistCommands;
+    protected List<String> blacklistPermissions = new ArrayList<>();
+    protected List<String> blacklistCommands = new ArrayList<>();
 
     protected boolean limiterToggle;
     protected int limiterAmount;
@@ -59,10 +65,10 @@ public abstract class AbstractVoucher {
     protected boolean soundToggle;
     protected float volume;
     protected float pitch;
-    protected List<Sound> sounds;
+    protected List<Sound> sounds = new ArrayList<>();
 
     protected boolean fireworkToggle;
-    protected List<Color> fireworkColors;
+    protected List<Color> fireworkColors = new ArrayList<>();
 
     protected boolean twoStep;
 
@@ -96,7 +102,7 @@ public abstract class AbstractVoucher {
 
         populate();
 
-        this.builder = new ItemHandler()
+        this.builder = new ItemBuilder()
                 .setMaterial(this.section.getString("item"))
                 .setDisplayName(this.section.getString("name"))
                 .setDisplayLore(this.section.getStringList("lore"))
@@ -132,14 +138,25 @@ public abstract class AbstractVoucher {
         this.fileName = file;
     }
 
+    public abstract boolean execute(Player player, String argument);
+
     public abstract boolean execute(Player player);
 
-    private boolean isCancelled;
+    // It should always be false as default.
+    private boolean isCancelled = false;
 
+    /**
+     * Cancels the voucher
+     *
+     * @param isCancelled true or false
+     */
     public void setCancelled(boolean isCancelled) {
         this.isCancelled = isCancelled;
     }
 
+    /**
+     * @return true or false
+     */
     public boolean isCancelled() {
         return this.isCancelled;
     }
@@ -164,7 +181,82 @@ public abstract class AbstractVoucher {
         return this.fileName;
     }
 
+    public boolean isSoundToggle() {
+        return this.soundToggle;
+    }
+
+    public List<Sound> getSounds() {
+        return Collections.unmodifiableList(this.sounds);
+    }
+
+    public float getPitch() {
+        return this.pitch;
+    }
+
+    public float getVolume() {
+        return this.volume;
+    }
+
+    public boolean isFireworkToggle() {
+        return this.fireworkToggle;
+    }
+
+    public List<Color> getFireworkColors() {
+        return this.fireworkColors;
+    }
+
+    public String getMessage() {
+        return this.message;
+    }
+
+    public boolean isLimiterToggle() {
+        return this.limiterToggle;
+    }
+
+    protected List<VoucherCommand> randomCommands = new ArrayList<>();
+    protected List<VoucherCommand> chanceCommands = new ArrayList<>();
+
+    protected List<String> commands = new ArrayList<>();
+
+    public List<VoucherCommand> getRandomCommands() {
+        return Collections.unmodifiableList(this.randomCommands);
+    }
+
+    public List<VoucherCommand> getChanceCommands() {
+        return Collections.unmodifiableList(this.chanceCommands);
+    }
+
+    public List<String> getCommands() {
+        return Collections.unmodifiableList(this.commands);
+    }
+
+    protected List<ItemBuilder> builders = new ArrayList<>();
+
+    public List<ItemBuilder> getBuilders() {
+        return Collections.unmodifiableList(this.builders);
+    }
+
     private void populate() {
+        this.builders = ItemBuilder.convertStringList(this.section.getStringList("items"));
+
+        this.section.getStringList("random-commands").forEach(command -> this.randomCommands.add(new VoucherCommand(command)));
+
+        this.section.getStringList("chance-commands").forEach(command -> {
+            try {
+                String[] divider = command.split(" ");
+
+                VoucherCommand voucherCommand = new VoucherCommand(command.substring(divider[0].length() + 1));
+
+                for (int count = 1; count <= Integer.parseInt(divider[0]); count++) {
+                    this.chanceCommands.add(voucherCommand);
+                }
+            } catch (Exception exception) {
+                this.plugin.getLogger().warning("An issue occurred when trying to cache the chance commands.");
+            }
+        });
+
+        this.commands = this.section.getStringList("commands");
+
         ConfigurationSection section = this.section.getConfigurationSection("options");
 
         if (section != null) {

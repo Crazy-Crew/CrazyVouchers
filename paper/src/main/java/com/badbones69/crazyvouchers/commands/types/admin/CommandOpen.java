@@ -2,7 +2,6 @@ package com.badbones69.crazyvouchers.commands.types.admin;
 
 import com.badbones69.crazyvouchers.api.builders.types.VoucherGuiMenu;
 import com.badbones69.crazyvouchers.commands.types.BaseCommand;
-import com.badbones69.crazyvouchers.platform.util.MsgUtil;
 import dev.triumphteam.cmd.bukkit.annotation.Permission;
 import dev.triumphteam.cmd.core.annotations.Command;
 import dev.triumphteam.cmd.core.annotations.Suggestion;
@@ -17,7 +16,7 @@ public class CommandOpen extends BaseCommand {
     public void open(CommandSender sender, @Suggestion("numbers") int page) {
         Player player = (Player) sender;
 
-        VoucherGuiMenu menu = new VoucherGuiMenu(player, 54, MsgUtil.color("<dark_gray><bold><underlined>Vouchers"));
+        VoucherGuiMenu menu = new VoucherGuiMenu(player, 54, "<dark_gray><bold><underlined>Vouchers");
 
         player.openInventory(menu.build(page).getInventory());
     }
