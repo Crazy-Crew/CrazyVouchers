@@ -5,7 +5,6 @@ import com.badbones69.crazyvouchers.api.builders.OldBuilder;
 import com.badbones69.crazyvouchers.api.objects.Voucher;
 import com.badbones69.crazyvouchers.platform.config.ConfigManager;
 import com.badbones69.crazyvouchers.platform.util.ItemUtil;
-import com.ryderbelserion.vital.files.FileManager;
 import de.tr7zw.changeme.nbtapi.NBTItem;
 import com.badbones69.crazyvouchers.api.objects.VoucherCode;
 import org.bukkit.configuration.file.FileConfiguration;
@@ -17,14 +16,11 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Random;
-import java.util.logging.Level;
 
 public class CrazyManager {
 
     private final @NotNull CrazyVouchers plugin = JavaPlugin.getPlugin(CrazyVouchers.class);
 
-    private final @NotNull FileManager fileManager = this.plugin.getFileManager();
-    
     private final List<Voucher> vouchers = new ArrayList<>();
     private final List<VoucherCode> voucherCodes = new ArrayList<>();
     
@@ -32,11 +28,11 @@ public class CrazyManager {
         // Used for when wanting to put in fake vouchers.
         // for(int i = 1; i <= 400; i++) vouchers.add(new Voucher(i));
 
-        loadvouchers();
+        loadVouchers();
     }
 
-    public void loadvouchers() {
-        for (String voucherName : getVouchersFiles()) {
+    public void loadVouchers() {
+        /*for (String voucherName : getVouchersFiles()) {
             try {
                 FileConfiguration file = this.fileManager.getCustomFile(voucherName).getConfiguration();
 
@@ -54,13 +50,13 @@ public class CrazyManager {
             } catch (Exception exception) {
                 this.plugin.getLogger().log(Level.SEVERE,"There was an error while loading the " + voucherCode + ".yml file.", exception);
             }
-        }
+        }*/
     }
 
     public void reload() {
         ConfigManager.reload();
 
-        loadvouchers();
+        loadVouchers();
     }
     
     public List<Voucher> getVouchers() {
