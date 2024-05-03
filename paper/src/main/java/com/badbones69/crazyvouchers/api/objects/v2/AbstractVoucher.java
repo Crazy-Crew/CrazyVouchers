@@ -62,7 +62,7 @@ public abstract class AbstractVoucher {
     protected List<Sound> sounds;
 
     protected boolean fireworkToggle;
-    protected String fireworkColors;
+    protected List<Color> fireworkColors;
 
     protected boolean twoStep;
 
@@ -172,16 +172,25 @@ public abstract class AbstractVoucher {
 
             String whitelist = "whitelist-worlds.";
 
-            this.whitelistWorldToggle = section.getBoolean(whitelist + "toggle", false);
-            this.whitelistWorldMessage = section.getString(whitelist + "message", "");
+            this.whitelistWorldMessage = section.getString(whitelist + "message", Messages.not_in_whitelisted_world.getString());
             this.whitelistWorldCommands = section.getStringList(whitelist + "commands");
-            this.whitelistWorlds = section.getStringList(whitelist + "worlds");
+            this.whitelistWorlds = section.getStringList(whitelist + "worlds").stream().map(String::toLowerCase).toList();
+            this.whitelistWorldToggle = !this.whitelistWorlds.isEmpty() && section.getBoolean(whitelist + "toggle", false);
 
             String permission = "permission.";
 
             this.whitelistPermissionToggle = section.getBoolean(permission + "whitelist-permission.toggle", false);
-            this.whitelistPermissionMessage = section.getString(permission + "whitelist-permission.message", "");
-            this.whitelistPermissions = section.getStringList(permission + "whitelist-permission.permissions");
+            this.whitelistPermissionMessage = section.getString(permission + "whitelist-permission.message", Messages.no_permission_to_use_voucher.getString());
+
+            if (section.contains(permission + "whitelist-permission.node")) {
+                String key = section.getString(permission + "whitelist-permission.node", "");
+
+                if (key.isEmpty()) return;
+
+                this.whitelistPermissions.add(key.toLowerCase());
+            }
+
+            this.whitelistPermissions = section.getStringList(permission + "whitelist-permission.permissions").stream().map(String::toLowerCase).toList();
             this.whitelistCommands = section.getStringList(permission + "whitelist-permission.commands");
 
             this.blacklistPermissionToggle = section.getBoolean(permission + "blacklist-permission.toggle", false);
@@ -212,8 +221,15 @@ public abstract class AbstractVoucher {
 
             String firework = "firework.";
 
-            this.fireworkToggle = section.getBoolean("firework.toggle", false);
-            this.fireworkColors = section.getString("firework.colors", "Black, Gray, Aqua");
+            if (this.fireworkToggle) {
+                for (String key : section.getString(firework + "colors", "Black, Gray, Aqua").split(", ")) {
+                    Color color = DyeUtil.getColor(key);
+
+                    if (color != null) {
+                        this.fireworkColors.add(color);
+                    }
+                }
+            }
         }
     }
 }
