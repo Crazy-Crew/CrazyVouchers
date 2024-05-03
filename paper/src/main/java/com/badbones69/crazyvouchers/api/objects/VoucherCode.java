@@ -182,79 +182,79 @@ public class VoucherCode {
         return this.commands;
     }
     
-    public boolean useWhiteListPermissions() {
+    public boolean useWhiteListPermissions() { // Added to new system
         return this.whitelistPermissionToggle;
     }
     
-    public List<String> getWhitelistPermissions() {
+    public List<String> getWhitelistPermissions() { // Added to new system
         return this.whitelistPermissions;
     }
     
-    public List<String> getWhitelistCommands() {
+    public List<String> getWhitelistCommands() { // Added to new system
         return this.whitelistCommands;
     }
     
-    public boolean useWhitelistWorlds() {
+    public boolean useWhitelistWorlds() { // Added to new system
         return this.whitelistWorldsToggle;
     }
     
-    public String getWhitelistWorldMessage() {
+    public String getWhitelistWorldMessage() { // Added to new system
         return this.whitelistWorldMessage;
     }
     
-    public List<String> getWhitelistWorlds() {
+    public List<String> getWhitelistWorlds() { // Added to new system
         return this.whitelistWorlds;
     }
     
-    public boolean useBlacklistPermissions() {
+    public boolean useBlacklistPermissions() { // Added to new system
         return this.blacklistPermissionsToggle;
     }
     
-    public List<String> getWhitelistWorldCommands() {
+    public List<String> getWhitelistWorldCommands() { // Added to new system
         return this.whitelistWorldCommands;
     }
     
-    public String getBlacklistMessage() {
+    public String getBlacklistMessage() { // Added to new system
         return this.blacklistPermissionMessage;
     }
     
-    public List<String> getBlacklistPermissions() {
+    public List<String> getBlacklistPermissions() { // Added to new system
         return this.blacklistPermissions;
     }
     
-    public List<String> getBlacklistCommands() {
+    public List<String> getBlacklistCommands() { // Added to new system
         return this.blacklistCommands;
     }
     
-    public boolean useLimiter() {
+    public boolean useLimiter() { // Added to new system
         return this.limiterToggle;
     }
     
-    public int getLimit() {
+    public int getLimit() { // Added to new system
         return this.limiterLimit;
     }
     
-    public boolean useSounds() {
+    public boolean useSounds() { // Added to new system
         return this.soundToggle;
     }
     
-    public List<Sound> getSounds() {
+    public List<Sound> getSounds() { // Added to new system
         return this.sounds;
     }
 
-    public float getPitch() {
+    public float getPitch() { // Added to new system
         return this.pitch;
     }
 
-    public float getVolume() {
+    public float getVolume() { // Added to new system
         return this.volume;
     }
     
-    public boolean useFireworks() {
+    public boolean useFireworks() { // Added to new system
         return this.fireworkToggle;
     }
     
-    public List<Color> getFireworkColors() {
+    public List<Color> getFireworkColors() { // Added to new system
         return this.fireworkColors;
     }
     
