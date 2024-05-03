@@ -53,8 +53,12 @@ public class CrazyVouchers extends JavaPlugin {
                 .addFolder("vouchers")
                 .addFolder("codes").create();
 
-        this.crazyManager = new CrazyManager();
-        this.crazyManager.load();
+        this.crazyHandler = new CrazyHandler();
+        this.crazyHandler.load();
+
+        PluginManager pluginManager = getServer().getPluginManager();
+        pluginManager.registerEvents(new VoucherClickListener(), this);
+        pluginManager.registerEvents(new VoucherRedeemListener(), this);
 
         FileConfiguration configuration = Files.users.getFile();
 
@@ -79,6 +83,10 @@ public class CrazyVouchers extends JavaPlugin {
 
     public FileManager getFileManager() {
         return this.fileManager;
+    }
+
+    public CrazyHandler getCrazyHandler() {
+        return this.crazyHandler;
     }
 
     public CrazyManager getCrazyManager() {
