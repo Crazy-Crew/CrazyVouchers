@@ -157,7 +157,7 @@ public class VoucherCode {
         }
     }
     
-    public String getName() {
+    public String getName() { // Added to new system
         return this.name;
     }
     
@@ -173,11 +173,11 @@ public class VoucherCode {
         return this.caseSensitive;
     }
     
-    public String getMessage() {
+    public String getMessage() { // Added to new system
         return this.message;
     }
     
-    public List<String> getCommands() {
+    public List<String> getCommands() { // Added to new system
         return this.commands;
     }
     
@@ -257,11 +257,11 @@ public class VoucherCode {
         return this.fireworkColors;
     }
     
-    public List<VoucherCommand> getRandomCommands() {
+    public List<VoucherCommand> getRandomCommands() { // Added to new system
         return this.randomCommands;
     }
     
-    public List<VoucherCommand> getChanceCommands() {
+    public List<VoucherCommand> getChanceCommands() { // Added to new system
         return this.chanceCommands;
     }
 }
