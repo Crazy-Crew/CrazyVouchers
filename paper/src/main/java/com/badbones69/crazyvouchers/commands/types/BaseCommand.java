@@ -2,6 +2,7 @@ package com.badbones69.crazyvouchers.commands.types;
 
 import ch.jalu.configme.SettingsManager;
 import com.badbones69.crazyvouchers.CrazyVouchers;
+import com.badbones69.crazyvouchers.api.CrazyHandler;
 import com.badbones69.crazyvouchers.api.CrazyManager;
 import com.badbones69.crazyvouchers.platform.config.ConfigManager;
 import com.ryderbelserion.vital.files.FileManager;
@@ -15,6 +16,8 @@ public abstract class BaseCommand {
     protected final @NotNull CrazyVouchers plugin = JavaPlugin.getPlugin(CrazyVouchers.class);
 
     protected final @NotNull FileManager fileManager = this.plugin.getFileManager();
+
+    protected final @NotNull CrazyHandler crazyHandler = this.plugin.getCrazyHandler();
 
     protected final @NotNull CrazyManager crazyManager = this.plugin.getCrazyManager();
 

@@ -24,7 +24,7 @@ public class CommandReload extends BaseCommand {
             Files.users.save();
         }
 
-        this.crazyManager.reload();
+        this.crazyHandler.load();
 
         Messages.config_reload.sendMessage(sender);
     }

@@ -1,9 +1,10 @@
 package com.badbones69.crazyvouchers.commands;
 
 import com.badbones69.crazyvouchers.CrazyVouchers;
+import com.badbones69.crazyvouchers.api.CrazyHandler;
 import com.badbones69.crazyvouchers.api.CrazyManager;
-import com.badbones69.crazyvouchers.api.objects.Voucher;
 import com.badbones69.crazyvouchers.api.objects.VoucherCode;
+import com.badbones69.crazyvouchers.api.objects.v2.AbstractVoucher;
 import com.badbones69.crazyvouchers.commands.types.admin.CommandGive;
 import com.badbones69.crazyvouchers.commands.types.admin.CommandOpen;
 import com.badbones69.crazyvouchers.commands.types.admin.CommandReload;
@@ -23,6 +24,8 @@ import java.util.List;
 public class CommandManager {
 
     private final static @NotNull CrazyVouchers plugin = JavaPlugin.getPlugin(CrazyVouchers.class);
+    private final static @NotNull CrazyHandler crazyHandler = plugin.getCrazyHandler();
+
     private final static @NotNull CrazyManager crazyManager = plugin.getCrazyManager();
 
     private final static @NotNull BukkitCommandManager<CommandSender> commandManager = BukkitCommandManager.create(plugin);
@@ -41,7 +44,7 @@ public class CommandManager {
             return numbers;
         });
 
-        commandManager.registerSuggestion(SuggestionKey.of("vouchers"), (sender, context) -> crazyManager.getVouchers().stream().map(Voucher::getName).toList());
+        commandManager.registerSuggestion(SuggestionKey.of("vouchers"), (sender, context) -> crazyHandler.getVouchers().stream().map(AbstractVoucher::getFileName).toList());
 
         commandManager.registerSuggestion(SuggestionKey.of("codes"), (sender, context) -> crazyManager.getVoucherCodes().stream().map(VoucherCode::getCode).toList());
 
