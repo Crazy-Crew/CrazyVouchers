@@ -4,6 +4,7 @@ import com.badbones69.crazyvouchers.api.enums.Messages;
 import com.badbones69.crazyvouchers.api.enums.PersistentKeys;
 import com.badbones69.crazyvouchers.api.objects.v2.GenericVoucher;
 import com.badbones69.crazyvouchers.commands.types.BaseCommand;
+import com.badbones69.crazyvouchers.platform.util.MiscUtil;
 import dev.triumphteam.cmd.bukkit.annotation.Permission;
 import dev.triumphteam.cmd.core.annotations.Command;
 import dev.triumphteam.cmd.core.annotations.Optional;
@@ -43,40 +44,35 @@ public class CommandGive extends BaseCommand {
         placeholders.put("{voucher}", voucher.getFileName());
 
         Messages.sent_voucher.sendMessage(player, placeholders);
-
-        /*
-        Voucher voucher = this.crazyManager.getVoucher(type);
-
-        Player player = this.plugin.getServer().getPlayer(name);
-
-        ItemStack item = argument != null ? voucher.buildItem(argument.replace("%random%", "{random}"), amount) : voucher.buildItem(amount);*/
     }
 
-    @Command(value = "givealll")
+    @Command(value = "giveall")
     @Permission(value = "voucher.admin", def = PermissionDefault.OP)
-    public void all(CommandSender sender, @Suggestion("vouchers") String type, @Suggestion("numbers") int amount, @Optional String argument) {
-        /*if (this.crazyManager.isVoucherName(type)) {
+    public void all(CommandSender sender, @Suggestion("vouchers") String voucherName, @Suggestion("numbers") int amount, @Optional String argument) {
+        GenericVoucher voucher = this.crazyHandler.getVoucher(voucherName);
+
+        if (voucher == null) {
             Messages.not_a_voucher.sendMessage(sender);
 
             return;
         }
 
-        Voucher voucher = this.crazyManager.getVoucher(type);
-
-        ItemStack item = argument != null ? voucher.buildItem(argument.replace("%random%", "{random}"), amount) : voucher.buildItem(amount);
-
         for (Player player : this.plugin.getServer().getOnlinePlayers()) {
-            if (MiscUtil.isInventoryFull(player)) {
-                player.getWorld().dropItem(player.getLocation(), item);
-            } else {
-                player.getInventory().addItem(item);
+            ItemStack item = argument != null ? voucher.getItem(player, argument.replace("%random%", "{random}"), amount).setString(PersistentKeys.voucher_item.getNamespacedKey(), voucher.getFileName()).build() : voucher.getItem(player, amount);
+
+            if (!MiscUtil.isInventoryFull(player)) {
+                PlayerInventory inventory = player.getInventory();
+
+                inventory.setItem(inventory.firstEmpty(), item);
                 player.updateInventory();
+            } else {
+                player.getWorld().dropItem(player.getLocation(), item);
             }
         }
 
         Map<String, String> placeholders = new HashMap<>();
-        placeholders.put("{voucher}", voucher.getName());
+        placeholders.put("{voucher}", voucher.getFileName());
 
-        Messages.sent_everyone_voucher.sendMessage(sender, placeholders);*/
+        Messages.sent_everyone_voucher.sendMessage(sender, placeholders);
     }
 }
