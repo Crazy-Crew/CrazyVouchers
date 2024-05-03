@@ -194,7 +194,7 @@ public abstract class AbstractVoucher {
             this.whitelistCommands = section.getStringList(permission + "whitelist-permission.commands");
 
             this.blacklistPermissionToggle = section.getBoolean(permission + "blacklist-permission.toggle", false);
-            this.blacklistPermissionMessage = section.getString(permission + "blacklist-permission.message", "");
+            this.blacklistPermissionMessage = section.getString(permission + "blacklist-permission.message", Messages.has_blacklist_permission.getString());
             this.blacklistPermissions = section.getStringList(permission + "blacklist-permission.permissions");
             this.blacklistCommands = section.getStringList(permission + "blacklist-permission.commands");
 
@@ -205,7 +205,6 @@ public abstract class AbstractVoucher {
 
             String sounds = "sound.";
 
-            this.soundToggle = section.getBoolean(sounds + "toggle", false);
             this.volume = (float) section.getDouble(sounds + "volume", 1.0f);
             this.pitch = (float) section.getDouble(sounds + "pitch", 1.0f);
 
@@ -220,6 +219,8 @@ public abstract class AbstractVoucher {
             }
 
             String firework = "firework.";
+
+            this.fireworkToggle = section.getBoolean(firework + "toggle", false);
 
             if (this.fireworkToggle) {
                 for (String key : section.getString(firework + "colors", "Black, Gray, Aqua").split(", ")) {
