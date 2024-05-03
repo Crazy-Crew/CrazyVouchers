@@ -36,28 +36,24 @@ public class CrazyVouchers extends JavaPlugin {
         this.crazyHandler.load();
 
         PluginManager pluginManager = getServer().getPluginManager();
+
         pluginManager.registerEvents(new VoucherClickListener(), this);
         pluginManager.registerEvents(new VoucherRedeemListener(), this);
 
-        FileConfiguration configuration = Files.users.getFile();
+        /*FileConfiguration configuration = Files.users.getFile();
 
         if (!configuration.contains("Players")) {
             configuration.set("Players.Clear", null);
 
             Files.users.save();
-        }
+        }*/
 
-        getServer().getPluginManager().registerEvents(new VoucherClickListener(), this);
-        getServer().getPluginManager().registerEvents(new VoucherCraftListener(), this);
-        getServer().getPluginManager().registerEvents(new VoucherMenuListener(), this);
-        getServer().getPluginManager().registerEvents(new FireworkDamageListener(), this);
+        //getServer().getPluginManager().registerEvents(new VoucherClickListener(), this);
+        //getServer().getPluginManager().registerEvents(new VoucherCraftListener(), this);
+        //getServer().getPluginManager().registerEvents(new VoucherMenuListener(), this);
+        //getServer().getPluginManager().registerEvents(new FireworkDamageListener(), this);
 
         CommandManager.load();
-    }
-
-    @Override
-    public void onDisable() {
-        super.onDisable();
     }
 
     public FileManager getFileManager() {
@@ -69,6 +65,6 @@ public class CrazyVouchers extends JavaPlugin {
     }
 
     public CrazyManager getCrazyManager() {
-        return this.crazyManager;
+        return new CrazyManager();
     }
 }

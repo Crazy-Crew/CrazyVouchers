@@ -192,10 +192,10 @@ public class VoucherClickListener implements Listener {
 
             this.twoAuth.remove(player.getUniqueId());
 
-            VoucherRedeemEvent event = new VoucherRedeemEvent(player, voucher, argument);
-            this.plugin.getServer().getPluginManager().callEvent(event);
+            //VoucherRedeemEvent event = new VoucherRedeemEvent(player, voucher, argument);
+            //this.plugin.getServer().getPluginManager().callEvent(event);
 
-            if (!event.isCancelled()) voucherClick(player, item, voucher, argument);
+            //if (!event.isCancelled()) voucherClick(player, item, voucher, argument);
         }
     }
 
