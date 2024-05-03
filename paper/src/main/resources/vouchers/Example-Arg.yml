@@ -8,7 +8,7 @@ voucher:
   # The material.
   item: 'paper'
   # The name of the item.
-  name: '<light_blue>Arg Example <green>{arg}'
+  name: '<blue>Arg Example <green>{arg}'
   # The lore of the item.
   lore:
   - '<gray>Use this voucher to rank up to <red>{arg}'
