@@ -150,7 +150,7 @@ public class CommandRedeem extends BaseCommand {
                     }
                 }
 
-                if (voucherCode.useFireworks()) MiscUtil.firework(player.getLocation(), voucherCode.getFireworkColors());
+                if (voucherCode.useFireworks()) MiscUtil.firework(player, player.getLocation(), voucherCode.getFireworkColors());
 
                 //if (!voucherCode.getMessage().isEmpty()) player.sendMessage(MsgUtil.color(MiscUtil.replacePlaceholders(placeholders, voucherCode.getMessage())));
             }

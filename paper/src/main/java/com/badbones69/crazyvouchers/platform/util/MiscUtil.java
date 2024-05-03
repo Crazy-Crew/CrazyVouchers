@@ -5,6 +5,7 @@ import com.badbones69.crazyvouchers.CrazyVouchers;
 import com.badbones69.crazyvouchers.api.enums.PersistentKeys;
 import com.badbones69.crazyvouchers.api.enums.Messages;
 import com.badbones69.crazyvouchers.platform.config.ConfigManager;
+import com.ryderbelserion.vital.util.scheduler.FoliaRunnable;
 import org.bukkit.Color;
 import org.bukkit.FireworkEffect;
 import org.bukkit.Location;
@@ -61,7 +62,7 @@ public class MiscUtil {
         return player.getInventory().firstEmpty() == -1;
     }
     
-    public static void firework(Location loc, List<Color> list) {
+    public static void firework(Player player, Location loc, List<Color> list) {
         if (loc.getWorld() == null) return;
 
         Firework firework = loc.getWorld().spawn(loc, Firework.class);
@@ -74,6 +75,11 @@ public class MiscUtil {
 
         container.set(PersistentKeys.no_firework_damage.getNamespacedKey(), PersistentDataType.BOOLEAN, true);
 
-        plugin.getServer().getScheduler().scheduleSyncDelayedTask(plugin, firework::detonate, 2);
+        new FoliaRunnable(player.getServer().getRegionScheduler(), loc) {
+            @Override
+            public void run() {
+                firework.detonate();
+            }
+        }.runDelayed(plugin, 2);
     }
 }

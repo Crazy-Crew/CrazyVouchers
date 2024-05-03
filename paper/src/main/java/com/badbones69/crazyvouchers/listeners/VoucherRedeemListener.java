@@ -114,7 +114,7 @@ public class VoucherRedeemListener implements Listener {
             voucher.getSounds().forEach(sound -> player.playSound(location, sound, SoundCategory.PLAYERS, volume, pitch));
         }
 
-        if (voucher.isFireworkToggle()) MiscUtil.firework(location, voucher.getFireworkColors());
+        if (voucher.isFireworkToggle()) MiscUtil.firework(player, location, voucher.getFireworkColors());
 
         String msg = voucher.getMessage();
 
