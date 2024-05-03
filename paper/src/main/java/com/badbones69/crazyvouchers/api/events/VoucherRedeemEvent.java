@@ -1,6 +1,6 @@
 package com.badbones69.crazyvouchers.api.events;
 
-import com.badbones69.crazyvouchers.api.objects.Voucher;
+import com.badbones69.crazyvouchers.api.objects.v2.GenericVoucher;
 import org.bukkit.entity.Player;
 import org.bukkit.event.Cancellable;
 import org.bukkit.event.Event;
@@ -9,7 +9,7 @@ import org.bukkit.event.HandlerList;
 public class VoucherRedeemEvent extends Event implements Cancellable {
     
     private final Player player;
-    private final Voucher voucher;
+    private final GenericVoucher voucher;
     private final String argument;
     private boolean cancelled;
     private static final HandlerList handlers = new HandlerList();
@@ -20,7 +20,7 @@ public class VoucherRedeemEvent extends Event implements Cancellable {
      * @param voucher The voucher being used.
      * @param argument The argument that is used. If no argument is used leave it as a blank string.
      */
-    public VoucherRedeemEvent(Player player, Voucher voucher, String argument) {
+    public VoucherRedeemEvent(Player player, GenericVoucher voucher, String argument) {
         this.player = player;
         this.voucher = voucher;
         this.argument = argument;
@@ -37,7 +37,7 @@ public class VoucherRedeemEvent extends Event implements Cancellable {
     /**
      * @return Voucher object used in the event.
      */
-    public Voucher getVoucher() {
+    public GenericVoucher getVoucher() {
         return this.voucher;
     }
     
