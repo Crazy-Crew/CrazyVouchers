@@ -1,6 +1,7 @@
 package com.badbones69.crazyvouchers.commands.types.admin;
 
 import com.badbones69.crazyvouchers.api.objects.VoucherCode;
+import com.badbones69.crazyvouchers.api.objects.v2.GenericVoucher;
 import com.badbones69.crazyvouchers.commands.types.BaseCommand;
 import dev.triumphteam.cmd.bukkit.annotation.Permission;
 import dev.triumphteam.cmd.core.annotations.Command;
@@ -15,8 +16,8 @@ public class CommandTypes extends BaseCommand {
         StringBuilder vouchers = new StringBuilder();
         StringBuilder codes = new StringBuilder();
 
-        for (Voucher voucher : this.crazyManager.getVouchers()) {
-            vouchers.append("<green>").append(voucher.getName()).append("<dark_gray>, ");
+        for (GenericVoucher voucher : this.crazyHandler.getVouchers()) {
+            vouchers.append("<green>").append(voucher.getFileName()).append("<dark_gray>, ");
         }
 
         for (VoucherCode code : this.crazyManager.getVoucherCodes()) {
@@ -26,7 +27,7 @@ public class CommandTypes extends BaseCommand {
         vouchers = new StringBuilder((vouchers.isEmpty()) ? "<red>None" : vouchers.substring(0, vouchers.length() - 2));
         codes = new StringBuilder((codes.isEmpty()) ? "<red>None" : codes.substring(0, codes.length() - 2));
 
-        sender.sendRichMessage("<bold><gold>Vouchers</bold> <gold>#" + this.crazyManager.getVouchers().size() + ":<white> " + vouchers);
+        sender.sendRichMessage("<bold><gold>Vouchers</bold> <gold>#" + this.crazyHandler.getVouchers().size() + ":<white> " + vouchers);
         sender.sendRichMessage("<bold><gold>Voucher Codes</bold> <gold>#" + this.crazyManager.getVoucherCodes().size() + ":<white> " + codes);
     }
 }
