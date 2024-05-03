@@ -4,6 +4,7 @@ import com.badbones69.crazyvouchers.CrazyVouchers;
 import com.badbones69.crazyvouchers.api.CrazyHandler;
 import com.badbones69.crazyvouchers.api.enums.Files;
 import com.badbones69.crazyvouchers.api.enums.Messages;
+import com.badbones69.crazyvouchers.api.events.VoucherRedeemCodeEvent;
 import com.badbones69.crazyvouchers.api.events.VoucherRedeemEvent;
 import com.badbones69.crazyvouchers.api.objects.VoucherCommand;
 import com.badbones69.crazyvouchers.api.objects.v2.GenericVoucher;
@@ -129,6 +130,11 @@ public class VoucherRedeemListener implements Listener {
 
             Files.users.save();
         }
+    }
+
+    @EventHandler(ignoreCancelled = true)
+    public void onVoucherCodeRedeem(VoucherRedeemCodeEvent event) {
+
     }
 
     private int getRandom(int max) {
