@@ -43,7 +43,7 @@ public class VoucherCode {
     private final List<Color> fireworkColors = new ArrayList<>();
     private final List<VoucherCommand> randomCommands = new ArrayList<>();
     private final List<VoucherCommand> chanceCommands = new ArrayList<>();
-    private final List<OldBuilder> items = new ArrayList<>();
+    //private final List<OldBuilder> items = new ArrayList<>();
 
     public VoucherCode(FileConfiguration file, String name) {
         this.name = name;
@@ -70,7 +70,7 @@ public class VoucherCode {
         }
 
         for (String itemString : file.getStringList(path + "items")) {
-            this.items.add(OldBuilder.convertString(itemString));
+            //this.items.add(OldBuilder.convertString(itemString));
         }
 
         this.caseSensitive = file.getBoolean(path + "options.case-sensitive", false);
@@ -263,9 +263,5 @@ public class VoucherCode {
     
     public List<VoucherCommand> getChanceCommands() {
         return this.chanceCommands;
-    }
-    
-    public List<OldBuilder> getItems() {
-        return this.items;
     }
 }
