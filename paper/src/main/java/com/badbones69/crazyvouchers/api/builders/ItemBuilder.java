@@ -166,6 +166,7 @@ public class ItemBuilder extends AbstractItemHandler {
                     case "trim-material" -> {
                         if (!value.isEmpty()) itemBuilder.setTrimMaterial(value);
                     }
+                    case "glowing" -> itemBuilder.setGlowing(Boolean.parseBoolean(value));
                     default -> {
                         if (getEnchantment(option) != null) {
                             try {
