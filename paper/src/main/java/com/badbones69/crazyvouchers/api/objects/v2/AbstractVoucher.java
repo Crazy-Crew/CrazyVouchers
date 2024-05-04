@@ -17,6 +17,8 @@ import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemFlag;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
+
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
@@ -79,7 +81,7 @@ public abstract class AbstractVoucher {
      * @param file the file
      * @param dummy a dummy string that does nothing
      */
-    public AbstractVoucher(ConfigurationSection section, String file, String dummy) {
+    public AbstractVoucher(@NotNull final ConfigurationSection section, @NotNull final String file, @Nullable String dummy) {
         this.section = section;
 
         populate();
@@ -97,7 +99,7 @@ public abstract class AbstractVoucher {
      * @param section the configuration section
      * @param file the file
      */
-    public AbstractVoucher(ConfigurationSection section, String file) {
+    public AbstractVoucher(@NotNull final ConfigurationSection section, @NotNull final String file) {
         this.section = section;
 
         populate();
@@ -138,9 +140,9 @@ public abstract class AbstractVoucher {
         this.fileName = file;
     }
 
-    public abstract boolean execute(Player player, String argument);
+    public abstract boolean execute(@NotNull final Player player, @Nullable final String argument);
 
-    public abstract boolean execute(Player player);
+    public abstract boolean execute(@NotNull final Player player);
 
     // It should always be false as default.
     private boolean isCancelled = false;

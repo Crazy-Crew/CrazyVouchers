@@ -14,6 +14,8 @@ import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
@@ -27,7 +29,7 @@ public class GenericVoucher extends AbstractVoucher {
         return Collections.unmodifiableMap(this.placeholders);
     }
 
-    public GenericVoucher(ConfigurationSection section, String file) {
+    public GenericVoucher(@NotNull final ConfigurationSection section, @NotNull final String file) {
         super(section, file);
     }
 
@@ -40,7 +42,7 @@ public class GenericVoucher extends AbstractVoucher {
     }
 
     @Override
-    public boolean execute(Player player, String argument) {
+    public final boolean execute(@NotNull final Player player, @Nullable final String argument) {
         // Return if in creative mode.
         if (player.getGameMode() == GameMode.CREATIVE && this.config.getProperty(ConfigKeys.must_be_in_survival)) {
             Messages.survival_mode.sendMessage(player);
@@ -138,23 +140,23 @@ public class GenericVoucher extends AbstractVoucher {
         return isCancelled();
     }
 
-    public ItemBuilder getItem(Player player, String argument, int amount) {
+    public @NotNull final ItemBuilder getItem(@NotNull final Player player, @Nullable final String argument, final int amount) {
         if (argument != null) {
-            this.builder.setString(PersistentKeys.voucher_argument.getNamespacedKey(), argument);
+            this.builder.setString(PersistentKeys.voucher_argument.getNamespacedKey(), argument.replace("%random%", "{random}"));
         }
 
-        return this.builder.setTarget(player).setAmount(amount);
+        return this.builder.setAmount(amount).setTarget(player);
     }
 
-    public ItemStack getItem(Player player, int amount) {
-        return getItem(player, null, amount).build();
+    public @NotNull final ItemBuilder getItem(@NotNull final Player player, final int amount) {
+        return getItem(player, null, amount);
     }
 
-    public ItemStack getItem(Player player) {
+    public @NotNull final ItemStack getItem(@NotNull final Player player) {
         return getItem(player, null, 1).build();
     }
 
-    public String replacePlaceholders(String string, Player player) {
+    public @NotNull final String replacePlaceholders(@NotNull final String string, @NotNull final Player player) {
         if (Support.placeholder_api.isEnabled()) return PlaceholderAPI.setPlaceholders(player, string);
 
         return string;
@@ -162,5 +164,5 @@ public class GenericVoucher extends AbstractVoucher {
 
     // Not needed in this class
     @Override
-    public boolean execute(Player player) { return false; }
+    public boolean execute(@NotNull final Player player) { return false; }
 }
