@@ -31,7 +31,7 @@ public class CommandGive extends BaseCommand {
         }
 
         PlayerInventory inventory = player.getInventory();
-        ItemStack item = argument != null ? voucher.getItem(player, argument.replace("%random%", "{random}"), amount).setString(PersistentKeys.voucher_item.getNamespacedKey(), voucher.getFileName()).build() : voucher.getItem(player, amount);
+        ItemStack item = voucher.getItem(player, argument, amount).setString(PersistentKeys.voucher_item.getNamespacedKey(), voucherName).build();
 
         if (inventory.firstEmpty() == -1) {
             player.getWorld().dropItem(player.getLocation(), item);
@@ -58,7 +58,7 @@ public class CommandGive extends BaseCommand {
         }
 
         for (Player player : this.plugin.getServer().getOnlinePlayers()) {
-            ItemStack item = argument != null ? voucher.getItem(player, argument.replace("%random%", "{random}"), amount).setString(PersistentKeys.voucher_item.getNamespacedKey(), voucher.getFileName()).build() : voucher.getItem(player, amount);
+            ItemStack item = voucher.getItem(player, argument, amount).setString(PersistentKeys.voucher_item.getNamespacedKey(), voucherName).build();
 
             if (!MiscUtil.isInventoryFull(player)) {
                 PlayerInventory inventory = player.getInventory();
