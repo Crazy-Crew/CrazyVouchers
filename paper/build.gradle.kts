@@ -1,4 +1,8 @@
 plugins {
+    id("com.github.johnrengelman.shadow")
+
+    alias(libs.plugins.run.paper)
+
     id("paper-plugin")
 }
 
@@ -25,14 +29,22 @@ dependencies {
 val component: SoftwareComponent = components["java"]
 
 tasks {
+    runServer {
+        jvmArgs("-Dnet.kyori.ansi.colorLevel=truecolor")
+
+        defaultCharacterEncoding = Charsets.UTF_8.name()
+
+        minecraftVersion("1.20.4")
+    }
+
     publishing {
         repositories {
             maven {
                 url = uri("https://repo.crazycrew.us/releases/")
 
                 credentials {
-                    this.username = System.getenv("GRADLE_USERNAME")
-                    this.password = System.getenv("GRADLE_PASSWORD")
+                    this.username = System.getenv("gradle_username")
+                    this.password = System.getenv("gradle_password")
                 }
             }
         }
@@ -48,7 +60,22 @@ tasks {
         }
     }
 
+    assemble {
+        doFirst {
+            delete(rootProject.projectDir.resolve("jars"))
+        }
+
+        doLast {
+            copy {
+                from(reobfJar.get())
+                into(rootProject.projectDir.resolve("jars"))
+            }
+        }
+    }
+
     shadowJar {
+        archiveClassifier.set("")
+
         listOf(
             "com.ryderbelserion.cluster.paper",
             "de.tr7zw.changeme.nbtapi",
