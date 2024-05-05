@@ -18,8 +18,7 @@ import java.util.logging.Logger;
 
 public class FileManager {
 
-    @NotNull
-    private final CrazyVouchers plugin = CrazyVouchers.get();
+    private @NotNull final CrazyVouchers plugin = CrazyVouchers.get();
 
     private final Map<Files, File> files = new HashMap<>();
     private final List<String> homeFolders = new ArrayList<>();
@@ -331,6 +330,13 @@ public class FileManager {
     }
 
     /**
+     * Overrides the loaded state file and loads the filesystems file.
+     */
+    public void reloadFile(CustomFile file) {
+        file.reloadFile();
+    }
+
+    /**
      * Reloads all files.
      */
     public void reloadAllFiles() {
@@ -344,24 +350,23 @@ public class FileManager {
     }
 
     /**
-     * @return A list of voucher names.
+     * @return A list of crate names.
      */
     public List<String> getVouchers() {
-        return getFiles(new File(this.plugin.getDataFolder(), "/vouchers"));
+        File directory = new File(this.plugin.getDataFolder(), "/vouchers");
+
+        return getFiles(directory);
     }
 
     /**
-     * @return A list of voucher codes.
+     * @return A list of crate names.
      */
     public List<String> getCodes() {
-        return getFiles(new File(this.plugin.getDataFolder(), "/codes"));
+        File directory = new File(this.plugin.getDataFolder(), "/codes");
+
+        return getFiles(directory);
     }
 
-    /**
-     * @param dir the directory to look.
-     *
-     * @return the files
-     */
     private List<String> getFiles(File dir) {
         List<String> files = new ArrayList<>();
 
@@ -410,7 +415,6 @@ public class FileManager {
         }
     }
 
-
     public enum Files {
         // ENUM_NAME("fileName.yml", "fileLocation.yml"),
         // ENUM_NAME("fileName.yml", "newFileLocation.yml", "oldFileLocation.yml"),
@@ -422,13 +426,15 @@ public class FileManager {
 
         @NotNull
         private final CrazyVouchers plugin = CrazyVouchers.get();
+
         @NotNull
         private final FileManager fileManager = this.plugin.getFileManager();
 
         /**
          * The files that the server will try and load.
-         * @param fileName The file name that will be in the plugin's folder.
-         * @param fileLocation The location the file in the plugin's folder.
+         *
+         * @param fileName the file name that will be in the plugin's folder.
+         * @param fileLocation the location the file in the plugin's folder.
          */
         Files(String fileName, String fileLocation) {
             this(fileName, fileLocation, fileLocation);
@@ -436,9 +442,10 @@ public class FileManager {
 
         /**
          * The files that the server will try and load.
-         * @param fileName The file name that will be in the plugin's folder.
-         * @param fileLocation The location of the file will be in the plugin's folder.
-         * @param fileJar The location of the file in the jar.
+         *
+         * @param fileName the file name that will be in the plugin's folder.
+         * @param fileLocation the location of the file will be in the plugin's folder.
+         * @param fileJar the location of the file in the jar.
          */
         Files(String fileName, String fileLocation, String fileJar) {
             this.fileName = fileName;
@@ -510,18 +517,18 @@ public class FileManager {
         /**
          * A custom file that is being made.
          *
-         * @param name Name of the file.
-         * @param homeFolder The home folder of the file.
+         * @param name name of the file.
+         * @param homeFolder the home folder of the file.
          */
         public CustomFile(String name, String homeFolder) {
             this.name = name.replace(".yml", "");
             this.fileName = name;
             this.homeFolder = homeFolder;
 
-            File home = new File(this.plugin.getDataFolder(), "/" + homeFolder);
+            File root = new File(this.plugin.getDataFolder(), "/" + homeFolder);
 
-            if (!home.exists()) {
-                home.mkdirs();
+            if (!root.exists()) {
+                root.mkdirs();
 
                 if (this.plugin.isLogging()) this.plugin.getLogger().info("The folder " + homeFolder + "/ was not found so it was created.");
 
@@ -530,7 +537,7 @@ public class FileManager {
                 return;
             }
 
-            File newFile = new File(home, "/" + name);
+            File newFile = new File(root, "/" + name);
 
             if (newFile.exists()) {
                 this.file = YamlConfiguration.loadConfiguration(newFile);
@@ -568,7 +575,7 @@ public class FileManager {
         /**
          * Get the name of the file without the .yml part.
          *
-         * @return The name of the file without the .yml.
+         * @return the name of the file without the .yml.
          */
         public String getName() {
             return this.name;
@@ -577,7 +584,7 @@ public class FileManager {
         /**
          * Get the full name of the file.
          *
-         * @return Full name of the file.
+         * @return full name of the file.
          */
         public String getFileName() {
             return this.fileName;
@@ -586,7 +593,7 @@ public class FileManager {
         /**
          * Get the name of the home folder of the file.
          *
-         * @return The name of the home folder the files are in.
+         * @return the name of the home folder the files are in.
          */
         public String getHomeFolder() {
             return this.homeFolder;
@@ -595,7 +602,7 @@ public class FileManager {
         /**
          * Get the ConfigurationFile.
          *
-         * @return The ConfigurationFile of this file.
+         * @return the ConfigurationFile of this file.
          */
         public FileConfiguration getFile() {
             return this.file;
@@ -603,8 +610,7 @@ public class FileManager {
 
         /**
          * Check if the file actually exists in the file system.
-         *
-         * @return True if it does and false if it doesn't.
+         * @return true if it does and false if it doesn't.
          */
         public boolean exists() {
             return this.file != null;
@@ -632,7 +638,7 @@ public class FileManager {
         /**
          * Overrides the loaded state file and loads the filesystems file.
          */
-        private void reloadFile() {
+        public void reloadFile() {
             if (this.file == null) {
                 if (this.plugin.isLogging()) this.plugin.getLogger().warning("There was a null custom file that could not be found!");
 
