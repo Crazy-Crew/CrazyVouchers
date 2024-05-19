@@ -19,10 +19,12 @@ public class CrazyHandler extends CrazyVouchersPlugin {
     }
 
     public void install() {
-        MigrationService migrationService = new MigrationService();
-        migrationService.migrate();
-
         super.enable();
+
+        boolean loadOldWay = getConfigManager().getConfig().getProperty(ConfigKeys.mono_file);
+
+        MigrationService migrationService = new MigrationService();
+        migrationService.migrate(loadOldWay);
 
         this.fileManager = new FileManager();
         this.fileManager
