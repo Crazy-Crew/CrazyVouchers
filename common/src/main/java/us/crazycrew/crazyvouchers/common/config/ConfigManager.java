@@ -32,7 +32,15 @@ public class ConfigManager {
                 .configurationData(ConfigurationDataBuilder.createConfiguration(ConfigKeys.class))
                 .create();
 
+        File oldFile = new File(this.dataFolder, "Messages.yml");
+
         File localeDir = new File(this.dataFolder, "locale");
+
+        if (oldFile.exists()) {
+            if (!localeDir.exists()) localeDir.mkdirs();
+
+            oldFile.renameTo(new File(localeDir, "en-US.yml"));
+        }
 
         if (!localeDir.exists()) localeDir.mkdirs();
 
