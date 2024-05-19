@@ -8,6 +8,7 @@ import com.badbones69.crazyvouchers.api.objects.VoucherCode;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.inventory.ItemStack;
 import org.jetbrains.annotations.NotNull;
+import us.crazycrew.crazyvouchers.common.config.ConfigManager;
 import us.crazycrew.crazyvouchers.common.config.types.ConfigKeys;
 import us.crazycrew.crazyvouchers.api.MetricsHandler;
 import java.util.ArrayList;
@@ -20,6 +21,8 @@ public class CrazyManager {
 
     @NotNull
     private final CrazyVouchers plugin = CrazyVouchers.get();
+
+    private final ConfigManager configManager = this.plugin.getCrazyHandler().getConfigManager();
     
     private final ArrayList<Voucher> vouchers = new ArrayList<>();
     private final ArrayList<VoucherCode> voucherCodes = new ArrayList<>();
@@ -32,6 +35,26 @@ public class CrazyManager {
     }
 
     private void loadVouchers() {
+        boolean loadOldWay = this.configManager.getConfig().getProperty(ConfigKeys.mono_file);
+
+        if (loadOldWay) {
+            FileConfiguration vouchers = FileManager.Files.vouchers.getFile();
+
+            for (String voucherName : vouchers.getConfigurationSection("vouchers").getKeys(false)) {
+                this.vouchers.add(new Voucher(vouchers, voucherName));
+            }
+
+            FileConfiguration voucherCodes = FileManager.Files.voucher_codes.getFile();
+
+            if (voucherCodes.contains("voucher-codes")) {
+                for (String voucherName : voucherCodes.getConfigurationSection("voucher-codes").getKeys(false)) {
+                    this.voucherCodes.add(new VoucherCode(voucherCodes, voucherName));
+                }
+            }
+
+            return;
+        }
+
         for (String voucherName : this.plugin.getFileManager().getVouchers()) {
             try {
                 FileConfiguration file = this.plugin.getFileManager().getFile(voucherName).getFile();
@@ -58,9 +81,9 @@ public class CrazyManager {
             metricsHandler.stop();
         }
 
-        this.plugin.getCrazyHandler().getConfigManager().reload();
+        this.configManager.reload();
 
-        boolean metrics = this.plugin.getCrazyHandler().getConfigManager().getConfig().getProperty(ConfigKeys.toggle_metrics);
+        boolean metrics = this.configManager.getConfig().getProperty(ConfigKeys.toggle_metrics);
 
         if (metrics) {
             metricsHandler.start();

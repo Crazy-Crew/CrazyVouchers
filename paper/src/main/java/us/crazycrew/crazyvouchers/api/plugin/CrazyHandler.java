@@ -27,14 +27,19 @@ public class CrazyHandler extends CrazyVouchersPlugin {
         migrationService.migrate(loadOldWay);
 
         this.fileManager = new FileManager();
-        this.fileManager
-                .registerDefaultGenerateFiles("Example.yml", "/vouchers", "/vouchers")
-                .registerDefaultGenerateFiles("Example-Arg.yml", "/vouchers", "/vouchers")
-                .registerDefaultGenerateFiles("PlayerHead.yml", "/vouchers", "/vouchers")
-                .registerDefaultGenerateFiles("Starter-Money.yml", "/codes", "/codes")
-                .registerCustomFilesFolder("/vouchers")
-                .registerCustomFilesFolder("/codes")
-                .setup();
+
+        if (loadOldWay) {
+            this.fileManager.setup();
+        } else {
+            this.fileManager
+                    .registerDefaultGenerateFiles("Example.yml", "/vouchers", "/vouchers")
+                    .registerDefaultGenerateFiles("Example-Arg.yml", "/vouchers", "/vouchers")
+                    .registerDefaultGenerateFiles("PlayerHead.yml", "/vouchers", "/vouchers")
+                    .registerDefaultGenerateFiles("Starter-Money.yml", "/codes", "/codes")
+                    .registerCustomFilesFolder("/vouchers")
+                    .registerCustomFilesFolder("/codes")
+                    .setup();
+        }
 
         boolean metrics = getConfigManager().getConfig().getProperty(ConfigKeys.toggle_metrics);
 

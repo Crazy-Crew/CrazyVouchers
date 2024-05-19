@@ -8,6 +8,9 @@ import org.bukkit.Color;
 import org.bukkit.Sound;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.jetbrains.annotations.NotNull;
+import us.crazycrew.crazyvouchers.common.config.ConfigManager;
+import us.crazycrew.crazyvouchers.common.config.types.ConfigKeys;
+
 import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Level;
@@ -48,7 +51,13 @@ public class VoucherCode {
 
     public VoucherCode(FileConfiguration file, String name) {
         this.name = name;
-        String path = "voucher-code.";
+
+
+        @NotNull ConfigManager configManager = this.plugin.getCrazyHandler().getConfigManager();
+        boolean loadOldWay = configManager.getConfig().getProperty(ConfigKeys.mono_file);
+
+        String path = loadOldWay ? "voucher-codes." + name + "." : "voucher.";
+
         this.enabled = file.getBoolean(path + "options.enabled");
         this.code = file.getString(path + "code", "");
         this.commands = file.getStringList(path + "commands");

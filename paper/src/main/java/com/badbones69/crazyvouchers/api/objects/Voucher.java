@@ -15,6 +15,9 @@ import org.bukkit.Sound;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.inventory.ItemFlag;
 import org.bukkit.inventory.ItemStack;
+import org.jetbrains.annotations.NotNull;
+import us.crazycrew.crazyvouchers.common.config.ConfigManager;
+import us.crazycrew.crazyvouchers.common.config.types.ConfigKeys;
 import us.crazycrew.crazyvouchers.common.utils.StringUtils;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -66,7 +69,11 @@ public class Voucher {
         this.name = name;
         this.usesArgs = false;
 
-        String path = "voucher.";
+        @NotNull CrazyVouchers plugin = CrazyVouchers.get();
+        @NotNull ConfigManager configManager = plugin.getCrazyHandler().getConfigManager();
+        boolean loadOldWay = configManager.getConfig().getProperty(ConfigKeys.mono_file);
+
+        String path = loadOldWay ? "vouchers." + name + "." : "voucher.";
 
         this.itemBuilder = new ItemBuilder()
                 .setMaterial(fileConfiguration.getString(path + "item", "Stone"))
@@ -104,7 +111,6 @@ public class Voucher {
             }
         }
 
-        CrazyVouchers plugin = CrazyVouchers.get();
         if (fileConfiguration.contains(path + "chance-commands")) {
             for (String line : fileConfiguration.getStringList(path + "chance-commands")) { // - '{chance} {command}, {command}, {command}, ... etc'
                 try {

@@ -35,6 +35,13 @@ public class ConfigKeys implements SettingsHolder {
     @Comment("The prefix that shows up for all commands.")
     public static final Property<String> command_prefix = newProperty("settings.prefix", "&7[&6CrazyVouchers&7]: ");
 
+    @Comment("""
+            This lets you decide between having the old file system like vouchers.yml/vouchercodes.yml or split into vouchers/codes.
+            
+            It defaults to false but you can always set it to true.
+            """)
+    public static final Property<Boolean> mono_file = newProperty("settings.use-old-file-system", false);
+
     @Comment("Pick which locale you want to use if your server is in another language.")
     public static final Property<String> locale_file = newProperty("settings.locale", "en-US");
 
