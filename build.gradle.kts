@@ -15,7 +15,7 @@ val buildNumber: String = System.getenv("NEXT_BUILD_NUMBER") ?: "SNAPSHOT"
 
 val isSnapshot = false
 
-rootProject.version = if (isSnapshot) "3.3-$buildNumber" else "3.3"
+rootProject.version = if (isSnapshot) "3.4-$buildNumber" else "3.4"
 
 val content: String = if (isSnapshot) {
     formatLog(latestCommitHash(), latestCommitMessage(), rootProject.name)

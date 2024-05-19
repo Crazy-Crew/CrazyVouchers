@@ -42,7 +42,7 @@ voucher:
     - 'eco give 5000'
     - 'eco give 1000'
     - 'give {player} diamond 5'
-  # https://docs.crazycrew.us/crazyvouchers/info/chance-system
+  # https://docs.crazycrew.us/docs/plugins/crazyvouchers/guides/chance-system
   # Lets you run commands with % chances.
   chance-commands:
     - '45 eco give {player} 100'

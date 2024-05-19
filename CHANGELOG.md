@@ -1,8 +1,8 @@
+# Your Minecraft, Your Way
+
 ## Changes:
-### Ability to have files categorized by folder.
-* It will search for folders in `vouchers` & `codes' such as `vouchers/sub_folder` or `codes/sub_folder`
-    * It will not search for folders inside `vouchers/sub_folder` or `codes/sub_folder` such as `vouchers/sub_folder/secondary_folder` or `codes/sub_folder/secondary_folder`
+### Adds a toggle `settings.use-old-file-system`, It defaults to false however this is the system that was before the per-file change.
 
 ## Other:
-* [Feature Requests](https://github.com/Crazy-Crew/CrazyVouchers/issues)
+* [Feature Requests](https://github.com/Crazy-Crew/CrazyVouchers/discussions/categories/features)
 * [Bug Reports](https://github.com/Crazy-Crew/CrazyVouchers/issues)

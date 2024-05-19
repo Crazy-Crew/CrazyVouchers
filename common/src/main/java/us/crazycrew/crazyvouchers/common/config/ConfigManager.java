@@ -4,6 +4,8 @@ import ch.jalu.configme.SettingsManager;
 import ch.jalu.configme.SettingsManagerBuilder;
 import ch.jalu.configme.configurationdata.ConfigurationDataBuilder;
 import ch.jalu.configme.resource.YamlFileResourceOptions;
+import us.crazycrew.crazyvouchers.common.config.migrate.ConfigMigration;
+import us.crazycrew.crazyvouchers.common.config.migrate.LocaleMigration;
 import us.crazycrew.crazyvouchers.common.config.types.ConfigKeys;
 import us.crazycrew.crazyvouchers.common.config.types.MessageKeys;
 import java.io.File;
@@ -26,7 +28,7 @@ public class ConfigManager {
 
         this.config = SettingsManagerBuilder
                 .withYamlFile(configFile, builder)
-                .useDefaultMigrationService()
+                .migrationService(new ConfigMigration())
                 .configurationData(ConfigurationDataBuilder.createConfiguration(ConfigKeys.class))
                 .create();
 
@@ -38,7 +40,7 @@ public class ConfigManager {
 
         this.messages = SettingsManagerBuilder
                 .withYamlFile(messagesFile, builder)
-                .useDefaultMigrationService()
+                .migrationService(new LocaleMigration())
                 .configurationData(MessageKeys.class)
                 .create();
     }

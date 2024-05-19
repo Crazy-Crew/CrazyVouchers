@@ -418,6 +418,8 @@ public class FileManager {
     public enum Files {
         // ENUM_NAME("fileName.yml", "fileLocation.yml"),
         // ENUM_NAME("fileName.yml", "newFileLocation.yml", "oldFileLocation.yml"),
+        voucher_codes("voucher-codes.yml", "voucher-codes.yml"),
+        vouchers("vouchers.yml", "vouchers.yml"),
         users("users.yml", "users.yml");
 
         private final String fileName;
