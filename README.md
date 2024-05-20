@@ -18,12 +18,12 @@
   <p align="center">
     Want to make a paper that can give you an axolotl with a pretty firework display, Look no further!
     <br />
-    <a href="https://docs.crazycrew.us/crazyvouchers/home"><strong>Explore the docs »</strong></a>
+    <a href="https://docs.crazycrew.us/docs/category/crazyvouchers"><strong>Explore the docs »</strong></a>
     <br />
     <br />
     <a href="https://github.com/Crazy-Crew/CrazyVouchers/issues/new?assignees=ryderbelserion&labels=bug&projects=&template=bugs.yml&title=%5BBug+Report%5D%3A+">Report Bug</a>
     ·
-    <a href="https://github.com/Crazy-Crew/CrazyVouchers/issues/new?assignees=&labels=feature&template=feature_request.md&title=%5BFeature%5D+">Request Feature</a>
+    <a href="https://github.com/Crazy-Crew/CrazyVouchers/discussions/new?category=features">Request Feature</a>
     ·
     <a href="https://discord.gg/badbones-s-live-chat-182615261403283459">Get Support</a>
   </p>
@@ -49,7 +49,7 @@
 
 ### Resource Page
 [![Hangar](https://raw.githubusercontent.com/intergrav/devins-badges/v3/assets/compact/available/hangar_46h.png)](https://hangar.papermc.io/CrazyCrew/CrazyVouchers)
-[![Modrinth](https://raw.githubusercontent.com/intergrav/devins-badges/v3/assets/compact/available/modrinth_46h.png)](https://modrinth.com/user/plugin/crazyvouchers)
+[![Modrinth](https://raw.githubusercontent.com/intergrav/devins-badges/v3/assets/compact/available/modrinth_46h.png)](https://modrinth.com/plugin/crazyvouchers)
 
 ## Getting Started
 How to get started with contributing / maintaining your own version of CrazyVouchers!
