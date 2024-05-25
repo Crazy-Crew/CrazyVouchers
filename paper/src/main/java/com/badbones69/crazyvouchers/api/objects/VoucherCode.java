@@ -3,14 +3,13 @@ package com.badbones69.crazyvouchers.api.objects;
 import com.badbones69.crazyvouchers.CrazyVouchers;
 import com.badbones69.crazyvouchers.api.enums.Messages;
 import com.badbones69.crazyvouchers.api.objects.other.ItemBuilder;
-import com.ryderbelserion.cluster.utils.DyeUtils;
+import com.ryderbelserion.vital.paper.util.DyeUtil;
 import org.bukkit.Color;
 import org.bukkit.Sound;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.jetbrains.annotations.NotNull;
 import us.crazycrew.crazyvouchers.common.config.ConfigManager;
 import us.crazycrew.crazyvouchers.common.config.types.ConfigKeys;
-
 import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Level;
@@ -160,7 +159,7 @@ public class VoucherCode {
             this.fireworkToggle = file.getBoolean(path + "options.firework.toggle");
 
             for (String color : file.getString(path + "options.firework.colors").split(", ")) {
-                this.fireworkColors.add(DyeUtils.getColor(color));
+                this.fireworkColors.add(DyeUtil.getDefaultColor(color));
             }
         } else {
             this.fireworkToggle = false;

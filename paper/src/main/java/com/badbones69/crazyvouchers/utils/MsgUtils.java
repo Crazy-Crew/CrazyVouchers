@@ -1,4 +1,4 @@
-package com.badbones69.crazyvouchers.other;
+package com.badbones69.crazyvouchers.utils;
 
 import com.badbones69.crazyvouchers.CrazyVouchers;
 import net.md_5.bungee.api.chat.TextComponent;

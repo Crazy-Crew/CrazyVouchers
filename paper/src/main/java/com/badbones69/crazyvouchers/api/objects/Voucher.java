@@ -4,10 +4,10 @@ import com.badbones69.crazyvouchers.CrazyVouchers;
 import com.badbones69.crazyvouchers.api.CrazyManager;
 import com.badbones69.crazyvouchers.api.enums.Messages;
 import com.badbones69.crazyvouchers.api.objects.other.ItemBuilder;
-import com.badbones69.crazyvouchers.other.MsgUtils;
-import com.ryderbelserion.cluster.utils.DyeUtils;
+import com.badbones69.crazyvouchers.utils.MsgUtils;
+import com.ryderbelserion.vital.core.util.StringUtil;
+import com.ryderbelserion.vital.paper.util.DyeUtil;
 import de.tr7zw.changeme.nbtapi.NBTItem;
-import com.badbones69.crazyvouchers.Methods;
 import org.bukkit.Color;
 import org.bukkit.NamespacedKey;
 import org.bukkit.Registry;
@@ -18,7 +18,6 @@ import org.bukkit.inventory.ItemStack;
 import org.jetbrains.annotations.NotNull;
 import us.crazycrew.crazyvouchers.common.config.ConfigManager;
 import us.crazycrew.crazyvouchers.common.config.types.ConfigKeys;
-import us.crazycrew.crazyvouchers.common.utils.StringUtils;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -215,7 +214,7 @@ public class Voucher {
 
         if (fileConfiguration.getBoolean(path + "options.firework.toggle")) {
             for (String color : fileConfiguration.getString(path + "options.firework.colors", "").split(", ")) {
-                this.fireworkColors.add(DyeUtils.getColor(color));
+                this.fireworkColors.add(DyeUtil.getDefaultColor(color));
             }
 
             this.fireworkToggle = !fireworkColors.isEmpty();
@@ -387,7 +386,7 @@ public class Voucher {
         String messageString;
 
         if (isList(path, file)) {
-            messageString = MsgUtils.color(StringUtils.convertList(file.getStringList(path)));
+            messageString = MsgUtils.color(StringUtil.chomp(StringUtil.convertList(file.getStringList(path))));
         } else {
             messageString = file.getString(path, "");
         }

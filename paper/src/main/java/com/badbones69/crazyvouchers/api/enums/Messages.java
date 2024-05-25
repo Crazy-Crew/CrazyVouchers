@@ -3,14 +3,14 @@ package com.badbones69.crazyvouchers.api.enums;
 import ch.jalu.configme.SettingsManager;
 import ch.jalu.configme.properties.Property;
 import com.badbones69.crazyvouchers.CrazyVouchers;
-import com.badbones69.crazyvouchers.other.MsgUtils;
+import com.badbones69.crazyvouchers.utils.MsgUtils;
+import com.ryderbelserion.vital.core.util.StringUtil;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
 import us.crazycrew.crazyvouchers.common.config.ConfigManager;
 import us.crazycrew.crazyvouchers.common.config.types.ConfigKeys;
 import us.crazycrew.crazyvouchers.common.config.types.MessageKeys;
-import us.crazycrew.crazyvouchers.common.utils.StringUtils;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -112,7 +112,7 @@ public enum Messages {
         String message;
 
         if (isList()) {
-            message = StringUtils.convertList(getPropertyList(this.listProperty));
+            message = StringUtil.chomp(StringUtil.convertList(getPropertyList(this.listProperty)));
         } else {
             message = getProperty(this.property);
         }

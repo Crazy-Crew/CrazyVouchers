@@ -8,15 +8,14 @@ import com.badbones69.crazyvouchers.api.enums.Messages;
 import com.badbones69.crazyvouchers.api.events.VoucherRedeemEvent;
 import com.badbones69.crazyvouchers.api.objects.other.ItemBuilder;
 import com.badbones69.crazyvouchers.api.objects.Voucher;
-import com.badbones69.crazyvouchers.other.MsgUtils;
-import com.badbones69.crazyvouchers.support.PluginSupport;
+import com.badbones69.crazyvouchers.utils.MsgUtils;
+import com.ryderbelserion.vital.paper.enums.Support;
 import me.clip.placeholderapi.PlaceholderAPI;
 import org.bukkit.GameMode;
 import org.bukkit.Material;
 import org.bukkit.Sound;
 import org.bukkit.SoundCategory;
 import org.bukkit.block.Block;
-import org.bukkit.block.BlockState;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
@@ -156,7 +155,7 @@ public class VoucherClickListener implements Listener {
                 }
             }
 
-            if (PluginSupport.PLACEHOLDERAPI.isPluginEnabled()) {
+            if (Support.placeholder_api.isEnabled()) {
                 AtomicBoolean shouldCancel = new AtomicBoolean(false);
                 voucher.getRequiredPlaceholders().forEach((placeholder, value) -> {
                     String newValue = PlaceholderAPI.setPlaceholders(player, placeholder);
@@ -309,7 +308,7 @@ public class VoucherClickListener implements Listener {
     }
 
     private String replacePlaceholders(String string, Player player) {
-        if (PluginSupport.PLACEHOLDERAPI.isPluginEnabled()) return PlaceholderAPI.setPlaceholders(player, string);
+        if (Support.placeholder_api.isEnabled()) return PlaceholderAPI.setPlaceholders(player, string);
 
         return MsgUtils.color(string);
     }

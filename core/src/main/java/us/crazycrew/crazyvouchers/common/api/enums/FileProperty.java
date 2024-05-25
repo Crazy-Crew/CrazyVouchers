@@ -17,7 +17,6 @@ public enum FileProperty {
     must_be_in_survival(ConfigKeys.must_be_in_survival, newProperty("Settings.Must-Be-In-Survival", ConfigKeys.must_be_in_survival.getDefaultValue()), false),
     prevent_using_vouchers_in_recipes_toggle(ConfigKeys.prevent_using_vouchers_in_recipes_toggle, newProperty("Settings.Prevent-Using-Vouchers-In-Recipes.Toggle", ConfigKeys.prevent_using_vouchers_in_recipes_toggle.getDefaultValue()), false),
     prevent_using_vouchers_in_recipes_alert(ConfigKeys.prevent_using_vouchers_in_recipes_alert, newProperty("Settings.Prevent-Using-Vouchers-In-Recipes.Alert", ConfigKeys.prevent_using_vouchers_in_recipes_alert.getDefaultValue()), false),
-    toggle_metrics(ConfigKeys.toggle_metrics, newProperty("Settings.Toggle-Metrics", ConfigKeys.toggle_metrics.getDefaultValue()), false),
 
     survival_mode(MessageKeys.survival_mode, newProperty("Messages.Survival-Mode", MessageKeys.survival_mode.getDefaultValue())),
     no_permission(MessageKeys.no_permission, newProperty("Messages.No-Permission", MessageKeys.no_permission.getDefaultValue())),

@@ -17,7 +17,6 @@ public class ConfigMigration extends PlainMigrationService {
         return FileProperty.command_prefix.moveString(reader, configurationData)
                 | FileProperty.must_be_in_survival.moveBoolean(reader, configurationData)
                 | FileProperty.prevent_using_vouchers_in_recipes_toggle.moveBoolean(reader, configurationData)
-                | FileProperty.prevent_using_vouchers_in_recipes_alert.moveBoolean(reader, configurationData)
-                | FileProperty.toggle_metrics.moveBoolean(reader, configurationData);
+                | FileProperty.prevent_using_vouchers_in_recipes_alert.moveBoolean(reader, configurationData);
     }
 }

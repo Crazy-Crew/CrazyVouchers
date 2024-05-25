@@ -11,7 +11,7 @@ import com.badbones69.crazyvouchers.api.FileManager.Files;
 import com.badbones69.crazyvouchers.api.CrazyManager;
 import com.badbones69.crazyvouchers.api.events.VoucherRedeemCodeEvent;
 import com.badbones69.crazyvouchers.api.objects.VoucherCode;
-import com.badbones69.crazyvouchers.other.MsgUtils;
+import com.badbones69.crazyvouchers.utils.MsgUtils;
 import org.bukkit.Sound;
 import org.bukkit.SoundCategory;
 import org.bukkit.command.Command;
@@ -62,7 +62,7 @@ public class VoucherCommands implements CommandExecutor {
                             Files.users.saveFile();
                         }
 
-                        this.crazyManager.reload(false);
+                        this.crazyManager.reload();
                         Messages.config_reload.sendMessage(sender);
                     }
 
