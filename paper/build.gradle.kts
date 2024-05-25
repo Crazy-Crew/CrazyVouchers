@@ -1,19 +1,23 @@
 plugins {
-    id("com.github.johnrengelman.shadow")
+    alias(libs.plugins.shadowJar)
+    alias(libs.plugins.runPaper)
 
-    alias(libs.plugins.run.paper)
+    `paper-plugin`
+}
 
-    id("paper-plugin")
+feather {
+    repository("https://repo.oraxen.com/releases")
 }
 
 dependencies {
-    api(project(":common"))
+    api(projects.crazyvouchersCore)
 
-    implementation(libs.cluster.paper)
+    implementation(libs.triumph.cmds)
 
-    implementation(libs.triumphcmds)
-
-    implementation(libs.metrics)
+    // org.yaml is already bundled with Paper
+    implementation(libs.vital.paper) {
+        exclude("org.yaml")
+    }
 
     implementation(libs.nbtapi)
 
@@ -22,25 +26,15 @@ dependencies {
     compileOnly(libs.itemsadder)
 
     compileOnly(libs.oraxen)
-
-    compileOnly(fileTree("libs").include("*.jar"))
 }
 
 val component: SoftwareComponent = components["java"]
 
 tasks {
-    runServer {
-        jvmArgs("-Dnet.kyori.ansi.colorLevel=truecolor")
-
-        defaultCharacterEncoding = Charsets.UTF_8.name()
-
-        minecraftVersion("1.20.4")
-    }
-
     publishing {
         repositories {
             maven {
-                url = uri("https://repo.crazycrew.us/releases/")
+                url = uri("https://repo.crazycrew.us/releases")
 
                 credentials {
                     this.username = System.getenv("gradle_username")
@@ -60,46 +54,50 @@ tasks {
         }
     }
 
+    runServer {
+        jvmArgs("-Dnet.kyori.ansi.colorLevel=truecolor")
+
+        defaultCharacterEncoding = Charsets.UTF_8.name()
+
+        minecraftVersion("1.20.6")
+    }
+
     assemble {
-        doFirst {
-            delete(rootProject.projectDir.resolve("jars"))
-        }
+        dependsOn(shadowJar)
 
         doLast {
             copy {
-                from(reobfJar.get())
+                from(shadowJar.get())
                 into(rootProject.projectDir.resolve("jars"))
             }
         }
     }
 
     shadowJar {
+        archiveBaseName.set(rootProject.name)
         archiveClassifier.set("")
 
         listOf(
-            "com.ryderbelserion.cluster.paper",
             "de.tr7zw.changeme.nbtapi",
-            "org.bstats"
+            "com.ryderbelserion",
+            "dev.triumphteam",
+            "ch.jalu"
         ).forEach {
             relocate(it, "libs.$it")
         }
     }
 
     processResources {
-        val properties = hashMapOf(
-                "name" to rootProject.name,
-                "version" to rootProject.version,
-                "group" to rootProject.group,
-                "description" to rootProject.description,
-                "apiVersion" to rootProject.properties["apiVersion"],
-                "authors" to rootProject.properties["authors"],
-                "website" to rootProject.properties["website"]
-        )
-
-        inputs.properties(properties)
+        inputs.properties("name" to rootProject.name)
+        inputs.properties("version" to project.version)
+        inputs.properties("group" to project.group)
+        inputs.properties("description" to project.properties["description"])
+        inputs.properties("apiVersion" to libs.versions.minecraft.get())
+        inputs.properties("authors" to project.properties["authors"])
+        inputs.properties("website" to project.properties["website"])
 
         filesMatching("plugin.yml") {
-            expand(properties)
+            expand(inputs.properties)
         }
     }
 }

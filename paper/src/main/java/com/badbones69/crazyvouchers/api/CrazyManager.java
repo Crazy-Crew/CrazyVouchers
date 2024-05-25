@@ -10,7 +10,6 @@ import org.bukkit.inventory.ItemStack;
 import org.jetbrains.annotations.NotNull;
 import us.crazycrew.crazyvouchers.common.config.ConfigManager;
 import us.crazycrew.crazyvouchers.common.config.types.ConfigKeys;
-import us.crazycrew.crazyvouchers.api.MetricsHandler;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -74,22 +73,8 @@ public class CrazyManager {
         }
     }
 
-    public void reload(boolean serverStop) {
-        MetricsHandler metricsHandler = this.plugin.getCrazyHandler().getMetrics();
-
-        if (serverStop) {
-            metricsHandler.stop();
-        }
-
+    public void reload() {
         this.configManager.reload();
-
-        boolean metrics = this.configManager.getConfig().getProperty(ConfigKeys.toggle_metrics);
-
-        if (metrics) {
-            metricsHandler.start();
-        } else {
-            metricsHandler.stop();
-        }
 
         this.vouchers.clear();
         this.voucherCodes.clear();

@@ -1,8 +1,7 @@
-package us.crazycrew.crazyvouchers.api.plugin;
+package com.badbones69.crazyvouchers.api.plugin;
 
 import com.badbones69.crazyvouchers.api.FileManager;
-import us.crazycrew.crazyvouchers.api.MetricsHandler;
-import us.crazycrew.crazyvouchers.api.plugin.migration.MigrationService;
+import com.badbones69.crazyvouchers.api.plugin.migration.MigrationService;
 import us.crazycrew.crazyvouchers.common.config.ConfigManager;
 import us.crazycrew.crazyvouchers.common.config.types.ConfigKeys;
 import org.jetbrains.annotations.NotNull;
@@ -11,7 +10,6 @@ import java.io.File;
 
 public class CrazyHandler extends CrazyVouchersPlugin {
 
-    private MetricsHandler metrics;
     private FileManager fileManager;
 
     public CrazyHandler(File dataFolder) {
@@ -40,11 +38,6 @@ public class CrazyHandler extends CrazyVouchersPlugin {
                     .registerCustomFilesFolder("/codes")
                     .setup();
         }
-
-        boolean metrics = getConfigManager().getConfig().getProperty(ConfigKeys.toggle_metrics);
-
-        this.metrics = new MetricsHandler();
-        if (metrics) this.metrics.start();
     }
 
     public void uninstall() {
@@ -62,9 +55,5 @@ public class CrazyHandler extends CrazyVouchersPlugin {
 
     public @NotNull FileManager getFileManager() {
         return this.fileManager;
-    }
-
-    public @NotNull MetricsHandler getMetrics() {
-        return this.metrics;
     }
 }

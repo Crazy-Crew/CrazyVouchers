@@ -1,4 +1,4 @@
-package us.crazycrew.crazyvouchers.api.plugin.migration;
+package com.badbones69.crazyvouchers.api.plugin.migration;
 
 import com.badbones69.crazyvouchers.CrazyVouchers;
 import org.bukkit.configuration.ConfigurationSection;

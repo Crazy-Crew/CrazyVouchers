@@ -1,27 +1,15 @@
-import git.formatLog
-import git.latestCommitHash
-import git.latestCommitMessage
-
 plugins {
-    id("io.papermc.hangar-publish-plugin") version "0.1.2"
-    id("com.modrinth.minotaur") version "2.+"
+    alias(libs.plugins.minotaur)
+    alias(libs.plugins.hangar)
 
-    id("com.github.johnrengelman.shadow")
-
-    `root-plugin`
+    `java-plugin`
 }
-
-val buildNumber: String = System.getenv("NEXT_BUILD_NUMBER") ?: "SNAPSHOT"
 
 val isSnapshot = false
 
-rootProject.version = if (isSnapshot) "3.4-$buildNumber" else "3.4"
+rootProject.version = "3.5"
 
-val content: String = if (isSnapshot) {
-    formatLog(latestCommitHash(), latestCommitMessage(), rootProject.name)
-} else {
-    rootProject.file("CHANGELOG.md").readText(Charsets.UTF_8)
-}
+val content: String = rootProject.file("CHANGELOG.md").readText(Charsets.UTF_8)
 
 subprojects.filter { it.name != "api" }.forEach {
     it.project.version = rootProject.version
@@ -42,11 +30,12 @@ modrinth {
     uploadFile.set(rootProject.projectDir.resolve("jars/${rootProject.name}-${rootProject.version}.jar"))
 
     gameVersions.set(listOf(
-        "1.20.4"
+        "1.20.6"
     ))
 
     loaders.add("paper")
     loaders.add("purpur")
+    loaders.add("folia")
 
     autoAddDependsOn.set(false)
     detectLoaders.set(false)
@@ -69,7 +58,7 @@ hangarPublish {
                 jar.set(rootProject.projectDir.resolve("jars/${rootProject.name}-${rootProject.version}.jar"))
 
                 platformVersions.set(listOf(
-                    "1.20.4"
+                    "1.20.6"
                 ))
 
                 dependencies {

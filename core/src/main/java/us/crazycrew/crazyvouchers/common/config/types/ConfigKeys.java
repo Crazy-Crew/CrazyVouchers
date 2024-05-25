@@ -57,13 +57,6 @@ public class ConfigKeys implements SettingsHolder {
     @Comment("Whether an alert should be sent when trying to use vouchers in recipes.")
     public static final Property<Boolean> prevent_using_vouchers_in_recipes_alert = newProperty("settings.recipes.alert", false);
 
-    @Comment({
-            "Sends anonymous statistics about how the plugin is used to bstats.org.",
-            "bstats is a service for plugin developers to find out how the plugin being used,",
-            "This information helps us figure out how to better improve the plugin."
-    })
-    public static final Property<Boolean> toggle_metrics = newProperty("settings.toggle_metrics", true);
-
     @Comment("Whether you want CrazyVouchers to shut up or not, This option is ignored by errors.")
     public static final Property<Boolean> verbose_logging = PropertyInitializer.newProperty("settings.verbose_logging", true);
 }
