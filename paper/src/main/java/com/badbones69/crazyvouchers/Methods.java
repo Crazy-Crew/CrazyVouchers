@@ -3,7 +3,8 @@ package com.badbones69.crazyvouchers;
 import ch.jalu.configme.SettingsManager;
 import com.badbones69.crazyvouchers.api.enums.PersistentKeys;
 import com.badbones69.crazyvouchers.api.enums.Messages;
-import com.badbones69.crazyvouchers.other.MsgUtils;
+import com.badbones69.crazyvouchers.utils.MsgUtils;
+import com.ryderbelserion.vital.paper.util.scheduler.FoliaRunnable;
 import org.bukkit.Color;
 import org.bukkit.FireworkEffect;
 import org.bukkit.Location;
@@ -17,7 +18,7 @@ import org.bukkit.persistence.PersistentDataType;
 import org.jetbrains.annotations.NotNull;
 import us.crazycrew.crazyvouchers.common.config.ConfigManager;
 import us.crazycrew.crazyvouchers.common.config.types.ConfigKeys;
-import us.crazycrew.crazyvouchers.api.plugin.CrazyHandler;
+import com.badbones69.crazyvouchers.api.plugin.CrazyHandler;
 import java.util.HashMap;
 import java.util.List;
 
@@ -123,6 +124,11 @@ public class Methods {
 
         container.set(PersistentKeys.no_firework_damage.getNamespacedKey(), PersistentDataType.BOOLEAN, true);
 
-        this.plugin.getServer().getScheduler().scheduleSyncDelayedTask(this.plugin, firework::detonate, 2);
+        new FoliaRunnable(this.plugin.getServer().getRegionScheduler(), firework.getLocation()) {
+            @Override
+            public void run() {
+                firework.detonate();
+            }
+        }.runDelayed(this.plugin, 2);
     }
 }

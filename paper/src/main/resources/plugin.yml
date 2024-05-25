@@ -9,6 +9,8 @@ description: '${description}'
 
 softdepend: [PlaceholderAPI, Oraxen, ItemsAdder]
 
+folia-supported: true
+
 commands:
   vouchers:
     description: "Manage your vouchers however you want."
