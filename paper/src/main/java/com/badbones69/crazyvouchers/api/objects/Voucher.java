@@ -8,9 +8,10 @@ import com.badbones69.crazyvouchers.utils.MsgUtils;
 import com.ryderbelserion.vital.core.util.StringUtil;
 import com.ryderbelserion.vital.paper.util.DyeUtil;
 import de.tr7zw.changeme.nbtapi.NBTItem;
+import io.papermc.paper.registry.RegistryAccess;
+import io.papermc.paper.registry.RegistryKey;
 import org.bukkit.Color;
 import org.bukkit.NamespacedKey;
-import org.bukkit.Registry;
 import org.bukkit.Sound;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.inventory.ItemFlag;
@@ -78,15 +79,15 @@ public class Voucher {
                 .setMaterial(fileConfiguration.getString(path + "item", "Stone"))
                 .setName(fileConfiguration.getString(path + "name", ""))
                 .setLore(fileConfiguration.getStringList(path + "lore"))
-                .setPlayerName(fileConfiguration.getString(path + "player"))
+                .setPlayerName(fileConfiguration.getString(path + "player", ""))
                 .setFlagsFromStrings(fileConfiguration.getStringList(path + "flags"));
 
         if (fileConfiguration.contains(path + "display-damage")) this.itemBuilder.setDamage(fileConfiguration.getInt(path + "display-damage"));
 
         if (fileConfiguration.contains(path + "display-trim.material") && fileConfiguration.contains(path + "display-trim.pattern")) {
             this.itemBuilder
-                    .setTrimMaterial(Registry.TRIM_MATERIAL.get(NamespacedKey.minecraft(fileConfiguration.getString(path + "display-trim.material", "QUARTZ").toLowerCase())))
-                    .setTrimPattern(Registry.TRIM_PATTERN.get(NamespacedKey.minecraft(fileConfiguration.getString(path + "display-trim.pattern", "SENTRY").toLowerCase())));
+                    .setTrimMaterial(RegistryAccess.registryAccess().getRegistry(RegistryKey.TRIM_MATERIAL).get(NamespacedKey.minecraft(fileConfiguration.getString(path + "display-trim.material", "QUARTZ").toLowerCase())))
+                    .setTrimPattern(RegistryAccess.registryAccess().getRegistry(RegistryKey.TRIM_PATTERN).get(NamespacedKey.minecraft(fileConfiguration.getString(path + "display-trim.pattern", "SENTRY").toLowerCase())));
         }
 
         this.glowing = fileConfiguration.getBoolean(path + "glowing");
