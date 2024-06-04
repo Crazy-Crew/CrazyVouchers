@@ -43,12 +43,19 @@ public class ItemBuilder {
     private String customMaterial;
 
     // Player
-    private String player;
 
     // Skulls
-    private boolean isHash;
-    private boolean isURL;
     private boolean isHead;
+
+    /**
+     * Holds the {@link UUID} of the skull of which this {@link ItemStack} belongs to.
+     */
+    private @Nullable UUID uuid = null;
+
+    /**
+     * Holds the url for the skull.
+     */
+    private String url = "";
 
     // Enchantments/Flags
     private boolean unbreakable;
@@ -111,10 +118,7 @@ public class ItemBuilder {
         this.itemName = "";
         this.itemLore = new ArrayList<>();
         this.itemAmount = 1;
-        this.player = "";
 
-        this.isHash = false;
-        this.isURL = false;
         this.isHead = false;
 
         this.unbreakable = false;
@@ -163,7 +167,9 @@ public class ItemBuilder {
         this.itemName = itemBuilder.itemName;
         this.itemLore = new ArrayList<>(itemBuilder.itemLore);
         this.itemAmount = itemBuilder.itemAmount;
-        this.player = itemBuilder.player;
+
+        this.uuid = itemBuilder.uuid;
+        this.url = itemBuilder.url;
 
         this.referenceItem = itemBuilder.referenceItem;
         this.customModelData = itemBuilder.customModelData;
@@ -171,8 +177,7 @@ public class ItemBuilder {
 
         this.enchantments = new HashMap<>(itemBuilder.enchantments);
 
-        this.isHash = itemBuilder.isHash;
-        this.isURL = itemBuilder.isURL;
+
         this.isHead = itemBuilder.isHead;
 
         this.unbreakable = itemBuilder.unbreakable;
@@ -253,13 +258,6 @@ public class ItemBuilder {
      */
     public boolean isMobEgg() {
         return this.isMobEgg;
-    }
-
-    /**
-     * @return the player name.
-     */
-    public String getPlayerName() {
-        return this.player;
     }
 
     /**
@@ -379,101 +377,108 @@ public class ItemBuilder {
             }
         }
 
-        if (item.getType() != Material.AIR) {
-            if (this.isHead) { // Has to go 1st due to it removing all data when finished.
-                if (this.isHash) { // Sauce: https://github.com/deanveloper/SkullCreator
-                    if (this.isURL) {
-                        item = SkullCreator.itemWithUrl(item, this.player);
-                        this.itemMeta = item.getItemMeta();
-                    } else {
-                        item = SkullCreator.itemWithBase64(item, this.player);
-                        this.itemMeta = item.getItemMeta();
-                    }
-                }
-            }
+        if (item.getType() == Material.AIR) {
+            this.plugin.getLogger().severe("Item cannot be AIR!");
 
-            item.setAmount(this.itemAmount);
-
-            if (this.itemMeta == null) this.itemMeta = item.getItemMeta();
-
-            this.itemMeta.setDisplayName(getUpdatedName());
-            this.itemMeta.setLore(getUpdatedLore());
-
-            if (isArmor()) {
-                if (this.trimPattern != null && this.trimMaterial != null) {
-                    ((ArmorMeta) this.itemMeta).setTrim(new ArmorTrim(this.trimMaterial, this.trimPattern));
-                }
-            }
-
-            if (this.isMap) {
-                MapMeta mapMeta = (MapMeta) this.itemMeta;
-
-                if (this.mapColor != null) mapMeta.setColor(this.mapColor);
-            }
-
-            if (this.itemMeta instanceof Damageable damageable) {
-                if (this.damage >= 1) {
-                    if (this.damage >= item.getType().getMaxDurability()) {
-                        damageable.setDamage(item.getType().getMaxDurability());
-                    } else {
-                        damageable.setDamage(this.damage);
-                    }
-                }
-            }
-
-            if (this.isPotion && (this.potionType != null || this.potionColor != null)) {
-                PotionMeta potionMeta = (PotionMeta) this.itemMeta;
-
-                if (this.potionType != null) potionMeta.setBasePotionData(new PotionData(this.potionType));
-
-                if (this.potionColor != null) potionMeta.setColor(this.potionColor);
-            }
-
-            if (this.material == Material.TIPPED_ARROW && this.potionType != null) {
-                PotionMeta potionMeta = (PotionMeta) this.itemMeta;
-                potionMeta.setBasePotionData(new PotionData(this.potionType));
-
-                if (this.potionColor != null) potionMeta.setColor(this.potionColor);
-            }
-
-            if (this.isLeatherArmor && this.armorColor != null) {
-                LeatherArmorMeta leatherMeta = (LeatherArmorMeta) this.itemMeta;
-                leatherMeta.setColor(this.armorColor);
-            }
-
-            if (this.isBanner && !this.patterns.isEmpty()) {
-                BannerMeta bannerMeta = (BannerMeta) this.itemMeta;
-                bannerMeta.setPatterns(this.patterns);
-            }
-
-            if (this.isShield && !this.patterns.isEmpty()) {
-                BlockStateMeta shieldMeta = (BlockStateMeta) this.itemMeta;
-                Banner banner = (Banner) shieldMeta.getBlockState();
-                banner.setPatterns(this.patterns);
-                banner.update();
-                shieldMeta.setBlockState(banner);
-            }
-
-            if (this.useCustomModelData) this.itemMeta.setCustomModelData(this.customModelData);
-
-            this.itemFlags.forEach(this.itemMeta::addItemFlags);
-            item.setItemMeta(this.itemMeta);
-            hideItemFlags();
-            item.addUnsafeEnchantments(this.enchantments);
-            addGlow();
-
-            NBTItem nbt = new NBTItem(item);
-
-            if (this.isHead && !this.isHash) nbt.setString("SkullOwner", this.player);
-
-            if (this.isMobEgg) {
-                if (this.entityType != null) nbt.addCompound("EntityTag").setString("id", "minecraft:" + this.entityType.name());
-            }
-
-            return nbt.getItem();
-        } else {
-            return item;
+            return null;
         }
+
+        item.setAmount(this.itemAmount);
+
+        if (this.itemMeta == null) this.itemMeta = item.getItemMeta();
+
+        this.itemMeta.setDisplayName(getUpdatedName());
+        this.itemMeta.setLore(getUpdatedLore());
+
+        if (this.isHead) {
+            if (this.itemMeta instanceof final SkullMeta skull) {
+                if (this.uuid != null && !skull.hasOwner()) {
+                    skull.setOwningPlayer(Bukkit.getOfflinePlayer(this.uuid));
+                } else {
+                    final UUID id = UUID.randomUUID();
+
+                    final PlayerProfile profile = Bukkit.getServer().createProfile(id, "");
+
+                    profile.setProperty(new ProfileProperty(id.toString(), id.toString()));
+
+                    PlayerTextures textures = profile.getTextures();
+
+                    try {
+                        textures.setSkin(URI.create(this.url).toURL(), PlayerTextures.SkinModel.CLASSIC);
+                    } catch (MalformedURLException exception) {
+                        this.plugin.getLogger().log(Level.SEVERE, "Failed to set the texture url", exception);
+                    }
+
+                    profile.setTextures(textures);
+                    skull.setPlayerProfile(profile);
+                }
+            }
+        }
+
+        if (isArmor()) {
+            if (this.trimPattern != null && this.trimMaterial != null) {
+                ((ArmorMeta) this.itemMeta).setTrim(new ArmorTrim(this.trimMaterial, this.trimPattern));
+            }
+        }
+
+        if (this.isMap) {
+            MapMeta mapMeta = (MapMeta) this.itemMeta;
+
+            if (this.mapColor != null) mapMeta.setColor(this.mapColor);
+        }
+
+        if (this.itemMeta instanceof Damageable damageable) {
+            if (this.damage >= 1) {
+                if (this.damage >= item.getType().getMaxDurability()) {
+                    damageable.setDamage(item.getType().getMaxDurability());
+                } else {
+                    damageable.setDamage(this.damage);
+                }
+            }
+        }
+
+        if (this.isPotion && (this.potionType != null || this.potionColor != null)) {
+            PotionMeta potionMeta = (PotionMeta) this.itemMeta;
+
+            if (this.potionType != null) potionMeta.setBasePotionType(this.potionType);
+
+            if (this.potionColor != null) potionMeta.setColor(this.potionColor);
+        }
+
+        if (this.material == Material.TIPPED_ARROW && this.potionType != null) {
+            PotionMeta potionMeta = (PotionMeta) this.itemMeta;
+            potionMeta.setBasePotionType(this.potionType);
+
+            if (this.potionColor != null) potionMeta.setColor(this.potionColor);
+        }
+
+        if (this.isLeatherArmor && this.armorColor != null) {
+            LeatherArmorMeta leatherMeta = (LeatherArmorMeta) this.itemMeta;
+            leatherMeta.setColor(this.armorColor);
+        }
+
+        if (this.isBanner && !this.patterns.isEmpty()) {
+            BannerMeta bannerMeta = (BannerMeta) this.itemMeta;
+            bannerMeta.setPatterns(this.patterns);
+        }
+
+        if (this.isShield && !this.patterns.isEmpty()) {
+            BlockStateMeta shieldMeta = (BlockStateMeta) this.itemMeta;
+            Banner banner = (Banner) shieldMeta.getBlockState();
+            banner.setPatterns(this.patterns);
+            banner.update();
+            shieldMeta.setBlockState(banner);
+        }
+
+        if (this.useCustomModelData) this.itemMeta.setCustomModelData(this.customModelData);
+
+        this.itemFlags.forEach(this.itemMeta::addItemFlags);
+        item.setItemMeta(this.itemMeta);
+        hideItemFlags();
+        item.addUnsafeEnchantments(this.enchantments);
+        addGlow();
+
+        return item;
     }
 
     /*
@@ -805,15 +810,30 @@ public class ItemBuilder {
     /**
      * Set the player that will be displayed on the head.
      *
-     * @param playerName the player being displayed on the head.
+     * @param player the player being displayed on the head.
      * @return the ItemBuilder with an updated Player Name.
      */
-    public ItemBuilder setPlayerName(String playerName) {
-        this.player = playerName;
+    public ItemBuilder setPlayerName(String player) {
+        if (player.isEmpty() || player.isBlank()) return this;
 
-        if (this.player != null && this.player.length() > 16) {
-            this.isHash = true;
-            this.isURL = this.player.startsWith("http");
+        // This is temporary until HDB is updated, The dev of the plugin has a house now
+        // and his plugin doesn't work on 1.20.6
+        if (player.length() > 16) {
+            this.url = "https://textures.minecraft.net/texture/" + player.replace("https://textures.minecraft.net/texture/", "");
+
+            return this;
+        }
+
+        @NotNull final PlayerBuilder builder = new PlayerBuilder(player);
+        // More extensive but we only call methods once, and we avoid NPE.
+        @Nullable final Player target = builder.getPlayer();
+
+        if (target != null) {
+            this.uuid = target.getUniqueId();
+        } else {
+            @Nullable final OfflinePlayer offlineTarget = builder.getOfflinePlayer();
+
+            if (offlineTarget != null) this.uuid = offlineTarget.getUniqueId();
         }
 
         return this;
