@@ -2,10 +2,11 @@ package com.badbones69.crazyvouchers.api.objects.other;
 
 import com.badbones69.crazyvouchers.CrazyVouchers;
 import com.badbones69.crazyvouchers.utils.MsgUtils;
-import com.badbones69.crazyvouchers.support.SkullCreator;
+import com.destroystokyo.paper.profile.PlayerProfile;
+import com.destroystokyo.paper.profile.ProfileProperty;
+import com.ryderbelserion.vital.paper.builders.PlayerBuilder;
 import com.ryderbelserion.vital.paper.enums.Support;
 import com.ryderbelserion.vital.paper.util.DyeUtil;
-import de.tr7zw.changeme.nbtapi.NBTItem;
 import io.th0rgal.oraxen.api.OraxenItems;
 import org.bukkit.*;
 import org.bukkit.block.Banner;
@@ -13,24 +14,27 @@ import org.bukkit.block.banner.Pattern;
 import org.bukkit.block.banner.PatternType;
 import org.bukkit.enchantments.Enchantment;
 import org.bukkit.entity.EntityType;
+import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemFlag;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.*;
 import org.bukkit.inventory.meta.trim.ArmorTrim;
 import org.bukkit.inventory.meta.trim.TrimMaterial;
 import org.bukkit.inventory.meta.trim.TrimPattern;
-import org.bukkit.potion.PotionData;
 import org.bukkit.potion.PotionEffectType;
 import org.bukkit.potion.PotionType;
+import org.bukkit.profile.PlayerTextures;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
+import java.net.MalformedURLException;
+import java.net.URI;
 import java.util.*;
 import java.util.logging.Level;
 import java.util.stream.Collectors;
 
 public class ItemBuilder {
 
-    private static final CrazyVouchers plugin = CrazyVouchers.getPlugin(CrazyVouchers.class);
-
-    private final NBTItem nbtItem;
+    private final CrazyVouchers plugin = CrazyVouchers.getPlugin(CrazyVouchers.class);
 
     // Item Data
     private Material material;
@@ -108,7 +112,6 @@ public class ItemBuilder {
      * Create a blank item builder.
      */
     public ItemBuilder() {
-        this.nbtItem = null;
         this.itemStack = null;
         this.itemMeta = null;
         this.material = Material.STONE;
@@ -157,7 +160,6 @@ public class ItemBuilder {
      * @param itemBuilder The item builder to deduplicate.
      */
     public ItemBuilder(ItemBuilder itemBuilder) {
-        this.nbtItem = itemBuilder.nbtItem;
         this.itemStack = itemBuilder.itemStack;
         this.itemMeta = itemBuilder.itemMeta;
         this.material = itemBuilder.material;
@@ -364,8 +366,6 @@ public class ItemBuilder {
      * @return the result of all the info that was given to the builder as an ItemStack.
      */
     public ItemStack build() {
-        if (this.nbtItem != null) this.itemStack = this.nbtItem.getItem();
-
         ItemStack item = this.itemStack;
 
         if (Support.oraxen.isEnabled()) {
@@ -995,31 +995,6 @@ public class ItemBuilder {
     public ItemBuilder setGlow(boolean glow) {
         this.glowing = glow;
         return this;
-    }
-
-    /**
-     * Convert an ItemStack to an ItemBuilder to allow easier editing of the ItemStack.
-     *
-     * @param item the ItemStack you wish to convert into an ItemBuilder.
-     * @return the ItemStack as an ItemBuilder with all the info from the item.
-     */
-    public static ItemBuilder convertItemStack(ItemStack item) {
-        ItemBuilder itemBuilder = new ItemBuilder().setReferenceItem(item).setAmount(item.getAmount()).setEnchantments(new HashMap<>(item.getEnchantments()));
-
-        if (item.hasItemMeta() && item.getItemMeta() != null) {
-            ItemMeta itemMeta = item.getItemMeta();
-
-            if (itemMeta.hasDisplayName()) itemBuilder.setName(itemMeta.getDisplayName());
-            if (itemMeta.hasLore()) itemBuilder.setLore(itemMeta.getLore());
-
-            NBTItem nbt = new NBTItem(item);
-
-            if (nbt.hasTag("Unbreakable")) itemBuilder.setUnbreakable(nbt.getBoolean("Unbreakable"));
-
-            if (itemMeta instanceof org.bukkit.inventory.meta.Damageable) itemBuilder.setDamage(((org.bukkit.inventory.meta.Damageable) itemMeta).getDamage());
-        }
-
-        return itemBuilder;
     }
 
     /**
