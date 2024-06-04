@@ -301,8 +301,11 @@ public class VoucherClickListener implements Listener {
         }
 
         if (voucher.useLimiter()) {
-            Files.users.getFile().set("Players." + player.getUniqueId() + ".UserName", player.getName());
-            Files.users.getFile().set("Players." + player.getUniqueId() + ".Vouchers." + voucher.getName(), Files.users.getFile().getInt("Players." + player.getUniqueId() + ".Vouchers." + voucher.getName()) + 1);
+            FileConfiguration configuration = Files.users.getFile();
+
+            configuration.set("Players." + player.getUniqueId() + ".UserName", player.getName());
+            configuration.set("Players." + player.getUniqueId() + ".Vouchers." + voucher.getName(), configuration.getInt("Players." + player.getUniqueId() + ".Vouchers." + voucher.getName()) + 1);
+
             Files.users.saveFile();
         }
     }
