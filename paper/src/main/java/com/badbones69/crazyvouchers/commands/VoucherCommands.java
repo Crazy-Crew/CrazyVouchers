@@ -57,8 +57,11 @@ public class VoucherCommands implements CommandExecutor {
                         this.fileManager.reloadAllFiles();
                         this.fileManager.setup();
 
-                        if (!Files.users.getFile().contains("Players")) {
-                            Files.users.getFile().set("Players.Clear", null);
+                        final FileConfiguration configuration = Files.users.getFile();
+
+                        if (!configuration.contains("Players")) {
+                            configuration.set("Players.Clear", null);
+
                             Files.users.saveFile();
                         }
 
