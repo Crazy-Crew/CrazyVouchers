@@ -12,6 +12,7 @@ import com.badbones69.crazyvouchers.utils.MsgUtils;
 import com.ryderbelserion.vital.paper.enums.Support;
 import me.clip.placeholderapi.PlaceholderAPI;
 import org.bukkit.GameMode;
+import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.Sound;
 import org.bukkit.SoundCategory;
@@ -249,9 +250,12 @@ public class VoucherClickListener implements Listener {
         this.placeholders.put("{arg}", argument != null ? argument : "{arg}");
         this.placeholders.put("{player}", player.getName());
         this.placeholders.put("{world}", player.getWorld().getName());
-        this.placeholders.put("{x}", String.valueOf(player.getLocation().getBlockX()));
-        this.placeholders.put("{y}", String.valueOf(player.getLocation().getBlockY()));
-        this.placeholders.put("{z}", String.valueOf(player.getLocation().getBlockZ()));
+
+        final Location location = player.getLocation();
+
+        this.placeholders.put("{x}", String.valueOf(location.getBlockX()));
+        this.placeholders.put("{y}", String.valueOf(location.getBlockY()));
+        this.placeholders.put("{z}", String.valueOf(location.getBlockZ()));
         this.placeholders.put("{prefix}", this.plugin.getCrazyHandler().getConfigManager().getConfig().getProperty(ConfigKeys.command_prefix));
     }
 
