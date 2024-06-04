@@ -13,7 +13,7 @@ import us.crazycrew.crazyvouchers.common.config.types.ConfigKeys;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
-import java.util.Random;
+import java.util.concurrent.ThreadLocalRandom;
 import java.util.logging.Level;
 
 public class CrazyManager {
@@ -192,8 +192,7 @@ public class CrazyManager {
     
     private long pickNumber(long min, long max) {
         try {
-            // new Random() does not have a nextLong(long bound) method.
-            return min + new Random().nextLong(max - min);
+            return min + ThreadLocalRandom.current().nextLong(max - min);
         } catch (IllegalArgumentException e) {
             return min;
         }
