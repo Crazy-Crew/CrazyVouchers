@@ -31,6 +31,8 @@ modrinth {
 
     syncBodyFrom.set(rootProject.file("README.md").readText(Charsets.UTF_8))
 
+    gameVersions.add(libs.versions.minecraft.get())
+
     ))
 
     loaders.add("paper")
@@ -58,7 +60,7 @@ hangarPublish {
                 jar.set(rootProject.projectDir.resolve("jars/${rootProject.name}-${rootProject.version}.jar"))
 
                 platformVersions.set(listOf(
-                    "1.20.6"
+                    libs.versions.minecraft.get()
                 ))
 
                 dependencies {
