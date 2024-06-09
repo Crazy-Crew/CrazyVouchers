@@ -29,8 +29,8 @@ modrinth {
 
     uploadFile.set(rootProject.projectDir.resolve("jars/${rootProject.name}-${rootProject.version}.jar"))
 
-    gameVersions.set(listOf(
-        "1.20.6"
+    syncBodyFrom.set(rootProject.file("README.md").readText(Charsets.UTF_8))
+
     ))
 
     loaders.add("paper")
