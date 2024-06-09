@@ -7,10 +7,6 @@ plugins {
     id("java-plugin")
 }
 
-dependencies {
-    compileOnly(libs.paper)
-}
-
 feather {
     repository("https://repo.extendedclip.com/content/repositories/placeholderapi")
 

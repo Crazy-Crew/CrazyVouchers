@@ -1,4 +1,5 @@
 plugins {
+    alias(libs.plugins.paperweight)
     alias(libs.plugins.shadowJar)
     alias(libs.plugins.runPaper)
 
@@ -9,7 +10,13 @@ feather {
     repository("https://repo.oraxen.com/releases")
 }
 
+base {
+    archivesName.set(rootProject.name)
+}
+
 dependencies {
+    paperweight.paperDevBundle(libs.versions.paper)
+
     api(projects.crazyvouchersCore)
 
     implementation(libs.triumph.cmds)
@@ -30,7 +37,19 @@ dependencies {
 
 val component: SoftwareComponent = components["java"]
 
+paperweight {
+    reobfArtifactConfiguration = io.papermc.paperweight.userdev.ReobfArtifactConfiguration.REOBF_PRODUCTION
+}
+
 tasks {
+    runServer {
+        jvmArgs("-Dnet.kyori.ansi.colorLevel=truecolor")
+
+        defaultCharacterEncoding = Charsets.UTF_8.name()
+
+        minecraftVersion(libs.versions.minecraft.get())
+    }
+
     publishing {
         repositories {
             maven {
@@ -46,7 +65,7 @@ tasks {
         publications {
             create<MavenPublication>("maven") {
                 groupId = rootProject.group.toString()
-                artifactId = "${rootProject.name.lowercase()}-${project.name.lowercase()}-api"
+                artifactId = "${rootProject.name.lowercase()}-paper-api"
                 version = rootProject.version.toString()
 
                 from(component)
@@ -54,20 +73,12 @@ tasks {
         }
     }
 
-    runServer {
-        jvmArgs("-Dnet.kyori.ansi.colorLevel=truecolor")
-
-        defaultCharacterEncoding = Charsets.UTF_8.name()
-
-        minecraftVersion("1.20.6")
-    }
-
     assemble {
-        dependsOn(shadowJar)
+        dependsOn(reobfJar)
 
         doLast {
             copy {
-                from(shadowJar.get())
+                from(reobfJar.get())
                 into(rootProject.projectDir.resolve("jars"))
             }
         }

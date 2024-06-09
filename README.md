@@ -1,92 +1,67 @@
-<br />
+<center><div align="center">
 
-<div align="center">
-
-[![CrazyVouchers](https://raw.githubusercontent.com/RyderBelserion/Assets/main/crazycrew/webp/CrazyVouchersBanner.webp)](https://modrinth.com/plugin/crazyvouchers)
+![CrazyVouchers](https://github.com/Crazy-Crew/Branding/blob/main/crazyvouchers/banner/banner.png?raw=true)
 
 [![Contributors][contributors-shield]][contributors-url]
 [![Forks][forks-shield]][forks-url]
 [![Stargazers][stars-shield]][stars-url]
 [![Issues][issues-shield]][issues-url]
-[![GPU License][license-shield]][license-url]
-[![Contact][discord-shield]][discord-url]
-![CodeFactor][codefactor-shield]
+[![MIT License][license-shield]][license-url]
+[![CodeFactor](https://www.codefactor.io/repository/github/crazy-crew/crazyvouchers/badge)](https://www.codefactor.io/repository/github/crazy-crew/crazyvouchers)
 
-![Paper](https://cdn.jsdelivr.net/gh/intergrav/devins-badges/assets/compact/supported/paper_vector.svg)
-![Purpur](https://cdn.jsdelivr.net/gh/intergrav/devins-badges/assets/compact/supported/purpur_vector.svg)
+<big>**Give your players as many rewards as you like in a compact form called a CrazyVoucher with all the fancy bells and whistles such as ability to play sounds or spawn fireworks!**</big>
 
-  <p align="center">
-    Want to make a paper that can give you an axolotl with a pretty firework display, Look no further!
-    <br />
-    <a href="https://docs.crazycrew.us/docs/category/crazyvouchers"><strong>Explore the docs »</strong></a>
-    <br />
-    <br />
-    <a href="https://github.com/Crazy-Crew/CrazyVouchers/issues/new?assignees=ryderbelserion&labels=bug&projects=&template=bugs.yml&title=%5BBug+Report%5D%3A+">Report Bug</a>
-    ·
-    <a href="https://github.com/Crazy-Crew/CrazyVouchers/discussions/new?category=features">Request Feature</a>
-    ·
-    <a href="https://discord.gg/badbones-s-live-chat-182615261403283459">Get Support</a>
-  </p>
-</div>
+### **Quick Links**
+[Request Features](https://github.com/Crazy-Crew/CrazyVouchers/discussions/categories/features)<br>
+[Documentation](https://docs.crazycrew.us/docs/category/crazyvouchers)<br>
+[Developer API](https://docs.crazycrew.us/docs/plugins/crazyvouchers/guides/api/intro)<br>
+[Report Bugs](https://github.com/Crazy-Crew/CrazyVouchers/issues)<br>
+[Trello Board](https://trello.com/b/gWiGLBWI)
 
-<!-- TABLE OF CONTENTS -->
+### Supported Platforms
+[![paper software](https://cdn.jsdelivr.net/npm/@intergrav/devins-badges@3/assets/compact-minimal/supported/paper_vector.svg)](https://papermc.io/)
+[![purpur software](https://cdn.jsdelivr.net/npm/@intergrav/devins-badges@3/assets/compact-minimal/supported/purpur_vector.svg)](https://purpurmc.org/)
+
+### **Initial Plugin Setup**
+
+CrazyVouchers as first install will come with a set of default files in the `vouchers` and `codes` folder which are to help you figure out how to use the plugin.
+You can simply create more vouchers by copying the files or creating new ones than doing `/crazyvouchers reload`
+
+![Features Banner](https://github.com/Crazy-Crew/Branding/blob/main/crazyvouchers/banner/features.png?raw=true)
+
+**The ability to customize the entirety of CrazyVouchers**<br>
+If you have found something that you would like to be able to customize,<br>
+Please make a [feature request,](https://github.com/Crazy-Crew/CrazyVouchers/discussions/categories/features) and we'll see about adding it
+
+**Create an infinite amount of voucher codes**<br>
+Voucher Codes can be redeemed through a command, You can even <br>apply a limit of how many times a code can be used!
+
+**The ability to use hex colors**<br>
+Hex Colors should be usable throughout the entire plugin.<br>
+`#000000` is an example of how to use a hex color! You do not need `&`
+
+**Ability to switch between multiple files and mono files for `vouchers` and `codes`**<br>
+You can find the toggle in `config.yml` if you prefer one config file for each.
+
+![Support Banner](https://github.com/Crazy-Crew/Branding/blob/main/crazyvouchers/banner/support.png?raw=true)
+
+Are you confused about something? Hop by the Discord and you might just get an answer!<br>
+Please head to [crazy-vouchers](https://discord.com/channels/182615261403283459/196107890979897345) with your question and do not cross post.<br>
+
 <details>
-  <summary>Table of Contents</summary>
-  <ol>
-    <li>
-      <a href="#getting-started">Getting Started</a>
-      <ul>
-        <li><a href="#prerequisites">Prerequisites</a></li>
-        <li><a href="#installation">Installation</a></li>
-      </ul>
-    </li>
-    <li><a href="#roadmap">Roadmap</a></li>
-    <li><a href="#contributing">Contributing</a></li>
-    <li><a href="#license">License</a></li>
-    <li><a href="#contact">Contact</a></li>
-  </ol>
+<summary>Support Checklist</summary>
+
+Please check to make sure that your question wasn't asked before, You can use `Ctrl+F` on Discord to look for past conversations.<br>
+Describe your issue in detail, Don't just make it a bread crumb trail that has to be questioned out of you.<br>
+Plugin Version i.e. `CrazyVouchers 3.5.3` **LATEST DOES NOT COUNT**<br>
+Server Version & Server Type i.e. `Paper 1.20.6` or `Purpur 1.20.6` **LATEST DOES NOT COUNT**<br>
+Send any console errors or files you have through https://mclo.gs/ - (We don't own the website, You have to copy the link and send it.)<br>
+
 </details>
 
-### Resource Page
-[![Hangar](https://raw.githubusercontent.com/intergrav/devins-badges/v3/assets/compact/available/hangar_46h.png)](https://hangar.papermc.io/CrazyCrew/CrazyVouchers)
-[![Modrinth](https://raw.githubusercontent.com/intergrav/devins-badges/v3/assets/compact/available/modrinth_46h.png)](https://modrinth.com/plugin/crazyvouchers)
-
-## Getting Started
-How to get started with contributing / maintaining your own version of CrazyVouchers!
-
-### Prerequisites
-A list of things necessary to make sure you can build CrazyVouchers properly.
-* Intellij IDEA
-    * > https://www.jetbrains.com/idea/download/
-* Gradle
-
-### Installation
-1. Clone the repo
-   ```sh
-   git clone https://github.com/Crazy-Crew/CrazyVouchers.git
-   ```
-2. Open the repository using Intellij IDEA & wait until it finishes downloading/indexing.
-3. Run the build task.
-   ```gradle
-   ./gradlew assemble
-   ```
-4. Look in `jars` folder
-
-## Roadmap
-Check our public [trello board](https://trello.com/b/gWiGLBWI) for our current plans, any bugs and general tracking of the project progress.
-
-## Contributing
-1. Fork the Project
-2. Create your Feature Branch (`git checkout -b feature/yourfeature`)
-3. Commit your Changes (`git commit -m 'your amazing feature.'`)
-4. Push to the Branch (`git push`)
-5. Open a Pull Request to the `main` branch to add your feature/fix.
-
-## License
-Distributed under the MIT License. See [`LICENSE`](/LICENSE) for more information.
-
-[discord-shield]: https://img.shields.io/discord/182615261403283459.svg?style=flat&logo=appveyor
-[discord-url]: https://discord.gg/badbones-s-live-chat-182615261403283459
+<!--[![Discord](https://discord.com/api/guilds/182615261403283459/widget.png?style=banner2)](https://discord.gg/badbones-s-live-chat-182615261403283459)<br>-->
+[![Discord Invite Button](https://cdn.jsdelivr.net/npm/@intergrav/devins-badges@3/assets/cozy/social/discord-plural_vector.svg)](https://discord.gg/badbones-s-live-chat-182615261403283459)
+</div></center>
 
 [contributors-shield]: https://img.shields.io/github/contributors/Crazy-Crew/CrazyVouchers.svg?style=flat&logo=appveyor
 [contributors-url]: https://github.com/Crazy-Crew/CrazyVouchers/graphs/contributors
@@ -97,6 +72,4 @@ Distributed under the MIT License. See [`LICENSE`](/LICENSE) for more informatio
 [issues-shield]: https://img.shields.io/github/issues/Crazy-Crew/CrazyVouchers.svg?style=flat&logo=appveyor
 [issues-url]: https://github.com/Crazy-Crew/CrazyVouchers/issues
 [license-shield]: https://img.shields.io/github/license/Crazy-Crew/CrazyVouchers.svg?style=flat&logo=appveyor
-[license-url]: https://github.com/Crazy-Crew/CrazyVouchers/blob/master/LICENSE
-
-[codefactor-shield]: https://img.shields.io/codefactor/grade/github/Crazy-Crew/CrazyVouchers/main?style=flat&logo=appveyor
+[license-url]: https://github.com/Crazy-Crew/CrazyVouchers/blob/main/LICENSE

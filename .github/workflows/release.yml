@@ -46,3 +46,9 @@ jobs:
           MODRINTH_TOKEN: ${{ secrets.MODRINTH_TOKEN }}
           COMMIT_MESSAGE: ${{ join(github.event.commits.*.message, '<br>* ') }}
         run: ./gradlew modrinth publishAllPublicationsToHangar --stacktrace
+
+      - name: Maven Publish
+        env:
+          gradle_username: ${{ secrets.GRADLE_USERNAME }}
+          gradle_password: ${{ secrets.GRADLE_PASSWORD }}
+        run: ./gradlew publish --stacktrace

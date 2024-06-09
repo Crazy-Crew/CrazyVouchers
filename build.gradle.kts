@@ -29,13 +29,13 @@ modrinth {
 
     uploadFile.set(rootProject.projectDir.resolve("jars/${rootProject.name}-${rootProject.version}.jar"))
 
-    gameVersions.set(listOf(
-        "1.20.6"
-    ))
+    syncBodyFrom.set(rootProject.file("README.md").readText(Charsets.UTF_8))
 
-    loaders.add("paper")
-    loaders.add("purpur")
-    loaders.add("folia")
+    gameVersions.add(libs.versions.minecraft.get())
+
+    loaders.addAll(listOf(
+        "purpur", "paper", "folia"
+    ))
 
     autoAddDependsOn.set(false)
     detectLoaders.set(false)
@@ -58,7 +58,7 @@ hangarPublish {
                 jar.set(rootProject.projectDir.resolve("jars/${rootProject.name}-${rootProject.version}.jar"))
 
                 platformVersions.set(listOf(
-                    "1.20.6"
+                    libs.versions.minecraft.get()
                 ))
 
                 dependencies {
