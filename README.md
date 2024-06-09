@@ -1,6 +1,6 @@
 <center><div align="center">
 
-![CrazyVouchers](https://github.com/Crazy-Crew/Branding/blob/main/crazyvouchers/banner/banner.png?raw=true)
+![CrazyVouchers](https://raw.githubusercontent.com/Crazy-Crew/Branding/main/crazyvouchers/banner/webp/banner.webp)
 
 [![Contributors][contributors-shield]][contributors-url]
 [![Forks][forks-shield]][forks-url]
@@ -27,7 +27,7 @@
 CrazyVouchers as first install will come with a set of default files in the `vouchers` and `codes` folder which are to help you figure out how to use the plugin.
 You can simply create more vouchers by copying the files or creating new ones than doing `/crazyvouchers reload`
 
-![Features Banner](https://github.com/Crazy-Crew/Branding/blob/main/crazyvouchers/banner/features.png?raw=true)
+![Features Banner](https://raw.githubusercontent.com/Crazy-Crew/Branding/main/crazyvouchers/banner/webp/features.webp)
 
 **The ability to customize the entirety of CrazyVouchers**<br>
 If you have found something that you would like to be able to customize,<br>
@@ -43,7 +43,7 @@ Hex Colors should be usable throughout the entire plugin.<br>
 **Ability to switch between multiple files and mono files for `vouchers` and `codes`**<br>
 You can find the toggle in `config.yml` if you prefer one config file for each.
 
-![Support Banner](https://github.com/Crazy-Crew/Branding/blob/main/crazyvouchers/banner/support.png?raw=true)
+![Support Banner](https://raw.githubusercontent.com/Crazy-Crew/Branding/main/crazyvouchers/banner/webp/support.webp)
 
 Are you confused about something? Hop by the Discord and you might just get an answer!<br>
 Please head to [crazy-vouchers](https://discord.com/channels/182615261403283459/196107890979897345) with your question and do not cross post.<br>
