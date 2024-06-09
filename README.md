@@ -9,7 +9,7 @@
 [![MIT License][license-shield]][license-url]
 [![CodeFactor](https://www.codefactor.io/repository/github/crazy-crew/crazyvouchers/badge)](https://www.codefactor.io/repository/github/crazy-crew/crazyvouchers)
 
-#### Give your players as many rewards as you like in a compact form called a CrazyVoucher with all the fancy bells and whistles such as ability to play sounds or spawn fireworks!
+<big>**Give your players as many rewards as you like in a compact form called a CrazyVoucher with all the fancy bells and whistles such as ability to play sounds or spawn fireworks!**</big>
 
 ### **Quick Links**
 [Request Features](https://github.com/Crazy-Crew/CrazyVouchers/discussions/categories/features)<br>
