@@ -33,11 +33,9 @@ modrinth {
 
     gameVersions.add(libs.versions.minecraft.get())
 
+    loaders.addAll(listOf(
+        "purpur", "paper", "folia"
     ))
-
-    loaders.add("paper")
-    loaders.add("purpur")
-    loaders.add("folia")
 
     autoAddDependsOn.set(false)
     detectLoaders.set(false)
