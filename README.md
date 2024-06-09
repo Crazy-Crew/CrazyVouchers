@@ -31,17 +31,17 @@ You can simply create more vouchers by copying the files or creating new ones th
 
 **The ability to customize the entirety of CrazyVouchers**<br>
 If you have found something that you would like to be able to customize,<br>
-Please make a [feature request,](https://github.com/Crazy-Crew/CrazyVouchers/discussions/categories/features) and we'll see about adding it
+please make a [feature request,](https://github.com/Crazy-Crew/CrazyVouchers/discussions/categories/features) and we'll see about adding it
 
 **Create an infinite amount of voucher codes**<br>
-Voucher Codes can be redeemed through a command, You can even <br>apply a limit of how many times a code can be used!
+Voucher Codes can be redeemed through a command, you can even <br>apply a limit of how many times a code can be used!
 
 **The ability to use hex colors**<br>
 Hex Colors should be usable throughout the entire plugin.<br>
 `#000000` is an example of how to use a hex color! You do not need `&`
 
 **Ability to switch between multiple files and mono files for `vouchers` and `codes`**<br>
-You can find the toggle in `config.yml` if you prefer one config file for each.
+You can find the toggle in `config.yml` if you prefer one config file for each. This will not migrate it for you.
 
 ![Support Banner](https://raw.githubusercontent.com/Crazy-Crew/Branding/main/crazyvouchers/banner/webp/support.webp)
 
