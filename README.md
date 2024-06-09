@@ -39,6 +39,8 @@ You can find the toggle in `config.yml` if you prefer one config file for each.
 
 ![support](https://github.com/Crazy-Crew/Branding/blob/main/crazyvouchers/banner/support.png?raw=true)
 
+[![Discord](https://discord.com/api/guilds/182615261403283459/widget.png?style=banner2)](https://discord.gg/badbones-s-live-chat-182615261403283459)
+
 </center>
 
 [contributors-shield]: https://img.shields.io/github/contributors/Crazy-Crew/CrazyVouchers.svg?style=flat&logo=appveyor
