@@ -1,4 +1,4 @@
-<div align="center">
+<center><div align="center">
 
 ![CrazyVouchers](https://github.com/Crazy-Crew/Branding/blob/main/crazyvouchers/banner/banner.png?raw=true)
 
@@ -41,7 +41,7 @@ You can find the toggle in `config.yml` if you prefer one config file for each.
 
 [![Discord](https://discord.com/api/guilds/182615261403283459/widget.png?style=banner2)](https://discord.gg/badbones-s-live-chat-182615261403283459)
 
-</div>
+</div></center>
 
 [contributors-shield]: https://img.shields.io/github/contributors/Crazy-Crew/CrazyVouchers.svg?style=flat&logo=appveyor
 [contributors-url]: https://github.com/Crazy-Crew/CrazyVouchers/graphs/contributors
