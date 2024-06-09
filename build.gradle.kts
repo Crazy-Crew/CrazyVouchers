@@ -29,7 +29,7 @@ modrinth {
 
     uploadFile.set(rootProject.projectDir.resolve("jars/${rootProject.name}-${rootProject.version}.jar"))
 
-    syncBodyFrom.set(rootProject.file("README.md").readText(Charsets.UTF_8))
+    syncBodyFrom.set(rootProject.file("modrinth.md").readText(Charsets.UTF_8))
 
     gameVersions.add(libs.versions.minecraft.get())
 
