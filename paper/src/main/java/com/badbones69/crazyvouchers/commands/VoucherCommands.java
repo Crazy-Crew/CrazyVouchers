@@ -21,6 +21,7 @@ import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.jetbrains.annotations.NotNull;
+import us.crazycrew.crazyvouchers.common.config.ConfigManager;
 import us.crazycrew.crazyvouchers.common.config.types.ConfigKeys;
 import java.util.HashMap;
 import java.util.Random;
@@ -28,6 +29,8 @@ import java.util.Random;
 public class VoucherCommands implements CommandExecutor {
 
     private final CrazyVouchers plugin = CrazyVouchers.get();
+
+    private final ConfigManager configManager = this.plugin.getCrazyHandler().getConfigManager();
 
     private final InventoryManager inventoryManager = this.plugin.getInventoryManager();
 
@@ -52,6 +55,8 @@ public class VoucherCommands implements CommandExecutor {
 
                 case "reload" -> {
                     if (this.methods.hasPermission(sender, "admin")) {
+                        this.configManager.reload();
+
                         this.fileManager.reloadAllFiles();
                         this.fileManager.setup();
 

@@ -38,7 +38,9 @@ public class ConfigKeys implements SettingsHolder {
     @Comment("""
             This lets you decide between having the old file system like vouchers.yml/vouchercodes.yml or split into vouchers/codes.
             
-            It defaults to false but you can always set it to true.
+            It defaults to false, but you can always set it to true.
+            
+            This will not migrate back and forth you so make your choice to use this early on!
             """)
     public static final Property<Boolean> mono_file = newProperty("settings.use-old-file-system", false);
 
