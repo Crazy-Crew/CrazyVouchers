@@ -1,14 +1,18 @@
 package com.badbones69.crazyvouchers.api;
 
+import ch.jalu.configme.SettingsManager;
 import com.badbones69.crazyvouchers.CrazyVouchers;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.jetbrains.annotations.NotNull;
+import us.crazycrew.crazyvouchers.common.config.types.ConfigKeys;
+
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
@@ -19,6 +23,8 @@ import java.util.logging.Logger;
 public class FileManager {
 
     private @NotNull final CrazyVouchers plugin = CrazyVouchers.get();
+
+    private @NotNull final SettingsManager config = this.plugin.getCrazyHandler().getConfigManager().getConfig();
 
     private final Map<Files, File> files = new HashMap<>();
     private final List<String> homeFolders = new ArrayList<>();
@@ -59,11 +65,22 @@ public class FileManager {
         this.customFiles.clear();
         this.configurations.clear();
 
+        List<Files> files = new ArrayList<>() {{
+            if (config.getProperty(ConfigKeys.mono_file)) {
+                add(Files.voucher_codes);
+                add(Files.vouchers);
+            }
+
+            add(Files.users);
+        }};
+
         // Loads all the normal static files.
-        for (Files file : Files.values()) {
+        for (Files file : files) {
+            final String fileName = file.getFileName();
+
             File newFile = new File(dataFolder, file.getFileLocation());
 
-            if (this.isLogging) this.logger.info("Loading the " + file.getFileName());
+            if (this.isLogging) this.logger.info("Loading the " + fileName);
 
             if (!newFile.exists()) {
                 try {
@@ -72,7 +89,7 @@ public class FileManager {
 
                     copyFile(jarFile, serverFile);
                 } catch (Exception exception) {
-                    this.logger.log(Level.SEVERE, "Failed to load file: " + file.getFileName(), exception);
+                    this.logger.log(Level.SEVERE, "Failed to load file: " + fileName, exception);
 
                     continue;
                 }
@@ -82,7 +99,7 @@ public class FileManager {
 
             if (file.getFileName().endsWith(".yml")) this.configurations.put(file, YamlConfiguration.loadConfiguration(newFile));
 
-            if (this.isLogging) this.logger.info("Successfully loaded " + file.getFileName());
+            if (this.isLogging) this.logger.info("Successfully loaded " + fileName);
         }
 
         if (this.homeFolders.isEmpty()) return;
@@ -307,7 +324,13 @@ public class FileManager {
      * Overrides the loaded state file and loads the file systems file.
      */
     public void reloadFile(Files file) {
-        if (file.getFileName().endsWith(".yml")) this.configurations.put(file, YamlConfiguration.loadConfiguration(this.files.get(file)));
+        if (file.getFileName().endsWith(".yml")) {
+            File key = this.files.get(file);
+
+            if (key != null) {
+                this.configurations.put(file, YamlConfiguration.loadConfiguration(key));
+            }
+        }
     }
 
     /**
@@ -341,11 +364,15 @@ public class FileManager {
      */
     public void reloadAllFiles() {
         for (Files file : Files.values()) {
-            file.reloadFile();
+            if (file != null) {
+                file.reloadFile();
+            }
         }
 
         for (CustomFile file : this.customFiles) {
-            file.reloadFile();
+            if (file != null) {
+                file.reloadFile();
+            }
         }
     }
 

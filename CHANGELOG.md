@@ -1,6 +1,5 @@
-## Enhancements:
-* Updated the code under the hood handling the menu for `/vouchers admin`, This should fix the issues people had with the next/back button sending an error in console.
-  * This also fixes another issue where even if you had plenty of items, It would still take up 3 rows. It should now take up 4 rows per page!
+## Fixes:
+* Do not create `voucher-codes.yml` or `vouchers.yml` if the option `use-old-file-system` is set to false.
 
 ## Other:
 * [Feature Requests](https://github.com/Crazy-Crew/CrazyVouchers/discussions/categories/features)

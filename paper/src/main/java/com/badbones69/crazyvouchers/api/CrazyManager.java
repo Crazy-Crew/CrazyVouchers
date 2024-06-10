@@ -7,7 +7,6 @@ import de.tr7zw.changeme.nbtapi.NBTItem;
 import com.badbones69.crazyvouchers.api.objects.VoucherCode;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.inventory.ItemStack;
-import org.jetbrains.annotations.NotNull;
 import us.crazycrew.crazyvouchers.common.config.ConfigManager;
 import us.crazycrew.crazyvouchers.common.config.types.ConfigKeys;
 import java.util.ArrayList;
@@ -18,7 +17,6 @@ import java.util.logging.Level;
 
 public class CrazyManager {
 
-    @NotNull
     private final CrazyVouchers plugin = CrazyVouchers.get();
 
     private final ConfigManager configManager = this.plugin.getCrazyHandler().getConfigManager();
@@ -74,8 +72,6 @@ public class CrazyManager {
     }
 
     public void reload() {
-        this.configManager.reload();
-
         this.vouchers.clear();
         this.voucherCodes.clear();
 
