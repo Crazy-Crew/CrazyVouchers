@@ -27,6 +27,8 @@ public class CrazyVouchers extends JavaPlugin {
         return JavaPlugin.getPlugin(CrazyVouchers.class);
     }
 
+    private InventoryManager inventoryManager;
+
     private CrazyHandler crazyHandler;
 
     private CrazyManager crazyManager;
@@ -95,6 +97,9 @@ public class CrazyVouchers extends JavaPlugin {
     }
 
     public CrazyManager getCrazyManager() {
+    public final InventoryManager getInventoryManager() {
+        return this.inventoryManager;
+    }
         return this.crazyManager;
     }
 

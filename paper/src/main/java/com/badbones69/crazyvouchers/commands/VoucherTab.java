@@ -1,8 +1,8 @@
 package com.badbones69.crazyvouchers.commands;
 
 import com.badbones69.crazyvouchers.CrazyVouchers;
-import com.badbones69.crazyvouchers.api.builders.types.VoucherGuiMenu;
 import com.badbones69.crazyvouchers.api.CrazyManager;
+import com.badbones69.crazyvouchers.api.InventoryManager;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
 import org.bukkit.command.TabCompleter;
@@ -14,10 +14,10 @@ import java.util.List;
 
 public class VoucherTab implements TabCompleter {
 
-    @NotNull
     private final CrazyVouchers plugin = CrazyVouchers.get();
 
-    @NotNull
+    private final InventoryManager inventoryManager = this.plugin.getInventoryManager();
+
     private final CrazyManager crazyManager = this.plugin.getCrazyManager();
     
     @Override
@@ -39,10 +39,12 @@ public class VoucherTab implements TabCompleter {
                     // Only want admins to be able to see all the voucher codes.
                     if (hasPermission(sender, "admin")) this.crazyManager.getVoucherCodes().forEach(voucherCode -> completions.add(voucherCode.getCode()));
                 }
+
                 case "open" -> {
                     if (hasPermission(sender, "admin"))
-                        for (int i = 1; i <= VoucherGuiMenu.getMaxPage(); i++) completions.add(i + "");
+                        for (int i = 1; i <= this.inventoryManager.getMaxPages(); i++) completions.add(String.valueOf(i));
                 }
+
                 case "give", "giveall" -> {
                     if (hasPermission(sender, "admin")) this.crazyManager.getVouchers().forEach(voucher -> completions.add(voucher.getName()));
                 }

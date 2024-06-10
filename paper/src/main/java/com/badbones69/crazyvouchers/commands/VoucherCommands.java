@@ -2,7 +2,7 @@ package com.badbones69.crazyvouchers.commands;
 
 import com.badbones69.crazyvouchers.Methods;
 import com.badbones69.crazyvouchers.CrazyVouchers;
-import com.badbones69.crazyvouchers.api.builders.types.VoucherGuiMenu;
+import com.badbones69.crazyvouchers.api.InventoryManager;
 import com.badbones69.crazyvouchers.api.enums.Messages;
 import com.badbones69.crazyvouchers.api.objects.other.ItemBuilder;
 import com.badbones69.crazyvouchers.api.objects.Voucher;
@@ -27,16 +27,14 @@ import java.util.Random;
 
 public class VoucherCommands implements CommandExecutor {
 
-    @NotNull
     private final CrazyVouchers plugin = CrazyVouchers.get();
 
-    @NotNull
+    private final InventoryManager inventoryManager = this.plugin.getInventoryManager();
+
     private final FileManager fileManager = this.plugin.getFileManager();
 
-    @NotNull
     private final CrazyManager crazyManager = this.plugin.getCrazyManager();
 
-    @NotNull
     private final Methods methods = this.plugin.getMethods();
 
     @Override
@@ -74,17 +72,15 @@ public class VoucherCommands implements CommandExecutor {
 
                 case "open", "admin" -> {
                     if (this.methods.hasPermission(sender, "admin")) {
+                        Player player = (Player) sender;
+
                         int page = 1;
 
                         if (args.length >= 2) {
                             page = this.methods.isInt(args[1]) ? Integer.parseInt(args[1]) : 1;
                         }
 
-                        Player player = (Player) sender;
-
-                        VoucherGuiMenu menu = new VoucherGuiMenu(player, 54, MsgUtils.color("&8&l&nVouchers"));
-
-                        player.openInventory(menu.build(page).getInventory());
+                        this.inventoryManager.buildInventory(player, page);
                     }
 
                     return true;
