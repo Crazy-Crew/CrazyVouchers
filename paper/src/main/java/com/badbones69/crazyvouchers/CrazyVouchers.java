@@ -2,18 +2,21 @@ package com.badbones69.crazyvouchers;
 
 import com.badbones69.crazyvouchers.api.CrazyManager;
 import com.badbones69.crazyvouchers.api.FileManager;
+import com.badbones69.crazyvouchers.api.InventoryManager;
+import com.badbones69.crazyvouchers.api.builders.types.VoucherMenu;
 import com.badbones69.crazyvouchers.listeners.FireworkDamageListener;
-import com.badbones69.crazyvouchers.listeners.VoucherMenuListener;
 import com.badbones69.crazyvouchers.api.FileManager.Files;
 import com.badbones69.crazyvouchers.commands.VoucherCommands;
 import com.badbones69.crazyvouchers.commands.VoucherTab;
 import com.badbones69.crazyvouchers.listeners.VoucherClickListener;
 import com.badbones69.crazyvouchers.listeners.VoucherCraftListener;
+import com.badbones69.crazyvouchers.listeners.VoucherMiscListener;
 import com.badbones69.crazyvouchers.support.MetricsWrapper;
 import com.ryderbelserion.vital.paper.VitalPaper;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.PluginCommand;
 import org.bukkit.command.TabCompleter;
+import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.plugin.PluginManager;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.jetbrains.annotations.NotNull;
@@ -35,8 +38,6 @@ public class CrazyVouchers extends JavaPlugin {
 
     private Methods methods;
 
-    private VoucherMenuListener voucherMenuListener;
-
     @Override
     public void onEnable() {
         new VitalPaper(this).setLogging(false);
@@ -46,46 +47,36 @@ public class CrazyVouchers extends JavaPlugin {
         this.crazyHandler = new CrazyHandler(getDataFolder());
         this.crazyHandler.install();
 
-        enable();
-    }
-
-    @Override
-    public void onDisable() {
-        this.crazyHandler.uninstall();
-    }
-
-    public @NotNull CrazyHandler getCrazyHandler() {
-        return this.crazyHandler;
-    }
-
-    public @NotNull FileManager getFileManager() {
-        return this.crazyHandler.getFileManager();
-    }
-
-    public boolean isLogging() {
-        return this.crazyHandler.getConfigManager().getConfig().getProperty(ConfigKeys.verbose_logging);
-    }
-
-    private void enable() {
         this.crazyManager = new CrazyManager();
+        this.crazyManager.load();
+
+        this.inventoryManager = new InventoryManager();
 
         this.methods = new Methods();
 
-        if (!Files.users.getFile().contains("Players")) {
-            Files.users.getFile().set("Players.Clear", null);
+        final FileConfiguration configuration = Files.users.getFile();
+
+        if (!configuration.contains("Players")) {
+            configuration.set("Players.Clear", null);
+
             Files.users.saveFile();
         }
 
         PluginManager pluginManager = getServer().getPluginManager();
 
+        pluginManager.registerEvents(new FireworkDamageListener(), this);
         pluginManager.registerEvents(new VoucherClickListener(), this);
         pluginManager.registerEvents(new VoucherCraftListener(), this);
-        pluginManager.registerEvents(this.voucherMenuListener = new VoucherMenuListener(), this);
-        pluginManager.registerEvents(new FireworkDamageListener(), this);
+        pluginManager.registerEvents(new VoucherMiscListener(), this);
+
+        pluginManager.registerEvents(new VoucherMenu(), this);
 
         registerCommand(getCommand("vouchers"), new VoucherTab(), new VoucherCommands());
+    }
 
-        this.crazyManager.load();
+    @Override
+    public void onDisable() {
+        this.crazyHandler.uninstall();
     }
 
     private void registerCommand(PluginCommand pluginCommand, TabCompleter tabCompleter, CommandExecutor commandExecutor) {
@@ -96,18 +87,27 @@ public class CrazyVouchers extends JavaPlugin {
         }
     }
 
-    public CrazyManager getCrazyManager() {
+    public final CrazyHandler getCrazyHandler() {
+        return this.crazyHandler;
+    }
+
+    public final FileManager getFileManager() {
+        return this.crazyHandler.getFileManager();
+    }
+
+    public final boolean isLogging() {
+        return this.crazyHandler.getConfigManager().getConfig().getProperty(ConfigKeys.verbose_logging);
+    }
+
     public final InventoryManager getInventoryManager() {
         return this.inventoryManager;
     }
+
+    public final CrazyManager getCrazyManager() {
         return this.crazyManager;
     }
 
-    public Methods getMethods() {
+    public final Methods getMethods() {
         return this.methods;
-    }
-
-    public VoucherMenuListener getGui() {
-        return this.voucherMenuListener;
     }
 }
