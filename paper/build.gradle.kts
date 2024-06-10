@@ -19,8 +19,6 @@ dependencies {
 
     api(projects.crazyvouchersCore)
 
-    implementation(libs.triumph.cmds)
-
     // org.yaml is already bundled with Paper
     implementation(libs.vital.paper) {
         exclude("org.yaml")
@@ -91,7 +89,6 @@ tasks {
         listOf(
             "de.tr7zw.changeme.nbtapi",
             "com.ryderbelserion",
-            "dev.triumphteam",
             "ch.jalu"
         ).forEach {
             relocate(it, "libs.$it")
