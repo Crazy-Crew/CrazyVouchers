@@ -1,6 +1,7 @@
 package com.badbones69.crazyvouchers.api.plugin.migration;
 
 import com.badbones69.crazyvouchers.CrazyVouchers;
+import org.apache.commons.io.FileUtils;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.jetbrains.annotations.NotNull;
@@ -27,13 +28,39 @@ public class MigrationService {
         File file = new File(this.plugin.getDataFolder(), "data.yml");
         if (file.exists()) file.renameTo(new File(this.plugin.getDataFolder(), "users.yml"));
 
-        // Delete file if found.
+        final File directory = new File(this.plugin.getDataFolder(), "backups");
+
+        directory.mkdirs();
+
+        // Move file if found.
         File codes = new File(this.plugin.getDataFolder(), "VoucherCodes.yml");
-        if (codes.exists()) codes.delete();
+        codes.renameTo(new File(directory, "VoucherCodes.yml"));
 
         // Delete file if found.
         File backupFile = new File(this.plugin.getDataFolder(), "Vouchers-Backup.yml");
-        if (backupFile.exists()) backupFile.delete();
+        backupFile.renameTo(new File(directory, "Vouchers-Backup.yml"));
+
+        File config = new File(this.plugin.getDataFolder(), "config.yml");
+
+        if (!config.exists()) {
+            try {
+                FileUtils.copyFile(new File(directory, "Vouchers-Backup.yml"), config);
+            } catch (IOException e) {
+                this.plugin.getLogger().warning("Failed to copy Vouchers-Backup.yml");
+            }
+
+            YamlConfiguration key = YamlConfiguration.loadConfiguration(config);
+
+            key.set("Vouchers", null);
+
+            key.set("settings.use-old-file-system", loadOldWay);
+
+            try {
+                key.save(config);
+            } catch (IOException e) {
+                this.plugin.getLogger().warning("Failed to save config.yml");
+            }
+        }
     }
 
     private void copyVouchers(boolean loadOldWay) {
@@ -120,7 +147,7 @@ public class MigrationService {
 
                 List<String> itemFlags = backup.getStringList(path + "Flags");
 
-                String newPath = "Vouchers." + name + ".";
+                String newPath = "vouchers." + name + ".";
 
                 File newFile = new File(this.plugin.getDataFolder(), "vouchers.yml");
 
