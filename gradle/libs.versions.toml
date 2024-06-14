@@ -29,7 +29,7 @@ runPaper = "2.3.0"
 minotaur = "2.+"
 hangar = "0.1.2"
 
-nbtapi = "2.12.4"
+nbtapi = "2.13.0"
 
 [plugins]
 paperweight = { id = "io.papermc.paperweight.userdev", version.ref = "paperweight" }
