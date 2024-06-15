@@ -9,9 +9,9 @@ plugins {
     `java-plugin`
 }
 
-val buildNumber: String = System.getenv("BUILD_NUMBER") ?: "SNAPSHOT"
+val buildNumber: String? = System.getenv("BUILD_NUMBER")
 
-rootProject.version = "3.6-$buildNumber"
+rootProject.version = if (buildNumber != null) "3.6-$buildNumber" else "3.6"
 
 val isSnapshot = false
 
@@ -43,9 +43,7 @@ modrinth {
 
     gameVersions.add(libs.versions.minecraft.get())
 
-    loaders.addAll(listOf(
-        "purpur", "paper", "folia"
-    ))
+    loaders.addAll(listOf("purpur", "paper", "folia"))
 
     autoAddDependsOn.set(false)
     detectLoaders.set(false)
@@ -67,9 +65,7 @@ hangarPublish {
             paper {
                 jar.set(rootProject.projectDir.resolve("jars/${rootProject.name}-${rootProject.version}.jar"))
 
-                platformVersions.set(listOf(
-                    libs.versions.minecraft.get()
-                ))
+                platformVersions.set(listOf(libs.versions.minecraft.get()))
 
                 dependencies {
                     hangar("PlaceholderAPI") {

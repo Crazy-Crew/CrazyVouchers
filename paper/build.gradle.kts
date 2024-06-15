@@ -17,13 +17,6 @@ base {
 dependencies {
     paperweight.paperDevBundle(libs.versions.paper)
 
-    api(projects.crazyvouchersCore)
-
-    // org.yaml is already bundled with Paper
-    implementation(libs.vital.paper) {
-        exclude("org.yaml")
-    }
-
     implementation(libs.nbtapi)
 
     compileOnly(libs.placeholderapi)
@@ -31,6 +24,8 @@ dependencies {
     compileOnly(libs.itemsadder)
 
     compileOnly(libs.oraxen)
+
+    api(projects.crazyvouchersCore)
 }
 
 val component: SoftwareComponent = components["java"]
