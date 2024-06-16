@@ -10,10 +10,6 @@ public class LocaleMigration extends PlainMigrationService {
 
     @Override
     protected boolean performMigrations(@NotNull PropertyReader reader, @NotNull ConfigurationData configurationData) {
-        return migrateConfig(reader, configurationData);
-    }
-
-    private boolean migrateConfig(@NotNull PropertyReader reader, @NotNull ConfigurationData configurationData) {
         return FileProperty.survival_mode.moveString(reader, configurationData)
                 | FileProperty.no_permission.moveString(reader, configurationData)
                 | FileProperty.no_permission_to_use_voucher_in_offhand.moveString(reader, configurationData)
