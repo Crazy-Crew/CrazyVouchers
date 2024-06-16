@@ -6,10 +6,6 @@ plugins {
     `paper-plugin`
 }
 
-feather {
-    repository("https://repo.oraxen.com/releases")
-}
-
 base {
     archivesName.set(rootProject.name)
 }
@@ -35,14 +31,6 @@ paperweight {
 }
 
 tasks {
-    runServer {
-        jvmArgs("-Dnet.kyori.ansi.colorLevel=truecolor")
-
-        defaultCharacterEncoding = Charsets.UTF_8.name()
-
-        minecraftVersion(libs.versions.minecraft.get())
-    }
-
     publishing {
         repositories {
             maven {
@@ -64,6 +52,14 @@ tasks {
                 from(component)
             }
         }
+    }
+
+    runServer {
+        jvmArgs("-Dnet.kyori.ansi.colorLevel=truecolor")
+
+        defaultCharacterEncoding = Charsets.UTF_8.name()
+
+        minecraftVersion(libs.versions.minecraft.get())
     }
 
     assemble {
