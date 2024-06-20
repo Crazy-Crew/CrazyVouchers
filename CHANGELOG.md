@@ -1,2 +1,2 @@
-### Fixed:
-- config.yml got deleted after migrating causing the plugin to disable.
+### Added:
+- 1.21 support
