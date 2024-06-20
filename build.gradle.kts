@@ -1,3 +1,7 @@
+import com.ryderbelserion.feather.tools.formatLog
+import com.ryderbelserion.feather.tools.latestCommitHash
+import com.ryderbelserion.feather.tools.latestCommitMessage
+
 plugins {
     alias(libs.plugins.minotaur)
     alias(libs.plugins.hangar)
@@ -5,11 +9,17 @@ plugins {
     `java-plugin`
 }
 
+val buildNumber: String? = System.getenv("BUILD_NUMBER")
+
+rootProject.version = if (buildNumber != null) "${libs.versions.minecraft.get()}-$buildNumber" else "3.6"
+
 val isSnapshot = false
 
-rootProject.version = "3.5.6"
-
-val content: String = rootProject.file("CHANGELOG.md").readText(Charsets.UTF_8)
+val content: String = if (isSnapshot) {
+    formatLog(latestCommitHash(), latestCommitMessage(), rootProject.name, "Crazy-Crew")
+} else {
+    rootProject.file("CHANGELOG.md").readText(Charsets.UTF_8)
+}
 
 subprojects.filter { it.name != "api" }.forEach {
     it.project.version = rootProject.version
@@ -33,9 +43,7 @@ modrinth {
 
     gameVersions.add(libs.versions.minecraft.get())
 
-    loaders.addAll(listOf(
-        "purpur", "paper", "folia"
-    ))
+    loaders.addAll(listOf("purpur", "paper", "folia"))
 
     autoAddDependsOn.set(false)
     detectLoaders.set(false)
@@ -57,9 +65,7 @@ hangarPublish {
             paper {
                 jar.set(rootProject.projectDir.resolve("jars/${rootProject.name}-${rootProject.version}.jar"))
 
-                platformVersions.set(listOf(
-                    libs.versions.minecraft.get()
-                ))
+                platformVersions.set(listOf(libs.versions.minecraft.get()))
 
                 dependencies {
                     hangar("PlaceholderAPI") {

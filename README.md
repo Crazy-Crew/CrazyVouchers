@@ -61,7 +61,11 @@ Send any console errors or files you have through https://mclo.gs/ - (We don't o
 
 <!--[![Discord](https://discord.com/api/guilds/182615261403283459/widget.png?style=banner2)](https://discord.gg/badbones-s-live-chat-182615261403283459)<br>-->
 [![Discord Invite Button](https://cdn.jsdelivr.net/npm/@intergrav/devins-badges@3/assets/cozy/social/discord-plural_vector.svg)](https://discord.gg/badbones-s-live-chat-182615261403283459)
-</div></center>
+</div>
+
+![CrazyVouchers Statistics](https://bstats.org/signatures/bukkit/Vouchers.svg)
+</center>
+
 
 [contributors-shield]: https://img.shields.io/github/contributors/Crazy-Crew/CrazyVouchers.svg?style=flat&logo=appveyor
 [contributors-url]: https://github.com/Crazy-Crew/CrazyVouchers/graphs/contributors

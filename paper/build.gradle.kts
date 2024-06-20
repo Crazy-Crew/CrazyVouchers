@@ -6,23 +6,12 @@ plugins {
     `paper-plugin`
 }
 
-feather {
-    repository("https://repo.oraxen.com/releases")
-}
-
 base {
     archivesName.set(rootProject.name)
 }
 
 dependencies {
     paperweight.paperDevBundle(libs.versions.paper)
-
-    api(projects.crazyvouchersCore)
-
-    // org.yaml is already bundled with Paper
-    implementation(libs.vital.paper) {
-        exclude("org.yaml")
-    }
 
     implementation(libs.nbtapi)
 
@@ -31,6 +20,8 @@ dependencies {
     compileOnly(libs.itemsadder)
 
     compileOnly(libs.oraxen)
+
+    api(projects.crazyvouchersCore)
 }
 
 val component: SoftwareComponent = components["java"]
@@ -40,14 +31,6 @@ paperweight {
 }
 
 tasks {
-    runServer {
-        jvmArgs("-Dnet.kyori.ansi.colorLevel=truecolor")
-
-        defaultCharacterEncoding = Charsets.UTF_8.name()
-
-        minecraftVersion(libs.versions.minecraft.get())
-    }
-
     publishing {
         repositories {
             maven {
@@ -69,6 +52,14 @@ tasks {
                 from(component)
             }
         }
+    }
+
+    runServer {
+        jvmArgs("-Dnet.kyori.ansi.colorLevel=truecolor")
+
+        defaultCharacterEncoding = Charsets.UTF_8.name()
+
+        minecraftVersion(libs.versions.minecraft.get())
     }
 
     assemble {
