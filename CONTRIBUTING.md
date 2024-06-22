@@ -7,6 +7,7 @@ A list of things necessary to make sure you can build CrazyVouchers properly.
 * Intellij IDEA
     * > https://www.jetbrains.com/idea/download/
 * Gradle
+* Brain
 * `git`
 
 ### Installation
