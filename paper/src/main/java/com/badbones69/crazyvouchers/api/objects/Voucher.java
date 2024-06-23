@@ -90,6 +90,10 @@ public class Voucher {
                     .setTrimPattern(RegistryAccess.registryAccess().getRegistry(RegistryKey.TRIM_PATTERN).get(NamespacedKey.minecraft(fileConfiguration.getString(path + "display-trim.pattern", "SENTRY").toLowerCase())));
         }
 
+        if (fileConfiguration.contains(path + "skull")) {
+            this.itemBuilder.setSkull(fileConfiguration.getString(path + "skull", ""), plugin.getApi());
+        }
+
         this.glowing = fileConfiguration.getBoolean(path + "glowing");
 
         if (this.itemBuilder.getName().toLowerCase().contains("{arg}")) this.usesArgs = true;

@@ -7,7 +7,7 @@ version: '${version}'
 api-version: '${apiVersion}'
 description: '${description}'
 
-softdepend: [PlaceholderAPI, Oraxen, ItemsAdder]
+softdepend: [HeadDatabase, PlaceholderAPI, Oraxen, ItemsAdder]
 
 folia-supported: true
 
