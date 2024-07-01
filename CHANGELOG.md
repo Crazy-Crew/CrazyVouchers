@@ -1,2 +1,2 @@
 ### Fixed:
-- Null pointer exception with HeadDatabaseAPI
+- Player Heads were not stacking previously, they should now.
