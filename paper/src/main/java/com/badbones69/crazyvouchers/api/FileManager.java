@@ -2,17 +2,16 @@ package com.badbones69.crazyvouchers.api;
 
 import ch.jalu.configme.SettingsManager;
 import com.badbones69.crazyvouchers.CrazyVouchers;
+import com.ryderbelserion.vital.paper.util.scheduler.FoliaRunnable;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.jetbrains.annotations.NotNull;
 import us.crazycrew.crazyvouchers.common.config.types.ConfigKeys;
-
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
@@ -281,11 +280,16 @@ public class FileManager {
      * Saves the file from the loaded state to the file system.
      */
     public void saveFile(Files file) {
-        try {
-            this.configurations.get(file).save(this.files.get(file));
-        } catch (IOException exception) {
-            this.logger.log(Level.SEVERE, "Could not save " + file.getFileName() + "!", exception);
-        }
+        new FoliaRunnable(this.plugin.getServer().getAsyncScheduler(), null) {
+            @Override
+            public void run() {
+                try {
+                    configurations.get(file).save(files.get(file));
+                } catch (IOException exception) {
+                    logger.log(Level.SEVERE, "Could not save " + file.getFileName() + "!", exception);
+                }
+            }
+        }.run(this.plugin);
     }
 
     /**
@@ -302,13 +306,18 @@ public class FileManager {
             return;
         }
 
-        try {
-            file.getFile().save(new File(this.plugin.getDataFolder(), file.getHomeFolder() + "/" + file.getFileName()));
+        new FoliaRunnable(this.plugin.getServer().getAsyncScheduler(), null) {
+            @Override
+            public void run() {
+                try {
+                    file.getFile().save(new File(plugin.getDataFolder(), file.getHomeFolder() + "/" + file.getFileName()));
 
-            if (this.isLogging) this.logger.info("Successfully saved the " + file.getFileName() + ".");
-        } catch (Exception exception) {
-            this.logger.log(Level.SEVERE, "Could not save " + file.getFileName() + "!", exception);
-        }
+                    if (isLogging) logger.info("Successfully saved the " + file.getFileName() + ".");
+                } catch (Exception exception) {
+                    logger.log(Level.SEVERE, "Could not save " + file.getFileName() + "!", exception);
+                }
+            }
+        }.run(this.plugin);
     }
 
     /**
@@ -328,7 +337,12 @@ public class FileManager {
             File key = this.files.get(file);
 
             if (key != null) {
-                this.configurations.put(file, YamlConfiguration.loadConfiguration(key));
+                new FoliaRunnable(this.plugin.getServer().getAsyncScheduler(), null) {
+                    @Override
+                    public void run() {
+                        configurations.put(file, YamlConfiguration.loadConfiguration(key));
+                    }
+                }.run(this.plugin);
             }
         }
     }
@@ -340,13 +354,18 @@ public class FileManager {
         CustomFile file = getFile(name);
 
         if (file != null) {
-            try {
-                file.file = YamlConfiguration.loadConfiguration(new File(this.plugin.getDataFolder(), "/" + file.getHomeFolder() + "/" + file.getFileName()));
+            new FoliaRunnable(this.plugin.getServer().getAsyncScheduler(), null) {
+                @Override
+                public void run() {
+                    try {
+                        file.file = YamlConfiguration.loadConfiguration(new File(plugin.getDataFolder(), "/" + file.getHomeFolder() + "/" + file.getFileName()));
 
-                if (this.isLogging) this.logger.info("Successfully reloaded the " + file.getFileName() + ".");
-            } catch (Exception exception) {
-                this.logger.log(Level.SEVERE, "Could not reload the " + file.getFileName() + "!", exception);
-            }
+                        if (isLogging) logger.info("Successfully reloaded the " + file.getFileName() + ".");
+                    } catch (Exception exception) {
+                        logger.log(Level.SEVERE, "Could not reload the " + file.getFileName() + "!", exception);
+                    }
+                }
+            }.run(this.plugin);
         } else {
             if (this.isLogging) this.logger.warning("The file " + name + ".yml could not be found!");
         }
