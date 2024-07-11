@@ -24,6 +24,7 @@ import org.jetbrains.annotations.NotNull;
 import com.badbones69.crazyvouchers.config.ConfigManager;
 import com.badbones69.crazyvouchers.config.types.ConfigKeys;
 import java.util.HashMap;
+import java.util.Map;
 import java.util.Random;
 
 public class VoucherCommands implements CommandExecutor {
@@ -311,7 +312,7 @@ public class VoucherCommands implements CommandExecutor {
                                     player.updateInventory();
                                 }
 
-                                HashMap<String, String> placeholders = new HashMap<>();
+                                Map<String, String> placeholders = new HashMap<>();
                                 placeholders.put("{player}", player.getName());
                                 placeholders.put("{voucher}", voucher.getName());
 
@@ -369,7 +370,7 @@ public class VoucherCommands implements CommandExecutor {
                                 }
                             }
 
-                            HashMap<String, String> placeholders = new HashMap<>();
+                            Map<String, String> placeholders = new HashMap<>();
 
                             placeholders.put("{voucher}", voucher.getName());
 

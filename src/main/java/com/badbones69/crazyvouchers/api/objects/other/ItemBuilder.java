@@ -86,7 +86,7 @@ public class ItemBuilder {
     private boolean isLeatherArmor;
 
     // Enchantments
-    private HashMap<Enchantment, Integer> enchantments;
+    private Map<Enchantment, Integer> enchantments;
 
     // Shields
     private boolean isShield;
@@ -100,8 +100,8 @@ public class ItemBuilder {
     private Color mapColor;
 
     // Placeholders
-    private HashMap<String, String> namePlaceholders;
-    private HashMap<String, String> lorePlaceholders;
+    private Map<String, String> namePlaceholders;
+    private Map<String, String> lorePlaceholders;
 
     // Misc
     private ItemStack referenceItem;
@@ -292,7 +292,7 @@ public class ItemBuilder {
     /**
      * @return the enchantments on the item.
      */
-    public HashMap<Enchantment, Integer> getEnchantments() {
+    public Map<Enchantment, Integer> getEnchantments() {
         return this.enchantments;
     }
 
@@ -660,7 +660,7 @@ public class ItemBuilder {
      * @param placeholders the placeholders that will be used.
      * @return the ItemBuilder with updated placeholders.
      */
-    public ItemBuilder setNamePlaceholders(HashMap<String, String> placeholders) {
+    public ItemBuilder setNamePlaceholders(Map<String, String> placeholders) {
         this.namePlaceholders = placeholders;
         return this;
     }
@@ -723,7 +723,7 @@ public class ItemBuilder {
      * @param placeholders the placeholders that you wish to use.
      * @return the ItemBuilder with updated info.
      */
-    public ItemBuilder setLorePlaceholders(HashMap<String, String> placeholders) {
+    public ItemBuilder setLorePlaceholders(Map<String, String> placeholders) {
         this.lorePlaceholders = placeholders;
         return this;
     }
@@ -875,7 +875,7 @@ public class ItemBuilder {
      * @param enchantment a list of enchantments to add to the item.
      * @return the ItemBuilder with a list of updated enchantments.
      */
-    public ItemBuilder setEnchantments(HashMap<Enchantment, Integer> enchantment) {
+    public ItemBuilder setEnchantments(Map<Enchantment, Integer> enchantment) {
         if (enchantment != null) this.enchantments = enchantment;
 
         return this;
@@ -1211,7 +1211,7 @@ public class ItemBuilder {
             try {
                 if (stripEnchantmentName(enchantment.getKey().getKey()).equalsIgnoreCase(enchantmentName)) return enchantment;
 
-                HashMap<String, String> enchantments = getEnchantmentList();
+                Map<String, String> enchantments = getEnchantmentList();
 
                 if (stripEnchantmentName(enchantment.getName()).equalsIgnoreCase(enchantmentName) || (enchantments.get(enchantment.getName()) != null &&
                         stripEnchantmentName(enchantments.get(enchantment.getName())).equalsIgnoreCase(enchantmentName))) return enchantment;
@@ -1236,8 +1236,8 @@ public class ItemBuilder {
      *
      * @return the hashmap of enchantments and their in-game names.
      */
-    private static HashMap<String, String> getEnchantmentList() {
-        HashMap<String, String> enchantments = new HashMap<>();
+    private static Map<String, String> getEnchantmentList() {
+        Map<String, String> enchantments = new HashMap<>();
         enchantments.put("ARROW_DAMAGE", "Power");
         enchantments.put("ARROW_FIRE", "Flame");
         enchantments.put("ARROW_INFINITE", "Infinity");

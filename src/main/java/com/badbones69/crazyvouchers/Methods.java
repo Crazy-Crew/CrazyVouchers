@@ -53,7 +53,7 @@ public class Methods {
         try {
             Integer.parseInt(value);
         } catch (NumberFormatException nfe) {
-            HashMap<String, String> placeholders = new HashMap<>();
+            Map<String, String> placeholders = new HashMap<>();
 
             placeholders.put("{arg}", value);
 
