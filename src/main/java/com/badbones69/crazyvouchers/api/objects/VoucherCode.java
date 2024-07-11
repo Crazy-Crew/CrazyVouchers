@@ -50,7 +50,7 @@ public class VoucherCode {
 
         boolean loadOldWay = ConfigManager.getConfig().getProperty(ConfigKeys.mono_file);
 
-        String path = loadOldWay ? "voucher-codes." + name + "." : "voucher.";
+        String path = loadOldWay ? "voucher-codes." + name + "." : "voucher-code.";
 
         this.enabled = file.getBoolean(path + "options.enabled");
         this.code = file.getString(path + "code", "");
