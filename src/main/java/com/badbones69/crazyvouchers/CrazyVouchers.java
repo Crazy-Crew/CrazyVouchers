@@ -1,0 +1,123 @@
+package com.badbones69.crazyvouchers;
+
+import com.badbones69.crazyvouchers.api.CrazyManager;
+import com.badbones69.crazyvouchers.api.InventoryManager;
+import com.badbones69.crazyvouchers.api.builders.types.VoucherMenu;
+import com.badbones69.crazyvouchers.api.enums.Files;
+import com.badbones69.crazyvouchers.api.objects.other.Server;
+import com.badbones69.crazyvouchers.config.migrate.MigrationService;
+import com.badbones69.crazyvouchers.config.ConfigManager;
+import com.badbones69.crazyvouchers.listeners.FireworkDamageListener;
+import com.badbones69.crazyvouchers.commands.VoucherCommands;
+import com.badbones69.crazyvouchers.commands.VoucherTab;
+import com.badbones69.crazyvouchers.listeners.VoucherClickListener;
+import com.badbones69.crazyvouchers.listeners.VoucherCraftListener;
+import com.badbones69.crazyvouchers.listeners.VoucherMiscListener;
+import com.badbones69.crazyvouchers.support.MetricsWrapper;
+import com.ryderbelserion.vital.paper.enums.Support;
+import com.ryderbelserion.vital.paper.files.config.FileManager;
+import me.arcaniax.hdb.api.HeadDatabaseAPI;
+import org.bukkit.command.CommandExecutor;
+import org.bukkit.command.PluginCommand;
+import org.bukkit.command.TabCompleter;
+import org.bukkit.configuration.file.FileConfiguration;
+import org.bukkit.plugin.PluginManager;
+import org.bukkit.plugin.java.JavaPlugin;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
+import com.badbones69.crazyvouchers.config.types.ConfigKeys;
+
+public class CrazyVouchers extends JavaPlugin {
+
+    public @NotNull static CrazyVouchers get() {
+        return JavaPlugin.getPlugin(CrazyVouchers.class);
+    }
+
+    private InventoryManager inventoryManager;
+
+    private CrazyManager crazyManager;
+    private FileManager fileManager;
+
+    private HeadDatabaseAPI api;
+
+    private Server instance;
+
+    @Override
+    public void onEnable() {
+        this.instance = new Server(getDataFolder(), getComponentLogger());
+
+        boolean loadOldWay = ConfigManager.getConfig().getProperty(ConfigKeys.mono_file);
+
+        new MigrationService().migrate(loadOldWay);
+
+        this.fileManager = new FileManager(this);
+
+        if (loadOldWay) {
+            this.fileManager.addFile("users.yml").addFile("voucher-codes.yml").addFile("vouchers.yml").init();
+        } else {
+            this.fileManager.addFile("users.yml").addFolder("codes").addFolder("vouchers").init();
+        }
+
+        new MetricsWrapper(this, 4536).start();
+
+        if (Support.head_database.isEnabled()) {
+            this.api = new HeadDatabaseAPI();
+        }
+
+        this.crazyManager = new CrazyManager();
+        this.crazyManager.load();
+
+        this.inventoryManager = new InventoryManager();
+
+        final FileConfiguration configuration = Files.users.getConfiguration();
+
+        if (!configuration.contains("Players")) {
+            configuration.set("Players.Clear", null);
+
+            Files.users.save();
+        }
+
+        PluginManager pluginManager = getServer().getPluginManager();
+
+        pluginManager.registerEvents(new FireworkDamageListener(), this);
+        pluginManager.registerEvents(new VoucherClickListener(), this);
+        pluginManager.registerEvents(new VoucherCraftListener(), this);
+        pluginManager.registerEvents(new VoucherMiscListener(), this);
+
+        pluginManager.registerEvents(new VoucherMenu(), this);
+
+        registerCommand(getCommand("vouchers"), new VoucherTab(), new VoucherCommands());
+    }
+
+    private void registerCommand(PluginCommand pluginCommand, TabCompleter tabCompleter, CommandExecutor commandExecutor) {
+        if (pluginCommand != null) {
+            pluginCommand.setExecutor(commandExecutor);
+
+            if (tabCompleter != null) pluginCommand.setTabCompleter(tabCompleter);
+        }
+    }
+
+    public @Nullable final HeadDatabaseAPI getApi() {
+        if (this.api == null) {
+            return null;
+        }
+
+        return this.api;
+    }
+
+    public @NotNull final InventoryManager getInventoryManager() {
+        return this.inventoryManager;
+    }
+
+    public @NotNull final CrazyManager getCrazyManager() {
+        return this.crazyManager;
+    }
+
+    public @NotNull final FileManager getFileManager() {
+        return this.fileManager;
+    }
+
+    public @NotNull final Server getInstance() {
+        return this.instance;
+    }
+}
