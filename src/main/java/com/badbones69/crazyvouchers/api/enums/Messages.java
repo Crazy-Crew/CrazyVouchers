@@ -114,13 +114,11 @@ public enum Messages {
     }
 
     public String getMessage(@Nullable final Player player, @NotNull final Map<String, String> placeholders) {
-        String prefix = this.config.getProperty(ConfigKeys.command_prefix);
-
         if (player != null) {
-            return parse(player, placeholders).replaceAll("\\{prefix}", prefix);
+            return parse(player, placeholders).replaceAll("\\{prefix}", MsgUtils.getPrefix());
         }
 
-        return parse(null, placeholders).replaceAll("\\{prefix}", prefix);
+        return parse(null, placeholders).replaceAll("\\{prefix}", MsgUtils.getPrefix());
     }
 
     public void sendMessage(final CommandSender sender, final String placeholder, final String replacement) {
@@ -156,6 +154,6 @@ public enum Messages {
             }
         }
 
-        return message;
+        return MsgUtils.color(message);
     }
 }
