@@ -50,13 +50,16 @@ public class CrazyVouchers extends JavaPlugin {
 
         new MigrationService().migrate(loadOldWay);
 
-        this.fileManager = new FileManager(this);
+        this.fileManager = new FileManager();
+        this.fileManager.addFile("users.yml");
 
         if (loadOldWay) {
-            this.fileManager.addFile("users.yml").addFile("voucher-codes.yml").addFile("vouchers.yml").init();
+            this.fileManager.addFile("voucher-codes.yml").addFile("vouchers.yml");
         } else {
-            this.fileManager.addFile("users.yml").addFolder("codes").addFolder("vouchers").init();
+            this.fileManager.addFolder("codes").addFolder("vouchers");
         }
+
+        this.fileManager.init();
 
         new MetricsWrapper(this, 4536).start();
 

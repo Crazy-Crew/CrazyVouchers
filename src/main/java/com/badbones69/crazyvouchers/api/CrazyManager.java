@@ -5,6 +5,7 @@ import com.badbones69.crazyvouchers.api.enums.Files;
 import com.badbones69.crazyvouchers.api.objects.other.ItemBuilder;
 import com.badbones69.crazyvouchers.api.objects.Voucher;
 import com.ryderbelserion.vital.core.util.FileUtil;
+import com.ryderbelserion.vital.paper.files.config.CustomFile;
 import de.tr7zw.changeme.nbtapi.NBTItem;
 import com.badbones69.crazyvouchers.api.objects.VoucherCode;
 import org.bukkit.configuration.file.FileConfiguration;
@@ -12,6 +13,7 @@ import org.bukkit.inventory.ItemStack;
 import com.badbones69.crazyvouchers.config.ConfigManager;
 import com.badbones69.crazyvouchers.config.types.ConfigKeys;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -56,10 +58,10 @@ public class CrazyManager {
 
         for (String voucherName : getVouchersList()) {
             try {
-                FileConfiguration file = this.plugin.getFileManager().getFile(voucherName);
+                @Nullable CustomFile file = this.plugin.getFileManager().getCustomFile(voucherName);
 
                 if (file != null) {
-                    this.vouchers.add(new Voucher(file, voucherName));
+                    this.vouchers.add(new Voucher(file.getConfiguration(), voucherName));
                 }
             } catch (Exception exception) {
                 this.plugin.getLogger().log(Level.SEVERE, "There was an error while loading the " + voucherName + ".yml file.", exception);
@@ -68,10 +70,10 @@ public class CrazyManager {
 
         for (String voucherCode : getCodesList()) {
             try {
-                FileConfiguration file = this.plugin.getFileManager().getFile(voucherCode);
+                @Nullable CustomFile file = this.plugin.getFileManager().getCustomFile(voucherCode);
 
                 if (file != null) {
-                    this.voucherCodes.add(new VoucherCode(file, voucherCode));
+                    this.voucherCodes.add(new VoucherCode(file.getConfiguration(), voucherCode));
                 }
             } catch (Exception exception) {
                 this.plugin.getLogger().log(Level.SEVERE,"There was an error while loading the " + voucherCode + ".yml file.", exception);
