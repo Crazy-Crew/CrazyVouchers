@@ -1,79 +1,164 @@
-import com.ryderbelserion.feather.tools.formatLog
-import com.ryderbelserion.feather.tools.latestCommitHash
-import com.ryderbelserion.feather.tools.latestCommitMessage
-
 plugins {
+    alias(libs.plugins.paperweight)
+    alias(libs.plugins.shadowJar)
+    alias(libs.plugins.runPaper)
     alias(libs.plugins.minotaur)
     alias(libs.plugins.hangar)
 
-    `java-plugin`
+    `paper-plugin`
 }
 
 val buildNumber: String? = System.getenv("BUILD_NUMBER")
 
-rootProject.version = if (buildNumber != null) "${libs.versions.minecraft.get()}-$buildNumber" else "3.6.4"
+rootProject.version = if (buildNumber != null) "${libs.versions.minecraft.get()}-$buildNumber" else "3.7"
 
-val isSnapshot = false
+val isSnapshot = true
 
-val content: String = if (isSnapshot) {
-    formatLog(latestCommitHash(), latestCommitMessage(), rootProject.name, "Crazy-Crew")
-} else {
-    rootProject.file("CHANGELOG.md").readText(Charsets.UTF_8)
+val content: String = rootProject.file("CHANGELOG.md").readText(Charsets.UTF_8)
+
+dependencies {
+    paperweight.paperDevBundle(libs.versions.paper)
+
+    implementation(libs.vital.paper)
+
+    implementation(libs.nbtapi)
+
+    compileOnly(libs.placeholderapi)
+
+    compileOnly(libs.itemsadder)
+
+    compileOnly(libs.oraxen)
 }
 
-subprojects.filter { it.name != "api" }.forEach {
-    it.project.version = rootProject.version
+paperweight {
+    reobfArtifactConfiguration = io.papermc.paperweight.userdev.ReobfArtifactConfiguration.REOBF_PRODUCTION
 }
 
-modrinth {
-    token.set(System.getenv("MODRINTH_TOKEN"))
+val component: SoftwareComponent = components["java"]
 
-    projectId.set(rootProject.name.lowercase())
+tasks {
+    runServer {
+        jvmArgs("-Dnet.kyori.ansi.colorLevel=truecolor")
 
-    versionType.set(if (isSnapshot) "beta" else "release")
+        defaultCharacterEncoding = Charsets.UTF_8.name()
 
-    versionName.set("${rootProject.name} ${rootProject.version}")
-    versionNumber.set(rootProject.version as String)
+        minecraftVersion(libs.versions.minecraft.get())
+    }
 
-    changelog.set(content)
+    assemble {
+        dependsOn(reobfJar)
 
-    uploadFile.set(rootProject.projectDir.resolve("jars/${rootProject.name}-${rootProject.version}.jar"))
+        doLast {
+            copy {
+                from(reobfJar.get())
+                into(rootProject.projectDir.resolve("jars"))
+            }
+        }
+    }
 
-    syncBodyFrom.set(rootProject.file("README.md").readText(Charsets.UTF_8))
+    shadowJar {
+        archiveBaseName.set(rootProject.name)
+        archiveClassifier.set("")
 
-    gameVersions.add(libs.versions.minecraft.get())
+        listOf(
+            "de.tr7zw.changeme.nbtapi",
+            "com.ryderbelserion",
+            "ch.jalu"
+        ).forEach {
+            relocate(it, "libs.$it")
+        }
+    }
 
-    loaders.addAll(listOf("purpur", "paper", "folia"))
+    processResources {
+        inputs.properties("name" to rootProject.name)
+        inputs.properties("version" to project.version)
+        inputs.properties("group" to project.group)
+        inputs.properties("description" to project.properties["description"])
+        inputs.properties("apiVersion" to libs.versions.minecraft.get())
+        inputs.properties("authors" to project.properties["authors"])
+        inputs.properties("website" to project.properties["website"])
 
-    autoAddDependsOn.set(false)
-    detectLoaders.set(false)
-}
+        filesMatching("plugin.yml") {
+            expand(inputs.properties)
+        }
+    }
 
-hangarPublish {
-    publications.register("plugin") {
-        apiKey.set(System.getenv("HANGAR_KEY"))
+    publishing {
+        repositories {
+            maven {
+                url = uri("https://repo.crazycrew.us/releases")
 
-        id.set(rootProject.name.lowercase())
+                credentials {
+                    this.username = System.getenv("gradle_username")
+                    this.password = System.getenv("gradle_password")
+                }
+            }
+        }
 
-        version.set(rootProject.version as String)
+        publications {
+            create<MavenPublication>("maven") {
+                groupId = rootProject.group.toString()
+                artifactId = "${rootProject.name.lowercase()}-${project.name.lowercase()}-api"
+                version = rootProject.version.toString()
 
-        channel.set(if (isSnapshot) "Snapshot" else "Release")
+                from(component)
+            }
+        }
+    }
+
+    modrinth {
+        token.set(System.getenv("MODRINTH_TOKEN"))
+
+        projectId.set(rootProject.name.lowercase())
+
+        versionType.set(if (isSnapshot) "beta" else "release")
+
+        versionName.set("${rootProject.name} ${rootProject.version}")
+        versionNumber.set(rootProject.version as String)
 
         changelog.set(content)
 
-        platforms {
-            paper {
-                jar.set(rootProject.projectDir.resolve("jars/${rootProject.name}-${rootProject.version}.jar"))
+        uploadFile.set(rootProject.projectDir.resolve("jars/${rootProject.name}-${rootProject.version}.jar"))
 
-                platformVersions.set(listOf(libs.versions.minecraft.get()))
+        syncBodyFrom.set(rootProject.file("README.md").readText(Charsets.UTF_8))
 
-                dependencies {
-                    hangar("PlaceholderAPI") {
-                        required = false
-                    }
+        gameVersions.add(libs.versions.minecraft.get())
 
-                    url("Oraxen", "https://www.spigotmc.org/resources/%E2%98%84%EF%B8%8F-oraxen-custom-items-blocks-emotes-furniture-resourcepack-and-gui-1-18-1-20-4.72448/") {
-                        required = false
+        loaders.addAll(listOf("purpur", "paper", "folia"))
+
+        autoAddDependsOn.set(false)
+        detectLoaders.set(false)
+    }
+
+    hangarPublish {
+        publications.register("plugin") {
+            apiKey.set(System.getenv("HANGAR_KEY"))
+
+            id.set(rootProject.name.lowercase())
+
+            version.set(rootProject.version as String)
+
+            channel.set(if (isSnapshot) "Snapshot" else "Release")
+
+            changelog.set(content)
+
+            platforms {
+                paper {
+                    jar.set(rootProject.projectDir.resolve("jars/${rootProject.name}-${rootProject.version}.jar"))
+
+                    platformVersions.set(listOf(libs.versions.minecraft.get()))
+
+                    dependencies {
+                        hangar("PlaceholderAPI") {
+                            required = false
+                        }
+
+                        url(
+                            "Oraxen",
+                            "https://www.spigotmc.org/resources/%E2%98%84%EF%B8%8F-oraxen-custom-items-blocks-emotes-furniture-resourcepack-and-gui-1-18-1-20-4.72448/"
+                        ) {
+                            required = false
+                        }
                     }
                 }
             }
