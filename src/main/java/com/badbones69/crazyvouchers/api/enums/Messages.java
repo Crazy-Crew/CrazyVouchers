@@ -11,11 +11,7 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
 import com.badbones69.crazyvouchers.config.ConfigManager;
-import com.badbones69.crazyvouchers.config.types.ConfigKeys;
 import com.badbones69.crazyvouchers.config.types.MessageKeys;
-import org.jetbrains.annotations.Nullable;
-
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -57,8 +53,6 @@ public enum Messages {
         this.isList = isList;
     }
 
-    private final SettingsManager config = ConfigManager.getConfig();
-
     private final SettingsManager messages = ConfigManager.getMessages();
 
     private boolean isList() {
@@ -73,52 +67,20 @@ public enum Messages {
         return this.messages.getProperty(this.properties);
     }
 
-    public String getMessage() {
-        return getMessage(null, new HashMap<>());
+    public String getMessage(@NotNull final CommandSender sender) {
+        return getMessage(sender, new HashMap<>());
     }
 
-    public String getMessage(@Nullable final CommandSender sender) {
-        if (sender instanceof Player player) {
-            return getMessage(player, new HashMap<>());
-        }
-
-        return getMessage(null, new HashMap<>());
-    }
-
-    public String getMessage(@NotNull final Map<String, String> placeholders) {
-        return getMessage(null, placeholders);
-    }
-
-    public String getMessage(@NotNull final String placeholder, @NotNull final String replacement) {
-        return getMessage(null, placeholder, replacement);
-    }
-
-    public String getMessage(@Nullable final CommandSender sender, @NotNull final String placeholder, @NotNull final String replacement) {
+    public String getMessage(@NotNull final CommandSender sender, @NotNull final String placeholder, @NotNull final String replacement) {
         Map<String, String> placeholders = new HashMap<>() {{
             put(placeholder, replacement);
         }};
 
-        if (sender instanceof Player player) {
-            return getMessage(player, placeholders);
-        }
-
-        return getMessage(null, placeholders);
+        return getMessage(sender, placeholders);
     }
 
-    public String getMessage(@Nullable final CommandSender sender, @NotNull final Map<String, String> placeholders) {
-        if (sender instanceof Player player) {
-            return getMessage(player, placeholders);
-        }
-
-        return getMessage(null, placeholders);
-    }
-
-    public String getMessage(@Nullable final Player player, @NotNull final Map<String, String> placeholders) {
-        if (player != null) {
-            return parse(player, placeholders).replaceAll("\\{prefix}", MsgUtils.getPrefix());
-        }
-
-        return parse(null, placeholders).replaceAll("\\{prefix}", MsgUtils.getPrefix());
+    public String getMessage(@NotNull final CommandSender sender, @NotNull final Map<String, String> placeholders) {
+        return parse(sender, placeholders).replaceAll("\\{prefix}", MsgUtils.getPrefix());
     }
 
     public void sendMessage(final CommandSender sender, final String placeholder, final String replacement) {
@@ -133,7 +95,7 @@ public enum Messages {
         sender.sendMessage(getMessage(sender));
     }
 
-    private @NotNull String parse(@Nullable final Player player, @NotNull final Map<String, String> placeholders) {
+    private @NotNull String parse(@NotNull final CommandSender sender, @NotNull final Map<String, String> placeholders) {
         String message;
 
         if (isList()) {
@@ -142,7 +104,7 @@ public enum Messages {
             message = getString();
         }
 
-        if (player != null) {
+        if (sender instanceof Player player) {
             if (Support.placeholder_api.isEnabled()) {
                 message = PlaceholderAPI.setPlaceholders(player, message);
             }

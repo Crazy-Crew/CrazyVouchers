@@ -316,7 +316,7 @@ public class VoucherCommands implements CommandExecutor {
                                 placeholders.put("{player}", player.getName());
                                 placeholders.put("{voucher}", voucher.getName());
 
-                                if (!Messages.sent_voucher.getMessage().isBlank()) Messages.sent_voucher.sendMessage(sender, placeholders);
+                                if (!Messages.sent_voucher.getMessage(sender).isBlank()) Messages.sent_voucher.sendMessage(sender, placeholders);
                             } else {
                                 Messages.not_online.sendMessage(sender);
                             }
