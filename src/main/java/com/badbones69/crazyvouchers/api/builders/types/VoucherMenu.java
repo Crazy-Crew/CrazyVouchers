@@ -1,5 +1,6 @@
 package com.badbones69.crazyvouchers.api.builders.types;
 
+import com.badbones69.crazyvouchers.Methods;
 import com.badbones69.crazyvouchers.api.InventoryManager;
 import com.badbones69.crazyvouchers.api.builders.InventoryBuilder;
 import com.badbones69.crazyvouchers.api.enums.PersistentKeys;
@@ -89,7 +90,7 @@ public class VoucherMenu extends InventoryBuilder {
             if (voucher != null) {
                 player.playSound(player.getLocation(), Sound.UI_BUTTON_CLICK, SoundCategory.PLAYERS, 1F, 1F);
 
-                player.getInventory().addItem(voucher.buildItem());
+                Methods.addItem(player, voucher.buildItem());
             }
         }
     }

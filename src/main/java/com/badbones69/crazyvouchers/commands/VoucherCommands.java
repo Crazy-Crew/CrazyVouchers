@@ -235,7 +235,7 @@ public class VoucherCommands implements CommandExecutor {
 
                                     for (ItemBuilder itemBuilder : voucherCode.getItems()) {
                                         if (!Methods.isInventoryFull(player)) {
-                                            player.getInventory().addItem(itemBuilder.build());
+                                            Methods.addItem(player, itemBuilder.build());
                                         } else {
                                             player.getWorld().dropItem(player.getLocation(), itemBuilder.build());
                                         }
@@ -308,7 +308,7 @@ public class VoucherCommands implements CommandExecutor {
                                 if (Methods.isInventoryFull(player)) {
                                     player.getWorld().dropItem(player.getLocation(), item);
                                 } else {
-                                    player.getInventory().addItem(item);
+                                    Methods.addItem(player, item);
                                     player.updateInventory();
                                 }
 
@@ -365,7 +365,7 @@ public class VoucherCommands implements CommandExecutor {
                                 if (Methods.isInventoryFull(player)) {
                                     player.getWorld().dropItem(player.getLocation(), item);
                                 } else {
-                                    player.getInventory().addItem(item);
+                                    Methods.addItem(player, item);
                                     player.updateInventory();
                                 }
                             }

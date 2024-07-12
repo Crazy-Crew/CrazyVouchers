@@ -299,7 +299,7 @@ public class VoucherClickListener implements Listener {
 
         for (ItemBuilder itemStack : voucher.getItems()) {
             if (!Methods.isInventoryFull(player)) {
-                player.getInventory().addItem(itemStack.build());
+                Methods.addItem(player, itemStack.build());
             } else {
                 player.getWorld().dropItem(player.getLocation(), itemStack.build());
             }

@@ -12,6 +12,7 @@ import org.bukkit.Location;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Firework;
 import org.bukkit.entity.Player;
+import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.FireworkMeta;
 import org.bukkit.persistence.PersistentDataContainer;
@@ -37,6 +38,13 @@ public class Methods {
     
     public static String getPrefix(final String message) {
         return MsgUtils.color(config.getProperty(ConfigKeys.command_prefix) + message);
+    }
+
+    public static void addItem(final Player player, final ItemStack... items) {
+        final Inventory inventory = player.getInventory();
+
+        inventory.setMaxStackSize(64);
+        inventory.addItem(items);
     }
     
     public static boolean isInt(final String value) {
