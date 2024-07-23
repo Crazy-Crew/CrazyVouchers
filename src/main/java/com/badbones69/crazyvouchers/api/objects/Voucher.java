@@ -11,6 +11,7 @@ import de.tr7zw.changeme.nbtapi.NBTItem;
 import io.papermc.paper.registry.RegistryAccess;
 import io.papermc.paper.registry.RegistryKey;
 import org.bukkit.Color;
+import org.bukkit.Material;
 import org.bukkit.NamespacedKey;
 import org.bukkit.Sound;
 import org.bukkit.configuration.file.FileConfiguration;
@@ -64,6 +65,26 @@ public class Voucher {
     private final List<ItemFlag> itemFlags = new ArrayList<>();
 
     private String requiredPlaceholdersMessage;
+
+    public Voucher(int number) {
+        this.name = number + "";
+        this.usesArgs = false;
+        this.itemBuilder = new ItemBuilder().setMaterial(Material.STONE).setName(number + "");
+        this.usedMessage = "";
+        this.whitelistPermissionToggle = false;
+        this.whitelistPermissionMessage = "";
+        this.whitelistWorldsToggle = false;
+        this.whitelistWorldMessage = "";
+        this.blacklistPermissionsToggle = false;
+        this.blacklistPermissionMessage = "blacklistPermissionMessage";
+        this.limiterToggle = false;
+        this.limiterLimit = 0;
+        this.twoStepAuthentication = false;
+        this.soundToggle = false;
+        this.fireworkToggle = false;
+        this.isEdible = false;
+        this.glowing = false;
+    }
 
     public Voucher(FileConfiguration fileConfiguration, String name) {
         this.name = name;

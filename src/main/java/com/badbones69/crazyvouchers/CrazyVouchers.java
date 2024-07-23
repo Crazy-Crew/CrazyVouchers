@@ -26,11 +26,18 @@ import org.bukkit.plugin.java.JavaPlugin;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import com.badbones69.crazyvouchers.config.types.ConfigKeys;
+import java.util.Locale;
 
 public class CrazyVouchers extends JavaPlugin {
 
     public @NotNull static CrazyVouchers get() {
         return JavaPlugin.getPlugin(CrazyVouchers.class);
+    }
+
+    private final long startTime;
+
+    public CrazyVouchers() {
+        this.startTime = System.nanoTime();
     }
 
     private InventoryManager inventoryManager;
@@ -40,11 +47,9 @@ public class CrazyVouchers extends JavaPlugin {
 
     private HeadDatabaseAPI api;
 
-    private Server instance;
-
     @Override
     public void onEnable() {
-        this.instance = new Server(getDataFolder(), getComponentLogger());
+        Server server = new Server(this);
 
         boolean loadOldWay = ConfigManager.getConfig().getProperty(ConfigKeys.mono_file);
 
@@ -90,6 +95,10 @@ public class CrazyVouchers extends JavaPlugin {
         pluginManager.registerEvents(new VoucherMenu(), this);
 
         registerCommand(getCommand("vouchers"), new VoucherTab(), new VoucherCommands());
+
+        if (server.isLogging()) {
+            getComponentLogger().info("Done ({})!", String.format(Locale.ROOT, "%.3fs", (double) (System.nanoTime() - this.startTime) / 1.0E9D));
+        }
     }
 
     private void registerCommand(PluginCommand pluginCommand, TabCompleter tabCompleter, CommandExecutor commandExecutor) {
@@ -118,9 +127,5 @@ public class CrazyVouchers extends JavaPlugin {
 
     public @NotNull final FileManager getFileManager() {
         return this.fileManager;
-    }
-
-    public @NotNull final Server getInstance() {
-        return this.instance;
     }
 }

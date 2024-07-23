@@ -23,6 +23,8 @@ dependencies {
 
     implementation(libs.nbtapi)
 
+    compileOnly(libs.headdatabaseapi)
+
     compileOnly(libs.placeholderapi)
 
     compileOnly(libs.itemsadder)

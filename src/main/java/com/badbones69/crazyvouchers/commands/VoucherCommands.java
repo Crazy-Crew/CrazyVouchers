@@ -53,7 +53,7 @@ public class VoucherCommands implements CommandExecutor {
 
                 case "reload" -> {
                     if (Methods.hasPermission(sender, "admin")) {
-                        this.plugin.getInstance().reload();
+                        ConfigManager.refresh();
 
                         this.fileManager.reloadFiles().init();
 
