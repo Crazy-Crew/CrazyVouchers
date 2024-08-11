@@ -1,2 +1,3 @@
-### Fixed:
-- Issue with file manager not properly loading/reloading files.
+### Changes:
+- Bumped to 1.21.1
+- Bumped nbt api

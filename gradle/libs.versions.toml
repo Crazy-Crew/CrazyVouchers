@@ -1,7 +1,7 @@
 [versions]
 # Minecraft
-paper = "1.21-R0.1-SNAPSHOT"
-minecraft = "1.21"
+paper = "1.21.1-R0.1-SNAPSHOT"
+minecraft = "1.21.1"
 
 # Libraries
 triumph-cmd = "2.0.0-ALPHA-10"
@@ -22,7 +22,7 @@ nbtapi = "2.13.2"
 vault = "1.7.1"
 
 # Paper
-paperweight="1.7.1"
+paperweight = "1.7.2"
 runPaper = "2.3.0"
 hangar = "0.1.2"
 
