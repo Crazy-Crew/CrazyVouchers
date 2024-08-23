@@ -23,7 +23,10 @@ import org.bukkit.inventory.ItemStack;
 import org.jetbrains.annotations.NotNull;
 import com.badbones69.crazyvouchers.config.ConfigManager;
 import com.badbones69.crazyvouchers.config.types.ConfigKeys;
+
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Random;
 
@@ -310,14 +313,23 @@ public class VoucherCommands implements CommandExecutor {
                                 argument = crazyManager.replaceRandom(args[4].replace("%random%", "{random}"));
                             }
 
-                            ItemStack item = args.length >= 5 ? voucher.buildItem(argument, amount) : voucher.buildItem(amount);
+                            final List<ItemStack> itemStacks = new ArrayList<>();
+
+                            if (args.length >= 5) {
+                                itemStacks.addAll(voucher.buildItems(argument, amount));
+                            } else {
+                                itemStacks.addAll(voucher.buildItems("", amount));
+                            }
 
                             if (player != null) {
                                 if (Methods.isInventoryFull(player)) {
-                                    player.getWorld().dropItem(player.getLocation(), item);
+                                    itemStacks.forEach(itemStack -> player.getWorld().dropItem(player.getLocation(), itemStack));
                                 } else {
-                                    Methods.addItem(player, item);
-                                    player.updateInventory();
+                                    itemStacks.forEach(itemStack -> {
+                                        Methods.addItem(player, itemStack);
+
+                                        player.updateInventory();
+                                    });
                                 }
 
                                 Map<String, String> placeholders = new HashMap<>();

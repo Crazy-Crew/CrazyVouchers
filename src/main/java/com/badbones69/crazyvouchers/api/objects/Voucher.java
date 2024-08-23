@@ -12,6 +12,7 @@ import com.ryderbelserion.vital.paper.util.DyeUtil;
 import de.tr7zw.changeme.nbtapi.NBTItem;
 import io.papermc.paper.registry.RegistryAccess;
 import io.papermc.paper.registry.RegistryKey;
+import org.bukkit.Bukkit;
 import org.bukkit.Color;
 import org.bukkit.Material;
 import org.bukkit.NamespacedKey;
@@ -287,9 +288,19 @@ public class Voucher {
 
         return nbt.getItem();
     }
-    
-    public ItemStack buildItem(String argument) {
-        return buildItem(argument, 1);
+
+    public List<ItemStack> buildItems(String argument, int amount) {
+        List<ItemStack> itemStacks = new ArrayList<>();
+
+        if (this.config.getProperty(ConfigKeys.dupe_protection)) {
+            while (itemStacks.size() < amount) {
+                itemStacks.add(buildItem(argument, 1));
+            }
+        } else {
+            itemStacks.add(buildItem(argument, amount));
+        }
+
+        return itemStacks;
     }
     
     public ItemStack buildItem(String argument, int amount) {
@@ -302,7 +313,9 @@ public class Voucher {
         NBTItem nbt = new NBTItem(item);
 
         nbt.setString("voucher", getName());
-        nbt.setString("argument", argument);
+
+        // don't add arg if empty
+        if (!argument.isEmpty()) nbt.setString("argument", argument);
 
         return nbt.getItem();
     }
