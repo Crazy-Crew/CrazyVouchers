@@ -49,7 +49,7 @@ public class ConfigKeys implements SettingsHolder {
             "Once the voucher is used, the uuid attached is thrown in a file.",
             "",
             "If you turn this option off, no new uuids will be attached or checked",
-            "however previous vouchers will still not stack obviously."
+            "however previous vouchers will still not stack, obviously."
     })
     public static final Property<Boolean> dupe_protection = newProperty("settings.dupe-protection", false);
 
