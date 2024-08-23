@@ -24,6 +24,8 @@ public enum Messages {
     not_a_number(MessageKeys.not_a_number),
     no_permission(MessageKeys.no_permission),
     survival_mode(MessageKeys.survival_mode),
+    dupe_protection(MessageKeys.dupe_protection),
+    notify_staff(MessageKeys.notify_staff),
     no_permission_to_use_voucher(MessageKeys.no_permission_to_use_voucher),
     no_permission_to_use_voucher_offhand(MessageKeys.no_permission_to_use_voucher_in_offhand),
     not_a_voucher(MessageKeys.not_a_voucher),

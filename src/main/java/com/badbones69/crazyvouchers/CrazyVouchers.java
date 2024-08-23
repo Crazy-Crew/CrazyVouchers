@@ -56,7 +56,7 @@ public class CrazyVouchers extends JavaPlugin {
         new MigrationService().migrate(loadOldWay);
 
         this.fileManager = new FileManager();
-        this.fileManager.addFile("users.yml");
+        this.fileManager.addFile("users.yml").addFile("data.yml");
 
         if (loadOldWay) {
             this.fileManager.addFile("voucher-codes.yml").addFile("vouchers.yml");
@@ -83,6 +83,14 @@ public class CrazyVouchers extends JavaPlugin {
             configuration.set("Players.Clear", null);
 
             Files.users.save();
+        }
+
+        final FileConfiguration data = Files.data.getConfiguration();
+
+        if (!data.contains("Used-Vouchers")) {
+            data.set("Used-Vouchers.Clear", null);
+
+            Files.data.save();
         }
 
         PluginManager pluginManager = getServer().getPluginManager();

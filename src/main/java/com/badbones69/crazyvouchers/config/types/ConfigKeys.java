@@ -44,6 +44,15 @@ public class ConfigKeys implements SettingsHolder {
             """)
     public static final Property<Boolean> mono_file = newProperty("settings.use-old-file-system", false);
 
+    @Comment({
+            "Vouchers will no longer be able to stack, as each one has a unique identifier",
+            "Once the voucher is used, the uuid attached is thrown in a file.",
+            "",
+            "If you turn this option off, no new uuids will be attached or checked",
+            "however previous vouchers will still not stack obviously."
+    })
+    public static final Property<Boolean> dupe_protection = newProperty("settings.dupe-protection", false);
+
     @Comment("Pick which locale you want to use if your server is in another language.")
     public static final Property<String> locale_file = newProperty("settings.locale", "en-US");
 

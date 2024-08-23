@@ -1,5 +1,6 @@
 package com.badbones69.crazyvouchers.config.types;
 
+import ch.jalu.configme.Comment;
 import ch.jalu.configme.SettingsHolder;
 import ch.jalu.configme.configurationdata.CommentsConfiguration;
 import ch.jalu.configme.properties.Property;
@@ -47,6 +48,15 @@ public class MessageKeys implements SettingsHolder {
     public static final Property<String> no_permission = newProperty("player.no-permission", "{prefix}&cYou do not have permission to use that command!");
 
     public static final Property<String> no_permission_to_use_voucher = newProperty("player.voucher.no-permission", "{prefix}&cYou do not have permission to use that voucher.");
+
+    public static final Property<String> dupe_protection = newProperty("player.voucher.already-used.value", "{prefix}&cThis voucher has already been used, likely a duped voucher");
+
+    @Comment({
+            "This requires the permission crazyvouchers.notify.duped",
+            "",
+            "Available placeholders: {player}, {id}"
+    })
+    public static final Property<String> notify_staff = newProperty("player.voucher.already-used.notify-staff", "{prefix}{player} has been potentially caught using a duped voucher with the id {id}.");
 
     public static final Property<String> no_permission_to_use_voucher_in_offhand = newProperty("player.voucher.no-permission-offhand" ,"{prefix}&cYou do not have permission to use vouchers in your off hand.");
 

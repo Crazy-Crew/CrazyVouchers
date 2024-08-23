@@ -65,6 +65,14 @@ public class VoucherCommands implements CommandExecutor {
                             Files.users.save();
                         }
 
+                        final FileConfiguration data = Files.data.getConfiguration();
+
+                        if (!data.contains("Used-Vouchers")) {
+                            data.set("Used-Vouchers.Clear", null);
+
+                            Files.data.save();
+                        }
+
                         this.crazyManager.reload();
 
                         Messages.config_reload.sendMessage(sender);

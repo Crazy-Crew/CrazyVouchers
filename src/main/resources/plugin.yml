@@ -22,3 +22,6 @@ permissions:
 
   voucher.redeem:
     default: op
+
+  crazyvouchers.notify.duped:
+    default: op

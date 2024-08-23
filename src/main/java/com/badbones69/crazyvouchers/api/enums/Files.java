@@ -10,7 +10,8 @@ public enum Files {
 
     voucher_codes("voucher-codes.yml"),
     vouchers("vouchers.yml"),
-    users("users.yml");
+    users("users.yml"),
+    data("data.yml");
 
     private final String fileName;
     private final String strippedName;

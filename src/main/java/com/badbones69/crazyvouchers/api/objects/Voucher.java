@@ -1,8 +1,10 @@
 package com.badbones69.crazyvouchers.api.objects;
 
+import ch.jalu.configme.SettingsManager;
 import com.badbones69.crazyvouchers.CrazyVouchers;
 import com.badbones69.crazyvouchers.api.CrazyManager;
 import com.badbones69.crazyvouchers.api.enums.Messages;
+import com.badbones69.crazyvouchers.api.enums.PersistentKeys;
 import com.badbones69.crazyvouchers.api.objects.other.ItemBuilder;
 import com.badbones69.crazyvouchers.utils.MsgUtils;
 import com.ryderbelserion.vital.core.util.StringUtil;
@@ -17,6 +19,7 @@ import org.bukkit.Sound;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.inventory.ItemFlag;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.persistence.PersistentDataType;
 import org.jetbrains.annotations.NotNull;
 import com.badbones69.crazyvouchers.config.ConfigManager;
 import com.badbones69.crazyvouchers.config.types.ConfigKeys;
@@ -24,6 +27,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.UUID;
 import java.util.logging.Level;
 
 public class Voucher {
@@ -267,11 +271,19 @@ public class Voucher {
     public ItemStack buildItem() {
         return buildItem(1);
     }
+
+    private final SettingsManager config = ConfigManager.getConfig();
     
     public ItemStack buildItem(int amount) {
         ItemStack item = this.itemBuilder.setAmount(amount).setItemFlags(this.itemFlags).setGlow(this.glowing).build();
+
         NBTItem nbt = new NBTItem(item);
+
         nbt.setString("voucher", this.name);
+
+        if (this.config.getProperty(ConfigKeys.dupe_protection)) {
+            item.editMeta(itemMeta -> itemMeta.getPersistentDataContainer().set(PersistentKeys.dupe_protection.getNamespacedKey(), PersistentDataType.STRING, UUID.randomUUID().toString()));
+        }
 
         return nbt.getItem();
     }
@@ -287,6 +299,10 @@ public class Voucher {
 
         nbt.setString("voucher", getName());
         nbt.setString("argument", argument);
+
+        if (this.config.getProperty(ConfigKeys.dupe_protection)) {
+            item.editMeta(itemMeta -> itemMeta.getPersistentDataContainer().set(PersistentKeys.dupe_protection.getNamespacedKey(), PersistentDataType.STRING, UUID.randomUUID().toString()));
+        }
 
         return nbt.getItem();
     }
