@@ -277,13 +277,13 @@ public class Voucher {
     public ItemStack buildItem(int amount) {
         ItemStack item = this.itemBuilder.setAmount(amount).setItemFlags(this.itemFlags).setGlow(this.glowing).build();
 
-        NBTItem nbt = new NBTItem(item);
-
-        nbt.setString("voucher", this.name);
-
         if (this.config.getProperty(ConfigKeys.dupe_protection)) {
             item.editMeta(itemMeta -> itemMeta.getPersistentDataContainer().set(PersistentKeys.dupe_protection.getNamespacedKey(), PersistentDataType.STRING, UUID.randomUUID().toString()));
         }
+
+        NBTItem nbt = new NBTItem(item);
+
+        nbt.setString("voucher", this.name);
 
         return nbt.getItem();
     }
@@ -295,14 +295,14 @@ public class Voucher {
     public ItemStack buildItem(String argument, int amount) {
         ItemStack item = this.itemBuilder.setAmount(amount).setItemFlags(this.itemFlags).addLorePlaceholder("{arg}", argument).addNamePlaceholder("{arg}", argument).setGlow(this.glowing).build();
 
+        if (this.config.getProperty(ConfigKeys.dupe_protection)) {
+            item.editMeta(itemMeta -> itemMeta.getPersistentDataContainer().set(PersistentKeys.dupe_protection.getNamespacedKey(), PersistentDataType.STRING, UUID.randomUUID().toString()));
+        }
+
         NBTItem nbt = new NBTItem(item);
 
         nbt.setString("voucher", getName());
         nbt.setString("argument", argument);
-
-        if (this.config.getProperty(ConfigKeys.dupe_protection)) {
-            item.editMeta(itemMeta -> itemMeta.getPersistentDataContainer().set(PersistentKeys.dupe_protection.getNamespacedKey(), PersistentDataType.STRING, UUID.randomUUID().toString()));
-        }
 
         return nbt.getItem();
     }
