@@ -35,7 +35,10 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.persistence.PersistentDataType;
 import org.jetbrains.annotations.NotNull;
 import com.badbones69.crazyvouchers.config.types.ConfigKeys;
+
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 import java.util.concurrent.ThreadLocalRandom;
@@ -159,14 +162,16 @@ public class VoucherClickListener implements Listener {
             if (view.has(PersistentKeys.dupe_protection.getNamespacedKey())) {
                 final String id = view.get(PersistentKeys.dupe_protection.getNamespacedKey(), PersistentDataType.STRING);
 
-                if (data.contains("Used-Vouchers." + id)) {
+                final List<String> vouchers = data.getStringList("Used-Vouchers");
+
+                if (vouchers.contains(id)) {
                     Messages.dupe_protection.sendMessage(player);
 
                     this.plugin.getServer().getOnlinePlayers().forEach(staff -> {
                         if (staff.hasPermission("crazyvouchers.notify.duped")) {
                             Messages.notify_staff.sendMessage(staff, new HashMap<>() {{
                                 put("{player}", player.getName());
-                                put("{voucher}", id);
+                                put("{id}", id);
                             }});
                         }
                     });
@@ -360,15 +365,19 @@ public class VoucherClickListener implements Listener {
         }
 
         if (this.config.getProperty(ConfigKeys.dupe_protection)) {
-            FileConfiguration configuration = Files.data.getConfiguration();
-
             final PersistentDataContainerView view = item.getPersistentDataContainer();
 
             if (view.has(PersistentKeys.dupe_protection.getNamespacedKey())) {
                 final String id = view.get(PersistentKeys.dupe_protection.getNamespacedKey(), PersistentDataType.STRING);
 
-                if (!configuration.contains("Used-Vouchers." + id)) {
-                    configuration.set("Used-Vouchers." + id, true);
+                FileConfiguration configuration = Files.data.getConfiguration();
+
+                List<String> vouchers = new ArrayList<>(configuration.getStringList("Used-Vouchers"));
+
+                if (!vouchers.contains(id)) {
+                    vouchers.add(id);
+
+                    configuration.set("Used-Vouchers", vouchers);
 
                     Files.data.save();
                 } else {
