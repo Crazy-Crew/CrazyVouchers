@@ -379,14 +379,23 @@ public class VoucherCommands implements CommandExecutor {
                                 argument = this.crazyManager.replaceRandom(args[3].replace("%random%", "{random}"));
                             }
 
-                            ItemStack item = args.length >= 4 ? voucher.buildItem(argument, amount) : voucher.buildItem(amount);
+                            final List<ItemStack> itemStacks = new ArrayList<>();
+
+                            if (args.length >= 4) {
+                                itemStacks.addAll(voucher.buildItems(argument, amount));
+                            } else {
+                                itemStacks.addAll(voucher.buildItems("", amount));
+                            }
 
                             for (Player player : this.plugin.getServer().getOnlinePlayers()) {
                                 if (Methods.isInventoryFull(player)) {
-                                    player.getWorld().dropItem(player.getLocation(), item);
+                                    itemStacks.forEach(itemStack -> player.getWorld().dropItem(player.getLocation(), itemStack));
                                 } else {
-                                    Methods.addItem(player, item);
-                                    player.updateInventory();
+                                    itemStacks.forEach(itemStack -> {
+                                        Methods.addItem(player, itemStack);
+
+                                        player.updateInventory();
+                                    });
                                 }
                             }
 
