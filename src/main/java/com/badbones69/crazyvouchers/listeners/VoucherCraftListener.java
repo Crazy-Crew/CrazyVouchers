@@ -1,11 +1,14 @@
 package com.badbones69.crazyvouchers.listeners;
 
+import ch.jalu.configme.SettingsManager;
 import com.badbones69.crazyvouchers.CrazyVouchers;
 import com.badbones69.crazyvouchers.api.CrazyManager;
 import com.badbones69.crazyvouchers.api.enums.Messages;
+import com.badbones69.crazyvouchers.api.enums.PersistentKeys;
 import com.badbones69.crazyvouchers.api.objects.Voucher;
 import com.badbones69.crazyvouchers.config.ConfigManager;
 import de.tr7zw.changeme.nbtapi.NBTItem;
+import io.papermc.paper.persistence.PersistentDataContainerView;
 import org.bukkit.Material;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
@@ -21,22 +24,38 @@ public class VoucherCraftListener implements Listener {
 
     private @NotNull final CrazyManager crazyManager = this.plugin.getCrazyManager();
 
+    private final SettingsManager config = ConfigManager.getConfig();
+
     @EventHandler(priority = EventPriority.NORMAL, ignoreCancelled = true)
     public void prepareItemCraft(PrepareItemCraftEvent event) {
-        if (!ConfigManager.getConfig().getProperty(ConfigKeys.prevent_using_vouchers_in_recipes_toggle)) return;
+        if (!this.config.getProperty(ConfigKeys.prevent_using_vouchers_in_recipes_toggle)) return;
 
         for (ItemStack itemStack : event.getInventory().getMatrix()) {
-            if (itemStack != null) {
-                Voucher voucher = crazyManager.getVoucherFromItem(itemStack);
+            if (itemStack == null) return;
 
-                NBTItem nbt = new NBTItem(itemStack);
+            Voucher voucher = crazyManager.getVoucherFromItem(itemStack);
 
-                if (voucher != null && nbt.hasTag("voucher")) {
+            if (voucher == null) return;
+
+            final PersistentDataContainerView container = itemStack.getPersistentDataContainer();
+
+            if (container.has(PersistentKeys.voucher_item.getNamespacedKey())) {
+                event.getInventory().setResult(new ItemStack(Material.AIR));
+
+                if (this.config.getProperty(ConfigKeys.prevent_using_vouchers_in_recipes_alert)) {
+                    Messages.cannot_put_items_in_crafting_table.sendMessage(event.getView().getPlayer());
+                }
+
+                break;
+            } else {
+                NBTItem nbt = new NBTItem(itemStack); // this section related to nbt items is deprecated, and marked for removal
+
+                if (nbt.hasTag("voucher")) {
                     event.getInventory().setResult(new ItemStack(Material.AIR));
 
-                    boolean sendMsg = ConfigManager.getConfig().getProperty(ConfigKeys.prevent_using_vouchers_in_recipes_alert);
-
-                    if (sendMsg) Messages.cannot_put_items_in_crafting_table.sendMessage(event.getView().getPlayer());
+                    if (this.config.getProperty(ConfigKeys.prevent_using_vouchers_in_recipes_alert)) {
+                        Messages.cannot_put_items_in_crafting_table.sendMessage(event.getView().getPlayer());
+                    }
 
                     break;
                 }

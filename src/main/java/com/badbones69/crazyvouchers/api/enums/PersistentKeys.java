@@ -11,7 +11,10 @@ public enum PersistentKeys {
     back_button("back_button"),
     next_button("next_button"),
     no_firework_damage("firework"),
-    dupe_protection("dupe_protection");
+    dupe_protection("dupe_protection"),
+
+    voucher_item("voucher_item"),
+    voucher_arg("voucher_arg");
 
     private @NotNull final CrazyVouchers plugin = CrazyVouchers.get();
 

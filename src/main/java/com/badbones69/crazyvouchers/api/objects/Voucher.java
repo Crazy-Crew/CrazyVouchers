@@ -20,6 +20,7 @@ import org.bukkit.Sound;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.inventory.ItemFlag;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.persistence.PersistentDataContainer;
 import org.bukkit.persistence.PersistentDataType;
 import org.jetbrains.annotations.NotNull;
 import com.badbones69.crazyvouchers.config.ConfigManager;
@@ -282,11 +283,17 @@ public class Voucher {
             item.editMeta(itemMeta -> itemMeta.getPersistentDataContainer().set(PersistentKeys.dupe_protection.getNamespacedKey(), PersistentDataType.STRING, UUID.randomUUID().toString()));
         }
 
-        NBTItem nbt = new NBTItem(item);
+        item.editMeta(itemMeta -> {
+            final PersistentDataContainer container = itemMeta.getPersistentDataContainer();
 
-        nbt.setString("voucher", this.name);
+            if (this.config.getProperty(ConfigKeys.dupe_protection)) {
+                container.set(PersistentKeys.dupe_protection.getNamespacedKey(), PersistentDataType.STRING, UUID.randomUUID().toString());
+            }
 
-        return nbt.getItem();
+            container.set(PersistentKeys.voucher_item.getNamespacedKey(), PersistentDataType.STRING, getName());
+        });
+
+        return item;
     }
 
     public List<ItemStack> buildItems(String argument, int amount) {
@@ -306,18 +313,19 @@ public class Voucher {
     public ItemStack buildItem(String argument, int amount) {
         ItemStack item = this.itemBuilder.setAmount(amount).setItemFlags(this.itemFlags).addLorePlaceholder("{arg}", argument).addNamePlaceholder("{arg}", argument).setGlow(this.glowing).build();
 
-        if (this.config.getProperty(ConfigKeys.dupe_protection)) {
-            item.editMeta(itemMeta -> itemMeta.getPersistentDataContainer().set(PersistentKeys.dupe_protection.getNamespacedKey(), PersistentDataType.STRING, UUID.randomUUID().toString()));
-        }
+        item.editMeta(itemMeta -> {
+            final PersistentDataContainer container = itemMeta.getPersistentDataContainer();
 
-        NBTItem nbt = new NBTItem(item);
+            if (this.config.getProperty(ConfigKeys.dupe_protection)) {
+                container.set(PersistentKeys.dupe_protection.getNamespacedKey(), PersistentDataType.STRING, UUID.randomUUID().toString());
+            }
 
-        nbt.setString("voucher", getName());
+            container.set(PersistentKeys.voucher_item.getNamespacedKey(), PersistentDataType.STRING, getName());
 
-        // don't add arg if empty
-        if (!argument.isEmpty()) nbt.setString("argument", argument);
+            if (argument.isEmpty()) container.set(PersistentKeys.voucher_arg.getNamespacedKey(), PersistentDataType.STRING, argument);
+        });
 
-        return nbt.getItem();
+        return item;
     }
     
     public String getVoucherUsedMessage() {

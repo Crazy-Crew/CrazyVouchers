@@ -1,3 +1,7 @@
+### Breaking Changes:
+- Identifying a voucher has changed, new vouchers will use a much more lightweight implementation to check if it's a voucher or not.
+  - In the next version of minecraft, the old way for checking vouchers **will** be removed, so please prepare for that by cleaning up old vouchers.
+
 ### Additions:
 - Added a toggle for dupe protection which assigns uuids to new vouchers
   - Once a voucher is used, the uuid gets thrown in the data.yml
