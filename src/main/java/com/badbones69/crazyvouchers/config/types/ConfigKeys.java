@@ -5,6 +5,10 @@ import ch.jalu.configme.SettingsHolder;
 import ch.jalu.configme.configurationdata.CommentsConfiguration;
 import ch.jalu.configme.properties.Property;
 import ch.jalu.configme.properties.PropertyInitializer;
+
+import java.util.List;
+
+import static ch.jalu.configme.properties.PropertyInitializer.newListProperty;
 import static ch.jalu.configme.properties.PropertyInitializer.newProperty;
 
 public class ConfigKeys implements SettingsHolder {
@@ -51,7 +55,13 @@ public class ConfigKeys implements SettingsHolder {
             "If you turn this option off, no new uuids will be attached or checked",
             "however previous vouchers will still not stack, obviously."
     })
-    public static final Property<Boolean> dupe_protection = newProperty("settings.dupe-protection", false);
+    public static final Property<Boolean> dupe_protection = newProperty("settings.dupe-protection.enabled", false);
+
+    @Comment("This decides whether a line should be added to duplicated voucher lore to avoid scams.")
+    public static final Property<Boolean> dupe_protection_toggle_warning = newProperty("settings.dupe-protection.warning.enabled", false);
+
+    @Comment("The line to add to the lore of an item. This message supports PlaceholderAPI")
+    public static final Property<String> dupe_protection_warning = newProperty("settings.dupe-protection.warning.value", "&cThis item has been duplicated");
 
     @Comment("Pick which locale you want to use if your server is in another language.")
     public static final Property<String> locale_file = newProperty("settings.locale", "en-US");

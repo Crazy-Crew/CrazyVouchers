@@ -15,6 +15,7 @@ import com.badbones69.crazyvouchers.utils.MsgUtils;
 import com.ryderbelserion.vital.paper.enums.Support;
 import io.papermc.paper.persistence.PersistentDataContainerView;
 import me.clip.placeholderapi.PlaceholderAPI;
+import org.bukkit.ChatColor;
 import org.bukkit.GameMode;
 import org.bukkit.Location;
 import org.bukkit.Material;
@@ -175,6 +176,39 @@ public class VoucherClickListener implements Listener {
                             }});
                         }
                     });
+
+                    if (this.config.getProperty(ConfigKeys.dupe_protection_toggle_warning)) {
+                        List<String> lore = item.getLore(); //todo() deprecated, switch to minimessage
+
+                        if (lore == null) lore = new ArrayList<>();
+
+                        final String option = this.config.getProperty(ConfigKeys.dupe_protection_warning);
+
+                        boolean hasLine = false;
+
+                        for (String line : lore) {
+                            final String cleanLine = ChatColor.stripColor(line); //todo() deprecated
+                            final String cleanOption = ChatColor.stripColor(MsgUtils.color(option)); //todo() deprecated
+
+                            if (cleanLine.equalsIgnoreCase(cleanOption)) {
+                                hasLine = true;
+
+                                break;
+                            }
+                        }
+
+                        if (hasLine) return;
+
+                        final List<String> finalLore = lore;
+
+                        item.editMeta(itemMeta -> {
+                            List<String> messages = new ArrayList<>(finalLore);
+
+                            messages.add(Support.placeholder_api.isEnabled() ? PlaceholderAPI.setPlaceholders(player, MsgUtils.color(option)) : MsgUtils.color(option));
+
+                            itemMeta.setLore(messages); //todo() deprecated
+                        });
+                    }
 
                     return;
                 }
