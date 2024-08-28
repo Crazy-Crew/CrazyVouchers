@@ -20,13 +20,18 @@ import me.arcaniax.hdb.api.HeadDatabaseAPI;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.PluginCommand;
 import org.bukkit.command.TabCompleter;
+import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.file.FileConfiguration;
+import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.plugin.PluginManager;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import com.badbones69.crazyvouchers.config.types.ConfigKeys;
+
+import java.io.File;
 import java.util.Locale;
+import java.util.concurrent.CompletableFuture;
 
 public class CrazyVouchers extends JavaPlugin {
 
@@ -49,11 +54,33 @@ public class CrazyVouchers extends JavaPlugin {
 
     @Override
     public void onEnable() {
+        final File file = new File(getDataFolder(), "Config.yml");
+
+        boolean isReadyToMigrate = false;
+
+        if (file.exists()) {
+            // Load configuration of input.
+            YamlConfiguration config = CompletableFuture.supplyAsync(() -> YamlConfiguration.loadConfiguration(file)).join();
+
+            // Get the configuration section.
+            ConfigurationSection vouchers = config.getConfigurationSection("Vouchers");
+
+            // If we can't see the section in the config.yml, we do nothing.
+            if (vouchers != null) {
+                File backupFile = new File(getDataFolder(), "Vouchers-Backup.yml");
+
+                // Rename to back up file.
+                file.renameTo(backupFile);
+
+                isReadyToMigrate = true;
+            }
+        }
+
         Server server = new Server(this);
 
         boolean loadOldWay = ConfigManager.getConfig().getProperty(ConfigKeys.mono_file);
 
-        new MigrationService().migrate(loadOldWay);
+        new MigrationService().migrate(loadOldWay, isReadyToMigrate);
 
         this.fileManager = new FileManager();
         this.fileManager.addFile("users.yml").addFile("data.yml");

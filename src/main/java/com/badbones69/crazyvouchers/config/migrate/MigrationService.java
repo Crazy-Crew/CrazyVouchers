@@ -16,9 +16,9 @@ public class MigrationService {
 
     private @NotNull final CrazyVouchers plugin = CrazyVouchers.get();
 
-    public void migrate(boolean loadOldWay) {
-        // Copy all vouchers into their own directory.
-        copyVouchers(loadOldWay);
+    public void migrate(boolean loadOldWay, boolean isReadyToMigrate) {
+        // Copy all vouchers into their own directory only if isReadyToMigrate is true, we have to do this check on startup before ConfigManager initializes
+        if (isReadyToMigrate) copyVouchers(loadOldWay);
 
         // Copy all codes into their own directory.
         copyCodes(loadOldWay);
@@ -63,24 +63,15 @@ public class MigrationService {
     }
 
     private void copyVouchers(boolean loadOldWay) {
-        File file = new File(this.plugin.getDataFolder(), "Config.yml");
-
-        // Load configuration of input.
-        YamlConfiguration config = CompletableFuture.supplyAsync(() -> YamlConfiguration.loadConfiguration(file)).join();
-
-        // Get the configuration section.
-        ConfigurationSection vouchers = config.getConfigurationSection("Vouchers");
-
-        // If we can't see the section in the config.yml, we do nothing.
-        if (vouchers == null) return;
-
         File backupFile = new File(this.plugin.getDataFolder(), "Vouchers-Backup.yml");
-
-        // Rename to back up file.
-        file.renameTo(backupFile);
 
         // Load configuration of backup.
         YamlConfiguration backup = CompletableFuture.supplyAsync(() -> YamlConfiguration.loadConfiguration(backupFile)).join();
+
+        // Get the configuration section.
+        ConfigurationSection vouchers = backup.getConfigurationSection("Vouchers");
+
+        if (vouchers == null) return;
 
         if (loadOldWay) {
             vouchers.getKeys(false).forEach(name -> {

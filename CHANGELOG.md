@@ -8,3 +8,6 @@
   - If a voucher is used with the same uuid again. it will tell the player no and notify all staff
   - Previous vouchers already given, won't be accounted with this, so you'll just have to phase those out.
 - Added a new permission, crazyvouchers.notify.duped which notifies any player who has the permission of duped vouchers
+
+### Fixed:
+- Fixed the migrator on startup
