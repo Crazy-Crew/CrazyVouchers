@@ -10,6 +10,7 @@ minotaur = { id = "com.modrinth.minotaur", version.ref = "minotaur" }
 # Paper API
 paper = "1.21.1-R0.1-SNAPSHOT"
 velocity = "3.3.0-SNAPSHOT"
+minecraft = "1.21.1"
 
 # Libraries
 configurate = "4.2.0-SNAPSHOT"
