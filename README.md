@@ -11,23 +11,22 @@
 
 <big>**Give your players as many rewards as you like in a compact form called a CrazyVoucher with all the fancy bells and whistles such as ability to play sounds or spawn fireworks!**</big>
 
-  <big> **Quick Links**</big><br>
+<big>**Quick Links**</big><br>
 [Request Features](https://github.com/Crazy-Crew/CrazyVouchers/discussions/categories/features)<br>
 [Documentation](https://docs.crazycrew.us/docs/category/crazyvouchers)<br>
 [Developer API](https://docs.crazycrew.us/docs/plugins/crazyvouchers/guides/api/intro)<br>
 [Report Bugs](https://github.com/Crazy-Crew/CrazyVouchers/issues)<br>
 [Trello Board](https://trello.com/b/gWiGLBWI)
 
-  <big> **Supported Platforms**</big><br>
+<big>**Supported Platforms**</big><br>
 [![paper software](https://cdn.jsdelivr.net/npm/@intergrav/devins-badges@3/assets/compact-minimal/supported/paper_vector.svg)](https://papermc.io/)
 [![purpur software](https://cdn.jsdelivr.net/npm/@intergrav/devins-badges@3/assets/compact-minimal/supported/purpur_vector.svg)](https://purpurmc.org/)
 
-  <big> **Initial Plugin Setup**</big><br>
+<big>**Initial Plugin Setup**</big><br>
 CrazyVouchers as first install will come with a set of default files in the `vouchers` and `codes` folder which are to help you figure out how to use the plugin.
 You can simply create more vouchers by copying the files or creating new ones than doing `/crazyvouchers reload`
 
-![Features Banner](https://raw.githubusercontent.com/Crazy-Crew/Branding/main/crazyvouchers/banner/webp/features.webp)
-
+![Features Banner](https://raw.githubusercontent.com/Crazy-Crew/Branding/main/crazyvouchers/banner/webp/features.webp)<br>
 **The ability to customize the entirety of CrazyVouchers**<br>
 If you have found something that you would like to be able to customize,<br>
 please make a [feature request,](https://github.com/Crazy-Crew/CrazyVouchers/discussions/categories/features) and we'll see about adding it
@@ -42,8 +41,7 @@ Hex Colors should be usable throughout the entire plugin.<br>
 **Ability to switch between multiple files and mono files for `vouchers` and `codes`**<br>
 You can find the toggle in `config.yml` if you prefer one config file for each. This will not migrate it for you.
 
-![Support Banner](https://raw.githubusercontent.com/Crazy-Crew/Branding/main/crazyvouchers/banner/webp/support.webp)
-
+![Support Banner](https://raw.githubusercontent.com/Crazy-Crew/Branding/main/crazyvouchers/banner/webp/support.webp)<br>
 Are you confused about something? Hop by the Discord and you might just get an answer!<br>
 Please head to [crazy-vouchers](https://discord.com/channels/182615261403283459/196107890979897345) with your question and do not cross post.<br>
 
@@ -64,7 +62,6 @@ Send any console errors or files you have through https://mclo.gs/ - (We don't o
 
 ![CrazyVouchers Statistics](https://bstats.org/signatures/bukkit/Vouchers.svg)
 </center>
-
 
 [contributors-shield]: https://img.shields.io/github/contributors/Crazy-Crew/CrazyVouchers.svg?style=flat&logo=appveyor
 [contributors-url]: https://github.com/Crazy-Crew/CrazyVouchers/graphs/contributors
