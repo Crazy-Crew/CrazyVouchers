@@ -26,6 +26,8 @@
 CrazyVouchers as first install will come with a set of default files in the `vouchers` and `codes` folder which are to help you figure out how to use the plugin.
 You can simply create more vouchers by copying the files or creating new ones than doing `/crazyvouchers reload`
 
+[![Partnered with ApexHosting](https://raw.githubusercontent.com/Crazy-Crew/Branding/main/apex-banner-transparent.webp)](https://billing.apexminecrafthosting.com/aff.php?aff=5511)
+
 ![Features Banner](https://raw.githubusercontent.com/Crazy-Crew/Branding/main/crazyvouchers/banner/webp/features.webp)<br>
 **The ability to customize the entirety of CrazyVouchers**<br>
 If you have found something that you would like to be able to customize,<br>
