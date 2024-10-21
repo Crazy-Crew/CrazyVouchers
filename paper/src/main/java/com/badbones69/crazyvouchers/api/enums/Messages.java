@@ -36,6 +36,7 @@ public enum Messages {
     hit_voucher_limit(MessageKeys.hit_voucher_limit),
     two_step_authentication(MessageKeys.two_step_authentication),
     has_blacklist_permission(MessageKeys.has_blacklist_permission),
+    cooldown_active(MessageKeys.cooldown_active),
     not_in_whitelisted_world(MessageKeys.not_in_whitelist_world),
     unstack_item(MessageKeys.unstack_item),
     cannot_put_items_in_crafting_table(MessageKeys.cannot_put_items_in_crafting_table),

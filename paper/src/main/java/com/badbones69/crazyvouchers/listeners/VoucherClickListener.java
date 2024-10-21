@@ -227,6 +227,14 @@ public class VoucherClickListener implements Listener {
 
                     return;
                 }
+
+                if (voucher.hasCooldown() && voucher.isCooldown(player)){
+                    player.sendMessage(Messages.cooldown_active.getMessage(player, "{time}", String.valueOf(voucher.getCooldown())));
+
+                    return;
+                } else {
+                    voucher.removeCooldown(player); // remove cooldown, to avoid the gc not cleaning it up just in case.
+                }
             }
 
             if (Support.placeholder_api.isEnabled()) {
@@ -357,6 +365,10 @@ public class VoucherClickListener implements Listener {
 
     private void voucherClick(Player player, ItemStack item, Voucher voucher, String argument) {
         Methods.removeItem(item, player);
+
+        if (voucher.hasCooldown()){
+            voucher.addCooldown(player);
+        }
 
         populate(player, argument);
 

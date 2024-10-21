@@ -71,6 +71,7 @@ public class MessageKeys implements SettingsHolder {
     public static final Property<String> not_a_number = newProperty("voucher.requirements.not-a-number", "{prefix}&c{arg} is not a number.");
 
     public static final Property<String> not_a_voucher = newProperty("voucher.requirements.not-a-voucher", "{prefix}&cThat is not a Voucher Type.");
+
     public static final Property<String> has_blacklist_permission = newProperty("voucher.requirements.un-stack-item", "{prefix}&cSorry but you can not use this voucher because you have a black-listed permission.");
 
     public static final Property<String> not_in_whitelist_world = newProperty("voucher.requirements.not-in-world", "{prefix}&cYou can not use that voucher here as you are not in a whitelisted world for this voucher.");
@@ -82,6 +83,9 @@ public class MessageKeys implements SettingsHolder {
     public static final Property<String> code_used = newProperty("voucher.code.used", "{prefix}&cThe voucher code &6{arg} &chas already been redeemed.");
 
     public static final Property<String> sent_voucher = newProperty("voucher.sent-voucher", "{prefix}&3You have just given &6{player} &3a &6{voucher} &3voucher.");
+
+    @Comment("A list of available placeholders: {time}")
+    public static final Property<String> cooldown_active = newProperty("voucher.cooldown", "{prefix}Please wait {time}, before using the voucher again");
 
     public static final Property<String> sent_everyone_voucher = newProperty("voucher.sent-everyone-voucher", "{prefix}&3You have just given all players a &6{voucher} &3voucher.");
 
