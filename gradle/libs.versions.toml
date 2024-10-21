@@ -16,7 +16,7 @@ minecraft = "1.21.1"
 configurate = "4.2.0-SNAPSHOT"
 jetbrains = "24.1.0"
 adventure = "4.17.0"
-vital = "2.0.1"
+vital = "1.0.7"
 jalu = "1.4.1"
 
 # Gradle Plugins
@@ -61,7 +61,6 @@ nbtapi = { module = "de.tr7zw:item-nbt-api", version.ref = "nbtapi" }
 jetbrains = { module = "org.jetbrains:annotations", version.ref = "jetbrains" }
 
 vital-paper = { module = "com.ryderbelserion.vital:paper", version.ref = "vital" }
-vital-core = { module = "com.ryderbelserion.vital:core", version.ref = "vital" }
 
 [bundles]
 adventure = [ "kyori-api", "kyori-text", "kyori-logger" ]

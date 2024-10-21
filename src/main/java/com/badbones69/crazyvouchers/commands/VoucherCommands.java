@@ -11,7 +11,7 @@ import com.badbones69.crazyvouchers.api.CrazyManager;
 import com.badbones69.crazyvouchers.api.events.VoucherRedeemCodeEvent;
 import com.badbones69.crazyvouchers.api.objects.VoucherCode;
 import com.badbones69.crazyvouchers.utils.MsgUtils;
-import com.ryderbelserion.vital.paper.files.config.FileManager;
+import com.ryderbelserion.vital.paper.api.files.FileManager;
 import org.bukkit.Sound;
 import org.bukkit.SoundCategory;
 import org.bukkit.command.Command;
@@ -23,7 +23,6 @@ import org.bukkit.inventory.ItemStack;
 import org.jetbrains.annotations.NotNull;
 import com.badbones69.crazyvouchers.config.ConfigManager;
 import com.badbones69.crazyvouchers.config.types.ConfigKeys;
-
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;

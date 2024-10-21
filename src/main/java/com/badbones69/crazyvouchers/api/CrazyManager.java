@@ -2,17 +2,16 @@ package com.badbones69.crazyvouchers.api;
 
 import com.badbones69.crazyvouchers.CrazyVouchers;
 import com.badbones69.crazyvouchers.api.enums.Files;
-import com.badbones69.crazyvouchers.api.enums.Messages;
 import com.badbones69.crazyvouchers.api.enums.PersistentKeys;
 import com.badbones69.crazyvouchers.api.objects.other.ItemBuilder;
 import com.badbones69.crazyvouchers.api.objects.Voucher;
-import com.ryderbelserion.vital.core.util.FileUtil;
-import com.ryderbelserion.vital.paper.files.config.CustomFile;
+import com.ryderbelserion.vital.common.util.FileUtil;
+import com.ryderbelserion.vital.paper.api.files.CustomFile;
 import de.tr7zw.changeme.nbtapi.NBTItem;
 import com.badbones69.crazyvouchers.api.objects.VoucherCode;
 import io.papermc.paper.persistence.PersistentDataContainerView;
-import org.bukkit.Material;
 import org.bukkit.configuration.file.FileConfiguration;
+import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.inventory.ItemStack;
 import com.badbones69.crazyvouchers.config.ConfigManager;
 import com.badbones69.crazyvouchers.config.types.ConfigKeys;
@@ -63,10 +62,14 @@ public class CrazyManager {
 
         for (String voucherName : getVouchersList()) {
             try {
-                @Nullable CustomFile file = this.plugin.getFileManager().getCustomFile(voucherName);
+                @Nullable CustomFile file = this.plugin.getFileManager().getFile(voucherName, true);
 
                 if (file != null) {
-                    this.vouchers.add(new Voucher(file.getConfiguration(), voucherName));
+                    final YamlConfiguration configuration = file.getConfiguration();
+
+                    if (configuration != null) {
+                        this.vouchers.add(new Voucher(configuration, voucherName));
+                    }
                 }
             } catch (Exception exception) {
                 this.plugin.getLogger().log(Level.SEVERE, "There was an error while loading the " + voucherName + ".yml file.", exception);
@@ -75,10 +78,14 @@ public class CrazyManager {
 
         for (String voucherCode : getCodesList()) {
             try {
-                @Nullable CustomFile file = this.plugin.getFileManager().getCustomFile(voucherCode);
+                @Nullable CustomFile file = this.plugin.getFileManager().getFile(voucherCode, true);
 
                 if (file != null) {
-                    this.voucherCodes.add(new VoucherCode(file.getConfiguration(), voucherCode));
+                    final YamlConfiguration configuration = file.getConfiguration();
+
+                    if (configuration != null) {
+                        this.voucherCodes.add(new VoucherCode(configuration, voucherCode));
+                    }
                 }
             } catch (Exception exception) {
                 this.plugin.getLogger().log(Level.SEVERE,"There was an error while loading the " + voucherCode + ".yml file.", exception);
@@ -97,14 +104,14 @@ public class CrazyManager {
      * @return A list of crate names.
      */
     public final List<String> getVouchersList() {
-        return FileUtil.getFiles(new File(this.plugin.getDataFolder(), "vouchers"), ".yml");
+        return FileUtil.getFiles(this.plugin.getDataFolder(), "vouchers", ".yml");
     }
 
     /**
      * @return A list of crate names.
      */
     public final List<String> getCodesList() {
-        return FileUtil.getFiles(new File(this.plugin.getDataFolder(), "codes"), ".yml");
+        return FileUtil.getFiles(this.plugin.getDataFolder(), "codes", ".yml");
     }
     
     public final List<Voucher> getVouchers() {

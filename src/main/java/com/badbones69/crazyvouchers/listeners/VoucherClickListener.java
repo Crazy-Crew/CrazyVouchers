@@ -12,7 +12,7 @@ import com.badbones69.crazyvouchers.api.objects.other.ItemBuilder;
 import com.badbones69.crazyvouchers.api.objects.Voucher;
 import com.badbones69.crazyvouchers.config.ConfigManager;
 import com.badbones69.crazyvouchers.utils.MsgUtils;
-import com.ryderbelserion.vital.paper.enums.Support;
+import com.ryderbelserion.vital.paper.api.enums.Support;
 import io.papermc.paper.persistence.PersistentDataContainerView;
 import me.clip.placeholderapi.PlaceholderAPI;
 import org.bukkit.ChatColor;
@@ -36,7 +36,6 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.persistence.PersistentDataType;
 import org.jetbrains.annotations.NotNull;
 import com.badbones69.crazyvouchers.config.types.ConfigKeys;
-
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;

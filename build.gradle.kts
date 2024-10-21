@@ -8,6 +8,10 @@ plugins {
     `paper-plugin`
 }
 
+repositories {
+    maven("https://repo.crazycrew.us/libraries")
+}
+
 val buildNumber: String? = System.getenv("BUILD_NUMBER")
 
 rootProject.version = if (buildNumber != null) "${libs.versions.minecraft.get()}-$buildNumber" else "3.8"

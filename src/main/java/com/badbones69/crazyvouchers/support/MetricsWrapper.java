@@ -4,7 +4,7 @@ import ch.jalu.configme.SettingsManager;
 import com.badbones69.crazyvouchers.CrazyVouchers;
 import com.badbones69.crazyvouchers.config.ConfigManager;
 import com.badbones69.crazyvouchers.config.types.ConfigKeys;
-import com.ryderbelserion.vital.paper.bStats;
+import com.ryderbelserion.vital.paper.api.bStats;
 
 public class MetricsWrapper extends bStats {
 

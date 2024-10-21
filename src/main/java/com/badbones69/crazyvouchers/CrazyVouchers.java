@@ -4,7 +4,6 @@ import com.badbones69.crazyvouchers.api.CrazyManager;
 import com.badbones69.crazyvouchers.api.InventoryManager;
 import com.badbones69.crazyvouchers.api.builders.types.VoucherMenu;
 import com.badbones69.crazyvouchers.api.enums.Files;
-import com.badbones69.crazyvouchers.api.objects.other.Server;
 import com.badbones69.crazyvouchers.config.migrate.MigrationService;
 import com.badbones69.crazyvouchers.config.ConfigManager;
 import com.badbones69.crazyvouchers.listeners.FireworkDamageListener;
@@ -14,8 +13,8 @@ import com.badbones69.crazyvouchers.listeners.VoucherClickListener;
 import com.badbones69.crazyvouchers.listeners.VoucherCraftListener;
 import com.badbones69.crazyvouchers.listeners.VoucherMiscListener;
 import com.badbones69.crazyvouchers.support.MetricsWrapper;
-import com.ryderbelserion.vital.paper.enums.Support;
-import com.ryderbelserion.vital.paper.files.config.FileManager;
+import com.ryderbelserion.vital.paper.Vital;
+import com.ryderbelserion.vital.paper.api.enums.Support;
 import me.arcaniax.hdb.api.HeadDatabaseAPI;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.PluginCommand;
@@ -28,12 +27,11 @@ import org.bukkit.plugin.java.JavaPlugin;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import com.badbones69.crazyvouchers.config.types.ConfigKeys;
-
 import java.io.File;
 import java.util.Locale;
 import java.util.concurrent.CompletableFuture;
 
-public class CrazyVouchers extends JavaPlugin {
+public class CrazyVouchers extends Vital {
 
     public @NotNull static CrazyVouchers get() {
         return JavaPlugin.getPlugin(CrazyVouchers.class);
@@ -48,7 +46,6 @@ public class CrazyVouchers extends JavaPlugin {
     private InventoryManager inventoryManager;
 
     private CrazyManager crazyManager;
-    private FileManager fileManager;
 
     private HeadDatabaseAPI api;
 
@@ -76,22 +73,21 @@ public class CrazyVouchers extends JavaPlugin {
             }
         }
 
-        Server server = new Server(this);
+        ConfigManager.load(getDataFolder());
 
         boolean loadOldWay = ConfigManager.getConfig().getProperty(ConfigKeys.mono_file);
 
         new MigrationService().migrate(loadOldWay, isReadyToMigrate);
 
-        this.fileManager = new FileManager();
-        this.fileManager.addFile("users.yml").addFile("data.yml");
+        getFileManager().addFile("users.yml").addFile("data.yml");
 
         if (loadOldWay) {
-            this.fileManager.addFile("voucher-codes.yml").addFile("vouchers.yml");
+            getFileManager().addFile("voucher-codes.yml").addFile("vouchers.yml");
         } else {
-            this.fileManager.addFolder("codes").addFolder("vouchers");
+            getFileManager().addFolder("codes").addFolder("vouchers");
         }
 
-        this.fileManager.init();
+        getFileManager().init();
 
         new MetricsWrapper(this, 4536).start();
 
@@ -131,7 +127,7 @@ public class CrazyVouchers extends JavaPlugin {
 
         registerCommand(getCommand("vouchers"), new VoucherTab(), new VoucherCommands());
 
-        if (server.isLogging()) {
+        if (isVerbose()) {
             getComponentLogger().info("Done ({})!", String.format(Locale.ROOT, "%.3fs", (double) (System.nanoTime() - this.startTime) / 1.0E9D));
         }
     }
@@ -158,9 +154,5 @@ public class CrazyVouchers extends JavaPlugin {
 
     public @NotNull final CrazyManager getCrazyManager() {
         return this.crazyManager;
-    }
-
-    public @NotNull final FileManager getFileManager() {
-        return this.fileManager;
     }
 }
