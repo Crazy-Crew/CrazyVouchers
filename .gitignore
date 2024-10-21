@@ -1,6 +1,11 @@
 .gradle
 .idea
+
+buildSrc/.gradle
+buildSrc/build
+
+run
+
 build
 
-server
-builds
+jars

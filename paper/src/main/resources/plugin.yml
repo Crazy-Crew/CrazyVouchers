@@ -1,0 +1,27 @@
+name: '${name}'
+main: '${group}.${name}'
+
+authors: ${authors}
+
+version: '${version}'
+api-version: '${apiVersion}'
+description: '${description}'
+
+softdepend: [HeadDatabase, PlaceholderAPI, Oraxen, ItemsAdder]
+
+folia-supported: true
+
+commands:
+  vouchers:
+    description: "Manage your vouchers however you want."
+    aliases: [voucher]
+
+permissions:
+  voucher.admin:
+    default: op
+
+  voucher.redeem:
+    default: op
+
+  crazyvouchers.notify.duped:
+    default: op

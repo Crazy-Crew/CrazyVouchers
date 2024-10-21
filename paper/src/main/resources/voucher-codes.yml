@@ -1,0 +1,102 @@
+###################################
+#             Items: Options
+# Item: <ID:MD> - You can choose the item with its id and metadata.
+# Amount: <Number> - Choose how many of the item you get.
+# Name: <Name> - The display name that goes on the item.
+# Lore: <Line 1>,<Line 2>,<Line 3>,<Line 4> - The lore that will go under the enchantments. Split lines with a ','
+# <Enchantment>:<Level> - Choose the enchantment you want to add to the item. You can use the in-game names of the enchantment if you want. Replace the spaces in the name with a "_".
+###########################################################
+#                    Sound Options                        #
+# 1.8 and lower players use these sounds: http://badbones69.com/javadocs/1.8.8/org/bukkit/Sound.html
+# 1.9 and up players use these sounds: https://hub.spigotmc.org/javadocs/spigot/org/bukkit/Sound.html
+###################################################################
+#                         Firework Colors:                        #
+#      Aqua, Black, Blue, Fuchsia, Gray, Green, Lime, Maroon,     #
+#  Navy, Olive, Orange, Purple, Red, Silver, Teal, White, Yellow  #
+###################################################################
+voucher-codes: # Where you make your vouchers.
+  Starter-Money:
+    # The code to use in /vouchers redeem <code>
+    code: startermoney
+
+    # Run normal commands when the code is redeemed.
+    commands:
+      - eco give {player} 10000
+    # Random Commands is completely random.
+    random-commands:
+      - 'eco give 50000'
+      - 'eco give 5000'
+      - 'eco give 1000'
+      - 'give {player} diamond 5'
+    # https://docs.crazycrew.us/docs/plugins/crazyvouchers/guides/chance-system
+    # Lets you run commands with % chances.
+    chance-commands:
+      - '45 eco give {player} 100'
+      - '25 eco give {player} 1000'
+      - '15 eco give {player} 10000'
+      - '10 eco give {player} 100000'
+      - '5 eco give {player} 1000000'
+
+    options:
+      # If the option is case-sensitive or not.
+      case-sensitive: false
+      # If the code is enabled.
+      enabled: true
+      # The message to send the player.
+      message: '{prefix}&7You have been given $10,000.'
+      whitelist-worlds:
+        # Should we check the worlds players have to be in?
+        toggle: false
+        # The message to send.
+        message: '{prefix}&cYou can not use that voucher here as you are not in a whitelisted
+          world for this voucher.'
+        # The list of worlds they have to be in.
+        worlds:
+          - 'world'
+        # The commands to run if they don't have the permission.
+        commands:
+          - 'msg {player} send command for whatever reason'
+      permission:
+        whitelist-permission:
+          # If we should check players for this.
+          toggle: false
+          # If they don't have the permission, send this message.
+          message: '{prefix}You need {permission} so you can use this.'
+          # If they don't have this permission, they can't use the voucher.
+          permissions:
+            - 'voucher.startermoney'
+          # The commands to run if they don't have the permission.
+          commands:
+            - 'msg {player} send command for whatever reason'
+        blacklist-permission:
+          # If we should check players for this.
+          toggle: false
+          # The message to send to a player if they can't use the voucher.
+          message: '{prefix}&cYou have a blacklisted permission and can''t use this voucher.'
+          # If they have this permission, they can't use the voucher.
+          permissions:
+            - 'voucher.blacklist.startermoney'
+            # The commands to run if they do have the permission.
+          commands:
+            - 'msg {player} send command for whatever reason'
+      limiter:
+        # If this should be enabled.
+        toggle: false
+        # The max amount of uses for the voucher.
+        amount: 10
+      sound:
+        # If the sounds should be enabled.
+        toggle: true
+        # The volume pitch
+        volume: 1.0
+        # The sound pitch
+        pitch: 1.0
+        # The sound or sounds to use.
+        # https://jd.papermc.io/paper/1.20/org/bukkit/Sound.html
+        sounds:
+          - 'BLOCK_CHERRY_WOOD_BUTTON_CLICK_ON'
+      firework:
+        # If the fireworks should be enabled.
+        toggle: true
+        # The colors of the firework.
+        colors: 'Green, Lime'

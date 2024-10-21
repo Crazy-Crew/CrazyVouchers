@@ -1,136 +1,52 @@
 plugins {
-    `java-library`
-
     `maven-publish`
-
-    id("com.modrinth.minotaur") version "2.6.0"
-
-    id("com.github.johnrengelman.shadow") version "7.1.2"
+    `java-library`
 }
 
-repositories {
-    /**
-     * Placeholders
-     */
-    maven("https://repo.extendedclip.com/content/repositories/placeholderapi/")
+val buildNumber: String? = System.getenv("BUILD_NUMBER")
 
-    /**
-     * NBT API
-     */
-    maven("https://repo.codemc.org/repository/maven-public/")
+rootProject.version = if (buildNumber != null) "${libs.versions.minecraft.get()}-$buildNumber" else "3.8"
 
-    /**
-     * Paper Team
-     */
-    maven("https://repo.papermc.io/repository/maven-public/")
-
-    /**
-     * Everything else we need.
-     */
-    mavenCentral()
+subprojects.filter { it.name != "api" }.forEach {
+    it.project.version = rootProject.version
 }
 
-dependencies {
-    implementation("de.tr7zw", "nbt-data-api", "2.11.0")
+subprojects {
+    apply(plugin = "maven-publish")
+    apply(plugin = "java-library")
 
-    implementation("org.bstats", "bstats-bukkit", "3.0.0")
-
-    compileOnly("io.papermc.paper", "paper-api", "${project.extra["minecraft_version"]}-R0.1-SNAPSHOT")
-
-    compileOnly("me.clip", "placeholderapi", "2.11.2") {
-        exclude(group = "org.spigotmc")
-        exclude(group = "org.bukkit")
-    }
-}
-
-java {
-    toolchain.languageVersion.set(JavaLanguageVersion.of(project.extra["java_version"].toString()))
-}
-
-val isBeta: Boolean = extra["isBeta"].toString().toBoolean()
-
-fun getPluginVersion(): String {
-    return if (isBeta) "${project.version}-BETA" else project.version.toString()
-}
-
-fun getPluginVersionType(): String {
-    return if (isBeta) "beta" else "release"
-}
-
-tasks {
-    shadowJar {
-        archiveFileName.set("${rootProject.name}-${getPluginVersion()}.jar")
-
-        listOf(
-            "de.tr7zw",
-            "org.bstats"
-        ).forEach {
-            relocate(it, "${project.group}.plugin.lib.$it")
-        }
-    }
-
-    modrinth {
-        token.set(System.getenv("MODRINTH_TOKEN"))
-        projectId.set(rootProject.name.toLowerCase())
-
-        versionName.set("${rootProject.name} ${getPluginVersion()}")
-        versionNumber.set(getPluginVersion())
-
-        versionType.set(getPluginVersionType())
-
-        uploadFile.set(shadowJar.get())
-
-        autoAddDependsOn.set(true)
-
-        gameVersions.addAll(listOf("1.18", "1.18.1", "1.18.2", "1.19", "1.19.1", "1.19.2", "1.19.3"))
-        loaders.addAll(listOf("paper", "purpur"))
-
-        //<h3>The first release for CrazyVouchers on Modrinth! 🎉🎉🎉🎉🎉<h3><br> If we want a header.
-        changelog.set("""
-                <h4>Changes:</h4>
-                 <p>Added 1.18.2 support.</p>
-                <h4>Bug Fixes:</h4>
-                 <p>N/A</p>
-            """.trimIndent())
-    }
-
-    compileJava {
-        options.release.set(project.extra["java_version"].toString().toInt())
-    }
-
-    processResources {
-        filesMatching("plugin.yml") {
-            expand(
-                "name" to rootProject.name,
-                "group" to project.group,
-                "version" to getPluginVersion(),
-                "description" to project.description,
-                "website" to "https://modrinth.com/plugin/${rootProject.name.toLowerCase()}"
-            )
-        }
-    }
-}
-
-publishing {
-    val mavenExt: String = if (isBeta) "beta" else "releases"
+    group = "com.badbones69.crazyvouchers"
+    description = "Give your players as many rewards as you like in a compact form called a voucher!"
 
     repositories {
-        maven("https://repo.crazycrew.us/$mavenExt") {
-            name = "crazycrew"
-            //credentials(PasswordCredentials::class)
-            credentials {
-                username = System.getenv("REPOSITORY_USERNAME")
-                password = System.getenv("REPOSITORY_PASSWORD")
-            }
+        maven("https://repo.codemc.io/repository/maven-public")
+
+        maven("https://repo.crazycrew.us/libraries")
+        maven("https://repo.crazycrew.us/releases")
+
+        maven("https://jitpack.io")
+
+        mavenCentral()
+    }
+
+    java {
+        toolchain {
+            languageVersion.set(JavaLanguageVersion.of(21))
         }
     }
 
-    publications {
-        create<MavenPublication>("maven") {
-            groupId = "${project.group}"
-            artifactId = rootProject.name.toLowerCase()
-            version = getPluginVersion()
-            from(components["java"])
+    tasks {
+        compileJava {
+            options.encoding = Charsets.UTF_8.name()
+            options.release.set(21)
+        }
+
+        javadoc {
+            options.encoding = Charsets.UTF_8.name()
+        }
+
+        processResources {
+            filteringCharset = Charsets.UTF_8.name()
         }
     }
 }

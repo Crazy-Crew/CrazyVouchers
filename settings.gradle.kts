@@ -1,1 +1,3 @@
-rootProject.name = extra["name"] as String
+rootProject.name = "CrazyVouchers"
+
+include("publish", "paper")
