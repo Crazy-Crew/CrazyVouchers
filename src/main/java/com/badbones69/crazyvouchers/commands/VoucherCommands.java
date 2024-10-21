@@ -57,7 +57,22 @@ public class VoucherCommands implements CommandExecutor {
                     if (Methods.hasPermission(sender, "admin")) {
                         ConfigManager.refresh();
 
-                        this.fileManager.reloadFiles().init();
+                        boolean loadOldWay = ConfigManager.getConfig().getProperty(ConfigKeys.mono_file);
+
+                        this.fileManager.purge();
+
+                        this.fileManager.addFile("users.yml").addFile("data.yml");
+
+                        if (loadOldWay) {
+                            this.fileManager.addFile("voucher-codes.yml").addFile("vouchers.yml");
+                        } else {
+                            this.fileManager.removeFile("voucher-codes.yml");
+                            this.fileManager.removeFile("vouchers.yml");
+
+                            this.fileManager.addFolder("codes").addFolder("vouchers");
+                        }
+
+                        this.fileManager.init();
 
                         final FileConfiguration configuration = Files.users.getConfiguration();
 
