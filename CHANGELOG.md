@@ -2,6 +2,8 @@
 - Once 1.21.2 drops, NBT-API will be stripped from the plugin.
   - This is your second warning to migrate old vouchers players have.
 - All old vouchers will stop working once NBT-API is removed!
+- The migration for old configurations has been removed.
+  - If you need to migrate, use 3.7.4 as the migration works there.
 
 ### Changes:
 - Allowed switching between file systems on `/crazyvouchers reload`
