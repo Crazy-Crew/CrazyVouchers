@@ -34,7 +34,9 @@ import org.bukkit.event.player.PlayerInteractEntityEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.event.player.PlayerItemConsumeEvent;
 import org.bukkit.inventory.EquipmentSlot;
+import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.PlayerInventory;
 import org.bukkit.persistence.PersistentDataType;
 import org.jetbrains.annotations.NotNull;
 import com.badbones69.crazyvouchers.config.types.ConfigKeys;
@@ -91,13 +93,18 @@ public class VoucherClickListener implements Listener {
     // This must run as highest, so it doesn't cause other plugins to check
     // the items that were added to the players inventory and replaced the item in the player's hand.
     @EventHandler(priority = EventPriority.HIGHEST)
-    public void onVoucherClick(PlayerInteractEvent event) {
-        ItemStack item = getItemInHand(event.getPlayer());
+    public void onVoucherClick(PlayerInteractEvent event) { // this whole event confuses me, I hate interact events.
         Player player = event.getPlayer();
         Action action = event.getAction();
 
-        if (event.getHand() == EquipmentSlot.OFF_HAND && event.getHand() != null) {
-            Voucher voucher = this.crazyManager.getVoucherFromItem(player.getInventory().getItemInOffHand());
+        PlayerInventory inventory = player.getInventory();
+
+        if (event.getHand() == EquipmentSlot.OFF_HAND && event.getHand() != null) { // ???
+            final ItemStack itemStack = inventory.getItemInOffHand();
+
+            if (itemStack.getType() == Material.AIR) return; // nbt-api is stupid
+
+            Voucher voucher = this.crazyManager.getVoucherFromItem(itemStack);
 
             if (voucher != null && !voucher.isEdible()) {
                 event.setCancelled(true);
@@ -108,17 +115,19 @@ public class VoucherClickListener implements Listener {
             return;
         }
 
-        if (item.getType() != Material.AIR) {
-            if (event.getHand() != EquipmentSlot.HAND) return;
+        ItemStack item = inventory.getItemInMainHand();
 
-            if (action == Action.RIGHT_CLICK_BLOCK || action == Action.RIGHT_CLICK_AIR) {
-                Voucher voucher = this.crazyManager.getVoucherFromItem(item);
+        if (item.getType() == Material.AIR) return; // return early, because can't have PDC anyway.
 
-                if (voucher != null && !voucher.isEdible()) {
-                    event.setCancelled(true);
+        if (event.getHand() != EquipmentSlot.HAND) return; // ???
 
-                    useVoucher(player, voucher, item);
-                }
+        if (action == Action.RIGHT_CLICK_BLOCK || action == Action.RIGHT_CLICK_AIR) {
+            Voucher voucher = this.crazyManager.getVoucherFromItem(item);
+
+            if (voucher != null && !voucher.isEdible()) {
+                event.setCancelled(true);
+
+                useVoucher(player, voucher, item);
             }
         }
     }
@@ -126,6 +135,9 @@ public class VoucherClickListener implements Listener {
     @EventHandler(ignoreCancelled = true)
     public void onItemConsume(PlayerItemConsumeEvent event) {
         ItemStack item = event.getItem();
+
+        if (item.getType() == Material.AIR) return; // return if air anyway
+
         Voucher voucher = this.crazyManager.getVoucherFromItem(item);
 
         if (voucher != null && voucher.isEdible()) {
