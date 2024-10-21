@@ -11,6 +11,8 @@
 - Updates to configurations with materials, sounds, and how items work
   - Internally, all materials, and trims will be handled internally, so need not worry about that.
   - Sounds will have to be migrated manually, not much I can do about that.
+    - This change with sounds will allow custom sounds from resource packs.
+- This is a step in removing a large chunk of deprecated, or otherwise outdated ways of doing things as Minecraft has changed a lot internally.
 
 ### Changes:
 - Allowed switching between file systems on `/crazyvouchers reload`
