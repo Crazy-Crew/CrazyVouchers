@@ -16,11 +16,11 @@ import org.bukkit.Material;
 import org.bukkit.NamespacedKey;
 import org.bukkit.Sound;
 import org.bukkit.configuration.file.FileConfiguration;
+import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemFlag;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.persistence.PersistentDataContainer;
 import org.bukkit.persistence.PersistentDataType;
-import org.jetbrains.annotations.NotNull;
 import com.badbones69.crazyvouchers.config.ConfigManager;
 import com.badbones69.crazyvouchers.config.types.ConfigKeys;
 import java.util.ArrayList;
@@ -35,6 +35,10 @@ public class Voucher {
     private final ItemBuilder itemBuilder;
 
     private final String name;
+
+    private final boolean hasCooldown;
+    private final int cooldownInterval;
+
     private boolean usesArgs;
     private final boolean glowing;
     private final String usedMessage;
@@ -68,6 +72,8 @@ public class Voucher {
 
     private final List<ItemFlag> itemFlags = new ArrayList<>();
 
+    private final Map<UUID, Long> cooldowns = new HashMap<>();
+
     private String requiredPlaceholdersMessage;
 
     public Voucher(int number) {
@@ -88,16 +94,22 @@ public class Voucher {
         this.fireworkToggle = false;
         this.isEdible = false;
         this.glowing = false;
+
+        this.hasCooldown = false;
+        this.cooldownInterval = 0;
     }
 
     public Voucher(FileConfiguration fileConfiguration, String name) {
         this.name = name;
         this.usesArgs = false;
 
-        @NotNull CrazyVouchers plugin = CrazyVouchers.get();
+        final CrazyVouchers plugin = CrazyVouchers.get();
         final boolean loadOldWay = ConfigManager.getConfig().getProperty(ConfigKeys.mono_file);
 
         String path = loadOldWay ? "vouchers." + name + "." : "voucher.";
+
+        this.hasCooldown = fileConfiguration.getBoolean(path + "cooldown.toggle", false);
+        this.cooldownInterval = fileConfiguration.getInt(path + "cooldown.interval", 5);
 
         this.itemBuilder = new ItemBuilder()
                 .setMaterial(fileConfiguration.getString(path + "item", "Stone"))
@@ -440,6 +452,26 @@ public class Voucher {
 
     public boolean isEdible() {
         return this.isEdible;
+    }
+
+    public boolean hasCooldown() {
+        return this.hasCooldown;
+    }
+
+    public int getCooldown() {
+        return this.cooldownInterval;
+    }
+
+    public boolean isCooldown(final Player player) {
+        return this.cooldowns.getOrDefault(player.getUniqueId(), 0L) >= System.currentTimeMillis();
+    }
+
+    public void addCooldown(final Player player) {
+        this.cooldowns.put(player.getUniqueId(), System.currentTimeMillis() + (1000L * getCooldown()));
+    }
+
+    public void removeCooldown(final Player player) {
+        this.cooldowns.remove(player.getUniqueId());
     }
 
     private String getMessage(String path, FileConfiguration file) {

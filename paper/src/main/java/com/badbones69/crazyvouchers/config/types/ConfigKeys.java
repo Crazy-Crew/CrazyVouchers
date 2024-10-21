@@ -48,6 +48,12 @@ public class ConfigKeys implements SettingsHolder {
             """)
     public static final Property<Boolean> mono_file = newProperty("settings.use-old-file-system", false);
 
+    @Comment("Should players have a voucher cooldown?")
+    public static final Property<Boolean> cooldown_toggle = newProperty("settings.cooldown.toggle", false);
+
+    @Comment("How many seconds should a player have to wait, before opening a new voucher?")
+    public static final Property<Integer> cooldown_wait = newProperty("settings.cooldown.interval", 5);
+
     @Comment({
             "Vouchers will no longer be able to stack, as each one has a unique identifier",
             "Once the voucher is used, the uuid attached is thrown in a file.",
