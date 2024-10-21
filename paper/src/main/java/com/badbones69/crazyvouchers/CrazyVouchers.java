@@ -4,7 +4,6 @@ import com.badbones69.crazyvouchers.api.CrazyManager;
 import com.badbones69.crazyvouchers.api.InventoryManager;
 import com.badbones69.crazyvouchers.api.builders.types.VoucherMenu;
 import com.badbones69.crazyvouchers.api.enums.Files;
-import com.badbones69.crazyvouchers.config.migrate.MigrationService;
 import com.badbones69.crazyvouchers.config.ConfigManager;
 import com.badbones69.crazyvouchers.listeners.FireworkDamageListener;
 import com.badbones69.crazyvouchers.commands.VoucherCommands;
@@ -19,17 +18,13 @@ import me.arcaniax.hdb.api.HeadDatabaseAPI;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.PluginCommand;
 import org.bukkit.command.TabCompleter;
-import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.file.FileConfiguration;
-import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.plugin.PluginManager;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import com.badbones69.crazyvouchers.config.types.ConfigKeys;
-import java.io.File;
 import java.util.Locale;
-import java.util.concurrent.CompletableFuture;
 
 public class CrazyVouchers extends Vital {
 
@@ -51,33 +46,9 @@ public class CrazyVouchers extends Vital {
 
     @Override
     public void onEnable() {
-        final File file = new File(getDataFolder(), "Config.yml");
-
-        boolean isReadyToMigrate = false;
-
-        if (file.exists()) {
-            // Load configuration of input.
-            YamlConfiguration config = CompletableFuture.supplyAsync(() -> YamlConfiguration.loadConfiguration(file)).join();
-
-            // Get the configuration section.
-            ConfigurationSection vouchers = config.getConfigurationSection("Vouchers");
-
-            // If we can't see the section in the config.yml, we do nothing.
-            if (vouchers != null) {
-                File backupFile = new File(getDataFolder(), "Vouchers-Backup.yml");
-
-                // Rename to back up file.
-                file.renameTo(backupFile);
-
-                isReadyToMigrate = true;
-            }
-        }
-
         ConfigManager.load(getDataFolder());
 
         boolean loadOldWay = ConfigManager.getConfig().getProperty(ConfigKeys.mono_file);
-
-        new MigrationService().migrate(loadOldWay, isReadyToMigrate);
 
         getFileManager().addFile("users.yml").addFile("data.yml");
 
