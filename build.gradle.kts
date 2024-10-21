@@ -1,173 +1,52 @@
 plugins {
-    alias(libs.plugins.paperweight)
-    alias(libs.plugins.runPaper)
-    alias(libs.plugins.minotaur)
-    alias(libs.plugins.hangar)
-    alias(libs.plugins.shadow)
-
-    `paper-plugin`
-}
-
-repositories {
-    maven("https://repo.crazycrew.us/libraries")
+    `maven-publish`
+    `java-library`
 }
 
 val buildNumber: String? = System.getenv("BUILD_NUMBER")
 
-rootProject.version = if (buildNumber != null) "${libs.versions.minecraft.get()}-$buildNumber" else "3.8"
+rootProject.version = if (buildNumber != null) "${libs.versions.minecraft.get()}-$buildNumber" else "3.9"
 
-val isSnapshot = false
-
-val content: String = rootProject.file("CHANGELOG.md").readText(Charsets.UTF_8)
-
-dependencies {
-    paperweight.paperDevBundle(libs.versions.paper)
-
-    implementation(libs.vital.paper)
-
-    implementation(libs.nbtapi)
-
-    compileOnly(libs.headdatabaseapi)
-
-    compileOnly(libs.placeholderapi)
-
-    compileOnly(libs.itemsadder)
-
-    compileOnly(libs.oraxen)
+subprojects.filter { it.name != "api" }.forEach {
+    it.project.version = rootProject.version
 }
 
-paperweight {
-    reobfArtifactConfiguration = io.papermc.paperweight.userdev.ReobfArtifactConfiguration.REOBF_PRODUCTION
-}
+subprojects {
+    apply(plugin = "maven-publish")
+    apply(plugin = "java-library")
 
-val component: SoftwareComponent = components["java"]
+    group = "com.badbones69.crazyvouchers"
+    description = "Give your players as many rewards as you like in a compact form called a voucher!"
 
-tasks {
-    runServer {
-        jvmArgs("-Dnet.kyori.ansi.colorLevel=truecolor")
+    repositories {
+        maven("https://repo.codemc.io/repository/maven-public")
 
-        defaultCharacterEncoding = Charsets.UTF_8.name()
+        maven("https://repo.crazycrew.us/libraries")
+        maven("https://repo.crazycrew.us/releases")
 
-        minecraftVersion(libs.versions.minecraft.get())
+        maven("https://jitpack.io")
+
+        mavenCentral()
     }
 
-    assemble {
-        dependsOn(reobfJar)
-
-        doLast {
-            copy {
-                from(reobfJar.get())
-                into(rootProject.projectDir.resolve("jars"))
-            }
+    java {
+        toolchain {
+            languageVersion.set(JavaLanguageVersion.of(21))
         }
     }
 
-    shadowJar {
-        archiveBaseName.set(rootProject.name)
-        archiveClassifier.set("")
-
-        listOf(
-            "de.tr7zw.changeme.nbtapi",
-            "com.ryderbelserion",
-            "ch.jalu"
-        ).forEach {
-            relocate(it, "libs.$it")
-        }
-    }
-
-    processResources {
-        inputs.properties("name" to rootProject.name)
-        inputs.properties("version" to project.version)
-        inputs.properties("group" to project.group)
-        inputs.properties("description" to project.properties["description"])
-        inputs.properties("apiVersion" to libs.versions.minecraft.get())
-        inputs.properties("authors" to project.properties["authors"])
-        inputs.properties("website" to project.properties["website"])
-
-        filesMatching("plugin.yml") {
-            expand(inputs.properties)
-        }
-    }
-
-    publishing {
-        repositories {
-            maven {
-                url = uri("https://repo.crazycrew.us/releases")
-
-                credentials {
-                    this.username = System.getenv("gradle_username")
-                    this.password = System.getenv("gradle_password")
-                }
-            }
+    tasks {
+        compileJava {
+            options.encoding = Charsets.UTF_8.name()
+            options.release.set(21)
         }
 
-        publications {
-            create<MavenPublication>("maven") {
-                groupId = rootProject.group.toString()
-                artifactId = "${rootProject.name.lowercase()}-${project.name.lowercase()}-api"
-                version = rootProject.version.toString()
-
-                from(component)
-            }
+        javadoc {
+            options.encoding = Charsets.UTF_8.name()
         }
-    }
 
-    modrinth {
-        token.set(System.getenv("MODRINTH_TOKEN"))
-
-        projectId.set(rootProject.name.lowercase())
-
-        versionType.set(if (isSnapshot) "beta" else "release")
-
-        versionName.set("${rootProject.name} ${rootProject.version}")
-        versionNumber.set(rootProject.version as String)
-
-        changelog.set(content)
-
-        uploadFile.set(rootProject.projectDir.resolve("jars/${rootProject.name}-${rootProject.version}.jar"))
-
-        syncBodyFrom.set(rootProject.file("README.md").readText(Charsets.UTF_8))
-
-        gameVersions.add(libs.versions.minecraft.get())
-
-        loaders.addAll(listOf("purpur", "paper", "folia"))
-
-        autoAddDependsOn.set(false)
-        detectLoaders.set(false)
-    }
-
-    hangarPublish {
-        publications.register("plugin") {
-            apiKey.set(System.getenv("HANGAR_KEY"))
-
-            id.set(rootProject.name.lowercase())
-
-            version.set(rootProject.version as String)
-
-            channel.set(if (isSnapshot) "Beta" else "Release")
-
-            changelog.set(content)
-
-            platforms {
-                paper {
-                    jar.set(rootProject.projectDir.resolve("jars/${rootProject.name}-${rootProject.version}.jar"))
-
-                    platformVersions.set(listOf(libs.versions.minecraft.get()))
-
-                    dependencies {
-                        hangar("PlaceholderAPI") {
-                            required = false
-                        }
-
-                        url(
-                            "Oraxen",
-                            "https://www.spigotmc.org/resources/%E2%98%84%EF%B8%8F-oraxen-custom-items-blocks-emotes-furniture-resourcepack-and-gui-1-18-1-20-4.72448/"
-                        ) {
-                            required = false
-                        }
-                    }
-                }
-            }
+        processResources {
+            filteringCharset = Charsets.UTF_8.name()
         }
     }
 }
