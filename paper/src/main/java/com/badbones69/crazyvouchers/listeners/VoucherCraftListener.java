@@ -31,7 +31,7 @@ public class VoucherCraftListener implements Listener {
         if (!this.config.getProperty(ConfigKeys.prevent_using_vouchers_in_recipes_toggle)) return;
 
         for (ItemStack itemStack : event.getInventory().getMatrix()) {
-            if (itemStack == null) return;
+            if (itemStack == null || itemStack.getType() == Material.AIR) return;
 
             Voucher voucher = crazyManager.getVoucherFromItem(itemStack);
 
