@@ -13,12 +13,14 @@ import com.badbones69.crazyvouchers.api.objects.Voucher;
 import com.badbones69.crazyvouchers.config.ConfigManager;
 import com.badbones69.crazyvouchers.utils.MsgUtils;
 import com.ryderbelserion.vital.paper.api.enums.Support;
+import com.ryderbelserion.vital.paper.util.scheduler.FoliaRunnable;
 import io.papermc.paper.persistence.PersistentDataContainerView;
 import me.clip.placeholderapi.PlaceholderAPI;
 import org.bukkit.ChatColor;
 import org.bukkit.GameMode;
 import org.bukkit.Location;
 import org.bukkit.Material;
+import org.bukkit.Server;
 import org.bukkit.Sound;
 import org.bukkit.SoundCategory;
 import org.bukkit.block.Block;
@@ -299,23 +301,37 @@ public class VoucherClickListener implements Listener {
             if (voucher.usesWhitelistWorlds() && !voucher.getWhitelistWorlds().contains(player.getWorld().getName().toLowerCase())) {
                 player.sendMessage(Methods.replacePlaceholders(this.placeholders, voucher.getWhitelistWorldMessage(), false));
 
-                for (String command : voucher.getWhitelistWorldCommands()) {
-                    this.plugin.getServer().dispatchCommand(this.plugin.getServer().getConsoleSender(), Methods.replacePlaceholders(this.placeholders, command, true));
-                }
+                final Server server = this.plugin.getServer();
+
+                new FoliaRunnable(server.getGlobalRegionScheduler()) {
+                    @Override
+                    public void run() {
+                        for (String command : voucher.getWhitelistWorldCommands()) {
+                            server.dispatchCommand(server.getConsoleSender(), Methods.replacePlaceholders(placeholders, command, true));
+                        }
+                    }
+                }.run(this.plugin);
 
                 return false;
             }
 
             if (voucher.useBlackListPermissions()) {
+                final Server server = this.plugin.getServer();
+
                 for (String permission : voucher.getBlackListPermissions()) {
                     if (player.hasPermission(permission.toLowerCase().replace("{arg}", argument != null ? argument : "{arg}"))) {
                         this.placeholders.put("{permission}", permission);
 
                         player.sendMessage(Methods.replacePlaceholders(this.placeholders, voucher.getBlackListMessage(), false));
 
-                        for (String command : voucher.getBlacklistCommands()) {
-                            this.plugin.getServer().dispatchCommand(this.plugin.getServer().getConsoleSender(), Methods.replacePlaceholders(this.placeholders, command, true));
-                        }
+                        new FoliaRunnable(server.getGlobalRegionScheduler()) {
+                            @Override
+                            public void run() {
+                                for (String command : voucher.getBlacklistCommands()) {
+                                    server.dispatchCommand(server.getConsoleSender(), Methods.replacePlaceholders(placeholders, command, true));
+                                }
+                            }
+                        }.run(this.plugin);
 
                         return false;
                     }
