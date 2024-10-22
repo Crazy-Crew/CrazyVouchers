@@ -6,6 +6,7 @@ import com.badbones69.crazyvouchers.api.builders.InventoryBuilder;
 import com.badbones69.crazyvouchers.api.enums.PersistentKeys;
 import com.badbones69.crazyvouchers.api.objects.Voucher;
 import com.badbones69.crazyvouchers.api.objects.other.ItemBuilder;
+import io.papermc.paper.persistence.PersistentDataContainerView;
 import org.bukkit.Material;
 import org.bukkit.Sound;
 import org.bukkit.SoundCategory;
@@ -13,7 +14,6 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
-import org.bukkit.persistence.PersistentDataContainer;
 import org.bukkit.persistence.PersistentDataType;
 import org.jetbrains.annotations.NotNull;
 import java.util.Arrays;
@@ -64,9 +64,7 @@ public class VoucherMenu extends InventoryBuilder {
 
         if (item == null || item.getType() == Material.AIR) return;
 
-        if (!item.hasItemMeta()) return;
-
-        final PersistentDataContainer container = item.getItemMeta().getPersistentDataContainer();
+        final PersistentDataContainerView container = item.getPersistentDataContainer();
 
         if (container.has(PersistentKeys.back_button.getNamespacedKey())) {
             player.playSound(player.getLocation(), Sound.BLOCK_NOTE_BLOCK_XYLOPHONE, SoundCategory.PLAYERS, 1F, 1F);
