@@ -10,6 +10,7 @@ import com.ryderbelserion.vital.paper.api.files.CustomFile;
 import de.tr7zw.changeme.nbtapi.NBTItem;
 import com.badbones69.crazyvouchers.api.objects.VoucherCode;
 import io.papermc.paper.persistence.PersistentDataContainerView;
+import org.bukkit.Material;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.inventory.ItemStack;
@@ -163,19 +164,21 @@ public class CrazyManager {
     }
 
     public Voucher getVoucherFromItem(final ItemStack item) {
-        final PersistentDataContainerView container = item.getPersistentDataContainer();
-
         Voucher voucher = null;
 
-        if (container.has(PersistentKeys.voucher_item.getNamespacedKey())) {
-            final String voucherName = container.get(PersistentKeys.voucher_item.getNamespacedKey(), PersistentDataType.STRING);
+        if (item.getType() != Material.AIR) {
+            final PersistentDataContainerView container = item.getPersistentDataContainer();
 
-            voucher = getVoucher(voucherName);
-        } else {
-            NBTItem nbt = new NBTItem(item); // this section related to nbt items is deprecated, and marked for removal
+            if (container.has(PersistentKeys.voucher_item.getNamespacedKey())) {
+                final String voucherName = container.get(PersistentKeys.voucher_item.getNamespacedKey(), PersistentDataType.STRING);
 
-            if (nbt.hasTag("voucher")) {
-                voucher = getVoucher(nbt.getString("voucher"));
+                voucher = getVoucher(voucherName);
+            } else {
+                NBTItem nbt = new NBTItem(item); // this section related to nbt items is deprecated, and marked for removal
+
+                if (nbt.hasTag("voucher")) {
+                    voucher = getVoucher(nbt.getString("voucher"));
+                }
             }
         }
 
@@ -183,23 +186,26 @@ public class CrazyManager {
     }
 
     public String getArgument(final ItemStack item, final Voucher voucher) {
-        final PersistentDataContainerView container = item.getPersistentDataContainer();
+        if (item.getType() != Material.AIR) {
+            final PersistentDataContainerView container = item.getPersistentDataContainer();
 
-        if (voucher.usesArguments()) {
-            if (container.has(PersistentKeys.voucher_item.getNamespacedKey()) && container.has(PersistentKeys.voucher_arg.getNamespacedKey())) {
-                final String arg = container.get(PersistentKeys.voucher_arg.getNamespacedKey(), PersistentDataType.STRING);
-                final String voucherName = container.get(PersistentKeys.voucher_item.getNamespacedKey(), PersistentDataType.STRING);
+            if (voucher.usesArguments()) {
+                if (container.has(PersistentKeys.voucher_item.getNamespacedKey()) && container.has(PersistentKeys.voucher_arg.getNamespacedKey())) {
+                    final String arg = container.get(PersistentKeys.voucher_arg.getNamespacedKey(), PersistentDataType.STRING);
+                    final String voucherName = container.get(PersistentKeys.voucher_item.getNamespacedKey(), PersistentDataType.STRING);
 
-                if (voucherName != null) {
-                    if (voucherName.equalsIgnoreCase(voucher.getName())) {
-                        return arg;
+                    if (voucherName != null) {
+                        if (voucherName.equalsIgnoreCase(voucher.getName())) {
+                            return arg;
+                        }
                     }
-                }
-            } else {
-                NBTItem nbt = new NBTItem(item); // this section related to nbt items is deprecated, and marked for removal
+                } else {
+                    NBTItem nbt = new NBTItem(item); // this section related to nbt items is deprecated, and marked for removal
 
-                if (nbt.hasTag("voucher") && nbt.hasTag("argument")) {
-                    if (nbt.getString("voucher").equalsIgnoreCase(voucher.getName())) return nbt.getString("argument");
+                    if (nbt.hasTag("voucher") && nbt.hasTag("argument")) {
+                        if (nbt.getString("voucher").equalsIgnoreCase(voucher.getName()))
+                            return nbt.getString("argument");
+                    }
                 }
             }
         }

@@ -102,8 +102,6 @@ public class VoucherClickListener implements Listener {
         if (event.getHand() == EquipmentSlot.OFF_HAND && event.getHand() != null) { // ???
             final ItemStack itemStack = inventory.getItemInOffHand();
 
-            if (itemStack.getType() == Material.AIR) return; // nbt-api is stupid
-
             Voucher voucher = this.crazyManager.getVoucherFromItem(itemStack);
 
             if (voucher != null && !voucher.isEdible()) {
@@ -116,8 +114,6 @@ public class VoucherClickListener implements Listener {
         }
 
         ItemStack item = inventory.getItemInMainHand();
-
-        if (item.getType() == Material.AIR) return; // return early, because can't have PDC anyway.
 
         if (event.getHand() != EquipmentSlot.HAND) return; // ???
 
@@ -135,8 +131,6 @@ public class VoucherClickListener implements Listener {
     @EventHandler(ignoreCancelled = true)
     public void onItemConsume(PlayerItemConsumeEvent event) {
         ItemStack item = event.getItem();
-
-        if (item.getType() == Material.AIR) return; // return if air anyway
 
         Voucher voucher = this.crazyManager.getVoucherFromItem(item);
 
