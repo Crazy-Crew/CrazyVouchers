@@ -332,7 +332,7 @@ public class Voucher {
 
             container.set(PersistentKeys.voucher_item.getNamespacedKey(), PersistentDataType.STRING, getName());
 
-            if (argument.isEmpty()) container.set(PersistentKeys.voucher_arg.getNamespacedKey(), PersistentDataType.STRING, argument);
+            if (!argument.isEmpty()) container.set(PersistentKeys.voucher_arg.getNamespacedKey(), PersistentDataType.STRING, argument);
         });
 
         return item;
