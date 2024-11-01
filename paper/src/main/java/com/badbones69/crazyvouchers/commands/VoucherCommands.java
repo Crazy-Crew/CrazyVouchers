@@ -319,6 +319,13 @@ public class VoucherCommands implements CommandExecutor {
                             }
 
                             Player player = this.plugin.getServer().getPlayer(name);
+
+                            if (player == null) {
+                                Messages.not_online.sendMessage(sender);
+
+                                return true;
+                            }
+
                             String argument = "";
 
                             if (args.length >= 5) {
@@ -335,25 +342,21 @@ public class VoucherCommands implements CommandExecutor {
                                 itemStacks.addAll(voucher.buildItems("", amount));
                             }
 
-                            if (player != null) {
-                                if (Methods.isInventoryFull(player)) {
-                                    itemStacks.forEach(itemStack -> player.getWorld().dropItem(player.getLocation(), itemStack));
-                                } else {
-                                    itemStacks.forEach(itemStack -> {
-                                        Methods.addItem(player, itemStack);
-
-                                        player.updateInventory();
-                                    });
-                                }
-
-                                Map<String, String> placeholders = new HashMap<>();
-                                placeholders.put("{player}", player.getName());
-                                placeholders.put("{voucher}", voucher.getName());
-
-                                if (!Messages.sent_voucher.getMessage(sender).isBlank()) Messages.sent_voucher.sendMessage(sender, placeholders);
+                            if (Methods.isInventoryFull(player)) {
+                                itemStacks.forEach(itemStack -> player.getWorld().dropItem(player.getLocation(), itemStack));
                             } else {
-                                Messages.not_online.sendMessage(sender);
+                                itemStacks.forEach(itemStack -> {
+                                    Methods.addItem(player, itemStack);
+
+                                    player.updateInventory();
+                                });
                             }
+
+                            Map<String, String> placeholders = new HashMap<>();
+                            placeholders.put("{player}", player.getName());
+                            placeholders.put("{voucher}", voucher.getName());
+
+                            if (!Messages.sent_voucher.getMessage(sender).isBlank()) Messages.sent_voucher.sendMessage(sender, placeholders);
 
                             return true;
                         }
