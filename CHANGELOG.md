@@ -1,5 +1,5 @@
 ### Changes:
-- Check if player is null on /voucher give, and return early.
-
-### Fixed:
-- The argument was not being applied to the voucher, due to checking if it was empty. We have to check if it's not empty.
+- Updated to 1.21.3
+- Bumped nbt-api
+  - Please make an effort to migrate existing vouchers made prior to v3.8 as nbt-api will be removed.
+  - This is a notice, to give you more time until that happens.

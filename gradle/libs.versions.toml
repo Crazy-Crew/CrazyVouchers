@@ -27,7 +27,7 @@ oraxen = "1.171.0"
 vault = "1.7.1"
 
 # Deprecated API
-nbtapi = "2.13.3-SNAPSHOT"
+nbtapi = "2.14.0"
 
 # Vital API
 vital-paper = "1.0.6"
