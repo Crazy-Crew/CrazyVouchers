@@ -490,7 +490,10 @@ public class ItemBuilder {
 
         if (this.useCustomModelData) this.itemMeta.setCustomModelData(this.customModelData);
 
+        this.itemMeta.setAttributeModifiers(this.itemStack.getType().getDefaultAttributeModifiers());
+
         this.itemFlags.forEach(this.itemMeta::addItemFlags);
+
         item.setItemMeta(this.itemMeta);
         hideItemFlags();
         item.addUnsafeEnchantments(this.enchantments);
