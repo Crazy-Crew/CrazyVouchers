@@ -22,6 +22,8 @@
 [![paper software](https://cdn.jsdelivr.net/npm/@intergrav/devins-badges@3/assets/compact-minimal/supported/paper_vector.svg)](https://papermc.io/)
 [![purpur software](https://cdn.jsdelivr.net/npm/@intergrav/devins-badges@3/assets/compact-minimal/supported/purpur_vector.svg)](https://purpurmc.org/)
 
+[![Partnered with ApexHosting](https://raw.githubusercontent.com/Crazy-Crew/Branding/main/apex-banner-transparent.webp)](https://billing.apexminecrafthosting.com/aff.php?aff=5511)
+
 <big>**Initial Plugin Setup**</big><br>
 CrazyVouchers as first install will come with a set of default files in the `vouchers` and `codes` folder which are to help you figure out how to use the plugin.
 You can simply create more vouchers by copying the files or creating new ones than doing `/crazyvouchers reload`
