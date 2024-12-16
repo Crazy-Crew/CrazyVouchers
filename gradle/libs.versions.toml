@@ -60,9 +60,6 @@ placeholderapi = { module = "me.clip:placeholderapi", version.ref = "placeholder
 vault = { module = "com.github.MilkBowl:VaultAPI", version.ref = "vault" }
 oraxen = { module = "io.th0rgal:oraxen", version.ref = "oraxen" }
 
-# Deprecated API
-nbtapi = { module = "de.tr7zw:item-nbt-api", version.ref = "nbtapi" }
-
 # Vital API
 vital-paper = { module = "com.ryderbelserion.vital:paper", version.ref = "vital-paper" }
 
