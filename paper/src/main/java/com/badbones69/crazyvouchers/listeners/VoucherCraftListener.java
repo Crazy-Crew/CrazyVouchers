@@ -7,7 +7,6 @@ import com.badbones69.crazyvouchers.api.enums.Messages;
 import com.badbones69.crazyvouchers.api.enums.PersistentKeys;
 import com.badbones69.crazyvouchers.api.objects.Voucher;
 import com.badbones69.crazyvouchers.config.ConfigManager;
-import de.tr7zw.changeme.nbtapi.NBTItem;
 import io.papermc.paper.persistence.PersistentDataContainerView;
 import org.bukkit.Material;
 import org.bukkit.event.EventHandler;
@@ -47,18 +46,6 @@ public class VoucherCraftListener implements Listener {
                 }
 
                 break;
-            } else {
-                NBTItem nbt = new NBTItem(itemStack); // this section related to nbt items is deprecated, and marked for removal
-
-                if (nbt.hasTag("voucher")) {
-                    event.getInventory().setResult(new ItemStack(Material.AIR));
-
-                    if (this.config.getProperty(ConfigKeys.prevent_using_vouchers_in_recipes_alert)) {
-                        Messages.cannot_put_items_in_crafting_table.sendMessage(event.getView().getPlayer());
-                    }
-
-                    break;
-                }
             }
         }
     }

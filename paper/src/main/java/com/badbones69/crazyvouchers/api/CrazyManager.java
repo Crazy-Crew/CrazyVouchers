@@ -7,7 +7,6 @@ import com.badbones69.crazyvouchers.api.objects.other.ItemBuilder;
 import com.badbones69.crazyvouchers.api.objects.Voucher;
 import com.ryderbelserion.vital.common.util.FileUtil;
 import com.ryderbelserion.vital.paper.api.files.CustomFile;
-import de.tr7zw.changeme.nbtapi.NBTItem;
 import com.badbones69.crazyvouchers.api.objects.VoucherCode;
 import io.papermc.paper.persistence.PersistentDataContainerView;
 import org.bukkit.Material;
@@ -19,7 +18,6 @@ import com.badbones69.crazyvouchers.config.types.ConfigKeys;
 import org.bukkit.persistence.PersistentDataType;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
-import java.io.File;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -173,12 +171,6 @@ public class CrazyManager {
                 final String voucherName = container.get(PersistentKeys.voucher_item.getNamespacedKey(), PersistentDataType.STRING);
 
                 voucher = getVoucher(voucherName);
-            } else {
-                NBTItem nbt = new NBTItem(item); // this section related to nbt items is deprecated, and marked for removal
-
-                if (nbt.hasTag("voucher")) {
-                    voucher = getVoucher(nbt.getString("voucher"));
-                }
             }
         }
 
@@ -198,13 +190,6 @@ public class CrazyManager {
                         if (voucherName.equalsIgnoreCase(voucher.getName())) {
                             return arg;
                         }
-                    }
-                } else {
-                    NBTItem nbt = new NBTItem(item); // this section related to nbt items is deprecated, and marked for removal
-
-                    if (nbt.hasTag("voucher") && nbt.hasTag("argument")) {
-                        if (nbt.getString("voucher").equalsIgnoreCase(voucher.getName()))
-                            return nbt.getString("argument");
                     }
                 }
             }

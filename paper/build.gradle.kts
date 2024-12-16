@@ -14,8 +14,6 @@ repositories {
 dependencies {
     implementation(libs.vital.paper)
 
-    implementation(libs.nbtapi)
-
     compileOnly(libs.headdatabaseapi)
 
     compileOnly(libs.placeholderapi)
@@ -54,7 +52,6 @@ tasks {
         archiveClassifier.set("")
 
         listOf(
-            "de.tr7zw.changeme.nbtapi",
             "com.ryderbelserion.vital"
         ).forEach {
             relocate(it, "libs.$it")
