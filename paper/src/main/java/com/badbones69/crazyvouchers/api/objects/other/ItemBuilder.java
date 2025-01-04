@@ -7,6 +7,8 @@ import com.destroystokyo.paper.profile.ProfileProperty;
 import com.ryderbelserion.vital.paper.api.builders.PlayerBuilder;
 import com.ryderbelserion.vital.paper.api.enums.Support;
 import com.ryderbelserion.vital.paper.util.DyeUtil;
+import io.papermc.paper.datacomponent.DataComponentTypes;
+import io.papermc.paper.datacomponent.item.Unbreakable;
 import io.papermc.paper.registry.RegistryAccess;
 import io.papermc.paper.registry.RegistryKey;
 import io.th0rgal.oraxen.api.OraxenItems;
@@ -987,6 +989,7 @@ public class ItemBuilder {
      */
     public ItemBuilder hideItemFlags(boolean hideItemFlags) {
         this.hideItemFlags = hideItemFlags;
+
         return this;
     }
 
@@ -1007,7 +1010,9 @@ public class ItemBuilder {
      */
     private ItemBuilder setReferenceItem(ItemStack referenceItem) {
         this.itemStack = referenceItem;
+
         this.itemMeta = this.itemStack.getItemMeta();
+
         return this;
     }
 
@@ -1022,12 +1027,11 @@ public class ItemBuilder {
     }
 
     /**
-     * @param glow sets whether to make an item to glow or not.
      * @return the ItemBuilder with an updated Boolean.
      */
     public ItemBuilder setGlow(boolean glow) {
         this.itemStack.setData(DataComponentTypes.ENCHANTMENT_GLINT_OVERRIDE, glow);
-        
+
         return this;
     }
 
