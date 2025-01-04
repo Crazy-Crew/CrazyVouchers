@@ -59,10 +59,10 @@ vouchers: # Where you make your vouchers.
     display-trim:
       material: QUARTZ
       pattern: SENTRY
-    # Hide item flags
-    flags:
-      - 'HIDE_ATTRIBUTES'
-      - 'HIDE_ENCHANTS'
+    # Any generic component for the Item.
+    components:
+      # Hides the entire tooltip
+      hide-tooltip: false
     # All options when they right-click it.
     options:
       # The message sent when they right-click it.
@@ -135,10 +135,10 @@ vouchers: # Where you make your vouchers.
     # The commands to send.
     commands:
       - 'lp user {player} parent group set {arg}'
-    # Hide item flags
-    flags:
-      - 'HIDE_ATTRIBUTES'
-      - 'HIDE_ENCHANTS'
+    # Any generic component for the Item.
+    components:
+      # Hides the entire tooltip
+      hide-tooltip: false
     # All options when they right-click it.
     options:
       # The message sent when they right-click it.
@@ -167,10 +167,10 @@ vouchers: # Where you make your vouchers.
     #player: 'https://textures.minecraft.net/texture/1ee3126ff2c343da525eef2b93272b9fed36273d0ea08c2616b80009948ad57e'
     # If the item should glow or not.
     glowing: true
-    # Hide item flags
-    flags:
-      - 'HIDE_ATTRIBUTES'
-      - 'HIDE_ENCHANTS'
+    # Any generic component for the Item.
+    components:
+      # Hides the entire tooltip
+      hide-tooltip: false
     # All options when they right-click it.
     options:
       # The message sent when they right-click it.

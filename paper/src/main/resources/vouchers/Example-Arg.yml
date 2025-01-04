@@ -20,10 +20,10 @@ voucher:
   # The commands to send.
   commands:
     - 'lp user {player} parent group set {arg}'
-  # Hide item flags
-  flags:
-    - 'HIDE_ATTRIBUTES'
-    - 'HIDE_ENCHANTS'
+  # Any generic component for the Item.
+  components:
+    # Hides the entire tooltip
+    hide-tooltip: false
   # All options when they right-click it.
   options:
     # The message sent when they right-click it.

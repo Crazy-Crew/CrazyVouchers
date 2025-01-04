@@ -51,6 +51,7 @@ voucher:
     - '10 eco give {player} 100000'
     - '5 eco give {player} 1000000'
 
+
   # The durability or damage to the item given in the preview gui.
   display-damage: 50
 
@@ -58,10 +59,10 @@ voucher:
   display-trim:
     material: QUARTZ
     pattern: SENTRY
-  # Hide item flags
-  flags:
-    - 'HIDE_ATTRIBUTES'
-    - 'HIDE_ENCHANTS'
+    # Any generic component for the Item.
+    components:
+      # Hides the entire tooltip
+      hide-tooltip: false
   # All options when they right-click it.
   options:
     # The message sent when they right-click it.

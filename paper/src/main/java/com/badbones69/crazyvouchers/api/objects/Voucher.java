@@ -70,8 +70,6 @@ public class Voucher {
     private final List<ItemBuilder> items = new ArrayList<>();
     private final Map<String, String> requiredPlaceholders = new HashMap<>();
 
-    private final List<ItemFlag> itemFlags = new ArrayList<>();
-
     private final Map<UUID, Long> cooldowns = new HashMap<>();
 
     private String requiredPlaceholdersMessage;
@@ -249,9 +247,7 @@ public class Voucher {
             this.soundToggle = false;
         }
 
-        if (fileConfiguration.contains(path + "flags")) {
-            fileConfiguration.getStringList(path + "flags").forEach(flag -> this.itemFlags.add(ItemFlag.valueOf(flag)));
-        }
+        this.itemBuilder.hideItemFlags(fileConfiguration.getBoolean(path + "components.hide-tooltip", false));
 
         if (fileConfiguration.getBoolean(path + "options.firework.toggle")) {
             for (String color : fileConfiguration.getString(path + "options.firework.colors", "").split(", ")) {
@@ -287,7 +283,7 @@ public class Voucher {
     private final SettingsManager config = ConfigManager.getConfig();
     
     public ItemStack buildItem(int amount) {
-        ItemStack item = this.itemBuilder.setAmount(amount).setItemFlags(this.itemFlags).setGlow(this.glowing).build();
+        final ItemStack item = this.itemBuilder.setAmount(amount).setGlow(this.glowing).build();
 
         if (this.config.getProperty(ConfigKeys.dupe_protection)) {
             item.editMeta(itemMeta -> itemMeta.getPersistentDataContainer().set(PersistentKeys.dupe_protection.getNamespacedKey(), PersistentDataType.STRING, UUID.randomUUID().toString()));
@@ -321,7 +317,7 @@ public class Voucher {
     }
     
     public ItemStack buildItem(String argument, int amount) {
-        ItemStack item = this.itemBuilder.setAmount(amount).setItemFlags(this.itemFlags).addLorePlaceholder("{arg}", argument).addNamePlaceholder("{arg}", argument).setGlow(this.glowing).build();
+        ItemStack item = this.itemBuilder.setAmount(amount).addLorePlaceholder("{arg}", argument).addNamePlaceholder("{arg}", argument).setGlow(this.glowing).build();
 
         item.editMeta(itemMeta -> {
             final PersistentDataContainer container = itemMeta.getPersistentDataContainer();
