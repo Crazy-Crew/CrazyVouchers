@@ -1026,7 +1026,8 @@ public class ItemBuilder {
      * @return the ItemBuilder with an updated Boolean.
      */
     public ItemBuilder setGlow(boolean glow) {
-        this.glowing = glow;
+        this.itemStack.setData(DataComponentTypes.ENCHANTMENT_GLINT_OVERRIDE, glow);
+        
         return this;
     }
 
