@@ -1016,7 +1016,8 @@ public class ItemBuilder {
      * @return the ItemBuilder with an updated Boolean.
      */
     public ItemBuilder setUnbreakable(boolean unbreakable) {
-        this.unbreakable = unbreakable;
+        this.itemStack.setData(DataComponentTypes.UNBREAKABLE, Unbreakable.unbreakable(unbreakable));
+
         return this;
     }
 
