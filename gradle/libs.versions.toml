@@ -8,7 +8,7 @@ shadow = { id = "com.gradleup.shadow", version.ref = "shadow" }
 # Paper API
 paper = "1.21.4-R0.1-SNAPSHOT"
 velocity = "3.3.0-SNAPSHOT"
-minecraft = "1.21.4"
+minecraft = "1.21.3"
 brigadier = "1.3.10"
 
 # Gradle Plugins
