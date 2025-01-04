@@ -998,7 +998,7 @@ public class ItemBuilder {
      */
     public void hideItemFlags() {
         if (this.hideItemFlags) {
-            this.itemStack.setData(DataComponentTypes.HIDE_TOOLTIP);
+            this.itemStack.setData(DataComponentTypes.HIDE_ADDITIONAL_TOOLTIP);
         }
     }
 
