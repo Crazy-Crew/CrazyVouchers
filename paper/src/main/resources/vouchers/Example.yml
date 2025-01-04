@@ -59,10 +59,10 @@ voucher:
   display-trim:
     material: QUARTZ
     pattern: SENTRY
-    # Any generic component for the Item.
-    components:
-      # Hides the entire tooltip
-      hide-tooltip: false
+  # Any generic component for the Item.
+  components:
+    # Hides the entire tooltip
+    hide-tooltip: false
   # All options when they right-click it.
   options:
     # The message sent when they right-click it.

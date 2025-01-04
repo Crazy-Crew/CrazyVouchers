@@ -113,8 +113,7 @@ public class Voucher {
                 .setMaterial(fileConfiguration.getString(path + "item", "Stone"))
                 .setName(fileConfiguration.getString(path + "name", ""))
                 .setLore(fileConfiguration.getStringList(path + "lore"))
-                .setPlayerName(fileConfiguration.getString(path + "player", ""))
-                .setFlagsFromStrings(fileConfiguration.getStringList(path + "flags"));
+                .setPlayerName(fileConfiguration.getString(path + "player", ""));
 
         if (fileConfiguration.contains(path + "display-damage")) this.itemBuilder.setDamage(fileConfiguration.getInt(path + "display-damage"));
 

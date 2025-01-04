@@ -8,6 +8,8 @@ import com.ryderbelserion.vital.paper.api.builders.PlayerBuilder;
 import com.ryderbelserion.vital.paper.api.enums.Support;
 import com.ryderbelserion.vital.paper.util.DyeUtil;
 import io.papermc.paper.datacomponent.DataComponentTypes;
+import io.papermc.paper.datacomponent.item.ItemAttributeModifiers;
+import io.papermc.paper.datacomponent.item.ShownInTooltip;
 import io.papermc.paper.datacomponent.item.Unbreakable;
 import io.papermc.paper.registry.RegistryAccess;
 import io.papermc.paper.registry.RegistryKey;
@@ -31,6 +33,8 @@ import org.bukkit.potion.PotionType;
 import org.bukkit.profile.PlayerTextures;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+import org.jetbrains.annotations.Unmodifiable;
+
 import java.net.MalformedURLException;
 import java.net.URI;
 import java.util.*;
@@ -70,9 +74,6 @@ public class ItemBuilder {
     private String url = "";
 
     // Enchantments/Flags
-    private boolean unbreakable;
-    private boolean hideItemFlags;
-    private boolean glowing;
 
     // Entities
     private final boolean isMobEgg;
@@ -107,7 +108,6 @@ public class ItemBuilder {
 
     // Misc
     private ItemStack referenceItem;
-    private List<ItemFlag> itemFlags;
 
     // Custom Data
     private int customModelData;
@@ -132,10 +132,6 @@ public class ItemBuilder {
 
         this.isHead = false;
 
-        this.unbreakable = false;
-        this.hideItemFlags = false;
-        this.glowing = false;
-
         this.isMobEgg = false;
         this.entityType = EntityType.BAT;
 
@@ -158,8 +154,6 @@ public class ItemBuilder {
 
         this.namePlaceholders = new HashMap<>();
         this.lorePlaceholders = new HashMap<>();
-
-        this.itemFlags = new ArrayList<>();
     }
 
     /**
@@ -190,10 +184,6 @@ public class ItemBuilder {
         this.isHead = itemBuilder.isHead;
         this.isCustom = itemBuilder.isCustom;
 
-        this.unbreakable = itemBuilder.unbreakable;
-        this.hideItemFlags = itemBuilder.hideItemFlags;
-        this.glowing = itemBuilder.glowing;
-
         this.isMobEgg = itemBuilder.isMobEgg;
         this.entityType = itemBuilder.entityType;
 
@@ -214,7 +204,6 @@ public class ItemBuilder {
 
         this.namePlaceholders = new HashMap<>(itemBuilder.namePlaceholders);
         this.lorePlaceholders = new HashMap<>(itemBuilder.lorePlaceholders);
-        this.itemFlags = new ArrayList<>(itemBuilder.itemFlags);
 
         this.customMaterial = itemBuilder.customMaterial;
     }
@@ -299,38 +288,10 @@ public class ItemBuilder {
     }
 
     /**
-     * @return a list of ItemFlags.
-     */
-    public List<ItemFlag> getItemFlags() {
-        return this.itemFlags;
-    }
-
-    /**
-     * @return checks if flags are hidden.
-     */
-    public boolean isItemFlagsHidden() {
-        return this.hideItemFlags;
-    }
-
-    /**
      * @return check if item is Leather Armor
      */
     public boolean isLeatherArmor() {
         return this.isLeatherArmor;
-    }
-
-    /**
-     * @return checks if item is glowing.
-     */
-    public boolean isGlowing() {
-        return this.glowing;
-    }
-
-    /**
-     * @return checks if the item is unbreakable.
-     */
-    public boolean isUnbreakable() {
-        return this.unbreakable;
     }
 
     /**
@@ -492,14 +453,31 @@ public class ItemBuilder {
 
         if (this.useCustomModelData) this.itemMeta.setCustomModelData(this.customModelData);
 
-        this.itemMeta.setAttributeModifiers(this.itemStack.getType().getDefaultAttributeModifiers());
-
-        this.itemFlags.forEach(this.itemMeta::addItemFlags);
-
         item.setItemMeta(this.itemMeta);
-        hideItemFlags();
+
         item.addUnsafeEnchantments(this.enchantments);
-        addGlow();
+
+        if (this.hideItemFlags) {
+            final List<ItemAttributeModifiers.Entry> values = new ArrayList<>();
+
+            if (this.itemStack.hasData(DataComponentTypes.ATTRIBUTE_MODIFIERS)) {
+                final ItemAttributeModifiers modifier = this.itemStack.getData(DataComponentTypes.ATTRIBUTE_MODIFIERS);
+
+                if (modifier != null) {
+                    values.addAll(modifier.modifiers());
+                }
+            }
+
+            final ItemAttributeModifiers.Builder builder = ItemAttributeModifiers.itemAttributes();
+
+            values.forEach(modifier -> builder.addModifier(modifier.attribute(), modifier.modifier()));
+
+            this.itemStack.setData(DataComponentTypes.ATTRIBUTE_MODIFIERS, builder.showInTooltip(false));
+        }
+
+        if (this.glowing) {
+            this.itemStack.setData(DataComponentTypes.ENCHANTMENT_GLINT_OVERRIDE, true);
+        }
 
         return item;
     }
@@ -781,6 +759,7 @@ public class ItemBuilder {
      */
     public ItemBuilder setEntityType(EntityType entityType) {
         this.entityType = entityType;
+
         return this;
     }
 
@@ -793,7 +772,7 @@ public class ItemBuilder {
         try {
             String[] split = stringPattern.split(":");
 
-            for (PatternType pattern : PatternType.values()) {
+            for (PatternType pattern : PatternType.values()) { //todo() ditch the enum
 
                 if (split[0].equalsIgnoreCase(pattern.name()) || split[0].equalsIgnoreCase(pattern.getIdentifier())) {
                     DyeColor color = DyeUtil.getDyeColor(split[1]);
@@ -906,82 +885,11 @@ public class ItemBuilder {
      */
     public ItemBuilder removeEnchantments(Enchantment enchantment) {
         this.enchantments.remove(enchantment);
-        return this;
-    }
-
-    /**
-     * Set the flags that will be on the item in the builder.
-     *
-     * @param flagStrings the flag names as string you wish to add to the item in the builder.
-     * @return the ItemBuilder with updated info.
-     */
-    public ItemBuilder setFlagsFromStrings(List<String> flagStrings) {
-        this.itemFlags.clear();
-
-        for (String flagString : flagStrings) {
-            ItemFlag flag = getFlag(flagString);
-
-            if (flag != null) this.itemFlags.add(flag);
-        }
 
         return this;
     }
 
-    /**
-     * Adds a list of item flags to an item.
-     *
-     * @param flagStrings list of items to add.
-     * @return the ItemBuilder with updated info.
-     */
-    public ItemBuilder addItemFlags(List<String> flagStrings) {
-        for (String flagString : flagStrings) {
-            try {
-                ItemFlag itemFlag = ItemFlag.valueOf(flagString.toUpperCase());
-
-                addItemFlag(itemFlag);
-            } catch (Exception ignored) {}
-        }
-
-        return this;
-    }
-
-    /**
-     * Add a flag to the item in the builder.
-     *
-     * @param flagString the name of the flag you wish to add.
-     * @return the ItemBuilder with updated info.
-     */
-    public ItemBuilder addFlags(String flagString) {
-        ItemFlag flag = getFlag(flagString);
-
-        if (flag != null) this.itemFlags.add(flag);
-        return this;
-    }
-
-    /**
-     * Adds an ItemFlag to a map which is added to an item.
-     *
-     * @param itemFlag the flag to add.
-     * @return the ItemBuilder with an updated ItemFlag.
-     */
-    public ItemBuilder addItemFlag(ItemFlag itemFlag) {
-        if (itemFlag != null) this.itemFlags.add(itemFlag);
-
-        return this;
-    }
-
-    /**
-     * Adds multiple ItemFlags in a list to a map which get added to an item.
-     *
-     * @param itemFlags the list of flags to add.
-     * @return the ItemBuilder with a list of ItemFlags.
-     */
-    public ItemBuilder setItemFlags(List<ItemFlag> itemFlags) {
-        if (itemFlags.isEmpty()) return this;
-
-        this.itemFlags = itemFlags;
-        return this;
-    }
+    private boolean hideItemFlags = false;
 
     /**
      * @param hideItemFlags hide item flags based on a boolean.
@@ -991,15 +899,6 @@ public class ItemBuilder {
         this.hideItemFlags = hideItemFlags;
 
         return this;
-    }
-
-    /**
-     * Hides item flags
-     */
-    public void hideItemFlags() {
-        if (this.hideItemFlags) {
-            this.itemStack.setData(DataComponentTypes.HIDE_ADDITIONAL_TOOLTIP);
-        }
     }
 
     /**
@@ -1026,11 +925,13 @@ public class ItemBuilder {
         return this;
     }
 
+    private boolean glowing = false;
+
     /**
      * @return the ItemBuilder with an updated Boolean.
      */
     public ItemBuilder setGlow(boolean glow) {
-        this.itemStack.setData(DataComponentTypes.ENCHANTMENT_GLINT_OVERRIDE, glow);
+        this.glowing = glow;
 
         return this;
     }
@@ -1102,18 +1003,13 @@ public class ItemBuilder {
                             break;
                         }
 
-                        for (ItemFlag itemFlag : ItemFlag.values()) {
-                            if (itemFlag.name().equalsIgnoreCase(option)) {
-                                itemBuilder.addItemFlag(itemFlag);
-                                break;
-                            }
-                        }
-
                         try {
-                            for (PatternType pattern : PatternType.values()) {
+                            for (PatternType pattern : PatternType.values()) { //todo() move away from the enum
                                 if (option.equalsIgnoreCase(pattern.name()) || value.equalsIgnoreCase(pattern.getIdentifier())) {
                                     DyeColor color = DyeUtil.getDyeColor(value);
+
                                     if (color != null) itemBuilder.addPattern(new Pattern(color, pattern));
+
                                     break;
                                 }
                             }
@@ -1150,19 +1046,6 @@ public class ItemBuilder {
      */
     public static List<ItemBuilder> convertStringList(List<String> itemStrings, String placeholder) {
         return itemStrings.stream().map(itemString -> convertString(itemString, placeholder)).collect(Collectors.toList());
-    }
-
-    /**
-     * Add glow to an item.
-     *
-     */
-    private void addGlow() {
-        if (this.glowing) {
-            try {
-                this.itemMeta.setEnchantmentGlintOverride(true);
-                this.itemStack.setItemMeta(this.itemMeta);
-            } catch (NoClassDefFoundError ignored) {}
-        }
     }
 
     /**
