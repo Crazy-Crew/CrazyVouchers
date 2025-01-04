@@ -260,7 +260,7 @@ public class Voucher {
         }
 
         if (fileConfiguration.getBoolean(path + "options.is-edible")) {
-            this.isEdible = itemBuilder.build().getType().isEdible();
+            this.isEdible = this.itemBuilder.build().getType().isEdible();
 
             switch (this.itemBuilder.getMaterial().toString()) {
                 case "MILK_BUCKET", "POTION" -> this.isEdible = true;
