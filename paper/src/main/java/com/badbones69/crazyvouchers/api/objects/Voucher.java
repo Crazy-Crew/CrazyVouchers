@@ -242,7 +242,7 @@ public class Voucher {
 
             for (String sound : fileConfiguration.getStringList(path + "options.sound.sounds")) {
                 try {
-                    this.sounds.add(Sound.valueOf(sound));
+                    this.sounds.add(Sound.valueOf(sound)); //todo() add support for resource packs
                 } catch (Exception ignored) {}
             }
         } else {
