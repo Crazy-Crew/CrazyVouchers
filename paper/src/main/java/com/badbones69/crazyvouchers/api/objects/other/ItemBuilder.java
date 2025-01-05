@@ -920,7 +920,9 @@ public class ItemBuilder {
      * @return the ItemBuilder with an updated Boolean.
      */
     public ItemBuilder setUnbreakable(boolean unbreakable) {
-        this.itemStack.setData(DataComponentTypes.UNBREAKABLE, Unbreakable.unbreakable(unbreakable));
+        if (unbreakable) {
+            this.itemStack.setData(DataComponentTypes.UNBREAKABLE, Unbreakable.unbreakable().build().showInTooltip(true));
+        }
 
         return this;
     }
