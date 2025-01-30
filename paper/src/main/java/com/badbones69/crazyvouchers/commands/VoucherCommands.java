@@ -134,7 +134,7 @@ public class VoucherCommands implements CommandExecutor {
                         final ItemStack[] contents = inventory.getContents();
 
                         for (final ItemStack item : contents) {
-                            if (item.isEmpty()) continue;
+                            if (item == null || item.isEmpty()) continue;
 
                             NBT.get(item, nbt -> {
                                 if (nbt.hasTag("voucher")) {
