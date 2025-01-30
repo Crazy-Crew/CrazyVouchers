@@ -1,2 +1,7 @@
 - Added /crazyvouchers migrate which will migrate old vouchers to the new vouchers
   - The permission for the command is `crazyvouchers.migrate`
+- Deprecated use of `voucher.admin` and `voucher.redeem`
+  - They have been replaced by `crazyvouchers.admin` and `crazyvouchers.redeem`
+  - Old permissions starting with `voucher` will work for the time being.
+- Deprecated old /vouchers command, please use /crazyvouchers as /vouchers will be removed in future updates.
+- Fixed an issue where dupe protection uuids were applied twice.

@@ -98,6 +98,8 @@ public class CrazyVouchers extends Vital {
 
         registerCommand(getCommand("vouchers"), new VoucherTab(), new VoucherCommands());
 
+        registerCommand(getCommand("crazyvouchers"), new VoucherTab(), new VoucherCommands());
+
         if (isVerbose()) {
             getComponentLogger().info("Done ({})!", String.format(Locale.ROOT, "%.3fs", (double) (System.nanoTime() - this.startTime) / 1.0E9D));
         }

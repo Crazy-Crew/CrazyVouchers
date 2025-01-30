@@ -92,7 +92,7 @@ public class Methods {
     }
     
     public static boolean hasPermission(final Player player, final String perm) {
-        if (!player.hasPermission("voucher." + perm)) {
+        if (!player.hasPermission("crazyvouchers." + perm) || !player.hasPermission("voucher." + perm)) {
             Messages.no_permission.sendMessage(player);
 
             return false;
@@ -103,7 +103,7 @@ public class Methods {
     
     public static boolean hasPermission(final CommandSender sender, final String perm) {
         if (sender instanceof Player player) {
-            if (!player.hasPermission("voucher." + perm)) {
+            if (!player.hasPermission("crazyvouchers." + perm) || !player.hasPermission("voucher." + perm)) {
                 Messages.no_permission.sendMessage(player);
 
                 return false;
