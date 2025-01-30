@@ -136,23 +136,23 @@ public class VoucherCommands implements CommandExecutor {
                         for (final ItemStack item : contents) {
                             if (item == null || item.isEmpty()) continue;
 
-                            NBT.get(item, nbt -> {
-                                if (nbt.hasTag("voucher")) {
-                                    final PersistentDataContainer container = item.getItemMeta().getPersistentDataContainer();
+                            final NBTItem nbt = new NBTItem(item);
 
-                                    if (ConfigManager.getConfig().getProperty(ConfigKeys.dupe_protection)) {
-                                        container.set(PersistentKeys.dupe_protection.getNamespacedKey(), PersistentDataType.STRING, UUID.randomUUID().toString());
-                                    }
+                            if (nbt.hasTag("voucher")) {
+                                final PersistentDataContainer container = item.getItemMeta().getPersistentDataContainer();
 
-                                    container.set(PersistentKeys.voucher_item.getNamespacedKey(), PersistentDataType.STRING, nbt.getString("voucher"));
+                                if (ConfigManager.getConfig().getProperty(ConfigKeys.dupe_protection)) {
+                                    container.set(PersistentKeys.dupe_protection.getNamespacedKey(), PersistentDataType.STRING, UUID.randomUUID().toString());
                                 }
 
-                                if (nbt.hasTag("argument")) {
-                                    final PersistentDataContainer container = item.getItemMeta().getPersistentDataContainer();
+                                container.set(PersistentKeys.voucher_item.getNamespacedKey(), PersistentDataType.STRING, nbt.getString("voucher"));
+                            }
 
-                                    container.set(PersistentKeys.voucher_arg.getNamespacedKey(), PersistentDataType.STRING, nbt.getString("argument"));
-                                }
-                            });
+                            if (nbt.hasTag("argument")) {
+                                final PersistentDataContainer container = item.getItemMeta().getPersistentDataContainer();
+
+                                container.set(PersistentKeys.voucher_arg.getNamespacedKey(), PersistentDataType.STRING, nbt.getString("argument"));
+                            }
                         }
 
                         Messages.migrated_old_vouchers.sendMessage(player);
