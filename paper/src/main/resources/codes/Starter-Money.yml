@@ -1,5 +1,5 @@
 voucher-code:
-  # The code to use in /vouchers redeem <code>
+  # The code to use in /crazyvouchers redeem <code>
   code: startermoney
 
   # Run normal commands when the code is redeemed.

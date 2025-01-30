@@ -336,13 +336,13 @@ public class VoucherCommands implements CommandExecutor {
                             return true;
                         }
 
-                        sender.sendMessage(Methods.getPrefix("&c/voucher redeem <code>"));
+                        sender.sendMessage(Methods.getPrefix("&c/crazyvouchers redeem <code>"));
                     }
 
                     return true;
                 }
 
-                case "give" -> { // /Voucher 0Give 1<Type> 2[Amount] 3[Player] 4[Arguments]
+                case "give" -> { // /crazyvouchers 0Give 1<Type> 2[Amount] 3[Player] 4[Arguments]
                     if (Methods.hasPermission(sender, "admin")) {
 
                         if (args.length > 1) {
@@ -381,7 +381,7 @@ public class VoucherCommands implements CommandExecutor {
 
                             if (args.length >= 5) {
                                 // Gives a random number as the argument.
-                                // /Voucher give test 1 {player} {random}:1-1000
+                                // /crazyvouchers give test 1 {player} {random}:1-1000
                                 argument = crazyManager.replaceRandom(args[4].replace("%random%", "{random}"));
                             }
 
@@ -412,7 +412,7 @@ public class VoucherCommands implements CommandExecutor {
                             return true;
                         }
 
-                        sender.sendMessage(Methods.getPrefix("&c/voucher give <type> [amount] [player] [arguments]"));
+                        sender.sendMessage(Methods.getPrefix("&c/crazyvouchers give <type> [amount] [player] [arguments]"));
 
                         return true;
                     }
@@ -420,7 +420,7 @@ public class VoucherCommands implements CommandExecutor {
                     return true;
                 }
 
-                case "giveall" -> { // /Voucher 0GiveAll 1<Type> 2[Amount] 3[Arguments]
+                case "giveall" -> { // /crazyvouchers 0GiveAll 1<Type> 2[Amount] 3[Arguments]
                     if (Methods.hasPermission(sender, "admin")) {
                         if (args.length > 1) {
                             if (this.crazyManager.isVoucherName(args[1])) {
@@ -443,7 +443,7 @@ public class VoucherCommands implements CommandExecutor {
 
                             if (args.length >= 4) {
                                 // Gives a random number as the argument.
-                                // /voucher give test 1 {player} {random}:1-1000
+                                // /crazyvouchers give test 1 {player} {random}:1-1000
                                 argument = this.crazyManager.replaceRandom(args[3].replace("%random%", "{random}"));
                             }
 
@@ -476,7 +476,7 @@ public class VoucherCommands implements CommandExecutor {
                             return true;
                         }
 
-                        sender.sendMessage(Methods.getPrefix("&c/voucher giveall <type> [amount] [arguments]"));
+                        sender.sendMessage(Methods.getPrefix("&c/crazyvouchers giveall <type> [amount] [arguments]"));
 
                         return true;
                     }
@@ -485,7 +485,7 @@ public class VoucherCommands implements CommandExecutor {
                 }
 
                 default -> {
-                    sender.sendMessage(Methods.getPrefix("&cPlease do /voucher help for more information."));
+                    sender.sendMessage(Methods.getPrefix("&cPlease do /crazyvouchers help for more information."));
 
                     return true;
                 }

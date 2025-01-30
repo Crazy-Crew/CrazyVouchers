@@ -24,7 +24,7 @@ public class VoucherTab implements TabCompleter {
     public List<String> onTabComplete(@NotNull CommandSender sender, @NotNull Command command, @NotNull String commandLabel, String[] args) {
         List<String> completions = new ArrayList<>();
 
-        if (args.length == 1) { // /voucher
+        if (args.length == 1) { // /crazyvouchers
             if (hasPermission(sender, "admin")) completions.add("help");
             if (hasPermission(sender, "admin")) completions.add("list");
             if (hasPermission(sender, "redeem")) completions.add("redeem");
@@ -33,7 +33,7 @@ public class VoucherTab implements TabCompleter {
             if (hasPermission(sender, "admin")) completions.add("open");
             if (hasPermission(sender, "admin")) completions.add("reload");
             return StringUtil.copyPartialMatches(args[0], completions, new ArrayList<>());
-        } else if (args.length == 2) { // /voucher arg0
+        } else if (args.length == 2) { // /crazyvouchers arg0
             switch (args[0].toLowerCase()) {
                 case "redeem" -> {
                     // Only want admins to be able to see all the voucher codes.
@@ -51,7 +51,7 @@ public class VoucherTab implements TabCompleter {
             }
 
             return StringUtil.copyPartialMatches(args[1], completions, new ArrayList<>());
-        } else if (args.length == 3) { // /voucher arg0 arg1
+        } else if (args.length == 3) { // /crazyvouchers arg0 arg1
             switch (args[0].toLowerCase()) {
                 case "give", "giveall" -> {
                     if (hasPermission(sender, "admin")) completions.addAll(Arrays.asList("1", "2", "3", "4", "5", "10", "32", "64"));
@@ -59,7 +59,7 @@ public class VoucherTab implements TabCompleter {
             }
 
             return StringUtil.copyPartialMatches(args[2], completions, new ArrayList<>());
-        } else if (args.length == 4) { // /voucher arg0 arg1 arg2
+        } else if (args.length == 4) { // /crazyvouchers arg0 arg1 arg2
             if (args[0].equalsIgnoreCase("give")) {
                 if (hasPermission(sender, "admin")) this.plugin.getServer().getOnlinePlayers().forEach(player -> completions.add(player.getName()));
             }
@@ -71,6 +71,6 @@ public class VoucherTab implements TabCompleter {
     }
     
     private boolean hasPermission(CommandSender sender, String node) {
-        return sender.hasPermission("voucher." + node) || sender.hasPermission("voucher.admin");
+        return sender.hasPermission("crazyvouchers." + node) || sender.hasPermission("crazyvouchers.admin") || sender.hasPermission("voucher." + node) || sender.hasPermission("voucher.admin");
     }
 }

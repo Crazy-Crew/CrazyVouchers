@@ -96,12 +96,12 @@ public class MessageKeys implements SettingsHolder {
     public static final Property<String> player_only = newProperty("misc.player-only", "{prefix}&cOnly players can use this command.");
 
     public static final Property<List<String>> help = newListProperty("misc.help", List.of(
-            "&8- &6/Voucher help &3Lists all the commands for vouchers.",
-            "&8- &6/Voucher list &3Lists all available types of vouchers and codes.",
-            "&8- &6/Voucher redeem <code> &3Allows the player to redeem a voucher code.",
-            "&8- &6/Voucher give <voucher> [amount] [player] [arguments] &3Gives a player a voucher.",
-            "&8- &6/Voucher giveAll <voucher> [amount] [arguments] &3Gives all players a voucher.",
-            "&8- &6/Voucher open [page] &3Opens a GUI so you can get vouchers easily.",
-            "&8- &6/Voucher reload &3Reloaded the configuration files."
+            "&8- &6/crazyvouchers help &3Lists all the commands for vouchers.",
+            "&8- &6/crazyvouchers list &3Lists all available types of vouchers and codes.",
+            "&8- &6/crazyvouchers redeem <code> &3Allows the player to redeem a voucher code.",
+            "&8- &6/crazyvouchers give <voucher> [amount] [player] [arguments] &3Gives a player a voucher.",
+            "&8- &6/crazyvouchers giveAll <voucher> [amount] [arguments] &3Gives all players a voucher.",
+            "&8- &6/crazyvouchers open [page] &3Opens a GUI so you can get vouchers easily.",
+            "&8- &6/crazyvouchers reload &3Reloaded the configuration files."
     ));
 }
