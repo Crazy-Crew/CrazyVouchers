@@ -1,11 +1,10 @@
-.gradle
+### Intellij
+.kotlin
 .idea
 
-buildSrc/.gradle
-buildSrc/build
+### Gradle
+.gradle
+build/
+run/
 
-run
-
-build
-
-jars
+jars/
