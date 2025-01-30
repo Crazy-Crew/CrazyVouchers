@@ -4,6 +4,7 @@ import com.badbones69.crazyvouchers.api.CrazyManager;
 import com.badbones69.crazyvouchers.api.InventoryManager;
 import com.badbones69.crazyvouchers.api.builders.types.VoucherMenu;
 import com.badbones69.crazyvouchers.api.enums.Files;
+import com.badbones69.crazyvouchers.api.objects.Voucher;
 import com.badbones69.crazyvouchers.config.ConfigManager;
 import com.badbones69.crazyvouchers.listeners.FireworkDamageListener;
 import com.badbones69.crazyvouchers.commands.VoucherCommands;
@@ -96,9 +97,12 @@ public class CrazyVouchers extends Vital {
 
         pluginManager.registerEvents(new VoucherMenu(), this);
 
-        registerCommand(getCommand("vouchers"), new VoucherTab(), new VoucherCommands());
+        final VoucherTab voucherTab = new VoucherTab();
+        final VoucherCommands voucherCommands = new VoucherCommands();
 
-        registerCommand(getCommand("crazyvouchers"), new VoucherTab(), new VoucherCommands());
+        registerCommand(getCommand("vouchers"), voucherTab, voucherCommands);
+
+        registerCommand(getCommand("crazyvouchers"), voucherTab, voucherCommands);
 
         if (isVerbose()) {
             getComponentLogger().info("Done ({})!", String.format(Locale.ROOT, "%.3fs", (double) (System.nanoTime() - this.startTime) / 1.0E9D));
