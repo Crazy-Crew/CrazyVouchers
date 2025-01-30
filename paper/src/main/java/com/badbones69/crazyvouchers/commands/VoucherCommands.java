@@ -134,6 +134,8 @@ public class VoucherCommands implements CommandExecutor {
                         final ItemStack[] contents = inventory.getContents();
 
                         for (final ItemStack item : contents) {
+                            if (item.isEmpty()) continue;
+
                             NBT.get(item, nbt -> {
                                 if (nbt.hasTag("voucher")) {
                                     final PersistentDataContainer container = item.getItemMeta().getPersistentDataContainer();
