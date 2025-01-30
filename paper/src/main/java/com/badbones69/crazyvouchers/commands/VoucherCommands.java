@@ -5,6 +5,7 @@ import com.badbones69.crazyvouchers.Methods;
 import com.badbones69.crazyvouchers.api.InventoryManager;
 import com.badbones69.crazyvouchers.api.enums.Files;
 import com.badbones69.crazyvouchers.api.enums.Messages;
+import com.badbones69.crazyvouchers.api.enums.PersistentKeys;
 import com.badbones69.crazyvouchers.api.objects.other.ItemBuilder;
 import com.badbones69.crazyvouchers.api.objects.Voucher;
 import com.badbones69.crazyvouchers.api.CrazyManager;
@@ -12,6 +13,8 @@ import com.badbones69.crazyvouchers.api.events.VoucherRedeemCodeEvent;
 import com.badbones69.crazyvouchers.api.objects.VoucherCode;
 import com.badbones69.crazyvouchers.utils.MsgUtils;
 import com.ryderbelserion.vital.paper.api.files.FileManager;
+import de.tr7zw.changeme.nbtapi.NBT;
+import de.tr7zw.changeme.nbtapi.NBTItem;
 import org.bukkit.Sound;
 import org.bukkit.SoundCategory;
 import org.bukkit.command.Command;
@@ -19,7 +22,10 @@ import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.entity.Player;
+import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.persistence.PersistentDataContainer;
+import org.bukkit.persistence.PersistentDataType;
 import org.jetbrains.annotations.NotNull;
 import com.badbones69.crazyvouchers.config.ConfigManager;
 import com.badbones69.crazyvouchers.config.types.ConfigKeys;
@@ -28,6 +34,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Random;
+import java.util.UUID;
 
 public class VoucherCommands implements CommandExecutor {
 
@@ -109,6 +116,44 @@ public class VoucherCommands implements CommandExecutor {
                         }
 
                         this.inventoryManager.buildInventory(player, page);
+                    }
+
+                    return true;
+                }
+
+                case "migrate" -> {
+                    if (!(sender instanceof Player player)) {
+                        Messages.player_only.sendMessage(sender);
+
+                        return true;
+                    }
+
+                    if (Methods.hasPermission(sender, "migrate")) {
+                        final Inventory inventory = player.getInventory();
+
+                        final ItemStack[] contents = inventory.getContents();
+
+                        for (final ItemStack item : contents) {
+                            NBT.get(item, nbt -> {
+                                if (nbt.hasTag("voucher")) {
+                                    final PersistentDataContainer container = item.getItemMeta().getPersistentDataContainer();
+
+                                    if (ConfigManager.getConfig().getProperty(ConfigKeys.dupe_protection)) {
+                                        container.set(PersistentKeys.dupe_protection.getNamespacedKey(), PersistentDataType.STRING, UUID.randomUUID().toString());
+                                    }
+
+                                    container.set(PersistentKeys.voucher_item.getNamespacedKey(), PersistentDataType.STRING, nbt.getString("voucher"));
+                                }
+
+                                if (nbt.hasTag("argument")) {
+                                    final PersistentDataContainer container = item.getItemMeta().getPersistentDataContainer();
+
+                                    container.set(PersistentKeys.voucher_arg.getNamespacedKey(), PersistentDataType.STRING, nbt.getString("argument"));
+                                }
+                            });
+                        }
+
+                        Messages.migrated_old_vouchers.sendMessage(player);
                     }
 
                     return true;

@@ -40,6 +40,7 @@ public enum Messages {
     not_in_whitelisted_world(MessageKeys.not_in_whitelist_world),
     unstack_item(MessageKeys.unstack_item),
     cannot_put_items_in_crafting_table(MessageKeys.cannot_put_items_in_crafting_table),
+    migrated_old_vouchers(MessageKeys.migrated_old_vouchers),
     help(MessageKeys.help, true);
 
     private Property<String> property;

@@ -284,10 +284,6 @@ public class Voucher {
     public ItemStack buildItem(int amount) {
         final ItemStack item = this.itemBuilder.setAmount(amount).setGlow(this.glowing).build();
 
-        if (this.config.getProperty(ConfigKeys.dupe_protection)) {
-            item.editMeta(itemMeta -> itemMeta.getPersistentDataContainer().set(PersistentKeys.dupe_protection.getNamespacedKey(), PersistentDataType.STRING, UUID.randomUUID().toString()));
-        }
-
         item.editMeta(itemMeta -> {
             final PersistentDataContainer container = itemMeta.getPersistentDataContainer();
 

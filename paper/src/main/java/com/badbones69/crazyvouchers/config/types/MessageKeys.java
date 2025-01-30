@@ -62,6 +62,8 @@ public class MessageKeys implements SettingsHolder {
 
     public static final Property<String> cannot_put_items_in_crafting_table = newProperty("player.voucher.cant-put-in-crafting-table", "{prefix}&cYou cannot put vouchers in the crafting table.");
 
+    public static final Property<String> migrated_old_vouchers = newProperty("player.voucher.migrated", "{prefix}&cSuccessfully migrated old vouchers in your inventory.");
+
     public static final Property<String> not_online = newProperty("player.target-not-online", "{prefix}&cThat player is not online.");
 
     public static final Property<String> hit_voucher_limit = newProperty("player.hit-limit", "{prefix}&cYou have hit your limit for using this voucher.");
