@@ -13,8 +13,8 @@ import com.badbones69.crazyvouchers.api.events.VoucherRedeemCodeEvent;
 import com.badbones69.crazyvouchers.api.objects.VoucherCode;
 import com.badbones69.crazyvouchers.utils.MsgUtils;
 import com.ryderbelserion.vital.paper.api.files.FileManager;
-import de.tr7zw.changeme.nbtapi.NBT;
 import de.tr7zw.changeme.nbtapi.NBTItem;
+import org.bukkit.Material;
 import org.bukkit.Sound;
 import org.bukkit.SoundCategory;
 import org.bukkit.command.Command;
@@ -134,24 +134,28 @@ public class VoucherCommands implements CommandExecutor {
                         final ItemStack[] contents = inventory.getContents();
 
                         for (final ItemStack item : contents) {
-                            if (item == null || item.isEmpty()) continue;
+                            if (item == null || item.getType() == Material.AIR) continue;
 
                             final NBTItem nbt = new NBTItem(item);
 
                             if (nbt.hasTag("voucher")) {
-                                final PersistentDataContainer container = item.getItemMeta().getPersistentDataContainer();
+                                item.editMeta(itemMeta -> {
+                                    final PersistentDataContainer container = itemMeta.getPersistentDataContainer();
 
-                                if (ConfigManager.getConfig().getProperty(ConfigKeys.dupe_protection)) {
-                                    container.set(PersistentKeys.dupe_protection.getNamespacedKey(), PersistentDataType.STRING, UUID.randomUUID().toString());
-                                }
+                                    if (ConfigManager.getConfig().getProperty(ConfigKeys.dupe_protection)) {
+                                        container.set(PersistentKeys.dupe_protection.getNamespacedKey(), PersistentDataType.STRING, UUID.randomUUID().toString());
+                                    }
 
-                                container.set(PersistentKeys.voucher_item.getNamespacedKey(), PersistentDataType.STRING, nbt.getString("voucher"));
+                                    container.set(PersistentKeys.voucher_item.getNamespacedKey(), PersistentDataType.STRING, nbt.getString("voucher"));
+                                });
                             }
 
                             if (nbt.hasTag("argument")) {
-                                final PersistentDataContainer container = item.getItemMeta().getPersistentDataContainer();
+                                item.editMeta(itemMeta -> {
+                                    final PersistentDataContainer container = itemMeta.getPersistentDataContainer();
 
-                                container.set(PersistentKeys.voucher_arg.getNamespacedKey(), PersistentDataType.STRING, nbt.getString("argument"));
+                                    container.set(PersistentKeys.voucher_arg.getNamespacedKey(), PersistentDataType.STRING, nbt.getString("argument"));
+                                });
                             }
                         }
 
