@@ -5,6 +5,8 @@ plugins {
     id("paper-plugin")
 }
 
+project.version = rootProject.version
+
 repositories {
     maven("https://repo.extendedclip.com/content/repositories/placeholderapi/")
 
@@ -61,7 +63,7 @@ tasks {
 
     processResources {
         inputs.properties("name" to rootProject.name)
-        inputs.properties("version" to rootProject.version)
+        inputs.properties("version" to project.version)
         inputs.properties("group" to rootProject.group)
         inputs.properties("authors" to rootProject.properties["authors"].toString())
         inputs.properties("apiVersion" to libs.versions.minecraft.get())
