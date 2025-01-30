@@ -1,0 +1,2 @@
+- Added /crazyvouchers migrate which will migrate old vouchers to the new vouchers
+  - The permission for the command is `crazyvouchers.migrate`

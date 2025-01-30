@@ -1,9 +1,11 @@
 plugins {
     alias(libs.plugins.minotaur)
     alias(libs.plugins.hangar)
+
+    id("root-plugin")
 }
 
-val content: String = rootProject.file("CHANGELOG.md").readText(Charsets.UTF_8)
+val content: String = rootProject.file("changelog.md").readText(Charsets.UTF_8)
 
 val isBeta = false
 val pluginName = rootProject.name

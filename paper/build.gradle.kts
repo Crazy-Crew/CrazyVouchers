@@ -1,14 +1,14 @@
 plugins {
     alias(libs.plugins.runPaper)
     alias(libs.plugins.shadow)
+
+    id("paper-plugin")
 }
 
 repositories {
-    maven("https://repo.papermc.io/repository/maven-public")
+    maven("https://repo.extendedclip.com/content/repositories/placeholderapi/")
 
-    maven("https://repo.extendedclip.com/content/repositories/placeholderapi")
-
-    maven("https://repo.oraxen.com/releases")
+    maven("https://repo.oraxen.com/releases/")
 }
 
 dependencies {
@@ -23,8 +23,6 @@ dependencies {
     //compileOnly(libs.itemsadder)
 
     compileOnly(libs.oraxen)
-
-    compileOnly(libs.paper)
 }
 
 val component: SoftwareComponent = components["java"]
@@ -63,12 +61,12 @@ tasks {
 
     processResources {
         inputs.properties("name" to rootProject.name)
-        inputs.properties("version" to project.version)
-        inputs.properties("group" to project.group)
-        inputs.properties("description" to project.properties["description"])
+        inputs.properties("version" to rootProject.version)
+        inputs.properties("group" to rootProject.group)
+        inputs.properties("authors" to rootProject.properties["authors"].toString())
         inputs.properties("apiVersion" to libs.versions.minecraft.get())
-        inputs.properties("authors" to project.properties["authors"])
-        inputs.properties("website" to project.properties["website"])
+        inputs.properties("description" to rootProject.description)
+        inputs.properties("website" to rootProject.properties["website"].toString())
 
         filesMatching("plugin.yml") {
             expand(inputs.properties)
