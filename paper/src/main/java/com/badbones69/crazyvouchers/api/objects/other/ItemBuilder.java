@@ -329,12 +329,16 @@ public class ItemBuilder {
         return name.endsWith("_HELMET") || name.endsWith("_CHESTPLATE") || name.endsWith("_LEGGINGS") || name.endsWith("_BOOTS") || name.equals(Material.TURTLE_HELMET.name());
     }
 
+    public ItemStack build() {
+        return build(false);
+    }
+
     /**
      * Builder the item from all the information that was given to the builder.
      *
      * @return the result of all the info that was given to the builder as an ItemStack.
      */
-    public ItemStack build() {
+    public ItemStack build(boolean buildNewItemStack) {
         ItemStack item = this.itemStack;
 
         if (Support.head_database.isEnabled()) {
@@ -477,6 +481,10 @@ public class ItemBuilder {
 
         if (this.glowing) {
             this.itemStack.setData(DataComponentTypes.ENCHANTMENT_GLINT_OVERRIDE, true);
+        }
+
+        if (buildNewItemStack) {
+            return item.clone();
         }
 
         return item;

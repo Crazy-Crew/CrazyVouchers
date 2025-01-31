@@ -14,11 +14,14 @@ import org.bukkit.entity.Firework;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.PlayerInventory;
 import org.bukkit.inventory.meta.FireworkMeta;
 import org.bukkit.persistence.PersistentDataContainer;
 import org.bukkit.persistence.PersistentDataType;
 import com.badbones69.crazyvouchers.config.types.ConfigKeys;
 import org.jetbrains.annotations.NotNull;
+
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -27,7 +30,7 @@ public class Methods {
 
     private @NotNull static final CrazyVouchers plugin = CrazyVouchers.get();
     private @NotNull static final SettingsManager config = ConfigManager.getConfig();
-    
+
     public static void removeItem(final ItemStack item, final Player player) {
         if (item.getAmount() <= 1) {
             player.getInventory().removeItem(item);
@@ -35,18 +38,27 @@ public class Methods {
             item.setAmount(item.getAmount() - 1);
         }
     }
-    
+
     public static String getPrefix(final String message) {
         return MsgUtils.color(config.getProperty(ConfigKeys.command_prefix) + message);
     }
 
     public static void addItem(final Player player, final ItemStack... items) {
-        final Inventory inventory = player.getInventory();
+        final PlayerInventory inventory = player.getInventory();
 
         inventory.setMaxStackSize(64);
-        inventory.addItem(items);
+
+        final List<ItemStack> itemStacks = Arrays.asList(items);
+
+        itemStacks.forEach(item -> {
+            if (isInventoryFull(inventory)) {
+                player.getWorld().dropItem(player.getLocation(), item);
+            } else {
+                inventory.setItem(inventory.firstEmpty(), item);
+            }
+        });
     }
-    
+
     public static boolean isInt(final String value) {
         try {
             Integer.parseInt(value);
@@ -56,7 +68,7 @@ public class Methods {
 
         return true;
     }
-    
+
     public static boolean isInt(final CommandSender sender, final String value) {
         try {
             Integer.parseInt(value);
@@ -80,7 +92,7 @@ public class Methods {
 
         if (isCommand) return message; else return MsgUtils.color(message);
     }
-    
+
     public static boolean isOnline(final CommandSender sender, final String name) {
         for (Player player : plugin.getServer().getOnlinePlayers()) {
             if (player.getName().equalsIgnoreCase(name)) return true;
@@ -90,7 +102,7 @@ public class Methods {
 
         return false;
     }
-    
+
     public static boolean hasPermission(final Player player, final String perm) {
         if (!player.hasPermission("crazyvouchers." + perm) || !player.hasPermission("voucher." + perm)) {
             Messages.no_permission.sendMessage(player);
@@ -100,7 +112,7 @@ public class Methods {
 
         return true;
     }
-    
+
     public static boolean hasPermission(final CommandSender sender, final String perm) {
         if (sender instanceof Player player) {
             if (!player.hasPermission("crazyvouchers." + perm) || !player.hasPermission("voucher." + perm)) {
@@ -114,11 +126,11 @@ public class Methods {
             return true;
         }
     }
-    
-    public static boolean isInventoryFull(final Player player) {
-        return player.getInventory().firstEmpty() == -1;
+
+    public static boolean isInventoryFull(final PlayerInventory inventory) {
+        return inventory.firstEmpty() == -1;
     }
-    
+
     public static void firework(final Location location, final List<Color> list) {
         if (location.getWorld() == null) return;
 

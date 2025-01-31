@@ -309,16 +309,12 @@ public class VoucherCommands implements CommandExecutor {
                                         }
                                     }
 
-                                    for (ItemBuilder itemBuilder : voucherCode.getItems()) {
-                                        if (!Methods.isInventoryFull(player)) {
-                                            Methods.addItem(player, itemBuilder.build());
-                                        } else {
-                                            player.getWorld().dropItem(player.getLocation(), itemBuilder.build());
-                                        }
+                                    for (final ItemBuilder itemBuilder : voucherCode.getItems()) {
+                                        Methods.addItem(player, itemBuilder.build());
                                     }
 
                                     if (voucherCode.useSounds()) {
-                                        for (Sound sound : voucherCode.getSounds()) {
+                                        for (final Sound sound : voucherCode.getSounds()) {
                                             player.playSound(player.getLocation(), sound, SoundCategory.PLAYERS, voucherCode.getVolume(), voucherCode.getPitch());
                                         }
                                     }
@@ -393,17 +389,10 @@ public class VoucherCommands implements CommandExecutor {
                                 itemStacks.addAll(voucher.buildItems("", amount));
                             }
 
-                            if (Methods.isInventoryFull(player)) {
-                                itemStacks.forEach(itemStack -> player.getWorld().dropItem(player.getLocation(), itemStack));
-                            } else {
-                                itemStacks.forEach(itemStack -> {
-                                    Methods.addItem(player, itemStack);
-
-                                    player.updateInventory();
-                                });
-                            }
+                            itemStacks.forEach(itemStack -> Methods.addItem(player, itemStack));
 
                             Map<String, String> placeholders = new HashMap<>();
+
                             placeholders.put("{player}", player.getName());
                             placeholders.put("{voucher}", voucher.getName());
 
@@ -455,16 +444,8 @@ public class VoucherCommands implements CommandExecutor {
                                 itemStacks.addAll(voucher.buildItems("", amount));
                             }
 
-                            for (Player player : this.plugin.getServer().getOnlinePlayers()) {
-                                if (Methods.isInventoryFull(player)) {
-                                    itemStacks.forEach(itemStack -> player.getWorld().dropItem(player.getLocation(), itemStack));
-                                } else {
-                                    itemStacks.forEach(itemStack -> {
-                                        Methods.addItem(player, itemStack);
-
-                                        player.updateInventory();
-                                    });
-                                }
+                            for (final Player player : this.plugin.getServer().getOnlinePlayers()) {
+                                itemStacks.forEach(itemStack -> Methods.addItem(player, itemStack));
                             }
 
                             Map<String, String> placeholders = new HashMap<>();

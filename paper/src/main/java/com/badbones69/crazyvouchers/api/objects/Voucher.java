@@ -11,13 +11,13 @@ import com.ryderbelserion.vital.common.util.StringUtil;
 import com.ryderbelserion.vital.paper.util.DyeUtil;
 import io.papermc.paper.registry.RegistryAccess;
 import io.papermc.paper.registry.RegistryKey;
+import org.bukkit.Bukkit;
 import org.bukkit.Color;
 import org.bukkit.Material;
 import org.bukkit.NamespacedKey;
 import org.bukkit.Sound;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.entity.Player;
-import org.bukkit.inventory.ItemFlag;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.persistence.PersistentDataContainer;
 import org.bukkit.persistence.PersistentDataType;
@@ -284,12 +284,10 @@ public class Voucher {
     public ItemStack buildItem(int amount) {
         final ItemStack item = this.itemBuilder.setAmount(amount).setGlow(this.glowing).build();
 
+        setUniqueId(item);
+
         item.editMeta(itemMeta -> {
             final PersistentDataContainer container = itemMeta.getPersistentDataContainer();
-
-            if (this.config.getProperty(ConfigKeys.dupe_protection)) {
-                container.set(PersistentKeys.dupe_protection.getNamespacedKey(), PersistentDataType.STRING, UUID.randomUUID().toString());
-            }
 
             container.set(PersistentKeys.voucher_item.getNamespacedKey(), PersistentDataType.STRING, getName());
         });
@@ -298,7 +296,7 @@ public class Voucher {
     }
 
     public List<ItemStack> buildItems(String argument, int amount) {
-        List<ItemStack> itemStacks = new ArrayList<>();
+        final List<ItemStack> itemStacks = new ArrayList<>();
 
         if (this.config.getProperty(ConfigKeys.dupe_protection)) {
             while (itemStacks.size() < amount) {
@@ -311,15 +309,13 @@ public class Voucher {
         return itemStacks;
     }
     
-    public ItemStack buildItem(String argument, int amount) {
-        ItemStack item = this.itemBuilder.setAmount(amount).addLorePlaceholder("{arg}", argument).addNamePlaceholder("{arg}", argument).setGlow(this.glowing).build();
+    public ItemStack buildItem(final String argument, final int amount) {
+        final ItemStack item = this.itemBuilder.setAmount(amount).addLorePlaceholder("{arg}", argument).addNamePlaceholder("{arg}", argument).setGlow(this.glowing).build(true);
+
+        setUniqueId(item);
 
         item.editMeta(itemMeta -> {
             final PersistentDataContainer container = itemMeta.getPersistentDataContainer();
-
-            if (this.config.getProperty(ConfigKeys.dupe_protection)) {
-                container.set(PersistentKeys.dupe_protection.getNamespacedKey(), PersistentDataType.STRING, UUID.randomUUID().toString());
-            }
 
             container.set(PersistentKeys.voucher_item.getNamespacedKey(), PersistentDataType.STRING, getName());
 
@@ -328,7 +324,21 @@ public class Voucher {
 
         return item;
     }
-    
+
+    private void setUniqueId(final ItemStack item) {
+        final String uuid = UUID.randomUUID().toString();
+
+        if (this.config.getProperty(ConfigKeys.dupe_protection)) {
+            item.editMeta(itemMeta -> {
+                final PersistentDataContainer container = itemMeta.getPersistentDataContainer();
+
+                if (this.config.getProperty(ConfigKeys.dupe_protection)) {
+                    container.set(PersistentKeys.dupe_protection.getNamespacedKey(), PersistentDataType.STRING, uuid);
+                }
+            });
+        }
+    }
+
     public String getVoucherUsedMessage() {
         return this.usedMessage;
     }
