@@ -29,7 +29,7 @@ vault = "1.7.1"
 # Deprecated API
 nbtapi = "2.14.1"
 
-fusion = "0.16.0"
+fusion = "0.16.1"
 
 # Vital API
 vital-paper = "1.0.6"
