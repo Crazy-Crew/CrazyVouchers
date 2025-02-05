@@ -6,14 +6,13 @@ import com.badbones69.crazyvouchers.api.InventoryManager;
 import com.badbones69.crazyvouchers.api.enums.Files;
 import com.badbones69.crazyvouchers.api.enums.Messages;
 import com.badbones69.crazyvouchers.api.enums.PersistentKeys;
-import com.badbones69.crazyvouchers.api.objects.other.ItemBuilder;
 import com.badbones69.crazyvouchers.api.objects.Voucher;
 import com.badbones69.crazyvouchers.api.CrazyManager;
 import com.badbones69.crazyvouchers.api.events.VoucherRedeemCodeEvent;
 import com.badbones69.crazyvouchers.api.objects.VoucherCode;
 import com.badbones69.crazyvouchers.utils.MsgUtils;
-import com.ryderbelserion.vital.paper.api.files.FileManager;
 import com.ryderbelserion.core.api.enums.FileType;
+import com.ryderbelserion.paper.builder.items.modern.ItemBuilder;
 import com.ryderbelserion.paper.files.FileManager;
 import de.tr7zw.changeme.nbtapi.NBTItem;
 import org.bukkit.Material;
@@ -312,7 +311,7 @@ public class VoucherCommands implements CommandExecutor {
                                     }
 
                                     for (final ItemBuilder itemBuilder : voucherCode.getItems()) {
-                                        Methods.addItem(player, itemBuilder.build());
+                                        Methods.addItem(player, itemBuilder.asItemStack(true));
                                     }
 
                                     if (voucherCode.useSounds()) {

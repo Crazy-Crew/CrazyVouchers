@@ -2,8 +2,9 @@ package com.badbones69.crazyvouchers.api.objects;
 
 import com.badbones69.crazyvouchers.CrazyVouchers;
 import com.badbones69.crazyvouchers.api.enums.Messages;
-import com.badbones69.crazyvouchers.api.objects.other.ItemBuilder;
-import com.ryderbelserion.vital.paper.util.DyeUtil;
+import com.badbones69.crazyvouchers.utils.ItemUtils;
+import com.ryderbelserion.paper.builder.items.modern.ItemBuilder;
+import com.ryderbelserion.paper.util.PaperMethods;
 import org.bukkit.Color;
 import org.bukkit.Sound;
 import org.bukkit.configuration.file.FileConfiguration;
@@ -76,7 +77,7 @@ public class VoucherCode {
         }
 
         for (String itemString : file.getStringList(path + "items")) {
-            this.items.add(ItemBuilder.convertString(itemString));
+            this.items.add(ItemUtils.convertString(itemString));
         }
 
         this.caseSensitive = file.getBoolean(path + "options.case-sensitive", false);
@@ -143,7 +144,7 @@ public class VoucherCode {
             this.volume = (float) file.getDouble(path + ".options.sound.volume");
             this.pitch = (float) file.getDouble(path + ".options.sound.pitch");
 
-            for (String sound : file.getStringList(path + "options.sound.sounds")) {
+            for (String sound : file.getStringList(path + "options.sound.sounds")) { //todo() this is deprecated
                 try {
                     this.sounds.add(Sound.valueOf(sound));
                 } catch (Exception ignored) {}
@@ -155,8 +156,8 @@ public class VoucherCode {
         if (file.contains(path + "options.firework")) {
             this.fireworkToggle = file.getBoolean(path + "options.firework.toggle");
 
-            for (String color : file.getString(path + "options.firework.colors").split(", ")) {
-                this.fireworkColors.add(DyeUtil.getDefaultColor(color));
+            for (String color : file.getString(path + "options.firework.colors", "").split(", ")) {
+                this.fireworkColors.add(PaperMethods.getColor(color));
             }
         } else {
             this.fireworkToggle = false;

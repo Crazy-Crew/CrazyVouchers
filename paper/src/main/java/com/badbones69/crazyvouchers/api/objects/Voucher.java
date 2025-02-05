@@ -5,20 +5,16 @@ import com.badbones69.crazyvouchers.CrazyVouchers;
 import com.badbones69.crazyvouchers.api.CrazyManager;
 import com.badbones69.crazyvouchers.api.enums.Messages;
 import com.badbones69.crazyvouchers.api.enums.PersistentKeys;
-import com.badbones69.crazyvouchers.api.objects.other.ItemBuilder;
 import com.badbones69.crazyvouchers.utils.MsgUtils;
-import com.ryderbelserion.vital.common.util.StringUtil;
-import com.ryderbelserion.vital.paper.util.DyeUtil;
-import io.papermc.paper.registry.RegistryAccess;
-import io.papermc.paper.registry.RegistryKey;
-import org.bukkit.Bukkit;
+import com.ryderbelserion.core.util.StringUtils;
+import com.ryderbelserion.paper.builder.items.modern.ItemBuilder;
+import com.ryderbelserion.paper.util.PaperMethods;
 import org.bukkit.Color;
-import org.bukkit.Material;
-import org.bukkit.NamespacedKey;
 import org.bukkit.Sound;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.ItemType;
 import org.bukkit.persistence.PersistentDataContainer;
 import org.bukkit.persistence.PersistentDataType;
 import com.badbones69.crazyvouchers.config.ConfigManager;
@@ -77,7 +73,7 @@ public class Voucher {
     public Voucher(int number) {
         this.name = number + "";
         this.usesArgs = false;
-        this.itemBuilder = new ItemBuilder().setMaterial(Material.STONE).setName(number + "");
+        this.itemBuilder = ItemBuilder.from(ItemType.STONE).setDisplayName(number + "");
         this.usedMessage = "";
         this.whitelistPermissionToggle = false;
         this.whitelistPermissionMessage = "";
@@ -109,32 +105,36 @@ public class Voucher {
         this.hasCooldown = fileConfiguration.getBoolean(path + "cooldown.toggle", false);
         this.cooldownInterval = fileConfiguration.getInt(path + "cooldown.interval", 5);
 
-        this.itemBuilder = new ItemBuilder()
-                .setMaterial(fileConfiguration.getString(path + "item", "Stone"))
-                .setName(fileConfiguration.getString(path + "name", ""))
-                .setLore(fileConfiguration.getStringList(path + "lore"))
-                .setPlayerName(fileConfiguration.getString(path + "player", ""));
+        this.itemBuilder = ItemBuilder.from(fileConfiguration.getString(path + "item", "Stone"))
+                .setDisplayName(fileConfiguration.getString(path + "name", ""))
+                .withDisplayLore(fileConfiguration.getStringList(path + "lore"));
 
-        if (fileConfiguration.contains(path + "display-damage")) this.itemBuilder.setDamage(fileConfiguration.getInt(path + "display-damage"));
+        if (fileConfiguration.contains(path + "player")) {
+            this.itemBuilder.asSkullBuilder().withName(fileConfiguration.getString(path + "player", "")).build();
+        }
+
+        if (fileConfiguration.contains(path + "display-damage")) this.itemBuilder.setItemDamage(fileConfiguration.getInt(path + "display-damage"));
 
         if (fileConfiguration.contains(path + "display-trim.material") && fileConfiguration.contains(path + "display-trim.pattern")) {
-            this.itemBuilder
-                    .setTrimMaterial(RegistryAccess.registryAccess().getRegistry(RegistryKey.TRIM_MATERIAL).get(NamespacedKey.minecraft(fileConfiguration.getString(path + "display-trim.material", "QUARTZ").toLowerCase())))
-                    .setTrimPattern(RegistryAccess.registryAccess().getRegistry(RegistryKey.TRIM_PATTERN).get(NamespacedKey.minecraft(fileConfiguration.getString(path + "display-trim.pattern", "SENTRY").toLowerCase())));
+            final String trimMaterial = fileConfiguration.getString(path + "display-trim.material", "QUARTZ").toLowerCase();
+            final String trimPattern = fileConfiguration.getString(path + "display-trim.pattern", "SENTRY").toLowerCase();
+
+            this.itemBuilder.setTrim(trimPattern, trimMaterial, false);
         }
 
         if (fileConfiguration.contains(path + "skull")) {
-            this.itemBuilder.setSkull(fileConfiguration.getString(path + "skull", ""), plugin.getApi());
+            this.itemBuilder.withSkull(fileConfiguration.getString(path + "skull", ""));
         }
 
         this.glowing = fileConfiguration.getBoolean(path + "glowing");
 
-        if (this.itemBuilder.getName().toLowerCase().contains("{arg}")) this.usesArgs = true;
+        if (this.itemBuilder.getPlainName().toLowerCase().contains("{arg}")) this.usesArgs = true;
 
         if (!this.usesArgs) {
-            for (String lore : this.itemBuilder.getLore()) {
+            for (String lore : this.itemBuilder.getPlainLore()) {
                 if (lore.toLowerCase().contains("{arg}")) {
                     this.usesArgs = true;
+
                     break;
                 }
             }
@@ -247,11 +247,13 @@ public class Voucher {
             this.soundToggle = false;
         }
 
-        this.itemBuilder.hideItemFlags(fileConfiguration.getBoolean(path + "components.hide-tooltip", false));
+        if (fileConfiguration.getBoolean(path + "components.hide-tooltip", false)) {
+            this.itemBuilder.hideToolTip();
+        }
 
         if (fileConfiguration.getBoolean(path + "options.firework.toggle")) {
             for (String color : fileConfiguration.getString(path + "options.firework.colors", "").split(", ")) {
-                this.fireworkColors.add(DyeUtil.getDefaultColor(color));
+                this.fireworkColors.add(PaperMethods.getColor(color));
             }
 
             this.fireworkToggle = !fireworkColors.isEmpty();
@@ -260,11 +262,7 @@ public class Voucher {
         }
 
         if (fileConfiguration.getBoolean(path + "options.is-edible")) {
-            this.isEdible = this.itemBuilder.build().getType().isEdible();
-
-            switch (this.itemBuilder.getMaterial().toString()) {
-                case "MILK_BUCKET", "POTION" -> this.isEdible = true;
-            }
+            this.isEdible = this.itemBuilder.isEdible();
         }
     }
     
@@ -283,7 +281,7 @@ public class Voucher {
     private final SettingsManager config = ConfigManager.getConfig();
     
     public ItemStack buildItem(int amount) {
-        final ItemStack item = this.itemBuilder.setAmount(amount).setGlow(this.glowing).build();
+        final ItemStack item = this.itemBuilder.setAmount(amount).setEnchantGlint(this.glowing).asItemStack(true);
 
         setUniqueId(item);
 
@@ -311,7 +309,7 @@ public class Voucher {
     }
     
     public ItemStack buildItem(final String argument, final int amount) {
-        final ItemStack item = this.itemBuilder.setAmount(amount).addLorePlaceholder("{arg}", argument).addNamePlaceholder("{arg}", argument).setGlow(this.glowing).build(true);
+        final ItemStack item = this.itemBuilder.setAmount(amount).addPlaceholder("{arg}", argument).setEnchantGlint(this.glowing).asItemStack(true);
 
         setUniqueId(item);
 

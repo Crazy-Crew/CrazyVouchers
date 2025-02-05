@@ -3,11 +3,13 @@ package com.badbones69.crazyvouchers.api;
 import com.badbones69.crazyvouchers.CrazyVouchers;
 import com.badbones69.crazyvouchers.api.enums.Files;
 import com.badbones69.crazyvouchers.api.enums.PersistentKeys;
-import com.badbones69.crazyvouchers.api.objects.other.ItemBuilder;
 import com.badbones69.crazyvouchers.api.objects.Voucher;
-import com.ryderbelserion.vital.common.util.FileUtil;
-import com.ryderbelserion.vital.paper.api.files.CustomFile;
 import com.badbones69.crazyvouchers.api.objects.VoucherCode;
+import com.badbones69.crazyvouchers.utils.ItemUtils;
+import com.ryderbelserion.core.api.enums.FileType;
+import com.ryderbelserion.core.util.FileUtils;
+import com.ryderbelserion.paper.builder.items.modern.ItemBuilder;
+import com.ryderbelserion.paper.files.CustomFile;
 import io.papermc.paper.persistence.PersistentDataContainerView;
 import org.bukkit.Material;
 import org.bukkit.configuration.file.FileConfiguration;
@@ -61,7 +63,7 @@ public class CrazyManager {
 
         for (String voucherName : getVouchersList()) {
             try {
-                @Nullable CustomFile file = this.plugin.getFileManager().getFile(voucherName, true);
+                @Nullable CustomFile file = this.plugin.getFileManager().getFile(voucherName, FileType.YAML);
 
                 if (file != null) {
                     final YamlConfiguration configuration = file.getConfiguration();
@@ -77,7 +79,7 @@ public class CrazyManager {
 
         for (String voucherCode : getCodesList()) {
             try {
-                @Nullable CustomFile file = this.plugin.getFileManager().getFile(voucherCode, true);
+                @Nullable CustomFile file = this.plugin.getFileManager().getFile(voucherCode, FileType.YAML);
 
                 if (file != null) {
                     final YamlConfiguration configuration = file.getConfiguration();
@@ -103,14 +105,14 @@ public class CrazyManager {
      * @return A list of crate names.
      */
     public final List<String> getVouchersList() {
-        return FileUtil.getFiles(this.plugin.getDataFolder(), "vouchers", ".yml");
+        return FileUtils.getNames(this.plugin.getDataFolder(), "vouchers", ".yml", true);
     }
 
     /**
      * @return A list of crate names.
      */
     public final List<String> getCodesList() {
-        return FileUtil.getFiles(this.plugin.getDataFolder(), "codes", ".yml");
+        return FileUtils.getNames(this.plugin.getDataFolder(), "codes", ".yml", true);
     }
     
     public final List<Voucher> getVouchers() {
@@ -229,7 +231,7 @@ public class CrazyManager {
     }
 
     public List<ItemBuilder> getItems(FileConfiguration file, String voucher) {
-        return ItemBuilder.convertStringList(file.getStringList("voucher.items"), voucher);
+        return ItemUtils.convertStringList(file.getStringList("voucher.items"), voucher);
     }
     
     private boolean usesRandom(String string) {

@@ -4,11 +4,12 @@ import com.badbones69.crazyvouchers.CrazyVouchers;
 import com.badbones69.crazyvouchers.api.builders.types.VoucherMenu;
 import com.badbones69.crazyvouchers.api.enums.PersistentKeys;
 import com.badbones69.crazyvouchers.api.objects.Voucher;
-import com.badbones69.crazyvouchers.api.objects.other.ItemBuilder;
 import com.badbones69.crazyvouchers.utils.MsgUtils;
+import com.ryderbelserion.paper.builder.items.modern.ItemBuilder;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.ItemType;
 import org.bukkit.persistence.PersistentDataContainer;
 import org.bukkit.persistence.PersistentDataType;
 import org.jetbrains.annotations.NotNull;
@@ -32,13 +33,9 @@ public class InventoryManager {
     private final int amount = 36;
 
     public InventoryManager() {
-        this.nextButton = new ItemBuilder()
-                .setMaterial(Material.ARROW)
-                .setName("&6&lNext >>");
+        this.nextButton = ItemBuilder.from(ItemType.ARROW).setDisplayName("&6&lNext >>");
 
-        this.backButton = new ItemBuilder()
-                .setMaterial(Material.ARROW)
-                .setName("&6&l<< Back");
+        this.backButton = ItemBuilder.from(ItemType.ARROW).setDisplayName("&6&l<< Back");
     }
 
     public final ItemStack getVoucher(final Voucher voucher) {
@@ -78,9 +75,7 @@ public class InventoryManager {
     public final ItemStack getBackButton(final Player player) {
         int page = getPage(player) - 1;
 
-        ItemStack itemStack = this.backButton
-                .setLore(List.of("&7&lPage: &b" + page))
-                .build();
+        ItemStack itemStack = this.backButton.addDisplayLore("&7&lPage: &b" + page).asItemStack(true);
 
         itemStack.editMeta(itemMeta -> {
             final PersistentDataContainer container = itemMeta.getPersistentDataContainer();
@@ -94,9 +89,7 @@ public class InventoryManager {
     public final ItemStack getNextButton(final Player player) {
         int page = getPage(player) + 1;
 
-        ItemStack itemStack = this.nextButton
-                .setLore(List.of("&7&lPage: &b" + page))
-                .build();
+        ItemStack itemStack = this.backButton.addDisplayLore("&7&lPage: &b" + page).asItemStack(true);
 
         itemStack.editMeta(itemMeta -> {
             final PersistentDataContainer container = itemMeta.getPersistentDataContainer();

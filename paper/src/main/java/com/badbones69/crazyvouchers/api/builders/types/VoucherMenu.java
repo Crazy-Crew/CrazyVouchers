@@ -5,7 +5,7 @@ import com.badbones69.crazyvouchers.api.InventoryManager;
 import com.badbones69.crazyvouchers.api.builders.InventoryBuilder;
 import com.badbones69.crazyvouchers.api.enums.PersistentKeys;
 import com.badbones69.crazyvouchers.api.objects.Voucher;
-import com.badbones69.crazyvouchers.api.objects.other.ItemBuilder;
+import com.ryderbelserion.paper.builder.items.modern.ItemBuilder;
 import io.papermc.paper.persistence.PersistentDataContainerView;
 import org.bukkit.Material;
 import org.bukkit.Sound;
@@ -14,6 +14,7 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.ItemType;
 import org.bukkit.persistence.PersistentDataType;
 import org.jetbrains.annotations.NotNull;
 import java.util.Arrays;
@@ -98,7 +99,7 @@ public class VoucherMenu extends InventoryBuilder {
 
         final List<Integer> numbers = Arrays.asList(0, 1, 2, 3, 4, 5, 6, 7, 8, 45, 46, 47, 48, 49, 50, 51, 52, 53);
 
-        final ItemStack itemStack = new ItemBuilder().setMaterial(Material.BLUE_STAINED_GLASS_PANE).setName(" ").build();
+        final ItemStack itemStack = ItemBuilder.from(ItemType.BLUE_STAINED_GLASS_PANE).setDisplayName(" ").asItemStack(true);
 
         for (int number : numbers) {
             inventory.setItem(number, itemStack);

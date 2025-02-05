@@ -11,8 +11,7 @@ import com.badbones69.crazyvouchers.api.events.VoucherRedeemEvent;
 import com.badbones69.crazyvouchers.api.objects.Voucher;
 import com.badbones69.crazyvouchers.config.ConfigManager;
 import com.badbones69.crazyvouchers.utils.MsgUtils;
-import com.ryderbelserion.vital.paper.api.enums.Support;
-import com.ryderbelserion.vital.paper.util.scheduler.FoliaRunnable;
+import com.ryderbelserion.paper.builder.items.modern.ItemBuilder;
 import com.ryderbelserion.paper.enums.Scheduler;
 import com.ryderbelserion.paper.enums.Support;
 import com.ryderbelserion.paper.util.scheduler.FoliaScheduler;
@@ -36,7 +35,6 @@ import org.bukkit.event.player.PlayerInteractEntityEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.event.player.PlayerItemConsumeEvent;
 import org.bukkit.inventory.EquipmentSlot;
-import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.PlayerInventory;
 import org.bukkit.persistence.PersistentDataType;
@@ -403,7 +401,7 @@ public class VoucherClickListener implements Listener {
         }
 
         for (final ItemBuilder itemStack : voucher.getItems()) {
-            Methods.addItem(player, itemStack.build());
+            Methods.addItem(player, itemStack.asItemStack(true));
         }
 
         if (voucher.playSounds()) {
