@@ -14,9 +14,13 @@ repositories {
 }
 
 dependencies {
-    implementation(libs.vital.paper)
+    implementation(libs.fusion.paper)
 
     implementation(libs.nbt.api)
+
+    implementation(libs.metrics)
+
+    implementation(libs.jalu)
 
     compileOnly(libs.headdatabaseapi)
 
@@ -54,8 +58,9 @@ tasks {
         archiveClassifier.set("")
 
         listOf(
-            "com.ryderbelserion.vital",
-            "de.tr7zw.changeme.nbtapi"
+            "com.ryderbelserion.fusion",
+            "de.tr7zw.changeme.nbtapi",
+            "ch.jalu"
         ).forEach {
             relocate(it, "libs.$it")
         }

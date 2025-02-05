@@ -5,10 +5,6 @@ import ch.jalu.configme.SettingsHolder;
 import ch.jalu.configme.configurationdata.CommentsConfiguration;
 import ch.jalu.configme.properties.Property;
 import ch.jalu.configme.properties.PropertyInitializer;
-
-import java.util.List;
-
-import static ch.jalu.configme.properties.PropertyInitializer.newListProperty;
 import static ch.jalu.configme.properties.PropertyInitializer.newProperty;
 
 public class ConfigKeys implements SettingsHolder {
@@ -48,6 +44,9 @@ public class ConfigKeys implements SettingsHolder {
             """)
     public static final Property<Boolean> mono_file = newProperty("settings.use-old-file-system", false);
 
+    @Comment("Sends anonymous statistics to https://bstats.org/plugin/bukkit/Vouchers/4536")
+    public static final Property<Boolean> toggle_metrics = newProperty("root.toggle-metrics", true);
+
     @Comment("Should players have a voucher cooldown?")
     public static final Property<Boolean> cooldown_toggle = newProperty("settings.cooldown.toggle", false);
 
@@ -80,7 +79,4 @@ public class ConfigKeys implements SettingsHolder {
 
     @Comment("Whether an alert should be sent when trying to use vouchers in recipes.")
     public static final Property<Boolean> prevent_using_vouchers_in_recipes_alert = newProperty("settings.recipes.alert", false);
-
-    @Comment("Whether you want CrazyVouchers to shut up or not, This option is ignored by errors.")
-    public static final Property<Boolean> verbose_logging = PropertyInitializer.newProperty("settings.verbose_logging", true);
 }

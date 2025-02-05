@@ -5,14 +5,13 @@ import com.badbones69.crazyvouchers.api.enums.PersistentKeys;
 import com.badbones69.crazyvouchers.api.enums.Messages;
 import com.badbones69.crazyvouchers.config.ConfigManager;
 import com.badbones69.crazyvouchers.utils.MsgUtils;
-import com.ryderbelserion.vital.paper.util.scheduler.FoliaRunnable;
+import com.ryderbelserion.paper.util.scheduler.FoliaScheduler;
 import org.bukkit.Color;
 import org.bukkit.FireworkEffect;
 import org.bukkit.Location;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Firework;
 import org.bukkit.entity.Player;
-import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.PlayerInventory;
 import org.bukkit.inventory.meta.FireworkMeta;
@@ -20,7 +19,6 @@ import org.bukkit.persistence.PersistentDataContainer;
 import org.bukkit.persistence.PersistentDataType;
 import com.badbones69.crazyvouchers.config.types.ConfigKeys;
 import org.jetbrains.annotations.NotNull;
-
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
@@ -147,11 +145,11 @@ public class Methods {
 
         container.set(PersistentKeys.no_firework_damage.getNamespacedKey(), PersistentDataType.BOOLEAN, true);
 
-        new FoliaRunnable(plugin.getServer().getRegionScheduler(), firework.getLocation()) {
+        new FoliaScheduler(firework.getLocation()) {
             @Override
             public void run() {
                 firework.detonate();
             }
-        }.runDelayed(plugin, 2);
+        }.runDelayed(2);
     }
 }

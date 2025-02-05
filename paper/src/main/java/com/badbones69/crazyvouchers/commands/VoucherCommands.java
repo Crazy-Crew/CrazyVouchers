@@ -13,6 +13,8 @@ import com.badbones69.crazyvouchers.api.events.VoucherRedeemCodeEvent;
 import com.badbones69.crazyvouchers.api.objects.VoucherCode;
 import com.badbones69.crazyvouchers.utils.MsgUtils;
 import com.ryderbelserion.vital.paper.api.files.FileManager;
+import com.ryderbelserion.core.api.enums.FileType;
+import com.ryderbelserion.paper.files.FileManager;
 import de.tr7zw.changeme.nbtapi.NBTItem;
 import org.bukkit.Material;
 import org.bukkit.Sound;
@@ -73,10 +75,10 @@ public class VoucherCommands implements CommandExecutor {
                         if (loadOldWay) {
                             this.fileManager.addFile("voucher-codes.yml").addFile("vouchers.yml");
                         } else {
-                            this.fileManager.removeFile("voucher-codes.yml");
-                            this.fileManager.removeFile("vouchers.yml");
+                            this.fileManager.removeFile("voucher-codes.yml", FileType.YAML, false);
+                            this.fileManager.removeFile("vouchers.yml", FileType.YAML, false);
 
-                            this.fileManager.addFolder("codes").addFolder("vouchers");
+                            this.fileManager.addFolder("codes", FileType.YAML).addFolder("vouchers", FileType.YAML);
                         }
 
                         this.fileManager.init();

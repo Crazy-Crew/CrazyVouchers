@@ -3,10 +3,9 @@ package com.badbones69.crazyvouchers.api.enums;
 import ch.jalu.configme.SettingsManager;
 import ch.jalu.configme.properties.Property;
 import com.badbones69.crazyvouchers.utils.MsgUtils;
-import com.ryderbelserion.vital.common.util.StringUtil;
-import com.ryderbelserion.vital.paper.api.enums.Support;
+import com.ryderbelserion.core.util.StringUtils;
+import com.ryderbelserion.paper.enums.Support;
 import me.clip.placeholderapi.PlaceholderAPI;
-import org.apache.commons.lang3.StringUtils;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
@@ -103,7 +102,7 @@ public enum Messages {
         String message;
 
         if (isList()) {
-            message = StringUtils.chomp(StringUtil.convertList(getList()));
+            message = StringUtils.toString(getList());
         } else {
             message = getString();
         }

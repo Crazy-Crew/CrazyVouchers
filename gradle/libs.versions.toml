@@ -29,12 +29,16 @@ vault = "1.7.1"
 # Deprecated API
 nbtapi = "2.14.1"
 
+fusion = "0.16.0"
+
 # Vital API
 vital-paper = "1.0.6"
 
 # Common API
 jetbrains = "24.1.0"
 adventure = "4.17.0"
+bStats = "3.1.0"
+jalu = "1.4.3"
 
 [libraries]
 # Velocity API
@@ -63,8 +67,12 @@ oraxen = { module = "io.th0rgal:oraxen", version.ref = "oraxen" }
 # Vital API
 vital-paper = { module = "com.ryderbelserion.vital:paper", version.ref = "vital-paper" }
 
+fusion-paper = { module = "com.ryderbelserion.fusion:fusion-paper", version.ref = "fusion" }
+
 # Common API
 jetbrains = { module = "org.jetbrains:annotations", version.ref = "jetbrains" }
+metrics = { module = "org.bstats:bstats-bukkit", version.ref = "bStats" }
+jalu = { module = "ch.jalu:configme", version.ref = "jalu" }
 
 nbt-api = { module = "de.tr7zw:item-nbt-api", version.ref = "nbtapi" }
 

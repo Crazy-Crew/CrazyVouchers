@@ -4,7 +4,6 @@ import com.badbones69.crazyvouchers.api.CrazyManager;
 import com.badbones69.crazyvouchers.api.InventoryManager;
 import com.badbones69.crazyvouchers.api.builders.types.VoucherMenu;
 import com.badbones69.crazyvouchers.api.enums.Files;
-import com.badbones69.crazyvouchers.api.objects.Voucher;
 import com.badbones69.crazyvouchers.config.ConfigManager;
 import com.badbones69.crazyvouchers.listeners.FireworkDamageListener;
 import com.badbones69.crazyvouchers.commands.VoucherCommands;
@@ -13,8 +12,9 @@ import com.badbones69.crazyvouchers.listeners.VoucherClickListener;
 import com.badbones69.crazyvouchers.listeners.VoucherCraftListener;
 import com.badbones69.crazyvouchers.listeners.VoucherMiscListener;
 import com.badbones69.crazyvouchers.support.MetricsWrapper;
-import com.ryderbelserion.vital.paper.Vital;
-import com.ryderbelserion.vital.paper.api.enums.Support;
+import com.ryderbelserion.core.api.enums.FileType;
+import com.ryderbelserion.paper.FusionApi;
+import com.ryderbelserion.paper.files.FileManager;
 import me.arcaniax.hdb.api.HeadDatabaseAPI;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.PluginCommand;
@@ -27,7 +27,7 @@ import org.jetbrains.annotations.Nullable;
 import com.badbones69.crazyvouchers.config.types.ConfigKeys;
 import java.util.Locale;
 
-public class CrazyVouchers extends Vital {
+public class CrazyVouchers extends JavaPlugin {
 
     public @NotNull static CrazyVouchers get() {
         return JavaPlugin.getPlugin(CrazyVouchers.class);
@@ -45,27 +45,33 @@ public class CrazyVouchers extends Vital {
 
     private HeadDatabaseAPI api;
 
+    private final FusionApi fusionApi = FusionApi.get();
+
+    private FileManager fileManager;
+
     @Override
     public void onEnable() {
+        this.fusionApi.enable(this);
+
+        this.api = this.fusionApi.getDatabaseAPI();
+
+        this.fileManager = this.fusionApi.getFileManager();
+
         ConfigManager.load(getDataFolder());
 
         boolean loadOldWay = ConfigManager.getConfig().getProperty(ConfigKeys.mono_file);
 
-        getFileManager().addFile("users.yml").addFile("data.yml");
+        this.fileManager.addFile("users.yml").addFile("data.yml");
 
         if (loadOldWay) {
-            getFileManager().addFile("voucher-codes.yml").addFile("vouchers.yml");
+            this.fileManager.addFile("voucher-codes.yml").addFile("vouchers.yml");
         } else {
-            getFileManager().addFolder("codes").addFolder("vouchers");
+            this.fileManager.addFolder("codes", FileType.YAML).addFolder("vouchers", FileType.YAML);
         }
 
-        getFileManager().init();
+        this.fileManager.init();
 
-        new MetricsWrapper(this, 4536).start();
-
-        if (Support.head_database.isEnabled()) {
-            this.api = new HeadDatabaseAPI();
-        }
+        new MetricsWrapper(4536).start();
 
         this.crazyManager = new CrazyManager();
         this.crazyManager.load();
@@ -104,7 +110,7 @@ public class CrazyVouchers extends Vital {
 
         registerCommand(getCommand("crazyvouchers"), voucherTab, voucherCommands);
 
-        if (isVerbose()) {
+        if (this.fusionApi.getFusion().isVerbose()) {
             getComponentLogger().info("Done ({})!", String.format(Locale.ROOT, "%.3fs", (double) (System.nanoTime() - this.startTime) / 1.0E9D));
         }
     }
@@ -131,5 +137,9 @@ public class CrazyVouchers extends Vital {
 
     public @NotNull final CrazyManager getCrazyManager() {
         return this.crazyManager;
+    }
+
+    public @NotNull FileManager getFileManager() {
+        return this.fileManager;
     }
 }

@@ -164,6 +164,7 @@ public class Voucher {
         }
 
         CrazyManager crazyManager = plugin.getCrazyManager();
+
         this.items.addAll(crazyManager.getItems(fileConfiguration, this.name));
 
         this.usedMessage = getMessage(path + "options.message", fileConfiguration);
@@ -479,7 +480,7 @@ public class Voucher {
         String messageString;
 
         if (isList(path, file)) {
-            messageString = MsgUtils.color(StringUtil.chomp(StringUtil.convertList(file.getStringList(path))));
+            messageString = MsgUtils.color(StringUtils.toString(file.getStringList(path)));
         } else {
             messageString = file.getString(path, "");
         }

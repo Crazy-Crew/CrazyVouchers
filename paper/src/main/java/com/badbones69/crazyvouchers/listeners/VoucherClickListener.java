@@ -8,12 +8,14 @@ import com.badbones69.crazyvouchers.api.enums.Files;
 import com.badbones69.crazyvouchers.api.enums.Messages;
 import com.badbones69.crazyvouchers.api.enums.PersistentKeys;
 import com.badbones69.crazyvouchers.api.events.VoucherRedeemEvent;
-import com.badbones69.crazyvouchers.api.objects.other.ItemBuilder;
 import com.badbones69.crazyvouchers.api.objects.Voucher;
 import com.badbones69.crazyvouchers.config.ConfigManager;
 import com.badbones69.crazyvouchers.utils.MsgUtils;
 import com.ryderbelserion.vital.paper.api.enums.Support;
 import com.ryderbelserion.vital.paper.util.scheduler.FoliaRunnable;
+import com.ryderbelserion.paper.enums.Scheduler;
+import com.ryderbelserion.paper.enums.Support;
+import com.ryderbelserion.paper.util.scheduler.FoliaScheduler;
 import io.papermc.paper.persistence.PersistentDataContainerView;
 import me.clip.placeholderapi.PlaceholderAPI;
 import org.bukkit.ChatColor;
@@ -317,14 +319,14 @@ public class VoucherClickListener implements Listener {
 
                 final Server server = this.plugin.getServer();
 
-                new FoliaRunnable(server.getGlobalRegionScheduler()) {
+                new FoliaScheduler(Scheduler.global_scheduler) {
                     @Override
                     public void run() {
                         for (String command : voucher.getWhitelistWorldCommands()) {
                             server.dispatchCommand(server.getConsoleSender(), Methods.replacePlaceholders(placeholders, command, true));
                         }
                     }
-                }.run(this.plugin);
+                }.run();
 
                 return false;
             }
@@ -338,14 +340,14 @@ public class VoucherClickListener implements Listener {
 
                         player.sendMessage(Methods.replacePlaceholders(this.placeholders, voucher.getBlackListMessage(), false));
 
-                        new FoliaRunnable(server.getGlobalRegionScheduler()) {
+                        new FoliaScheduler(Scheduler.global_scheduler) {
                             @Override
                             public void run() {
                                 for (String command : voucher.getBlacklistCommands()) {
                                     server.dispatchCommand(server.getConsoleSender(), Methods.replacePlaceholders(placeholders, command, true));
                                 }
                             }
-                        }.run(this.plugin);
+                        }.run();
 
                         return false;
                     }

@@ -8,7 +8,6 @@ import com.badbones69.crazyvouchers.config.migrate.ConfigMigration;
 import com.badbones69.crazyvouchers.config.migrate.LocaleMigration;
 import com.badbones69.crazyvouchers.config.types.ConfigKeys;
 import com.badbones69.crazyvouchers.config.types.MessageKeys;
-
 import java.io.File;
 
 public class ConfigManager {

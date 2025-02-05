@@ -1,7 +1,8 @@
 package com.badbones69.crazyvouchers.api.enums;
 
 import com.badbones69.crazyvouchers.CrazyVouchers;
-import com.ryderbelserion.vital.paper.api.files.FileManager;
+import com.ryderbelserion.core.api.enums.FileType;
+import com.ryderbelserion.paper.files.FileManager;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.jetbrains.annotations.NotNull;
 
@@ -31,7 +32,7 @@ public enum Files {
     }
 
     public final YamlConfiguration getConfiguration() {
-        return this.fileManager.getFile(this.fileName).getConfiguration();
+        return this.fileManager.getFile(this.fileName, FileType.YAML).getConfiguration();
     }
 
     public final String getStrippedName() {
