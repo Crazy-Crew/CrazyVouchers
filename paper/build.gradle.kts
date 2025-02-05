@@ -60,6 +60,7 @@ tasks {
         listOf(
             "com.ryderbelserion.fusion",
             "de.tr7zw.changeme.nbtapi",
+            "org.bstats",
             "ch.jalu"
         ).forEach {
             relocate(it, "libs.$it")
