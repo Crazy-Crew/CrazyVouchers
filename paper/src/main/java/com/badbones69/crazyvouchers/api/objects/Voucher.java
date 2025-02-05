@@ -110,7 +110,11 @@ public class Voucher {
                 .withDisplayLore(fileConfiguration.getStringList(path + "lore"));
 
         if (fileConfiguration.contains(path + "player")) {
-            this.itemBuilder.asSkullBuilder().withName(fileConfiguration.getString(path + "player", "")).build();
+            final String playerName = fileConfiguration.getString(path + "player", "");
+
+            if (!playerName.isEmpty() || !playerName.isBlank()) {
+                this.itemBuilder.asSkullBuilder().withName(playerName).build();
+            }
         }
 
         if (fileConfiguration.contains(path + "display-damage")) this.itemBuilder.setItemDamage(fileConfiguration.getInt(path + "display-damage"));
