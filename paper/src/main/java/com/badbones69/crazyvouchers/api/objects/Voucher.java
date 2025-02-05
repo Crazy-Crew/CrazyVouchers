@@ -105,7 +105,7 @@ public class Voucher {
         this.hasCooldown = fileConfiguration.getBoolean(path + "cooldown.toggle", false);
         this.cooldownInterval = fileConfiguration.getInt(path + "cooldown.interval", 5);
 
-        this.itemBuilder = ItemBuilder.from(fileConfiguration.getString(path + "item", "Stone"))
+        this.itemBuilder = ItemBuilder.from(fileConfiguration.getString(path + "item", "Stone").toLowerCase())
                 .setDisplayName(fileConfiguration.getString(path + "name", ""))
                 .withDisplayLore(fileConfiguration.getStringList(path + "lore"));
 

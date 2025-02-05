@@ -48,7 +48,7 @@ public class ItemUtils {
                 String value = optionString.replace(option + ":", "").replace(option, "");
 
                 switch (option.toLowerCase()) {
-                    case "item" -> itemBuilder.withType(value);
+                    case "item" -> itemBuilder.withType(value.toLowerCase());
                     case "name" -> itemBuilder.setDisplayName(value);
                     case "amount" -> {
                         try {
