@@ -77,7 +77,7 @@ public class ItemUtils {
                         String trim = split[0];
                         String material = split[1];
 
-                        itemBuilder.setTrim(trim, material, false);
+                        itemBuilder.setTrim(trim.toLowerCase(), material.toLowerCase(), false);
                     }
 
                     default -> {
