@@ -29,10 +29,7 @@ vault = "1.7.1"
 # Deprecated API
 nbtapi = "2.14.1"
 
-fusion = "0.16.1"
-
-# Vital API
-vital-paper = "1.0.6"
+fusion = "0.16.2"
 
 # Common API
 jetbrains = "24.1.0"
@@ -64,9 +61,7 @@ placeholderapi = { module = "me.clip:placeholderapi", version.ref = "placeholder
 vault = { module = "com.github.MilkBowl:VaultAPI", version.ref = "vault" }
 oraxen = { module = "io.th0rgal:oraxen", version.ref = "oraxen" }
 
-# Vital API
-vital-paper = { module = "com.ryderbelserion.vital:paper", version.ref = "vital-paper" }
-
+# Fusion API
 fusion-paper = { module = "com.ryderbelserion.fusion:fusion-paper", version.ref = "fusion" }
 
 # Common API
