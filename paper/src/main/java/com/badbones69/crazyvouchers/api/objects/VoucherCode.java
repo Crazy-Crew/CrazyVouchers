@@ -47,7 +47,7 @@ public class VoucherCode {
     private final List<ItemBuilder> items = new ArrayList<>();
 
     public VoucherCode(FileConfiguration file, String name) {
-        this.name = name;
+        this.name = name.replaceAll(".yml", "");
 
         boolean loadOldWay = ConfigManager.getConfig().getProperty(ConfigKeys.mono_file);
 

@@ -94,7 +94,7 @@ public class Voucher {
     }
 
     public Voucher(FileConfiguration fileConfiguration, String name) {
-        this.name = name;
+        this.name = name.replaceAll(".yml", "");
         this.usesArgs = false;
 
         final CrazyVouchers plugin = CrazyVouchers.get();
