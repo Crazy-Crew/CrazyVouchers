@@ -1,23 +1,16 @@
 package com.badbones69.crazyvouchers.utils;
 
-import com.badbones69.crazyvouchers.CrazyVouchers;
 import com.ryderbelserion.core.util.StringUtils;
 import com.ryderbelserion.paper.builder.items.modern.ItemBuilder;
 import com.ryderbelserion.paper.util.PaperMethods;
-import io.papermc.paper.registry.RegistryAccess;
-import io.papermc.paper.registry.RegistryKey;
 import org.bukkit.DyeColor;
-import org.bukkit.Material;
-import org.bukkit.NamespacedKey;
 import org.bukkit.block.banner.Pattern;
 import org.bukkit.block.banner.PatternType;
 import org.bukkit.enchantments.Enchantment;
 import org.bukkit.inventory.ItemType;
-
 import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
-import java.util.logging.Level;
 import java.util.stream.Collectors;
 
 public class ItemUtils {
