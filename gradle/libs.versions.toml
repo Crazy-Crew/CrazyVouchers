@@ -29,13 +29,16 @@ vault = "1.7.1"
 # Deprecated API
 nbtapi = "2.14.1"
 
-fusion = "0.16.2"
+# Fusion API
+fusion = "0.24.0"
+
+# Triumph API
+cmds = "2.2.0"
 
 # Common API
 jetbrains = "24.1.0"
-adventure = "4.17.0"
+adventure = "4.18.0"
 bStats = "3.1.0"
-jalu = "1.4.3"
 
 [libraries]
 # Velocity API
@@ -63,12 +66,16 @@ oraxen = { module = "io.th0rgal:oraxen", version.ref = "oraxen" }
 
 # Fusion API
 fusion-paper = { module = "com.ryderbelserion.fusion:fusion-paper", version.ref = "fusion" }
+fusion-core = { module = "com.ryderbelserion.fusion:fusion-core", version.ref = "fusion" }
+
+# Triumph API
+triumph-cmds = { module = "dev.triumphteam:triumph-cmds-bukkit", version.ref = "cmds" }
 
 # Common API
 jetbrains = { module = "org.jetbrains:annotations", version.ref = "jetbrains" }
 metrics = { module = "org.bstats:bstats-bukkit", version.ref = "bStats" }
-jalu = { module = "ch.jalu:configme", version.ref = "jalu" }
 
+# Deprecated API
 nbt-api = { module = "de.tr7zw:item-nbt-api", version.ref = "nbtapi" }
 
 [bundles]

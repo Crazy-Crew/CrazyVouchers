@@ -5,7 +5,7 @@ import com.badbones69.crazyvouchers.api.enums.PersistentKeys;
 import com.badbones69.crazyvouchers.api.enums.Messages;
 import com.badbones69.crazyvouchers.config.ConfigManager;
 import com.badbones69.crazyvouchers.utils.MsgUtils;
-import com.ryderbelserion.paper.util.scheduler.FoliaScheduler;
+import com.ryderbelserion.fusion.paper.util.scheduler.FoliaScheduler;
 import org.bukkit.Color;
 import org.bukkit.FireworkEffect;
 import org.bukkit.Location;

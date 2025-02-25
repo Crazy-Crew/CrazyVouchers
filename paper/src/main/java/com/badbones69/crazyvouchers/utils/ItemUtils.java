@@ -1,8 +1,8 @@
 package com.badbones69.crazyvouchers.utils;
 
-import com.ryderbelserion.core.util.StringUtils;
-import com.ryderbelserion.paper.builder.items.modern.ItemBuilder;
-import com.ryderbelserion.paper.util.PaperMethods;
+import com.ryderbelserion.fusion.core.util.StringUtils;
+import com.ryderbelserion.fusion.paper.builder.items.modern.ItemBuilder;
+import com.ryderbelserion.fusion.paper.util.PaperMethods;
 import org.bukkit.DyeColor;
 import org.bukkit.block.banner.Pattern;
 import org.bukkit.block.banner.PatternType;

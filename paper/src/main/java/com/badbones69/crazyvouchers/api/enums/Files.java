@@ -1,8 +1,8 @@
 package com.badbones69.crazyvouchers.api.enums;
 
 import com.badbones69.crazyvouchers.CrazyVouchers;
-import com.ryderbelserion.core.api.enums.FileType;
-import com.ryderbelserion.paper.files.FileManager;
+import com.ryderbelserion.fusion.core.api.enums.FileType;
+import com.ryderbelserion.fusion.paper.files.FileManager;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.jetbrains.annotations.NotNull;
 

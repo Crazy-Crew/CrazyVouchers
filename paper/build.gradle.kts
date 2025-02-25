@@ -20,8 +20,6 @@ dependencies {
 
     implementation(libs.metrics)
 
-    implementation(libs.jalu)
-
     compileOnly(libs.headdatabaseapi)
 
     compileOnly(libs.placeholderapi)
@@ -60,8 +58,7 @@ tasks {
         listOf(
             "com.ryderbelserion.fusion",
             "de.tr7zw.changeme.nbtapi",
-            "org.bstats",
-            "ch.jalu"
+            "org.bstats"
         ).forEach {
             relocate(it, "libs.$it")
         }
