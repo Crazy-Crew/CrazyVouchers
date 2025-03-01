@@ -7,7 +7,7 @@ import ch.jalu.configme.resource.YamlFileResourceOptions;
 import com.badbones69.crazyvouchers.config.migrate.ConfigMigration;
 import com.badbones69.crazyvouchers.config.migrate.LocaleMigration;
 import com.badbones69.crazyvouchers.config.types.ConfigKeys;
-import com.badbones69.crazyvouchers.config.types.MessageKeys;
+import com.badbones69.crazyvouchers.config.types.locale.MessageKeys;
 import java.io.File;
 
 public class ConfigManager {

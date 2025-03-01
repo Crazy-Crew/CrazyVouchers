@@ -4,7 +4,7 @@ import ch.jalu.configme.configurationdata.ConfigurationData;
 import ch.jalu.configme.properties.Property;
 import ch.jalu.configme.resource.PropertyReader;
 import com.badbones69.crazyvouchers.config.types.ConfigKeys;
-import com.badbones69.crazyvouchers.config.types.MessageKeys;
+import com.badbones69.crazyvouchers.config.types.locale.MessageKeys;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;

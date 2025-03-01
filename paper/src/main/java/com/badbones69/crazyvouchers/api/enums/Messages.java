@@ -2,6 +2,7 @@ package com.badbones69.crazyvouchers.api.enums;
 
 import ch.jalu.configme.SettingsManager;
 import ch.jalu.configme.properties.Property;
+import com.badbones69.crazyvouchers.config.types.locale.RootKeys;
 import com.badbones69.crazyvouchers.utils.MsgUtils;
 import com.ryderbelserion.fusion.core.util.StringUtils;
 import com.ryderbelserion.fusion.paper.enums.Support;
@@ -10,12 +11,19 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
 import com.badbones69.crazyvouchers.config.ConfigManager;
-import com.badbones69.crazyvouchers.config.types.MessageKeys;
+import com.badbones69.crazyvouchers.config.types.locale.MessageKeys;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
 public enum Messages {
+
+    must_be_console_sender(RootKeys.must_be_console_sender),
+    inventory_not_empty(RootKeys.inventory_not_empty),
+    feature_disabled(RootKeys.feature_disabled),
+    unknown_command(RootKeys.unknown_command),
+    correct_usage(RootKeys.correct_usage),
+    same_player(RootKeys.same_player),
 
     config_reload(MessageKeys.config_reload),
     not_online(MessageKeys.not_online),

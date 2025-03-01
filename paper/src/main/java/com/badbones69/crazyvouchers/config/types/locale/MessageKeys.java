@@ -1,4 +1,4 @@
-package com.badbones69.crazyvouchers.config.types;
+package com.badbones69.crazyvouchers.config.types.locale;
 
 import ch.jalu.configme.Comment;
 import ch.jalu.configme.SettingsHolder;
@@ -45,6 +45,7 @@ public class MessageKeys implements SettingsHolder {
 
     public static final Property<String> survival_mode = newProperty("player.survival-only", "{prefix}&cYou must be in survival mode to use vouchers.");
 
+    @Comment("A list of available placeholders: {permission}")
     public static final Property<String> no_permission = newProperty("player.no-permission", "{prefix}&cYou do not have permission to use that command!");
 
     public static final Property<String> no_permission_to_use_voucher = newProperty("player.voucher.no-permission", "{prefix}&cYou do not have permission to use that voucher.");
@@ -64,6 +65,7 @@ public class MessageKeys implements SettingsHolder {
 
     public static final Property<String> migrated_old_vouchers = newProperty("player.voucher.migrated", "{prefix}&cSuccessfully migrated old vouchers in your inventory.");
 
+    @Comment("A list of available placeholders: {player}")
     public static final Property<String> not_online = newProperty("player.target-not-online", "{prefix}&cThat player is not online.");
 
     public static final Property<String> hit_voucher_limit = newProperty("player.hit-limit", "{prefix}&cYou have hit your limit for using this voucher.");
