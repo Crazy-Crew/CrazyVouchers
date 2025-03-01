@@ -1,15 +1,17 @@
 package com.badbones69.crazyvouchers;
 
 import ch.jalu.configme.SettingsManager;
+import com.badbones69.crazyvouchers.api.enums.Files;
 import com.badbones69.crazyvouchers.api.enums.PersistentKeys;
-import com.badbones69.crazyvouchers.api.enums.Messages;
 import com.badbones69.crazyvouchers.config.ConfigManager;
 import com.badbones69.crazyvouchers.utils.MsgUtils;
+import com.ryderbelserion.fusion.paper.enums.Scheduler;
 import com.ryderbelserion.fusion.paper.util.scheduler.FoliaScheduler;
 import org.bukkit.Color;
 import org.bukkit.FireworkEffect;
 import org.bukkit.Location;
-import org.bukkit.command.CommandSender;
+import org.bukkit.Server;
+import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.entity.Firework;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
@@ -20,13 +22,11 @@ import org.bukkit.persistence.PersistentDataType;
 import com.badbones69.crazyvouchers.config.types.ConfigKeys;
 import org.jetbrains.annotations.NotNull;
 import java.util.Arrays;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
 public class Methods {
 
-    private @NotNull static final CrazyVouchers plugin = CrazyVouchers.get();
     private @NotNull static final SettingsManager config = ConfigManager.getConfig();
 
     public static void removeItem(final ItemStack item, final Player player) {
@@ -35,6 +35,55 @@ public class Methods {
         } else if (item.getAmount() > 1) {
             item.setAmount(item.getAmount() - 1);
         }
+    }
+
+    public static void janitor() {
+        final FileConfiguration configuration = Files.users.getConfiguration();
+
+        if (!configuration.contains("Players")) {
+            configuration.set("Players.Clear", null);
+
+            Files.users.save();
+        }
+
+        final FileConfiguration data = Files.data.getConfiguration();
+
+        if (!data.contains("Used-Vouchers")) {
+            data.set("Used-Vouchers.Clear", null);
+
+            Files.data.save();
+        }
+    }
+
+    public static boolean hasPermission(final boolean execute, final Player player, final List<String> permissions, final List<String> commands, final Map<String, String> placeholders, final String message, final String argument) {
+        boolean hasPermission = false;
+
+        final Server server = player.getServer();
+
+        for (String permission : permissions) {
+            if (player.hasPermission(permission.toLowerCase().replace("{arg}", argument != null ? argument : "{arg}"))) {
+                if (execute) {
+                    placeholders.put("{permission}", permission);
+
+                    player.sendMessage(Methods.replacePlaceholders(placeholders, message, false));
+
+                    new FoliaScheduler(Scheduler.global_scheduler) {
+                        @Override
+                        public void run() {
+                            for (String command : commands) {
+                                server.dispatchCommand(server.getConsoleSender(), Methods.replacePlaceholders(placeholders, command, true));
+                            }
+                        }
+                    }.run();
+                }
+
+                hasPermission = true;
+
+                break;
+            }
+        }
+
+        return hasPermission;
     }
 
     public static String getPrefix(final String message) {
@@ -57,72 +106,12 @@ public class Methods {
         });
     }
 
-    public static boolean isInt(final String value) {
-        try {
-            Integer.parseInt(value);
-        } catch (NumberFormatException nfe) {
-            return false;
-        }
-
-        return true;
-    }
-
-    public static boolean isInt(final CommandSender sender, final String value) {
-        try {
-            Integer.parseInt(value);
-        } catch (NumberFormatException nfe) {
-            Map<String, String> placeholders = new HashMap<>();
-
-            placeholders.put("{arg}", value);
-
-            Messages.not_a_number.sendMessage(sender, placeholders);
-
-            return false;
-        }
-
-        return true;
-    }
-
     public static String replacePlaceholders(final Map<String, String> placeholders, String message, final boolean isCommand) {
         for (String placeholder : placeholders.keySet()) {
             message = message.replace(placeholder, placeholders.get(placeholder)).replace(placeholder.toLowerCase(), placeholders.get(placeholder));
         }
 
         if (isCommand) return message; else return MsgUtils.color(message);
-    }
-
-    public static boolean isOnline(final CommandSender sender, final String name) {
-        for (Player player : plugin.getServer().getOnlinePlayers()) {
-            if (player.getName().equalsIgnoreCase(name)) return true;
-        }
-
-        Messages.not_online.sendMessage(sender);
-
-        return false;
-    }
-
-    public static boolean hasPermission(final Player player, final String perm) {
-        if (!player.hasPermission("crazyvouchers." + perm) || !player.hasPermission("voucher." + perm)) {
-            Messages.no_permission.sendMessage(player);
-
-            return false;
-        }
-
-        return true;
-    }
-
-    public static boolean hasPermission(final CommandSender sender, final String perm) {
-        if (sender instanceof Player player) {
-            if (!player.hasPermission("crazyvouchers." + perm) || !player.hasPermission("voucher." + perm)) {
-                Messages.no_permission.sendMessage(player);
-
-                return false;
-            } else {
-                return true;
-            }
-        } else {
-            return true;
-        }
     }
 
     public static boolean isInventoryFull(final PlayerInventory inventory) {

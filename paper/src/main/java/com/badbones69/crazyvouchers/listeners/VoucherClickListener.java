@@ -7,6 +7,7 @@ import com.badbones69.crazyvouchers.api.CrazyManager;
 import com.badbones69.crazyvouchers.api.enums.Files;
 import com.badbones69.crazyvouchers.api.enums.Messages;
 import com.badbones69.crazyvouchers.api.enums.PersistentKeys;
+import com.badbones69.crazyvouchers.api.enums.keys.PermissionKeys;
 import com.badbones69.crazyvouchers.api.events.VoucherRedeemEvent;
 import com.badbones69.crazyvouchers.api.objects.Voucher;
 import com.badbones69.crazyvouchers.config.ConfigManager;
@@ -176,7 +177,7 @@ public class VoucherClickListener implements Listener {
                     Messages.dupe_protection.sendMessage(player);
 
                     this.plugin.getServer().getOnlinePlayers().forEach(staff -> {
-                        if (staff.hasPermission("crazyvouchers.notify.duped")) {
+                        if (PermissionKeys.crazyvouchers_notify.hasPermission(staff)) {
                             Messages.notify_staff.sendMessage(staff, new HashMap<>() {{
                                 put("{player}", player.getName());
                                 put("{id}", id);
@@ -225,7 +226,7 @@ public class VoucherClickListener implements Listener {
         if (passesPermissionChecks(player, voucher, argument)) {
             String uuid = player.getUniqueId().toString();
 
-            if (!player.hasPermission("voucher.bypass") && voucher.useLimiter() && user.contains("Players." + uuid + ".Vouchers." + voucher.getName())) {
+            if (!PermissionKeys.crazyvouchers_bypass.hasPermission(player) && voucher.useLimiter() && user.contains("Players." + uuid + ".Vouchers." + voucher.getName())) {
                 int amount = user.getInt("Players." + uuid + ".Vouchers." + voucher.getName());
 
                 if (amount >= voucher.getLimiterLimit()) {
@@ -297,19 +298,7 @@ public class VoucherClickListener implements Listener {
 
         if (!player.isOp()) {
             if (voucher.useWhiteListPermissions()) {
-                for (String permission : voucher.getWhitelistPermissions()) {
-                    if (!player.hasPermission(permission.toLowerCase().replace("{arg}", argument != null ? argument : "{arg}"))) {
-                        this.placeholders.put("{permission}", permission);
-
-                        player.sendMessage(Methods.replacePlaceholders(this.placeholders, voucher.getWhitelistPermissionMessage(), false));
-
-                        for (String command : voucher.getWhitelistCommands()) {
-                            this.plugin.getServer().dispatchCommand(this.plugin.getServer().getConsoleSender(), Methods.replacePlaceholders(this.placeholders, command, false));
-                        }
-
-                        return false;
-                    }
-                }
+                return voucher.hasPermission(true, player, voucher.getWhitelistPermissions(), voucher.getWhitelistCommands(), this.placeholders, voucher.getWhitelistPermissionMessage(), argument);
             }
 
             if (voucher.usesWhitelistWorlds() && !voucher.getWhitelistWorlds().contains(player.getWorld().getName().toLowerCase())) {
@@ -330,26 +319,7 @@ public class VoucherClickListener implements Listener {
             }
 
             if (voucher.useBlackListPermissions()) {
-                final Server server = this.plugin.getServer();
-
-                for (String permission : voucher.getBlackListPermissions()) {
-                    if (player.hasPermission(permission.toLowerCase().replace("{arg}", argument != null ? argument : "{arg}"))) {
-                        this.placeholders.put("{permission}", permission);
-
-                        player.sendMessage(Methods.replacePlaceholders(this.placeholders, voucher.getBlackListMessage(), false));
-
-                        new FoliaScheduler(Scheduler.global_scheduler) {
-                            @Override
-                            public void run() {
-                                for (String command : voucher.getBlacklistCommands()) {
-                                    server.dispatchCommand(server.getConsoleSender(), Methods.replacePlaceholders(placeholders, command, true));
-                                }
-                            }
-                        }.run();
-
-                        return false;
-                    }
-                }
+                return voucher.hasPermission(true, player, voucher.getBlackListPermissions(), voucher.getBlacklistCommands(), this.placeholders, voucher.getBlackListMessage(), argument);
             }
         }
 

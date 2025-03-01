@@ -1,18 +1,24 @@
 package com.badbones69.crazyvouchers.api.objects;
 
 import com.badbones69.crazyvouchers.CrazyVouchers;
+import com.badbones69.crazyvouchers.Methods;
 import com.badbones69.crazyvouchers.api.enums.Messages;
 import com.badbones69.crazyvouchers.utils.ItemUtils;
 import com.ryderbelserion.fusion.paper.builder.items.modern.ItemBuilder;
+import com.ryderbelserion.fusion.paper.enums.Scheduler;
 import com.ryderbelserion.fusion.paper.util.PaperMethods;
+import com.ryderbelserion.fusion.paper.util.scheduler.FoliaScheduler;
 import org.bukkit.Color;
+import org.bukkit.Server;
 import org.bukkit.Sound;
 import org.bukkit.configuration.file.FileConfiguration;
+import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
 import com.badbones69.crazyvouchers.config.ConfigManager;
 import com.badbones69.crazyvouchers.config.types.ConfigKeys;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import java.util.logging.Level;
 
 public class VoucherCode {
@@ -162,6 +168,10 @@ public class VoucherCode {
         } else {
             this.fireworkToggle = false;
         }
+    }
+
+    public boolean hasPermission(final boolean execute, final Player player, final List<String> permissions, final List<String> commands, final Map<String, String> placeholders, final String message, final String argument) {
+        return Methods.hasPermission(execute, player, permissions, commands, placeholders, message, argument);
     }
     
     public String getName() {
