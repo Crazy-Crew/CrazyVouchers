@@ -16,6 +16,8 @@ repositories {
 dependencies {
     implementation(libs.fusion.paper)
 
+    implementation(libs.triumph.cmds)
+
     implementation(libs.nbt.api)
 
     implementation(libs.metrics)
