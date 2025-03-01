@@ -10,30 +10,3 @@ description: '${description}'
 softdepend: [HeadDatabase, PlaceholderAPI, Oraxen, ItemsAdder]
 
 folia-supported: true
-
-commands:
-  vouchers:
-    description: "Manage your vouchers however you want."
-    aliases: [voucher]
-  crazyvouchers:
-    description: "Manage your vouchers however you want."
-    aliases: [crazyvoucher]
-
-permissions:
-  voucher.admin: # deprecated
-    default: op
-
-  voucher.redeem: # deprecated
-    default: op
-
-  crazyvouchers.redeem:
-    default: op
-
-  crazyvouchers.admin:
-    default: op
-
-  crazyvouchers.notify.duped:
-    default: op
-
-  crazyvouchers.migrate:
-    default: op
