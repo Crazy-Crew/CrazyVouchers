@@ -13,7 +13,10 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.inventory.*;
+import org.bukkit.inventory.CraftingInventory;
+import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.PlayerInventory;
 import org.jetbrains.annotations.NotNull;
 import com.badbones69.crazyvouchers.config.types.ConfigKeys;
 
@@ -29,17 +32,19 @@ public class VoucherCraftListener implements Listener {
     public void prepareItemCraft(PrepareItemCraftEvent event) {
         if (!this.config.getProperty(ConfigKeys.prevent_using_vouchers_in_recipes_toggle)) return;
 
-        for (ItemStack itemStack : event.getInventory().getMatrix()) {
+        final CraftingInventory inventory = event.getInventory();
+
+        for (final ItemStack itemStack : inventory.getMatrix()) {
             if (itemStack == null || itemStack.getType() == Material.AIR) return;
 
-            Voucher voucher = crazyManager.getVoucherFromItem(itemStack);
+            final Voucher voucher = crazyManager.getVoucherFromItem(itemStack);
 
             if (voucher == null) return;
 
             final PersistentDataContainerView container = itemStack.getPersistentDataContainer();
 
             if (container.has(PersistentKeys.voucher_item.getNamespacedKey())) {
-                event.getInventory().setResult(new ItemStack(Material.AIR));
+                inventory.setResult(new ItemStack(Material.AIR));
 
                 if (this.config.getProperty(ConfigKeys.prevent_using_vouchers_in_recipes_alert)) {
                     Messages.cannot_put_items_in_crafting_table.sendMessage(event.getView().getPlayer());

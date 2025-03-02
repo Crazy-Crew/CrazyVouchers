@@ -6,6 +6,7 @@ import com.badbones69.crazyvouchers.api.enums.Messages;
 import com.badbones69.crazyvouchers.api.enums.keys.PermissionKeys;
 import com.badbones69.crazyvouchers.api.events.VoucherRedeemCodeEvent;
 import com.badbones69.crazyvouchers.api.objects.VoucherCode;
+import com.badbones69.crazyvouchers.api.objects.VoucherCommand;
 import com.badbones69.crazyvouchers.commands.BaseCommand;
 import com.badbones69.crazyvouchers.config.ConfigManager;
 import com.badbones69.crazyvouchers.config.types.ConfigKeys;
@@ -24,6 +25,7 @@ import org.bukkit.SoundCategory;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.entity.Player;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Random;
 
@@ -58,11 +60,13 @@ public class CommandRedeem extends BaseCommand {
         // Checking the permissions of the code.
         if (!player.isOp() && !PermissionKeys.crazyvouchers_bypass.hasPermission(player)) {
             if (code.useWhiteListPermissions()) {
-                for (String permission : code.getWhitelistPermissions()) {
+                final List<String> commands = code.getWhitelistCommands();
+
+                for (final String permission : code.getWhitelistPermissions()) {
                     if (!player.hasPermission(permission)) {
                         Messages.no_permission_to_use_voucher.sendMessage(player, placeholders);
 
-                        for (String command : code.getWhitelistCommands()) {
+                        for (final String command : commands) {
                             server.dispatchCommand(server.getConsoleSender(), Methods.replacePlaceholders(placeholders, this.crazyManager.replaceRandom(command), true));
                         }
 
@@ -73,9 +77,11 @@ public class CommandRedeem extends BaseCommand {
 
             if (code.useWhitelistWorlds()) {
                 if (code.getWhitelistWorlds().contains(player.getWorld().getName().toLowerCase())) {
+                    final List<String> commands = code.getWhitelistWorldCommands();
+
                     player.sendMessage(Methods.replacePlaceholders(placeholders, code.getWhitelistWorldMessage(), true));
 
-                    for (String command : code.getWhitelistWorldCommands()) {
+                    for (final String command : commands) {
                         server.dispatchCommand(server.getConsoleSender(), Methods.replacePlaceholders(placeholders, this.crazyManager.replaceRandom(command), true));
                     }
 
@@ -84,11 +90,13 @@ public class CommandRedeem extends BaseCommand {
             }
 
             if (code.useBlacklistPermissions()) {
-                for (String permission : code.getBlacklistPermissions()) {
+                final List<String> commands = code.getBlacklistCommands();
+
+                for (final String permission : code.getBlacklistPermissions()) {
                     if (player.hasPermission(permission.toLowerCase())) {
                         player.sendMessage(Methods.replacePlaceholders(placeholders, code.getBlacklistMessage(), true));
 
-                        for (String command : code.getBlacklistCommands()) {
+                        for (final String command : commands) {
                             server.dispatchCommand(server.getConsoleSender(), Methods.replacePlaceholders(placeholders, this.crazyManager.replaceRandom(command), true));
                         }
 
@@ -99,8 +107,8 @@ public class CommandRedeem extends BaseCommand {
         }
 
         // Has permission to continue.
-        FileConfiguration data = Files.users.getConfiguration();
-        String uuid = player.getUniqueId().toString();
+        final FileConfiguration data = Files.users.getConfiguration();
+        final String uuid = player.getUniqueId().toString();
         // Checking if the player has used the code before.
 
         if (data.contains("Players." + uuid)) {
@@ -131,25 +139,31 @@ public class CommandRedeem extends BaseCommand {
         }
 
         // Gives the reward to the player.
-        VoucherRedeemCodeEvent event = new VoucherRedeemCodeEvent(player, code);
+        final VoucherRedeemCodeEvent event = new VoucherRedeemCodeEvent(player, code);
+
         server.getPluginManager().callEvent(event);
 
         if (!event.isCancelled()) {
             data.set("Players." + uuid + ".Codes." + code.getName(), "used");
+
             Files.users.save();
 
-            for (String command : code.getCommands()) {
+            for (final String command : code.getCommands()) {
                 server.dispatchCommand(server.getConsoleSender(), Methods.replacePlaceholders(placeholders, this.crazyManager.replaceRandom(command), true));
             }
 
-            if (!code.getRandomCommands().isEmpty()) { // Picks a random command from the Random-Commands list.
-                for (String command : code.getRandomCommands().get(new Random().nextInt(code.getRandomCommands().size())).getCommands()) {
+            final List<VoucherCommand> random = code.getRandomCommands();
+
+            if (!random.isEmpty()) { // Picks a random command from the Random-Commands list.
+                for (final String command : random.get(Methods.getRandom(random.size())).getCommands()) {
                     server.dispatchCommand(server.getConsoleSender(), Methods.replacePlaceholders(placeholders, this.crazyManager.replaceRandom(command), true));
                 }
             }
 
-            if (!code.getChanceCommands().isEmpty()) { // Picks a command based on the chance system of the Chance-Commands list.
-                for (String command : code.getChanceCommands().get(new Random().nextInt(code.getChanceCommands().size())).getCommands()) {
+            final List<VoucherCommand> chance = code.getChanceCommands();
+
+            if (!chance.isEmpty()) { // Picks a command based on the chance system of the Chance-Commands list.
+                for (String command : chance.get(Methods.getRandom(chance.size())).getCommands()) {
                     server.dispatchCommand(server.getConsoleSender(), Methods.replacePlaceholders(placeholders, this.crazyManager.replaceRandom(command), true));
                 }
             }

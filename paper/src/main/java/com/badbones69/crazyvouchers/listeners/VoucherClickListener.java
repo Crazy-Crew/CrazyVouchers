@@ -36,6 +36,7 @@ import org.bukkit.event.player.PlayerInteractEntityEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.event.player.PlayerItemConsumeEvent;
 import org.bukkit.inventory.EquipmentSlot;
+import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.PlayerInventory;
 import org.bukkit.persistence.PersistentDataType;
@@ -55,6 +56,8 @@ public class VoucherClickListener implements Listener {
 
     private @NotNull final CrazyManager crazyManager = this.plugin.getCrazyManager();
 
+    private final Server server = this.plugin.getServer();
+
     private final SettingsManager config = ConfigManager.getConfig();
     
     private final Map<UUID, String> twoAuth = new HashMap<>();
@@ -63,10 +66,10 @@ public class VoucherClickListener implements Listener {
 
     @EventHandler(priority = EventPriority.HIGHEST)
     public void onSpawnerChange(PlayerInteractEvent event) {
-        ItemStack item = getItemInHand(event.getPlayer());
-        Player player = event.getPlayer();
-        Action action = event.getAction();
-        Block block = event.getClickedBlock();
+        final ItemStack item = getItemInHand(event.getPlayer());
+        final Player player = event.getPlayer();
+        final Action action = event.getAction();
+        final Block block = event.getClickedBlock();
 
         if (action != Action.RIGHT_CLICK_BLOCK) return;
 
@@ -76,15 +79,17 @@ public class VoucherClickListener implements Listener {
 
         if (!item.getType().toString().endsWith("SPAWN_EGG")) return;
 
+        final PlayerInventory inventory = player.getInventory();
+
         if (event.getHand() == EquipmentSlot.OFF_HAND) {
-            Voucher voucher = this.crazyManager.getVoucherFromItem(player.getInventory().getItemInOffHand());
+            Voucher voucher = this.crazyManager.getVoucherFromItem(inventory.getItemInOffHand());
 
             if (voucher != null) {
                 event.setCancelled(true);
             }
         }
 
-        Voucher voucher = this.crazyManager.getVoucherFromItem(player.getInventory().getItemInMainHand());
+        Voucher voucher = this.crazyManager.getVoucherFromItem(inventory.getItemInMainHand());
 
         if (voucher != null) {
             event.setCancelled(true);
@@ -95,10 +100,10 @@ public class VoucherClickListener implements Listener {
     // the items that were added to the players inventory and replaced the item in the player's hand.
     @EventHandler(priority = EventPriority.HIGHEST)
     public void onVoucherClick(PlayerInteractEvent event) { // this whole event confuses me, I hate interact events.
-        Player player = event.getPlayer();
-        Action action = event.getAction();
+        final Player player = event.getPlayer();
+        final Action action = event.getAction();
 
-        PlayerInventory inventory = player.getInventory();
+        final PlayerInventory inventory = player.getInventory();
 
         if (event.getHand() == EquipmentSlot.OFF_HAND && event.getHand() != null) { // ???
             final ItemStack itemStack = inventory.getItemInOffHand();
@@ -131,12 +136,12 @@ public class VoucherClickListener implements Listener {
     
     @EventHandler(ignoreCancelled = true)
     public void onItemConsume(PlayerItemConsumeEvent event) {
-        ItemStack item = event.getItem();
+        final ItemStack item = event.getItem();
 
-        Voucher voucher = this.crazyManager.getVoucherFromItem(item);
+        final Voucher voucher = this.crazyManager.getVoucherFromItem(item);
 
         if (voucher != null && voucher.isEdible()) {
-            Player player = event.getPlayer();
+            final Player player = event.getPlayer();
 
             event.setCancelled(true);
             
@@ -154,10 +159,10 @@ public class VoucherClickListener implements Listener {
     }
     
     private void useVoucher(Player player, Voucher voucher, ItemStack item) {
-        FileConfiguration user = Files.users.getConfiguration();
-        FileConfiguration data = Files.data.getConfiguration();
+        final FileConfiguration user = Files.users.getConfiguration();
+        final FileConfiguration data = Files.data.getConfiguration();
 
-        String argument = this.crazyManager.getArgument(item, voucher);
+        final String argument = this.crazyManager.getArgument(item, voucher);
 
         if (player.getGameMode() == GameMode.CREATIVE && this.config.getProperty(ConfigKeys.must_be_in_survival)) {
             Messages.survival_mode.sendMessage(player);
@@ -224,10 +229,11 @@ public class VoucherClickListener implements Listener {
         }
 
         if (passesPermissionChecks(player, voucher, argument)) {
-            String uuid = player.getUniqueId().toString();
+            final UUID uuid = player.getUniqueId();
+            final String asString = uuid.toString();
 
-            if (!PermissionKeys.crazyvouchers_bypass.hasPermission(player) && voucher.useLimiter() && user.contains("Players." + uuid + ".Vouchers." + voucher.getName())) {
-                int amount = user.getInt("Players." + uuid + ".Vouchers." + voucher.getName());
+            if (!PermissionKeys.crazyvouchers_bypass.hasPermission(player) && voucher.useLimiter() && user.contains("Players." + asString + ".Vouchers." + voucher.getName())) {
+                int amount = user.getInt("Players." + asString + ".Vouchers." + voucher.getName());
 
                 if (amount >= voucher.getLimiterLimit()) {
                     Messages.hit_voucher_limit.sendMessage(player);
@@ -263,37 +269,37 @@ public class VoucherClickListener implements Listener {
             }
 
             if (!voucher.isEdible() && voucher.useTwoStepAuthentication()) {
-                if (this.twoAuth.containsKey(player.getUniqueId())) {
-                    if (!this.twoAuth.get(player.getUniqueId()).equalsIgnoreCase(voucher.getName())) {
+                if (this.twoAuth.containsKey(uuid)) {
+                    if (!this.twoAuth.get(uuid).equalsIgnoreCase(voucher.getName())) {
                         Messages.two_step_authentication.sendMessage(player);
 
-                        this.twoAuth.put(player.getUniqueId(), voucher.getName());
+                        this.twoAuth.put(uuid, voucher.getName());
 
                         return;
                     }
                 } else {
                     Messages.two_step_authentication.sendMessage(player);
 
-                    this.twoAuth.put(player.getUniqueId(), voucher.getName());
+                    this.twoAuth.put(uuid, voucher.getName());
 
                     return;
                 }
             }
 
-            this.twoAuth.remove(player.getUniqueId());
+            this.twoAuth.remove(uuid);
 
             VoucherRedeemEvent event = new VoucherRedeemEvent(player, voucher, argument);
-            this.plugin.getServer().getPluginManager().callEvent(event);
+            this.server.getPluginManager().callEvent(event);
 
             if (!event.isCancelled()) voucherClick(player, item, voucher, argument);
         }
     }
 
-    private ItemStack getItemInHand(Player player) {
+    private ItemStack getItemInHand(final Player player) {
         return player.getInventory().getItemInMainHand();
     }
 
-    private boolean passesPermissionChecks(Player player, Voucher voucher, String argument) {
+    private boolean passesPermissionChecks(final Player player, final Voucher voucher, final String argument) {
         populate(player, argument);
 
         if (!player.isOp()) {
@@ -304,12 +310,10 @@ public class VoucherClickListener implements Listener {
             if (voucher.usesWhitelistWorlds() && !voucher.getWhitelistWorlds().contains(player.getWorld().getName().toLowerCase())) {
                 player.sendMessage(Methods.replacePlaceholders(this.placeholders, voucher.getWhitelistWorldMessage(), false));
 
-                final Server server = this.plugin.getServer();
-
                 new FoliaScheduler(Scheduler.global_scheduler) {
                     @Override
                     public void run() {
-                        for (String command : voucher.getWhitelistWorldCommands()) {
+                        for (final String command : voucher.getWhitelistWorldCommands()) {
                             server.dispatchCommand(server.getConsoleSender(), Methods.replacePlaceholders(placeholders, command, true));
                         }
                     }
@@ -326,7 +330,7 @@ public class VoucherClickListener implements Listener {
         return true;
     }
 
-    private void populate(Player player, String argument) {
+    private void populate(final Player player, final String argument) {
         this.placeholders.put("{arg}", argument != null ? argument : "{arg}");
         this.placeholders.put("{player}", player.getName());
         this.placeholders.put("{world}", player.getWorld().getName());
@@ -351,22 +355,22 @@ public class VoucherClickListener implements Listener {
         for (String command : voucher.getCommands()) {
             command = replacePlaceholders(command, player);
 
-            this.plugin.getServer().dispatchCommand(this.plugin.getServer().getConsoleSender(), Methods.replacePlaceholders(this.placeholders, this.crazyManager.replaceRandom(command), true));
+            this.server.dispatchCommand(this.server.getConsoleSender(), Methods.replacePlaceholders(this.placeholders, this.crazyManager.replaceRandom(command), true));
         }
 
         if (!voucher.getRandomCommands().isEmpty()) { // Picks a random command from the Random-Commands list.
-            for (String command : voucher.getRandomCommands().get(getRandom(voucher.getRandomCommands().size())).getCommands()) {
+            for (String command : voucher.getRandomCommands().get(Methods.getRandom(voucher.getRandomCommands().size())).getCommands()) {
                 command = replacePlaceholders(command, player);
 
-                plugin.getServer().dispatchCommand(this.plugin.getServer().getConsoleSender(), Methods.replacePlaceholders(this.placeholders, this.crazyManager.replaceRandom(command), true));
+                this.server.dispatchCommand(this.server.getConsoleSender(), Methods.replacePlaceholders(this.placeholders, this.crazyManager.replaceRandom(command), true));
             }
         }
 
         if (!voucher.getChanceCommands().isEmpty()) { // Picks a command based on the chance system of the Chance-Commands list.
-            for (String command : voucher.getChanceCommands().get(getRandom(voucher.getChanceCommands().size())).getCommands()) {
+            for (String command : voucher.getChanceCommands().get(Methods.getRandom(voucher.getChanceCommands().size())).getCommands()) {
                 command = replacePlaceholders(command, player);
 
-                this.plugin.getServer().dispatchCommand(this.plugin.getServer().getConsoleSender(), Methods.replacePlaceholders(this.placeholders, this.crazyManager.replaceRandom(command), true));
+                this.server.dispatchCommand(this.server.getConsoleSender(), Methods.replacePlaceholders(this.placeholders, this.crazyManager.replaceRandom(command), true));
             }
         }
 
@@ -391,8 +395,10 @@ public class VoucherClickListener implements Listener {
         if (voucher.useLimiter()) {
             FileConfiguration configuration = Files.users.getConfiguration();
 
-            configuration.set("Players." + player.getUniqueId() + ".UserName", player.getName());
-            configuration.set("Players." + player.getUniqueId() + ".Vouchers." + voucher.getName(), configuration.getInt("Players." + player.getUniqueId() + ".Vouchers." + voucher.getName()) + 1);
+            final UUID uuid = player.getUniqueId();
+
+            configuration.set("Players." + uuid + ".UserName", player.getName());
+            configuration.set("Players." + uuid + ".Vouchers." + voucher.getName(), configuration.getInt("Players." + uuid + ".Vouchers." + voucher.getName()) + 1);
 
             Files.users.save();
         }
@@ -424,9 +430,5 @@ public class VoucherClickListener implements Listener {
         if (Support.placeholder_api.isEnabled()) return PlaceholderAPI.setPlaceholders(player, string);
 
         return MsgUtils.color(string);
-    }
-    
-    private int getRandom(int max) {
-        return ThreadLocalRandom.current().nextInt(max);
     }
 }

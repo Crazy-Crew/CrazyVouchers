@@ -24,6 +24,7 @@ import org.jetbrains.annotations.NotNull;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.ThreadLocalRandom;
 
 public class Methods {
 
@@ -53,6 +54,10 @@ public class Methods {
 
             Files.data.save();
         }
+    }
+
+    public static int getRandom(int max) {
+        return ThreadLocalRandom.current().nextInt(max);
     }
 
     public static boolean hasPermission(final boolean execute, final Player player, final List<String> permissions, final List<String> commands, final Map<String, String> placeholders, final String message, final String argument) {
