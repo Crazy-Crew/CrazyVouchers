@@ -46,13 +46,13 @@ public class CommandRedeem extends BaseCommand {
             put("{prefix}", ConfigManager.getConfig().getProperty(ConfigKeys.command_prefix));
         }};
 
-        final VoucherCode code = this.crazyManager.getVoucherCode(name);
-
-        if (code == null) {
+        if (!this.crazyManager.isVoucherCode(name)) {
             MessageKeys.code_unavailable.sendMessage(player, placeholders);
 
             return;
         }
+
+        final VoucherCode code = this.crazyManager.getVoucherCode(name);
 
         final Server server = this.plugin.getServer();
 
