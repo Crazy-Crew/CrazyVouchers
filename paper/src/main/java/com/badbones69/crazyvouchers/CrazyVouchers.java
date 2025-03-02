@@ -11,6 +11,7 @@ import com.badbones69.crazyvouchers.listeners.VoucherCraftListener;
 import com.badbones69.crazyvouchers.listeners.VoucherMiscListener;
 import com.badbones69.crazyvouchers.support.MetricsWrapper;
 import com.ryderbelserion.fusion.core.api.enums.FileType;
+import com.ryderbelserion.fusion.paper.Fusion;
 import com.ryderbelserion.fusion.paper.FusionApi;
 import com.ryderbelserion.fusion.paper.files.FileManager;
 import me.arcaniax.hdb.api.HeadDatabaseAPI;
@@ -56,15 +57,13 @@ public class CrazyVouchers extends JavaPlugin {
 
         boolean loadOldWay = ConfigManager.getConfig().getProperty(ConfigKeys.mono_file);
 
-        this.fileManager.addFile("users.yml").addFile("data.yml");
+        this.fileManager.addFile("users.yml", FileType.YAML).addFile("data.yml", FileType.YAML);
 
         if (loadOldWay) {
-            this.fileManager.addFile("voucher-codes.yml").addFile("vouchers.yml");
+            this.fileManager.addFile("voucher-codes.yml", FileType.YAML).addFile("vouchers.yml", FileType.YAML);
         } else {
             this.fileManager.addFolder("codes", FileType.YAML).addFolder("vouchers", FileType.YAML);
         }
-
-        this.fileManager.init();
 
         new MetricsWrapper(4536).start();
 
@@ -87,7 +86,7 @@ public class CrazyVouchers extends JavaPlugin {
                 new VoucherMenu()
         ).forEach(event -> pluginManager.registerEvents(event, this));
 
-        if (this.fusionApi.getFusion().isVerbose()) {
+        if (getFusion().isVerbose()) {
             getComponentLogger().info("Done ({})!", String.format(Locale.ROOT, "%.3fs", (double) (System.nanoTime() - this.startTime) / 1.0E9D));
         }
     }
@@ -98,6 +97,14 @@ public class CrazyVouchers extends JavaPlugin {
         }
 
         return this.api;
+    }
+
+    public @NotNull final Fusion getFusion() {
+        return this.fusionApi.getFusion();
+    }
+
+    public @NotNull final FusionApi getFusionApi() {
+        return this.fusionApi;
     }
 
     public @NotNull final InventoryManager getInventoryManager() {

@@ -10,6 +10,7 @@ import com.ryderbelserion.fusion.core.api.enums.FileType;
 import com.ryderbelserion.fusion.core.util.FileUtils;
 import com.ryderbelserion.fusion.paper.builder.items.modern.ItemBuilder;
 import com.ryderbelserion.fusion.paper.files.CustomFile;
+import com.ryderbelserion.fusion.paper.files.FileManager;
 import io.papermc.paper.persistence.PersistentDataContainerView;
 import org.bukkit.Material;
 import org.bukkit.configuration.file.FileConfiguration;
@@ -61,32 +62,42 @@ public class CrazyManager {
             return;
         }
 
-        for (String voucherName : getVouchersList()) {
+        final FileManager fileManager = this.plugin.getFileManager();
+
+        for (final String voucherName : getVouchersList()) {
             try {
-                @Nullable CustomFile file = this.plugin.getFileManager().getFile(voucherName, FileType.YAML);
+                @Nullable CustomFile file = fileManager.getFile(voucherName, FileType.YAML);
 
                 if (file != null) {
                     final YamlConfiguration configuration = file.getConfiguration();
 
                     if (configuration != null) {
                         this.vouchers.add(new Voucher(configuration, voucherName));
+                    } else {
+                        this.plugin.getLogger().warning("Configuration is null.");
                     }
+                } else {
+                    this.plugin.getLogger().warning("File is null.");
                 }
             } catch (Exception exception) {
                 this.plugin.getLogger().log(Level.SEVERE, "There was an error while loading the " + voucherName + ".yml file.", exception);
             }
         }
 
-        for (String voucherCode : getCodesList()) {
+        for (final String voucherCode : getCodesList()) {
             try {
-                @Nullable CustomFile file = this.plugin.getFileManager().getFile(voucherCode, FileType.YAML);
+                @Nullable CustomFile file = fileManager.getFile(voucherCode, FileType.YAML);
 
                 if (file != null) {
                     final YamlConfiguration configuration = file.getConfiguration();
 
                     if (configuration != null) {
                         this.voucherCodes.add(new VoucherCode(configuration, voucherCode));
+                    } else {
+                        this.plugin.getLogger().warning("Configuration is null.");
                     }
+                } else {
+                    this.plugin.getLogger().warning("File is null.");
                 }
             } catch (Exception exception) {
                 this.plugin.getLogger().log(Level.SEVERE,"There was an error while loading the " + voucherCode + ".yml file.", exception);
