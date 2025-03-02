@@ -30,7 +30,7 @@ vault = "1.7.1"
 nbtapi = "2.14.1"
 
 # Fusion API
-fusion = "0.24.0"
+fusion = "0.24.1"
 
 # Triumph API
 cmds = "2.2.0"
