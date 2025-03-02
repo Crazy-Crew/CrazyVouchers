@@ -2,7 +2,7 @@ package com.badbones69.crazyvouchers.api;
 
 import com.badbones69.crazyvouchers.CrazyVouchers;
 import com.badbones69.crazyvouchers.api.builders.types.VoucherMenu;
-import com.badbones69.crazyvouchers.api.enums.PersistentKeys;
+import com.badbones69.crazyvouchers.api.enums.misc.PersistentKeys;
 import com.badbones69.crazyvouchers.api.objects.Voucher;
 import com.badbones69.crazyvouchers.utils.MsgUtils;
 import com.ryderbelserion.fusion.paper.builder.items.modern.ItemBuilder;

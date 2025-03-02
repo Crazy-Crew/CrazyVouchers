@@ -6,7 +6,7 @@ import com.ryderbelserion.fusion.paper.files.FileManager;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.jetbrains.annotations.NotNull;
 
-public enum Files {
+public enum FileKeys {
 
 
     voucher_codes("voucher-codes.yml"),
@@ -26,7 +26,7 @@ public enum Files {
      *
      * @param fileName the name of the file
      */
-    Files(final String fileName) {
+    FileKeys(final String fileName) {
         this.fileName = fileName;
         this.strippedName = this.fileName.replace(".yml", "");
     }

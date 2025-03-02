@@ -1,8 +1,8 @@
 package com.badbones69.crazyvouchers.api;
 
 import com.badbones69.crazyvouchers.CrazyVouchers;
-import com.badbones69.crazyvouchers.api.enums.Files;
-import com.badbones69.crazyvouchers.api.enums.PersistentKeys;
+import com.badbones69.crazyvouchers.api.enums.FileKeys;
+import com.badbones69.crazyvouchers.api.enums.misc.PersistentKeys;
 import com.badbones69.crazyvouchers.api.objects.Voucher;
 import com.badbones69.crazyvouchers.api.objects.VoucherCode;
 import com.badbones69.crazyvouchers.utils.ItemUtils;
@@ -44,13 +44,13 @@ public class CrazyManager {
         boolean loadOldWay = ConfigManager.getConfig().getProperty(ConfigKeys.mono_file);
 
         if (loadOldWay) {
-            FileConfiguration vouchers = Files.vouchers.getConfiguration();
+            FileConfiguration vouchers = FileKeys.vouchers.getConfiguration();
 
             for (String voucherName : vouchers.getConfigurationSection("vouchers").getKeys(false)) {
                 this.vouchers.add(new Voucher(vouchers, voucherName));
             }
 
-            FileConfiguration voucherCodes = Files.voucher_codes.getConfiguration();
+            FileConfiguration voucherCodes = FileKeys.voucher_codes.getConfiguration();
 
             if (voucherCodes.contains("voucher-codes")) {
                 for (String voucherName : voucherCodes.getConfigurationSection("voucher-codes").getKeys(false)) {

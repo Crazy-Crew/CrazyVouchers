@@ -1,8 +1,7 @@
-package com.badbones69.crazyvouchers.api.enums;
+package com.badbones69.crazyvouchers.api.enums.misc;
 
 import com.badbones69.crazyvouchers.CrazyVouchers;
 import org.bukkit.NamespacedKey;
-import org.bukkit.persistence.PersistentDataType;
 import org.jetbrains.annotations.NotNull;
 
 public enum PersistentKeys {

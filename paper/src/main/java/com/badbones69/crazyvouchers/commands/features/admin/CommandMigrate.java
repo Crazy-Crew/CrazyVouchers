@@ -1,7 +1,7 @@
 package com.badbones69.crazyvouchers.commands.features.admin;
 
-import com.badbones69.crazyvouchers.api.enums.Messages;
-import com.badbones69.crazyvouchers.api.enums.PersistentKeys;
+import com.badbones69.crazyvouchers.api.enums.config.MessageKeys;
+import com.badbones69.crazyvouchers.api.enums.misc.PersistentKeys;
 import com.badbones69.crazyvouchers.commands.BaseCommand;
 import com.badbones69.crazyvouchers.config.ConfigManager;
 import com.badbones69.crazyvouchers.config.types.ConfigKeys;
@@ -54,6 +54,6 @@ public class CommandMigrate extends BaseCommand {
             });
         }
 
-        Messages.migrated_old_vouchers.sendMessage(player);
+        MessageKeys.migrated_old_vouchers.sendMessage(player);
     }
 }

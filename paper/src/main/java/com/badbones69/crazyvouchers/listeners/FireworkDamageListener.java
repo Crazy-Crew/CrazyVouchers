@@ -1,6 +1,6 @@
 package com.badbones69.crazyvouchers.listeners;
 
-import com.badbones69.crazyvouchers.api.enums.PersistentKeys;
+import com.badbones69.crazyvouchers.api.enums.misc.PersistentKeys;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.Firework;
 import org.bukkit.event.EventHandler;

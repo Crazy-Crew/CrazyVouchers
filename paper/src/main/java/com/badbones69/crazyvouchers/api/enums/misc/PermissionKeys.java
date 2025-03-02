@@ -1,4 +1,4 @@
-package com.badbones69.crazyvouchers.api.enums.keys;
+package com.badbones69.crazyvouchers.api.enums.misc;
 
 import org.bukkit.entity.Player;
 import org.bukkit.permissions.PermissionDefault;

@@ -1,8 +1,8 @@
 package com.badbones69.crazyvouchers;
 
 import ch.jalu.configme.SettingsManager;
-import com.badbones69.crazyvouchers.api.enums.Files;
-import com.badbones69.crazyvouchers.api.enums.PersistentKeys;
+import com.badbones69.crazyvouchers.api.enums.FileKeys;
+import com.badbones69.crazyvouchers.api.enums.misc.PersistentKeys;
 import com.badbones69.crazyvouchers.config.ConfigManager;
 import com.badbones69.crazyvouchers.utils.MsgUtils;
 import com.ryderbelserion.fusion.paper.enums.Scheduler;
@@ -39,20 +39,20 @@ public class Methods {
     }
 
     public static void janitor() {
-        final FileConfiguration configuration = Files.users.getConfiguration();
+        final FileConfiguration configuration = FileKeys.users.getConfiguration();
 
         if (!configuration.contains("Players")) {
             configuration.set("Players.Clear", null);
 
-            Files.users.save();
+            FileKeys.users.save();
         }
 
-        final FileConfiguration data = Files.data.getConfiguration();
+        final FileConfiguration data = FileKeys.data.getConfiguration();
 
         if (!data.contains("Used-Vouchers")) {
             data.set("Used-Vouchers.Clear", null);
 
-            Files.data.save();
+            FileKeys.data.save();
         }
     }
 

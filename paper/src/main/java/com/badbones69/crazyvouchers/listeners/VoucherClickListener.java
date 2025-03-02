@@ -4,10 +4,10 @@ import ch.jalu.configme.SettingsManager;
 import com.badbones69.crazyvouchers.CrazyVouchers;
 import com.badbones69.crazyvouchers.Methods;
 import com.badbones69.crazyvouchers.api.CrazyManager;
-import com.badbones69.crazyvouchers.api.enums.Files;
-import com.badbones69.crazyvouchers.api.enums.Messages;
-import com.badbones69.crazyvouchers.api.enums.PersistentKeys;
-import com.badbones69.crazyvouchers.api.enums.keys.PermissionKeys;
+import com.badbones69.crazyvouchers.api.enums.FileKeys;
+import com.badbones69.crazyvouchers.api.enums.config.MessageKeys;
+import com.badbones69.crazyvouchers.api.enums.misc.PersistentKeys;
+import com.badbones69.crazyvouchers.api.enums.misc.PermissionKeys;
 import com.badbones69.crazyvouchers.api.events.VoucherRedeemEvent;
 import com.badbones69.crazyvouchers.api.objects.Voucher;
 import com.badbones69.crazyvouchers.config.ConfigManager;
@@ -36,7 +36,6 @@ import org.bukkit.event.player.PlayerInteractEntityEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.event.player.PlayerItemConsumeEvent;
 import org.bukkit.inventory.EquipmentSlot;
-import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.PlayerInventory;
 import org.bukkit.persistence.PersistentDataType;
@@ -47,7 +46,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
-import java.util.concurrent.ThreadLocalRandom;
 import java.util.concurrent.atomic.AtomicBoolean;
 
 public class VoucherClickListener implements Listener {
@@ -113,7 +111,7 @@ public class VoucherClickListener implements Listener {
             if (voucher != null && !voucher.isEdible()) {
                 event.setCancelled(true);
 
-                Messages.no_permission_to_use_voucher_offhand.sendMessage(player);
+                MessageKeys.no_permission_to_use_voucher_offhand.sendMessage(player);
             }
 
             return;
@@ -146,7 +144,7 @@ public class VoucherClickListener implements Listener {
             event.setCancelled(true);
             
             if (item.getAmount() > 1) {
-                Messages.unstack_item.sendMessage(player);
+                MessageKeys.unstack_item.sendMessage(player);
             } else {
                 useVoucher(player, voucher, item);
             }
@@ -159,13 +157,13 @@ public class VoucherClickListener implements Listener {
     }
     
     private void useVoucher(Player player, Voucher voucher, ItemStack item) {
-        final FileConfiguration user = Files.users.getConfiguration();
-        final FileConfiguration data = Files.data.getConfiguration();
+        final FileConfiguration user = FileKeys.users.getConfiguration();
+        final FileConfiguration data = FileKeys.data.getConfiguration();
 
         final String argument = this.crazyManager.getArgument(item, voucher);
 
         if (player.getGameMode() == GameMode.CREATIVE && this.config.getProperty(ConfigKeys.must_be_in_survival)) {
-            Messages.survival_mode.sendMessage(player);
+            MessageKeys.survival_mode.sendMessage(player);
 
             return;
         }
@@ -179,11 +177,11 @@ public class VoucherClickListener implements Listener {
                 final List<String> vouchers = data.getStringList("Used-Vouchers");
 
                 if (vouchers.contains(id)) {
-                    Messages.dupe_protection.sendMessage(player);
+                    MessageKeys.dupe_protection.sendMessage(player);
 
                     this.plugin.getServer().getOnlinePlayers().forEach(staff -> {
                         if (PermissionKeys.crazyvouchers_notify.hasPermission(staff)) {
-                            Messages.notify_staff.sendMessage(staff, new HashMap<>() {{
+                            MessageKeys.notify_staff.sendMessage(staff, new HashMap<>() {{
                                 put("{player}", player.getName());
                                 put("{id}", id);
                             }});
@@ -236,13 +234,13 @@ public class VoucherClickListener implements Listener {
                 int amount = user.getInt("Players." + asString + ".Vouchers." + voucher.getName());
 
                 if (amount >= voucher.getLimiterLimit()) {
-                    Messages.hit_voucher_limit.sendMessage(player);
+                    MessageKeys.hit_voucher_limit.sendMessage(player);
 
                     return;
                 }
 
                 if (voucher.hasCooldown() && voucher.isCooldown(player)){
-                    player.sendMessage(Messages.cooldown_active.getMessage(player, "{time}", String.valueOf(voucher.getCooldown())));
+                    player.sendMessage(MessageKeys.cooldown_active.getMessage(player, "{time}", String.valueOf(voucher.getCooldown())));
 
                     return;
                 } else {
@@ -271,14 +269,14 @@ public class VoucherClickListener implements Listener {
             if (!voucher.isEdible() && voucher.useTwoStepAuthentication()) {
                 if (this.twoAuth.containsKey(uuid)) {
                     if (!this.twoAuth.get(uuid).equalsIgnoreCase(voucher.getName())) {
-                        Messages.two_step_authentication.sendMessage(player);
+                        MessageKeys.two_step_authentication.sendMessage(player);
 
                         this.twoAuth.put(uuid, voucher.getName());
 
                         return;
                     }
                 } else {
-                    Messages.two_step_authentication.sendMessage(player);
+                    MessageKeys.two_step_authentication.sendMessage(player);
 
                     this.twoAuth.put(uuid, voucher.getName());
 
@@ -393,14 +391,14 @@ public class VoucherClickListener implements Listener {
         }
 
         if (voucher.useLimiter()) {
-            FileConfiguration configuration = Files.users.getConfiguration();
+            FileConfiguration configuration = FileKeys.users.getConfiguration();
 
             final UUID uuid = player.getUniqueId();
 
             configuration.set("Players." + uuid + ".UserName", player.getName());
             configuration.set("Players." + uuid + ".Vouchers." + voucher.getName(), configuration.getInt("Players." + uuid + ".Vouchers." + voucher.getName()) + 1);
 
-            Files.users.save();
+            FileKeys.users.save();
         }
 
         if (this.config.getProperty(ConfigKeys.dupe_protection)) {
@@ -409,7 +407,7 @@ public class VoucherClickListener implements Listener {
             if (view.has(PersistentKeys.dupe_protection.getNamespacedKey())) {
                 final String id = view.get(PersistentKeys.dupe_protection.getNamespacedKey(), PersistentDataType.STRING);
 
-                FileConfiguration configuration = Files.data.getConfiguration();
+                FileConfiguration configuration = FileKeys.data.getConfiguration();
 
                 List<String> vouchers = new ArrayList<>(configuration.getStringList("Used-Vouchers"));
 
@@ -418,7 +416,7 @@ public class VoucherClickListener implements Listener {
 
                     configuration.set("Used-Vouchers", vouchers);
 
-                    Files.data.save();
+                    FileKeys.data.save();
                 } else {
                     this.plugin.getLogger().warning(id + " is already in the data.yml somehow.");
                 }

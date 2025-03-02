@@ -1,4 +1,4 @@
-package com.badbones69.crazyvouchers.api.enums;
+package com.badbones69.crazyvouchers.api.enums.config;
 
 import ch.jalu.configme.configurationdata.ConfigurationData;
 import ch.jalu.configme.properties.Property;
@@ -11,7 +11,7 @@ import java.util.List;
 import static ch.jalu.configme.properties.PropertyInitializer.newListProperty;
 import static ch.jalu.configme.properties.PropertyInitializer.newProperty;
 
-public enum Properties {
+public enum PropertyKeys {
 
     command_prefix(ConfigKeys.command_prefix, newProperty("Settings.Prefix", ConfigKeys.command_prefix.getDefaultValue())),
     must_be_in_survival(ConfigKeys.must_be_in_survival, newProperty("Settings.Must-Be-In-Survival", ConfigKeys.must_be_in_survival.getDefaultValue()), false),
@@ -48,7 +48,7 @@ public enum Properties {
      * @param newString the new property
      * @param oldString the old property
      */
-    Properties(Property<String> newString, Property<String> oldString) {
+    PropertyKeys(Property<String> newString, Property<String> oldString) {
         this.newString = newString;
         this.oldString = oldString;
     }
@@ -80,7 +80,7 @@ public enum Properties {
      * @param oldBoolean the old property
      * @param dummy only to differentiate from previous constructors
      */
-    Properties(Property<Boolean> newBoolean, Property<Boolean> oldBoolean, boolean dummy) {
+    PropertyKeys(Property<Boolean> newBoolean, Property<Boolean> oldBoolean, boolean dummy) {
         this.newBoolean = newBoolean;
         this.oldBoolean = oldBoolean;
     }
@@ -112,7 +112,7 @@ public enum Properties {
      * @param oldInteger the old property
      * @param dummy only to differentiate from previous constructors
      */
-    Properties(Property<Integer> newInteger, Property<Integer> oldInteger, int dummy) {
+    PropertyKeys(Property<Integer> newInteger, Property<Integer> oldInteger, int dummy) {
         this.newInteger = newInteger;
         this.oldInteger = oldInteger;
     }
@@ -144,7 +144,7 @@ public enum Properties {
      * @param oldList the old property
      * @param dummy only to differentiate from previous constructors
      */
-    Properties(Property<List<String>> newList, Property<List<String>> oldList, List<String> dummy) {
+    PropertyKeys(Property<List<String>> newList, Property<List<String>> oldList, List<String> dummy) {
         this.newList = newList;
         this.oldList = oldList;
     }

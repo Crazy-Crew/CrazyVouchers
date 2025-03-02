@@ -3,8 +3,8 @@ package com.badbones69.crazyvouchers.listeners;
 import ch.jalu.configme.SettingsManager;
 import com.badbones69.crazyvouchers.CrazyVouchers;
 import com.badbones69.crazyvouchers.api.CrazyManager;
-import com.badbones69.crazyvouchers.api.enums.Messages;
-import com.badbones69.crazyvouchers.api.enums.PersistentKeys;
+import com.badbones69.crazyvouchers.api.enums.config.MessageKeys;
+import com.badbones69.crazyvouchers.api.enums.misc.PersistentKeys;
 import com.badbones69.crazyvouchers.api.objects.Voucher;
 import com.badbones69.crazyvouchers.config.ConfigManager;
 import io.papermc.paper.persistence.PersistentDataContainerView;
@@ -14,9 +14,7 @@ import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.inventory.*;
 import org.bukkit.inventory.CraftingInventory;
-import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
-import org.bukkit.inventory.PlayerInventory;
 import org.jetbrains.annotations.NotNull;
 import com.badbones69.crazyvouchers.config.types.ConfigKeys;
 
@@ -47,7 +45,7 @@ public class VoucherCraftListener implements Listener {
                 inventory.setResult(new ItemStack(Material.AIR));
 
                 if (this.config.getProperty(ConfigKeys.prevent_using_vouchers_in_recipes_alert)) {
-                    Messages.cannot_put_items_in_crafting_table.sendMessage(event.getView().getPlayer());
+                    MessageKeys.cannot_put_items_in_crafting_table.sendMessage(event.getView().getPlayer());
                 }
 
                 break;

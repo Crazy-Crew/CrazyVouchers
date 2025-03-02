@@ -4,8 +4,8 @@ import ch.jalu.configme.SettingsManager;
 import com.badbones69.crazyvouchers.CrazyVouchers;
 import com.badbones69.crazyvouchers.Methods;
 import com.badbones69.crazyvouchers.api.CrazyManager;
-import com.badbones69.crazyvouchers.api.enums.Messages;
-import com.badbones69.crazyvouchers.api.enums.PersistentKeys;
+import com.badbones69.crazyvouchers.api.enums.config.MessageKeys;
+import com.badbones69.crazyvouchers.api.enums.misc.PersistentKeys;
 import com.badbones69.crazyvouchers.utils.MsgUtils;
 import com.ryderbelserion.fusion.core.util.StringUtils;
 import com.ryderbelserion.fusion.paper.builder.items.modern.ItemBuilder;
@@ -181,7 +181,7 @@ public class Voucher {
 
             this.whitelistPermissions.addAll(fileConfiguration.getStringList(path + "options.permission.whitelist-permission.permissions").stream().map(String::toLowerCase).toList());
             this.whitelistCommands = fileConfiguration.getStringList(path + "options.permission.whitelist-permission.commands");
-            this.whitelistPermissionMessage = fileConfiguration.contains(path + "options.permission.whitelist-permission.message") ? getMessage(path + "options.permission.whitelist-permission.message", fileConfiguration) : Messages.no_permission_to_use_voucher.getString();
+            this.whitelistPermissionMessage = fileConfiguration.contains(path + "options.permission.whitelist-permission.message") ? getMessage(path + "options.permission.whitelist-permission.message", fileConfiguration) : MessageKeys.no_permission_to_use_voucher.getString();
         } else {
             this.whitelistPermissionToggle = false;
         }
@@ -192,7 +192,7 @@ public class Voucher {
             if (fileConfiguration.contains(path + "options.whitelist-worlds.message")) {
                 this.whitelistWorldMessage = getMessage(path + "options.whitelist-worlds.message", fileConfiguration);
             } else {
-                this.whitelistWorldMessage = Messages.not_in_whitelisted_world.getString();
+                this.whitelistWorldMessage = MessageKeys.not_in_whitelisted_world.getString();
             }
 
             this.whitelistWorldCommands = fileConfiguration.getStringList(path + "options.whitelist-worlds.commands");
@@ -207,7 +207,7 @@ public class Voucher {
             if (fileConfiguration.contains(path + "options.permission.blacklist-permission.message")) {
                 this.blacklistPermissionMessage = getMessage(path + "options.permission.blacklist-permission.message", fileConfiguration);
             } else {
-                this.blacklistPermissionMessage = Messages.has_blacklist_permission.getString();
+                this.blacklistPermissionMessage = MessageKeys.has_blacklist_permission.getString();
             }
 
             this.blacklistPermissions = fileConfiguration.getStringList(path + "options.permission.blacklist-permission.permissions");

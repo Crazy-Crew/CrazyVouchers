@@ -2,7 +2,7 @@ package com.badbones69.crazyvouchers.commands.features;
 
 import com.badbones69.crazyvouchers.CrazyVouchers;
 import com.badbones69.crazyvouchers.api.CrazyManager;
-import com.badbones69.crazyvouchers.api.enums.keys.PermissionKeys;
+import com.badbones69.crazyvouchers.api.enums.misc.PermissionKeys;
 import com.badbones69.crazyvouchers.api.objects.Voucher;
 import com.badbones69.crazyvouchers.api.objects.VoucherCode;
 import com.badbones69.crazyvouchers.commands.features.admin.CommandGive;

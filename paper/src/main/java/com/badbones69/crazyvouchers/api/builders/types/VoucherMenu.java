@@ -3,7 +3,7 @@ package com.badbones69.crazyvouchers.api.builders.types;
 import com.badbones69.crazyvouchers.Methods;
 import com.badbones69.crazyvouchers.api.InventoryManager;
 import com.badbones69.crazyvouchers.api.builders.InventoryBuilder;
-import com.badbones69.crazyvouchers.api.enums.PersistentKeys;
+import com.badbones69.crazyvouchers.api.enums.misc.PersistentKeys;
 import com.badbones69.crazyvouchers.api.objects.Voucher;
 import com.ryderbelserion.fusion.paper.builder.items.modern.ItemBuilder;
 import io.papermc.paper.persistence.PersistentDataContainerView;
