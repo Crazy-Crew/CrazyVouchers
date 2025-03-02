@@ -18,6 +18,8 @@ public class CommandReload extends BaseCommand {
     @Permission(value = "crazyvouchers.reload", def = Mode.OP)
     @Syntax("/crazyvouchers reload")
     public void reload(final CommandSender sender) {
+        this.plugin.getFusion().reload();
+
         ConfigManager.refresh();
 
         boolean loadOldWay = ConfigManager.getConfig().getProperty(ConfigKeys.mono_file);
@@ -34,8 +36,6 @@ public class CommandReload extends BaseCommand {
 
             this.fileManager.addFolder("codes", FileType.YAML).addFolder("vouchers", FileType.YAML);
         }
-
-        this.fileManager.init();
 
         Methods.janitor();
 
