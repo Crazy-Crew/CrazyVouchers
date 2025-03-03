@@ -3,20 +3,24 @@ package com.badbones69.crazyvouchers.api.enums.config;
 import ch.jalu.configme.configurationdata.ConfigurationData;
 import ch.jalu.configme.properties.Property;
 import ch.jalu.configme.resource.PropertyReader;
+import com.badbones69.crazyvouchers.api.enums.FileSystem;
 import com.badbones69.crazyvouchers.config.types.ConfigKeys;
 import com.badbones69.crazyvouchers.config.types.locale.MessageKeys;
+import org.jetbrains.annotations.NotNull;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import static ch.jalu.configme.properties.PropertyInitializer.newListProperty;
 import static ch.jalu.configme.properties.PropertyInitializer.newProperty;
 
-public enum PropertyKeys {
+public enum Properties {
 
     command_prefix(ConfigKeys.command_prefix, newProperty("Settings.Prefix", ConfigKeys.command_prefix.getDefaultValue())),
     must_be_in_survival(ConfigKeys.must_be_in_survival, newProperty("Settings.Must-Be-In-Survival", ConfigKeys.must_be_in_survival.getDefaultValue()), false),
     prevent_using_vouchers_in_recipes_toggle(ConfigKeys.prevent_using_vouchers_in_recipes_toggle, newProperty("Settings.Prevent-Using-Vouchers-In-Recipes.Toggle", ConfigKeys.prevent_using_vouchers_in_recipes_toggle.getDefaultValue()), false),
     prevent_using_vouchers_in_recipes_alert(ConfigKeys.prevent_using_vouchers_in_recipes_alert, newProperty("Settings.Prevent-Using-Vouchers-In-Recipes.Alert", ConfigKeys.prevent_using_vouchers_in_recipes_alert.getDefaultValue()), false),
+
+    file_system(ConfigKeys.file_system, newProperty("settings.use-old-file-system", "MULTIPLE"), ""),
 
     survival_mode(MessageKeys.survival_mode, newProperty("Messages.Survival-Mode", MessageKeys.survival_mode.getDefaultValue())),
     no_permission(MessageKeys.no_permission, newProperty("Messages.No-Permission", MessageKeys.no_permission.getDefaultValue())),
@@ -48,7 +52,7 @@ public enum PropertyKeys {
      * @param newString the new property
      * @param oldString the old property
      */
-    PropertyKeys(Property<String> newString, Property<String> oldString) {
+    Properties(@NotNull final Property<String> newString, @NotNull final Property<String> oldString) {
         this.newString = newString;
         this.oldString = oldString;
     }
@@ -60,12 +64,33 @@ public enum PropertyKeys {
      * @param configuration the configuration data
      * @return true or false
      */
-    public boolean moveString(PropertyReader reader, ConfigurationData configuration) {
-        String key = reader.getString(this.oldString.getPath());
+    public boolean moveString(@NotNull final PropertyReader reader, @NotNull final ConfigurationData configuration) {
+        final String key = reader.getString(this.oldString.getPath());
 
         if (key == null) return false;
 
         configuration.setValue(this.newString, replace(this.oldString.determineValue(reader).getValue()));
+
+        return true;
+    }
+
+    private Property<FileSystem> newValue;
+
+    Properties(@NotNull final Property<FileSystem> newValue, @NotNull final Property<String> oldString, @NotNull final String dummy) {
+        this.newValue = newValue;
+        this.oldString = oldString;
+    }
+
+    public boolean moveBooleanToString(@NotNull final PropertyReader reader, @NotNull final ConfigurationData configuration) {
+        final String key = reader.getString(this.oldString.getPath());
+
+        if (key == null) return false;
+
+        final boolean value = Boolean.parseBoolean(this.oldString.determineValue(reader).getValue());
+
+        final FileSystem toggle = value ? FileSystem.SINGLE : FileSystem.MULTIPLE;
+
+        configuration.setValue(this.newValue, toggle);
 
         return true;
     }
@@ -80,7 +105,7 @@ public enum PropertyKeys {
      * @param oldBoolean the old property
      * @param dummy only to differentiate from previous constructors
      */
-    PropertyKeys(Property<Boolean> newBoolean, Property<Boolean> oldBoolean, boolean dummy) {
+    Properties(@NotNull final Property<Boolean> newBoolean, @NotNull final Property<Boolean> oldBoolean, boolean dummy) {
         this.newBoolean = newBoolean;
         this.oldBoolean = oldBoolean;
     }
@@ -92,8 +117,8 @@ public enum PropertyKeys {
      * @param configuration the configuration data
      * @return true or false
      */
-    public boolean moveBoolean(PropertyReader reader, ConfigurationData configuration) {
-        Boolean key = reader.getBoolean(this.oldBoolean.getPath());
+    public boolean moveBoolean(@NotNull final PropertyReader reader, @NotNull final ConfigurationData configuration) {
+        final Boolean key = reader.getBoolean(this.oldBoolean.getPath());
 
         if (key == null) return false;
 
@@ -112,7 +137,7 @@ public enum PropertyKeys {
      * @param oldInteger the old property
      * @param dummy only to differentiate from previous constructors
      */
-    PropertyKeys(Property<Integer> newInteger, Property<Integer> oldInteger, int dummy) {
+    Properties(@NotNull final Property<Integer> newInteger, @NotNull final Property<Integer> oldInteger, int dummy) {
         this.newInteger = newInteger;
         this.oldInteger = oldInteger;
     }
@@ -124,8 +149,8 @@ public enum PropertyKeys {
      * @param configuration the configuration data
      * @return true or false
      */
-    public boolean moveInteger(PropertyReader reader, ConfigurationData configuration) {
-        Integer key = reader.getInt(this.oldInteger.getPath());
+    public boolean moveInteger(@NotNull final PropertyReader reader, @NotNull final ConfigurationData configuration) {
+        final Integer key = reader.getInt(this.oldInteger.getPath());
 
         if (key == null) return false;
 
@@ -144,7 +169,7 @@ public enum PropertyKeys {
      * @param oldList the old property
      * @param dummy only to differentiate from previous constructors
      */
-    PropertyKeys(Property<List<String>> newList, Property<List<String>> oldList, List<String> dummy) {
+    Properties(@NotNull final Property<List<String>> newList, @NotNull final Property<List<String>> oldList, @NotNull final List<String> dummy) {
         this.newList = newList;
         this.oldList = oldList;
     }
@@ -156,12 +181,12 @@ public enum PropertyKeys {
      * @param configuration the configuration data
      * @return true or false
      */
-    public boolean moveList(PropertyReader reader, ConfigurationData configuration) {
-        List<?> key = reader.getList(this.oldList.getPath());
+    public boolean moveList(@NotNull final PropertyReader reader, @NotNull final ConfigurationData configuration) {
+        final List<?> key = reader.getList(this.oldList.getPath());
 
         if (key == null) return false;
 
-        List<String> list = new ArrayList<>();
+        final List<String> list = new ArrayList<>();
 
         this.oldList.determineValue(reader).getValue().forEach(line -> list.add(replace(line)));
 
@@ -176,7 +201,7 @@ public enum PropertyKeys {
      * @param message the message to check
      * @return the finalized message to set
      */
-    private String replace(String message) {
+    private String replace(@NotNull final String message) {
         return message.replaceAll("%Arg%", "{arg}")
                 .replaceAll("%arg%", "{arg}")
                 .replaceAll("%Player%", "{player}")

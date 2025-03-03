@@ -5,7 +5,7 @@ import com.badbones69.crazyvouchers.CrazyVouchers;
 import com.badbones69.crazyvouchers.Methods;
 import com.badbones69.crazyvouchers.api.CrazyManager;
 import com.badbones69.crazyvouchers.api.enums.FileKeys;
-import com.badbones69.crazyvouchers.api.enums.config.MessageKeys;
+import com.badbones69.crazyvouchers.api.enums.config.Messages;
 import com.badbones69.crazyvouchers.api.enums.misc.PersistentKeys;
 import com.badbones69.crazyvouchers.api.enums.misc.PermissionKeys;
 import com.badbones69.crazyvouchers.api.events.VoucherRedeemEvent;
@@ -111,7 +111,7 @@ public class VoucherClickListener implements Listener {
             if (voucher != null && !voucher.isEdible()) {
                 event.setCancelled(true);
 
-                MessageKeys.no_permission_to_use_voucher_offhand.sendMessage(player);
+                Messages.no_permission_to_use_voucher_offhand.sendMessage(player);
             }
 
             return;
@@ -144,7 +144,7 @@ public class VoucherClickListener implements Listener {
             event.setCancelled(true);
             
             if (item.getAmount() > 1) {
-                MessageKeys.unstack_item.sendMessage(player);
+                Messages.unstack_item.sendMessage(player);
             } else {
                 useVoucher(player, voucher, item);
             }
@@ -163,7 +163,7 @@ public class VoucherClickListener implements Listener {
         final String argument = this.crazyManager.getArgument(item, voucher);
 
         if (player.getGameMode() == GameMode.CREATIVE && this.config.getProperty(ConfigKeys.must_be_in_survival)) {
-            MessageKeys.survival_mode.sendMessage(player);
+            Messages.survival_mode.sendMessage(player);
 
             return;
         }
@@ -177,11 +177,11 @@ public class VoucherClickListener implements Listener {
                 final List<String> vouchers = data.getStringList("Used-Vouchers");
 
                 if (vouchers.contains(id)) {
-                    MessageKeys.dupe_protection.sendMessage(player);
+                    Messages.dupe_protection.sendMessage(player);
 
                     this.plugin.getServer().getOnlinePlayers().forEach(staff -> {
                         if (PermissionKeys.crazyvouchers_notify.hasPermission(staff)) {
-                            MessageKeys.notify_staff.sendMessage(staff, new HashMap<>() {{
+                            Messages.notify_staff.sendMessage(staff, new HashMap<>() {{
                                 put("{player}", player.getName());
                                 put("{id}", id);
                             }});
@@ -234,13 +234,13 @@ public class VoucherClickListener implements Listener {
                 int amount = user.getInt("Players." + asString + ".Vouchers." + voucher.getName());
 
                 if (amount >= voucher.getLimiterLimit()) {
-                    MessageKeys.hit_voucher_limit.sendMessage(player);
+                    Messages.hit_voucher_limit.sendMessage(player);
 
                     return;
                 }
 
                 if (voucher.hasCooldown() && voucher.isCooldown(player)){
-                    player.sendMessage(MessageKeys.cooldown_active.getMessage(player, "{time}", String.valueOf(voucher.getCooldown())));
+                    player.sendMessage(Messages.cooldown_active.getMessage(player, "{time}", String.valueOf(voucher.getCooldown())));
 
                     return;
                 } else {
@@ -269,14 +269,14 @@ public class VoucherClickListener implements Listener {
             if (!voucher.isEdible() && voucher.useTwoStepAuthentication()) {
                 if (this.twoAuth.containsKey(uuid)) {
                     if (!this.twoAuth.get(uuid).equalsIgnoreCase(voucher.getName())) {
-                        MessageKeys.two_step_authentication.sendMessage(player);
+                        Messages.two_step_authentication.sendMessage(player);
 
                         this.twoAuth.put(uuid, voucher.getName());
 
                         return;
                     }
                 } else {
-                    MessageKeys.two_step_authentication.sendMessage(player);
+                    Messages.two_step_authentication.sendMessage(player);
 
                     this.twoAuth.put(uuid, voucher.getName());
 

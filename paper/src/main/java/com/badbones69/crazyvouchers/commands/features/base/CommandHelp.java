@@ -1,6 +1,6 @@
 package com.badbones69.crazyvouchers.commands.features.base;
 
-import com.badbones69.crazyvouchers.api.enums.config.MessageKeys;
+import com.badbones69.crazyvouchers.api.enums.config.Messages;
 import com.badbones69.crazyvouchers.commands.BaseCommand;
 import dev.triumphteam.cmd.core.annotations.Command;
 import dev.triumphteam.cmd.core.annotations.Permission;
@@ -14,13 +14,13 @@ public class CommandHelp extends BaseCommand {
     @Permission(value = "crazyvouchers.access", def = Mode.OP)
     @Syntax("/crazyvouchers")
     public void base(CommandSender sender) {
-        MessageKeys.help.sendMessage(sender);
+        Messages.help.sendMessage(sender);
     }
 
     @Command("help")
     @Permission(value = "crazyvouchers.help", def = Mode.OP)
     @Syntax("/crazyvouchers help")
     public void help(final CommandSender sender) {
-        MessageKeys.help.sendMessage(sender);
+        Messages.help.sendMessage(sender);
     }
 }

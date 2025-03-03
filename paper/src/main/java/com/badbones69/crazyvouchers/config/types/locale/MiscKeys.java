@@ -5,9 +5,9 @@ import ch.jalu.configme.SettingsHolder;
 import ch.jalu.configme.properties.Property;
 import static ch.jalu.configme.properties.PropertyInitializer.newProperty;
 
-public class RootKeys implements SettingsHolder {
+public class MiscKeys implements SettingsHolder {
 
-    protected RootKeys() {}
+    protected MiscKeys() {}
 
     @Comment("A list of available placeholders: {command}")
     public static final Property<String> unknown_command = newProperty("misc.unknown-command", "{prefix}&c{command} is not a known command.");
@@ -22,5 +22,8 @@ public class RootKeys implements SettingsHolder {
     public static final Property<String> same_player = newProperty("misc.target-same-player", "{prefix}&cYou cannot use this command on yourself.");
 
     public static final Property<String> inventory_not_empty = newProperty("misc.inventory-not-empty", "{prefix}&cInventory is not empty, Please clear up some room.");
+
+    @Comment("A list of available placeholders: {flag}, {usage}")
+    public static final Property<String> lacking_flag = newProperty("misc.lacking-flag", "{prefix}<red>{flag} is not present in the command, expected format: {usage}");
 
 }

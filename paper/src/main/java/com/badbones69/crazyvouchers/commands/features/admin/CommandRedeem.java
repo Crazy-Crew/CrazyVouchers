@@ -2,7 +2,7 @@ package com.badbones69.crazyvouchers.commands.features.admin;
 
 import com.badbones69.crazyvouchers.Methods;
 import com.badbones69.crazyvouchers.api.enums.FileKeys;
-import com.badbones69.crazyvouchers.api.enums.config.MessageKeys;
+import com.badbones69.crazyvouchers.api.enums.config.Messages;
 import com.badbones69.crazyvouchers.api.enums.misc.PermissionKeys;
 import com.badbones69.crazyvouchers.api.events.VoucherRedeemCodeEvent;
 import com.badbones69.crazyvouchers.api.objects.VoucherCode;
@@ -47,7 +47,7 @@ public class CommandRedeem extends BaseCommand {
         }};
 
         if (!this.crazyManager.isVoucherCode(name)) {
-            MessageKeys.code_unavailable.sendMessage(player, placeholders);
+            Messages.code_unavailable.sendMessage(player, placeholders);
 
             return;
         }
@@ -63,7 +63,7 @@ public class CommandRedeem extends BaseCommand {
 
                 for (final String permission : code.getWhitelistPermissions()) {
                     if (!player.hasPermission(permission)) {
-                        MessageKeys.no_permission_to_use_voucher.sendMessage(player, placeholders);
+                        Messages.no_permission_to_use_voucher.sendMessage(player, placeholders);
 
                         for (final String command : commands) {
                             server.dispatchCommand(server.getConsoleSender(), Methods.replacePlaceholders(placeholders, this.crazyManager.replaceRandom(command), true));
@@ -113,7 +113,7 @@ public class CommandRedeem extends BaseCommand {
         if (data.contains("Players." + uuid)) {
             if (data.contains("Players." + uuid + ".Codes." + code.getName())) {
                 if (data.getString("Players." + uuid + ".Codes." + code.getName()).equalsIgnoreCase("used")) {
-                    MessageKeys.code_used.sendMessage(player, placeholders);
+                    Messages.code_used.sendMessage(player, placeholders);
 
                     return;
                 }
@@ -124,7 +124,7 @@ public class CommandRedeem extends BaseCommand {
         if (code.useLimiter()) {
             if (data.contains("Voucher-Limit." + code.getName())) {
                 if (data.getInt("Voucher-Limit." + code.getName()) < 1) {
-                    MessageKeys.code_unavailable.sendMessage(player, placeholders);
+                    Messages.code_unavailable.sendMessage(player, placeholders);
 
                     return;
                 }

@@ -8,7 +8,7 @@ import com.badbones69.crazyvouchers.config.migrate.ConfigMigration;
 import com.badbones69.crazyvouchers.config.migrate.LocaleMigration;
 import com.badbones69.crazyvouchers.config.types.ConfigKeys;
 import com.badbones69.crazyvouchers.config.types.locale.MessageKeys;
-import com.badbones69.crazyvouchers.config.types.locale.RootKeys;
+import com.badbones69.crazyvouchers.config.types.locale.MiscKeys;
 
 import java.io.File;
 
@@ -49,7 +49,7 @@ public class ConfigManager {
         messages = SettingsManagerBuilder
                 .withYamlFile(messagesFile, builder)
                 .migrationService(new LocaleMigration())
-                .configurationData(MessageKeys.class, RootKeys.class)
+                .configurationData(MessageKeys.class, MiscKeys.class)
                 .create();
     }
 

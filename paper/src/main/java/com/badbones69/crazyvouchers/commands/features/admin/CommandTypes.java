@@ -16,7 +16,7 @@ public class CommandTypes extends BaseCommand {
     @Command(value = "types", alias = "list")
     @Permission(value = "crazyvouchers.types", def = Mode.OP)
     @Syntax("/crazyvouchers types")
-    public void base(final CommandSender sender) {
+    public void types(final CommandSender sender) {
         StringBuilder vouchers = new StringBuilder();
         StringBuilder codes = new StringBuilder();
 

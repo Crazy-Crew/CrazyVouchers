@@ -1,7 +1,7 @@
 package com.badbones69.crazyvouchers.commands.features.admin;
 
 import com.badbones69.crazyvouchers.Methods;
-import com.badbones69.crazyvouchers.api.enums.config.MessageKeys;
+import com.badbones69.crazyvouchers.api.enums.config.Messages;
 import com.badbones69.crazyvouchers.api.objects.Voucher;
 import com.badbones69.crazyvouchers.commands.BaseCommand;
 import com.ryderbelserion.fusion.paper.builder.PlayerBuilder;
@@ -15,7 +15,6 @@ import dev.triumphteam.cmd.core.enums.Mode;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
-
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -30,7 +29,7 @@ public class CommandGive extends BaseCommand {
         final Voucher voucher = this.crazyManager.getVoucher(name);
 
         if (voucher == null) {
-            MessageKeys.not_a_voucher.sendMessage(sender);
+            Messages.not_a_voucher.sendMessage(sender);
 
             return;
         }
@@ -38,7 +37,7 @@ public class CommandGive extends BaseCommand {
         final Player player = target.getPlayer();
 
         if (player == null) {
-            MessageKeys.not_online.sendMessage(sender);
+            Messages.not_online.sendMessage(sender);
 
             return;
         }
@@ -52,7 +51,7 @@ public class CommandGive extends BaseCommand {
         placeholders.put("{player}", player.getName());
         placeholders.put("{voucher}", voucher.getName());
 
-        if (!MessageKeys.sent_voucher.getMessage(sender).isBlank()) MessageKeys.sent_voucher.sendMessage(sender, placeholders);
+        if (!Messages.sent_voucher.getMessage(sender).isBlank()) Messages.sent_voucher.sendMessage(sender, placeholders);
     }
 
     @Command(value = "giveall")
@@ -62,7 +61,7 @@ public class CommandGive extends BaseCommand {
         final Voucher voucher = this.crazyManager.getVoucher(name);
 
         if (voucher == null) {
-            MessageKeys.not_a_voucher.sendMessage(sender);
+            Messages.not_a_voucher.sendMessage(sender);
 
             return;
         }
@@ -77,7 +76,7 @@ public class CommandGive extends BaseCommand {
 
         placeholders.put("{voucher}", voucher.getName());
 
-        MessageKeys.sent_everyone_voucher.sendMessage(sender, placeholders);
+        Messages.sent_everyone_voucher.sendMessage(sender, placeholders);
     }
 
     private List<ItemStack> build(final int amount, final String argument, final Voucher voucher) {

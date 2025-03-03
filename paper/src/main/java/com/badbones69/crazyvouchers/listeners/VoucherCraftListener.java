@@ -3,7 +3,7 @@ package com.badbones69.crazyvouchers.listeners;
 import ch.jalu.configme.SettingsManager;
 import com.badbones69.crazyvouchers.CrazyVouchers;
 import com.badbones69.crazyvouchers.api.CrazyManager;
-import com.badbones69.crazyvouchers.api.enums.config.MessageKeys;
+import com.badbones69.crazyvouchers.api.enums.config.Messages;
 import com.badbones69.crazyvouchers.api.enums.misc.PersistentKeys;
 import com.badbones69.crazyvouchers.api.objects.Voucher;
 import com.badbones69.crazyvouchers.config.ConfigManager;
@@ -45,7 +45,7 @@ public class VoucherCraftListener implements Listener {
                 inventory.setResult(new ItemStack(Material.AIR));
 
                 if (this.config.getProperty(ConfigKeys.prevent_using_vouchers_in_recipes_alert)) {
-                    MessageKeys.cannot_put_items_in_crafting_table.sendMessage(event.getView().getPlayer());
+                    Messages.cannot_put_items_in_crafting_table.sendMessage(event.getView().getPlayer());
                 }
 
                 break;

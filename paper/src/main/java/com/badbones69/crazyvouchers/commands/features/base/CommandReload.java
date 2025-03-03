@@ -1,7 +1,7 @@
 package com.badbones69.crazyvouchers.commands.features.base;
 
 import com.badbones69.crazyvouchers.Methods;
-import com.badbones69.crazyvouchers.api.enums.config.MessageKeys;
+import com.badbones69.crazyvouchers.api.enums.config.Messages;
 import com.badbones69.crazyvouchers.commands.BaseCommand;
 import com.badbones69.crazyvouchers.config.ConfigManager;
 import com.badbones69.crazyvouchers.config.types.ConfigKeys;
@@ -41,6 +41,6 @@ public class CommandReload extends BaseCommand {
 
         this.crazyManager.reload();
 
-        MessageKeys.config_reload.sendMessage(sender);
+        Messages.config_reload.sendMessage(sender);
     }
 }
