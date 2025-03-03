@@ -102,8 +102,9 @@ public class MessageKeys implements SettingsHolder {
             "&8- &6/crazyvouchers list &3Lists all available types of vouchers and codes.",
             "&8- &6/crazyvouchers redeem <code> &3Allows the player to redeem a voucher code.",
             "&8- &6/crazyvouchers give <voucher> [amount] [player] [arguments] &3Gives a player a voucher.",
-            "&8- &6/crazyvouchers giveAll <voucher> [amount] [arguments] &3Gives all players a voucher.",
+            "&8- &6/crazyvouchers giveall <voucher> [amount] [arguments] &3Gives all players a voucher.",
             "&8- &6/crazyvouchers open [page] &3Opens a GUI so you can get vouchers easily.",
+            "&8- &6/crazyvouchers migrate -mt [type] &3Runs multiple migration types to make migrating easier.",
             "&8- &6/crazyvouchers reload &3Reloaded the configuration files."
     ));
 }
