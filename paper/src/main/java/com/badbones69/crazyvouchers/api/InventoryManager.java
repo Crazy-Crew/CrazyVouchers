@@ -88,7 +88,7 @@ public class InventoryManager {
     public final ItemStack getNextButton(final Player player) {
         int page = getPage(player) + 1;
 
-        ItemStack itemStack = this.backButton.addDisplayLore("&7&lPage: &b" + page).asItemStack(true);
+        ItemStack itemStack = this.nextButton.addDisplayLore("&7&lPage: &b" + page).asItemStack(true);
 
         itemStack.editMeta(itemMeta -> {
             final PersistentDataContainer container = itemMeta.getPersistentDataContainer();
