@@ -9,8 +9,8 @@ import org.jetbrains.annotations.NotNull;
 public enum FileKeys {
 
 
-    voucher_codes("voucher-codes.yml"),
     vouchers("vouchers.yml"),
+    codes("codes.yml"),
     users("users.yml"),
     data("data.yml");
 
