@@ -2,7 +2,8 @@ package com.badbones69.crazyvouchers.api.objects;
 
 import com.badbones69.crazyvouchers.CrazyVouchers;
 import com.badbones69.crazyvouchers.Methods;
-import com.badbones69.crazyvouchers.api.enums.config.MessageKeys;
+import com.badbones69.crazyvouchers.api.enums.FileSystem;
+import com.badbones69.crazyvouchers.api.enums.config.Messages;
 import com.badbones69.crazyvouchers.utils.ItemUtils;
 import com.ryderbelserion.fusion.paper.builder.items.modern.ItemBuilder;
 import com.ryderbelserion.fusion.paper.util.PaperMethods;
@@ -10,7 +11,6 @@ import org.bukkit.Color;
 import org.bukkit.Sound;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.entity.Player;
-import org.jetbrains.annotations.NotNull;
 import com.badbones69.crazyvouchers.config.ConfigManager;
 import com.badbones69.crazyvouchers.config.types.ConfigKeys;
 import java.util.ArrayList;
@@ -49,33 +49,33 @@ public class VoucherCode {
     private final List<VoucherCommand> chanceCommands = new ArrayList<>();
     private final List<ItemBuilder> items = new ArrayList<>();
 
+    private final CrazyVouchers plugin = CrazyVouchers.get();
+
     public VoucherCode(FileConfiguration file, String name) {
         this.name = name.replaceAll(".yml", "");
 
-        boolean loadOldWay = ConfigManager.getConfig().getProperty(ConfigKeys.mono_file);
+        final FileSystem system = ConfigManager.getConfig().getProperty(ConfigKeys.file_system);
 
-        String path = loadOldWay ? "voucher-codes." + name + "." : "voucher-code.";
+        final String path = system == FileSystem.SINGLE ? "voucher-codes." + name + "." : "voucher-code.";
 
         this.enabled = file.getBoolean(path + "options.enabled");
         this.code = file.getString(path + "code", "");
         this.commands = file.getStringList(path + "commands");
 
-        for (String commands : file.getStringList(path + "random-commands")) {
+        for (final String commands : file.getStringList(path + "random-commands")) {
             this.randomCommands.add(new VoucherCommand(commands));
         }
 
-        for (String line : file.getStringList(path + "chance-commands")) {
+        for (final String line : file.getStringList(path + "chance-commands")) {
             try {
                 String[] split = line.split(" ");
                 VoucherCommand voucherCommand = new VoucherCommand(line.substring(split[0].length() + 1));
 
                 for (int i = 1; i <= Integer.parseInt(split[0]); i++) {
-                    chanceCommands.add(voucherCommand);
+                    this.chanceCommands.add(voucherCommand);
                 }
-            } catch (Exception exception) {
-                @NotNull CrazyVouchers plugin = CrazyVouchers.get();
-
-                plugin.getLogger().log(Level.SEVERE, "An issued occurred when trying to use chance commands.", exception);
+            } catch (final Exception exception) {
+                this.plugin.getLogger().log(Level.SEVERE, "An issued occurred when trying to use chance commands.", exception);
             }
         }
 
@@ -110,7 +110,7 @@ public class VoucherCode {
             if (file.contains(path + "options.whitelist-worlds.message")) {
                 this.whitelistWorldMessage = file.getString(path + "options.whitelist-worlds.message");
             } else {
-                this.whitelistWorldMessage = MessageKeys.not_in_whitelisted_world.getString();
+                this.whitelistWorldMessage = Messages.not_in_whitelisted_world.getString();
             }
 
             this.whitelistWorldCommands = file.getStringList(path + "options.whitelist-worlds.commands");
@@ -125,7 +125,7 @@ public class VoucherCode {
             if (file.contains(path + "options.permission.blacklist-permissions.message")) {
                 this.blacklistPermissionMessage = file.getString(path + "options.permission.blacklist-permissions.message");
             } else {
-                this.blacklistPermissionMessage = MessageKeys.has_blacklist_permission.getString();
+                this.blacklistPermissionMessage = Messages.has_blacklist_permission.getString();
             }
 
             this.blacklistPermissions = file.getStringList(path + "options.permission.blacklist-permissions.permissions");

@@ -1,7 +1,9 @@
 package com.badbones69.crazyvouchers.api;
 
+import ch.jalu.configme.SettingsManager;
 import com.badbones69.crazyvouchers.CrazyVouchers;
 import com.badbones69.crazyvouchers.api.enums.FileKeys;
+import com.badbones69.crazyvouchers.api.enums.FileSystem;
 import com.badbones69.crazyvouchers.api.enums.misc.PersistentKeys;
 import com.badbones69.crazyvouchers.api.objects.Voucher;
 import com.badbones69.crazyvouchers.api.objects.VoucherCode;
@@ -12,95 +14,122 @@ import com.ryderbelserion.fusion.paper.builder.items.modern.ItemBuilder;
 import com.ryderbelserion.fusion.paper.files.CustomFile;
 import com.ryderbelserion.fusion.paper.files.FileManager;
 import io.papermc.paper.persistence.PersistentDataContainerView;
+import net.kyori.adventure.text.logger.slf4j.ComponentLogger;
 import org.bukkit.Material;
+import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.inventory.ItemStack;
 import com.badbones69.crazyvouchers.config.ConfigManager;
 import com.badbones69.crazyvouchers.config.types.ConfigKeys;
 import org.bukkit.persistence.PersistentDataType;
-import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.concurrent.ThreadLocalRandom;
-import java.util.logging.Level;
 
 public class CrazyManager {
 
-    private @NotNull final CrazyVouchers plugin = CrazyVouchers.get();
-    
+    private final CrazyVouchers plugin = CrazyVouchers.get();
+
+    private final SettingsManager config = ConfigManager.getConfig();
+
+    private final FileManager fileManager = this.plugin.getFileManager();
+
+    private final ComponentLogger logger = this.plugin.getComponentLogger();
+
     private final List<Voucher> vouchers = new ArrayList<>();
     private final List<VoucherCode> voucherCodes = new ArrayList<>();
-    
+
     public void load() {
         // Used for when wanting to put in fake vouchers.
         // for(int i = 1; i <= 400; i++) vouchers.add(new Voucher(i));
 
         loadVouchers();
+        loadCodes();
     }
 
-    private void loadVouchers() {
-        boolean loadOldWay = ConfigManager.getConfig().getProperty(ConfigKeys.mono_file);
+    public void loadCodes() {
+        final FileSystem type = this.config.getProperty(ConfigKeys.file_system);
 
-        if (loadOldWay) {
-            FileConfiguration vouchers = FileKeys.vouchers.getConfiguration();
+        switch (type) {
+            case SINGLE -> {
+                final FileConfiguration configuration = FileKeys.codes.getConfiguration();
 
-            for (String voucherName : vouchers.getConfigurationSection("vouchers").getKeys(false)) {
-                this.vouchers.add(new Voucher(vouchers, voucherName));
-            }
+                if (configuration == null) return;
 
-            FileConfiguration voucherCodes = FileKeys.voucher_codes.getConfiguration();
+                final ConfigurationSection section = configuration.getConfigurationSection("voucher-codes");
 
-            if (voucherCodes.contains("voucher-codes")) {
-                for (String voucherName : voucherCodes.getConfigurationSection("voucher-codes").getKeys(false)) {
-                    this.voucherCodes.add(new VoucherCode(voucherCodes, voucherName));
+                if (section == null) return;
+
+                for (final String code : section.getKeys(false)) {
+                    this.voucherCodes.add(new VoucherCode(configuration, code));
                 }
             }
 
-            return;
-        }
+            case MULTIPLE -> {
+                for (final String code : getCodesList()) {
+                    try {
+                        @Nullable final CustomFile file = this.fileManager.getFile(code, FileType.YAML);
 
-        final FileManager fileManager = this.plugin.getFileManager();
+                        if (file != null) {
+                            final YamlConfiguration configuration = file.getConfiguration();
 
-        for (final String voucherName : getVouchersList()) {
-            try {
-                @Nullable CustomFile file = fileManager.getFile(voucherName, FileType.YAML);
-
-                if (file != null) {
-                    final YamlConfiguration configuration = file.getConfiguration();
-
-                    if (configuration != null) {
-                        this.vouchers.add(new Voucher(configuration, voucherName));
-                    } else {
-                        this.plugin.getLogger().warning("Configuration is null.");
+                            if (configuration != null) {
+                                this.voucherCodes.add(new VoucherCode(configuration, code));
+                            } else {
+                                this.logger.warn("Could not load code configuration for {}", code);
+                            }
+                        } else {
+                            this.logger.warn("The code file named {} could not be found in the cache", code);
+                        }
+                    } catch (Exception exception) {
+                        exception.printStackTrace();
                     }
-                } else {
-                    this.plugin.getLogger().warning("File is null.");
                 }
-            } catch (Exception exception) {
-                this.plugin.getLogger().log(Level.SEVERE, "There was an error while loading the " + voucherName + ".yml file.", exception);
             }
         }
+    }
 
-        for (final String voucherCode : getCodesList()) {
-            try {
-                @Nullable CustomFile file = fileManager.getFile(voucherCode, FileType.YAML);
+    public void loadVouchers() {
+        final FileSystem type = this.config.getProperty(ConfigKeys.file_system);
 
-                if (file != null) {
-                    final YamlConfiguration configuration = file.getConfiguration();
+        switch (type) {
+            case SINGLE -> {
+                final FileConfiguration configuration = FileKeys.vouchers.getConfiguration();
 
-                    if (configuration != null) {
-                        this.voucherCodes.add(new VoucherCode(configuration, voucherCode));
-                    } else {
-                        this.plugin.getLogger().warning("Configuration is null.");
-                    }
-                } else {
-                    this.plugin.getLogger().warning("File is null.");
+                if (configuration == null) return;
+
+                final ConfigurationSection section = configuration.getConfigurationSection("vouchers");
+
+                if (section == null) return;
+
+                for (final String voucher : section.getKeys(false)) {
+                    this.vouchers.add(new Voucher(configuration, voucher));
                 }
-            } catch (Exception exception) {
-                this.plugin.getLogger().log(Level.SEVERE,"There was an error while loading the " + voucherCode + ".yml file.", exception);
+            }
+
+            case MULTIPLE -> {
+                for (final String voucher : getVouchersList()) {
+                    try {
+                        @Nullable final CustomFile file = this.fileManager.getFile(voucher, FileType.YAML);
+
+                        if (file != null) {
+                            final YamlConfiguration configuration = file.getConfiguration();
+
+                            if (configuration != null) {
+                                this.vouchers.add(new Voucher(configuration, voucher));
+                            } else {
+                                this.logger.warn("Could not load voucher configuration for {}", voucher);
+                            }
+                        } else {
+                            this.logger.warn("The voucher file named {} could not be found in the cache", voucher);
+                        }
+                    } catch (Exception exception) {
+                        exception.printStackTrace();
+                    }
+                }
             }
         }
     }
@@ -109,7 +138,7 @@ public class CrazyManager {
         this.vouchers.clear();
         this.voucherCodes.clear();
 
-        loadVouchers();
+        load();
     }
 
     /**

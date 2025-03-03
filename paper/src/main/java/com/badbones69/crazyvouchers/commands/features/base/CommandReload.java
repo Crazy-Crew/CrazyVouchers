@@ -1,6 +1,7 @@
 package com.badbones69.crazyvouchers.commands.features.base;
 
 import com.badbones69.crazyvouchers.Methods;
+import com.badbones69.crazyvouchers.api.enums.FileSystem;
 import com.badbones69.crazyvouchers.api.enums.config.Messages;
 import com.badbones69.crazyvouchers.commands.BaseCommand;
 import com.badbones69.crazyvouchers.config.ConfigManager;
@@ -22,19 +23,21 @@ public class CommandReload extends BaseCommand {
 
         ConfigManager.refresh();
 
-        boolean loadOldWay = ConfigManager.getConfig().getProperty(ConfigKeys.mono_file);
+        final FileSystem system = this.config.getProperty(ConfigKeys.file_system);
 
         this.fileManager.purge();
 
         this.fileManager.addFile("users.yml").addFile("data.yml");
 
-        if (loadOldWay) {
-            this.fileManager.addFile("voucher-codes.yml").addFile("vouchers.yml");
-        } else {
-            this.fileManager.removeFile("voucher-codes.yml", FileType.YAML, false);
-            this.fileManager.removeFile("vouchers.yml", FileType.YAML, false);
+        switch (system) {
+            case MULTIPLE -> {
+                this.fileManager.removeFile("codes.yml", FileType.YAML, false);
+                this.fileManager.removeFile("vouchers.yml", FileType.YAML, false);
 
-            this.fileManager.addFolder("codes", FileType.YAML).addFolder("vouchers", FileType.YAML);
+                this.fileManager.addFolder("codes", FileType.YAML).addFolder("vouchers", FileType.YAML);
+            }
+
+            case SINGLE -> this.fileManager.addFile("codes.yml", FileType.YAML).addFile("vouchers.yml", FileType.YAML);
         }
 
         Methods.janitor();

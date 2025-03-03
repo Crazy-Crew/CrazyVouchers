@@ -3,6 +3,7 @@ package com.badbones69.crazyvouchers;
 import com.badbones69.crazyvouchers.api.CrazyManager;
 import com.badbones69.crazyvouchers.api.InventoryManager;
 import com.badbones69.crazyvouchers.api.builders.types.VoucherMenu;
+import com.badbones69.crazyvouchers.api.enums.FileSystem;
 import com.badbones69.crazyvouchers.commands.features.CommandHandler;
 import com.badbones69.crazyvouchers.config.ConfigManager;
 import com.badbones69.crazyvouchers.listeners.FireworkDamageListener;
@@ -55,14 +56,13 @@ public class CrazyVouchers extends JavaPlugin {
 
         ConfigManager.load(getDataFolder());
 
-        boolean loadOldWay = ConfigManager.getConfig().getProperty(ConfigKeys.mono_file);
+        final FileSystem system = ConfigManager.getConfig().getProperty(ConfigKeys.file_system);
 
         this.fileManager.addFile("users.yml", FileType.YAML).addFile("data.yml", FileType.YAML);
 
-        if (loadOldWay) {
-            this.fileManager.addFile("voucher-codes.yml", FileType.YAML).addFile("vouchers.yml", FileType.YAML);
-        } else {
-            this.fileManager.addFolder("codes", FileType.YAML).addFolder("vouchers", FileType.YAML);
+        switch (system) {
+            case MULTIPLE -> this.fileManager.addFolder("codes", FileType.YAML).addFolder("vouchers", FileType.YAML);
+            case SINGLE -> this.fileManager.addFile("codes.yml", FileType.YAML).addFile("vouchers.yml", FileType.YAML);
         }
 
         new MetricsWrapper(4536).start();
