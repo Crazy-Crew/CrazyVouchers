@@ -21,7 +21,15 @@ public class VoucherFileMigrator extends IVoucherMigrator {
             case VOUCHERS_RENAME -> { // rename voucher-codes.yml to codes.yml
                 final File file = new File(this.plugin.getDataFolder(), "codes.yml");
 
-                if (file.exists()) return;
+                if (file.exists()) {
+                    final File backup = new File(this.plugin.getDataFolder(), "backups");
+
+                    if (!backup.exists()) {
+                        backup.mkdirs();
+                    }
+
+                    file.renameTo(new File(backup, "codes-backup.yml"));
+                }
 
                 final File oldFile = new File(this.plugin.getDataFolder(), "voucher-codes.yml");
 
