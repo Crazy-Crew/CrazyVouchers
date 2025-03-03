@@ -2,10 +2,8 @@ package com.badbones69.crazyvouchers.utils;
 
 import com.ryderbelserion.fusion.core.util.StringUtils;
 import com.ryderbelserion.fusion.paper.builder.items.modern.ItemBuilder;
+import com.ryderbelserion.fusion.paper.builder.items.modern.types.PatternBuilder;
 import com.ryderbelserion.fusion.paper.util.PaperMethods;
-import org.bukkit.DyeColor;
-import org.bukkit.block.banner.Pattern;
-import org.bukkit.block.banner.PatternType;
 import org.bukkit.enchantments.Enchantment;
 import org.bukkit.inventory.ItemType;
 import java.util.Arrays;
@@ -82,18 +80,9 @@ public class ItemUtils {
                             itemBuilder.addEnchantment(getEnchant(option), level.map(Number::intValue).orElse(1));
                         }
 
-                        try {
-                            for (PatternType pattern : PatternType.values()) { //todo() move away from the enum
+                        final PatternBuilder builder = itemBuilder.asPatternBuilder();
 
-                                if (option.equalsIgnoreCase(pattern.name()) || value.equalsIgnoreCase(pattern.getIdentifier())) {
-                                    final DyeColor color = PaperMethods.getDyeColor(value);
-
-                                    itemBuilder.asPatternBuilder().addPattern(new Pattern(color, pattern));
-
-                                    break;
-                                }
-                            }
-                        } catch (Exception ignored) {}
+                        builder.addPattern(value, option).build();
                     }
                 }
             }

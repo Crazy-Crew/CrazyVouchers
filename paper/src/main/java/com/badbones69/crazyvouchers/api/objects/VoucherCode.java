@@ -147,10 +147,8 @@ public class VoucherCode {
             this.volume = (float) file.getDouble(path + ".options.sound.volume");
             this.pitch = (float) file.getDouble(path + ".options.sound.pitch");
 
-            for (String sound : file.getStringList(path + "options.sound.sounds")) { //todo() this is deprecated
-                try {
-                    this.sounds.add(Sound.valueOf(sound));
-                } catch (Exception ignored) {}
+            for (final String sound : file.getStringList(path + "options.sound.sounds")) {
+                this.sounds.add(PaperMethods.getSound(sound));
             }
         } else {
             this.soundToggle = false;

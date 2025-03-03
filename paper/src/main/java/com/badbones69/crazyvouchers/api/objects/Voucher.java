@@ -244,10 +244,8 @@ public class Voucher {
             this.volume = (float) fileConfiguration.getDouble(path + "options.sound.volume");
             this.pitch = (float) fileConfiguration.getDouble(path + "options.sound.pitch");
 
-            for (String sound : fileConfiguration.getStringList(path + "options.sound.sounds")) {
-                try {
-                    this.sounds.add(Sound.valueOf(sound)); //todo() add support for resource packs
-                } catch (Exception ignored) {}
+            for (final String sound : fileConfiguration.getStringList(path + "options.sound.sounds")) {
+                this.sounds.add(PaperMethods.getSound(sound));
             }
         } else {
             this.soundToggle = false;
