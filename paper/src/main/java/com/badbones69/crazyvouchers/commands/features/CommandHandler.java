@@ -10,6 +10,7 @@ import com.badbones69.crazyvouchers.commands.features.admin.CommandMenu;
 import com.badbones69.crazyvouchers.commands.features.admin.CommandMigrate;
 import com.badbones69.crazyvouchers.commands.features.admin.CommandRedeem;
 import com.badbones69.crazyvouchers.commands.features.admin.CommandTypes;
+import com.badbones69.crazyvouchers.commands.features.admin.migrate.enums.MigrationType;
 import com.badbones69.crazyvouchers.commands.features.base.CommandHelp;
 import com.badbones69.crazyvouchers.commands.features.base.CommandReload;
 import com.badbones69.crazyvouchers.commands.features.relations.ArgumentRelations;
@@ -112,6 +113,18 @@ public class CommandHandler {
             }
 
             return suggestions;
+        });
+
+        this.commandManager.registerSuggestion(SuggestionKey.of("migrators"), (sender, context) -> {
+            final List<String> migrators = new ArrayList<>();
+
+            for (MigrationType value : MigrationType.values()) {
+                final String name = value.getName();
+
+                migrators.add(name);
+            }
+
+            return migrators;
         });
 
         this.commandManager.registerArgument(PlayerBuilder.class, (sender, context) -> new PlayerBuilder(context));
