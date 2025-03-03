@@ -6,7 +6,7 @@
 # A) No, You can view PlayerHead.yml for an example whereas much as possible can be removed.
 voucher:
   # The material.
-  item: 'PAPER'
+  item: 'paper'
   # The name of the item.
   name: '<blue>Arg Example <aqua>{arg}'
   # The lore of the item.
@@ -36,6 +36,6 @@ voucher:
       # The sound pitch
       pitch: 1.0
       # The sound or sounds to use.
-      # https://jd.papermc.io/paper/1.20/org/bukkit/Sound.html
+      # https://minecraft.wiki/w/Sounds.json
       sounds:
-      - 'BLOCK_AMETHYST_CLUSTER_STEP'
+      - 'block.amethyst_block.step'

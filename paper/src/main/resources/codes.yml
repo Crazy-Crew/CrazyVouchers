@@ -92,9 +92,9 @@ voucher-codes: # Where you make your vouchers.
         # The sound pitch
         pitch: 1.0
         # The sound or sounds to use.
-        # https://jd.papermc.io/paper/1.20/org/bukkit/Sound.html
+        # https://minecraft.wiki/w/Sounds.json
         sounds:
-          - 'BLOCK_CHERRY_WOOD_BUTTON_CLICK_ON'
+          - 'block.cherry_wood_button.click_on'
       firework:
         # If the fireworks should be enabled.
         toggle: true

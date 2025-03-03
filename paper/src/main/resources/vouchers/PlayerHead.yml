@@ -1,6 +1,6 @@
 voucher:
   # The material.
-  item: 'PLAYER_HEAD'
+  item: 'player_head'
   # The name of the item.
   name: '<red>A player head example'
   # The lore of the item.
@@ -23,5 +23,5 @@ voucher:
   # The items to give when claiming the voucher.
   items:
     # Only uncomment this is using HeadDatabase by Arcaniax
-    #- 'Item:PLAYER_HEAD, Skull:61151, Name:<red>A fancy head, Lore:<yellow>A fancy lore,<gray>with lines, Amount:3, Glowing:true'
-    - 'Item:PLAYER_HEAD, Player:1ee3126ff2c343da525eef2b93272b9fed36273d0ea08c2616b80009948ad57e, Name:<red>A fancy head, Lore:<yellow>A fancy lore,<gray>with lines, Amount:3, Glowing:true'
+    #- 'Item:player_head, Skull:61151, Name:<red>A fancy head, Lore:<yellow>A fancy lore,<gray>with lines, Amount:3, Glowing:true'
+    - 'Item:player_head, Player:1ee3126ff2c343da525eef2b93272b9fed36273d0ea08c2616b80009948ad57e, Name:<red>A fancy head, Lore:<yellow>A fancy lore,<gray>with lines, Amount:3, Glowing:true'

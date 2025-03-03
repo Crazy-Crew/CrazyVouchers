@@ -19,7 +19,7 @@
 ###################################################################
 voucher:
   # The material.
-  item: 'DIAMOND_HELMET'
+  item: 'diamond_helmet'
   # The name of the item.
   name: '<dark_gray>><gray>><red>Trim Example<gray><<dark_gray><'
   # The lore of the item.
@@ -34,8 +34,8 @@ voucher:
     - 'msg {player} wow you claimed a voucher.'
   # The items to give when claiming the voucher.
   items:
-    - 'Item:DIAMOND_HELMET, Damage:50, Trim:SENTRY!QUARTZ, Amount:1, Protection:4, Respiration:1, Aqua_Affinity:3, Unbreaking:3, Thorns:3'
-    - 'Item:DIAMOND_CHESTPLATE, Damage:50, Trim:DUNE!REDSTONE, Amount:1, Protection:4, Unbreaking:3, Thorns:3'
+    - 'Item:diamond_helmet, Damage:50, Trim:sentry!quartz, Amount:1, protection:4, respiration:1, aqua_affinity:3, unbreaking:3, thorns:3'
+    - 'Item:diamond_chestplate, Damage:50, Trim:dune!redstone, Amount:1, protection:4, unbreaking:3, thorns:3'
   # Random Commands is completely random.
   random-commands:
     - 'eco give 50000'
@@ -57,8 +57,8 @@ voucher:
 
   # The trim applied to the item in the preview gui.
   display-trim:
-    material: QUARTZ
-    pattern: SENTRY
+    material: quartz
+    pattern: sentry
   # Any generic component for the Item.
   components:
     # Hides the entire tooltip
@@ -108,9 +108,9 @@ voucher:
       # The sound pitch
       pitch: 1.0
       # The sound or sounds to use.
-      # https://jd.papermc.io/paper/1.20/org/bukkit/Sound.html
+      # https://minecraft.wiki/w/Sounds.json
       sounds:
-      - 'BLOCK_CHERRY_WOOD_BUTTON_CLICK_ON'
+      - 'block.cherry_wood_button.click_on'
     firework:
       # If the fireworks should be enabled.
       toggle: true
