@@ -4,13 +4,17 @@ import ch.jalu.configme.SettingsManager;
 import com.badbones69.crazyvouchers.api.enums.FileKeys;
 import com.badbones69.crazyvouchers.api.enums.misc.PersistentKeys;
 import com.badbones69.crazyvouchers.config.ConfigManager;
-import com.badbones69.crazyvouchers.utils.MsgUtils;
+import com.ryderbelserion.fusion.paper.Fusion;
 import com.ryderbelserion.fusion.paper.enums.Scheduler;
+import com.ryderbelserion.fusion.paper.enums.Support;
 import com.ryderbelserion.fusion.paper.util.scheduler.FoliaScheduler;
+import me.clip.placeholderapi.PlaceholderAPI;
+import net.kyori.adventure.text.Component;
 import org.bukkit.Color;
 import org.bukkit.FireworkEffect;
 import org.bukkit.Location;
 import org.bukkit.Server;
+import org.bukkit.command.CommandSender;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.entity.Firework;
 import org.bukkit.entity.Player;
@@ -19,7 +23,6 @@ import org.bukkit.inventory.PlayerInventory;
 import org.bukkit.inventory.meta.FireworkMeta;
 import org.bukkit.persistence.PersistentDataContainer;
 import org.bukkit.persistence.PersistentDataType;
-import com.badbones69.crazyvouchers.config.types.ConfigKeys;
 import org.jetbrains.annotations.NotNull;
 import java.util.Arrays;
 import java.util.List;
@@ -70,13 +73,13 @@ public class Methods {
                 if (execute) {
                     placeholders.put("{permission}", permission);
 
-                    player.sendMessage(Methods.replacePlaceholders(placeholders, message, false));
+                    player.sendMessage(fusion.color(player, message, placeholders));
 
                     new FoliaScheduler(Scheduler.global_scheduler) {
                         @Override
                         public void run() {
-                            for (String command : commands) {
-                                server.dispatchCommand(server.getConsoleSender(), Methods.replacePlaceholders(placeholders, command, true));
+                            for (final String command : commands) {
+                                server.dispatchCommand(server.getConsoleSender(), placeholders(player, command, placeholders));
                             }
                         }
                     }.run();
@@ -89,10 +92,6 @@ public class Methods {
         }
 
         return hasPermission;
-    }
-
-    public static String getPrefix(final String message) {
-        return MsgUtils.color(config.getProperty(ConfigKeys.command_prefix) + message);
     }
 
     public static void addItem(final Player player, final ItemStack... items) {
@@ -111,12 +110,26 @@ public class Methods {
         });
     }
 
-    public static String replacePlaceholders(final Map<String, String> placeholders, String message, final boolean isCommand) {
-        for (String placeholder : placeholders.keySet()) {
-            message = message.replace(placeholder, placeholders.get(placeholder)).replace(placeholder.toLowerCase(), placeholders.get(placeholder));
+    public static String placeholders(final CommandSender sender, final String message, final Map<String, String> placeholders) {
+        String line = message;
+
+        if (sender instanceof Player player && Support.placeholder_api.isEnabled()) {
+            line = PlaceholderAPI.setPlaceholders(player, line);
         }
 
-        if (isCommand) return message; else return MsgUtils.color(message);
+        for (final String placeholder : placeholders.keySet()) {
+            line = line.replace(placeholder, placeholders.get(placeholder)).replace(placeholder.toLowerCase(), placeholders.get(placeholder));
+        }
+
+        return line;
+    }
+
+    private static final CrazyVouchers plugin = CrazyVouchers.get();
+
+    private static final Fusion fusion = plugin.getFusion();
+
+    public static Component color(final String message, final Map<String, String> placeholders) {
+        return fusion.color(message, placeholders);
     }
 
     public static boolean isInventoryFull(final PlayerInventory inventory) {

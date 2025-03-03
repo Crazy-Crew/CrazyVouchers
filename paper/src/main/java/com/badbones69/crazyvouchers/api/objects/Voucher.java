@@ -7,7 +7,6 @@ import com.badbones69.crazyvouchers.api.CrazyManager;
 import com.badbones69.crazyvouchers.api.enums.FileSystem;
 import com.badbones69.crazyvouchers.api.enums.config.Messages;
 import com.badbones69.crazyvouchers.api.enums.misc.PersistentKeys;
-import com.badbones69.crazyvouchers.utils.MsgUtils;
 import com.ryderbelserion.fusion.core.util.StringUtils;
 import com.ryderbelserion.fusion.paper.builder.items.modern.ItemBuilder;
 import com.ryderbelserion.fusion.paper.util.PaperMethods;
@@ -288,7 +287,7 @@ public class Voucher {
     private final SettingsManager config = ConfigManager.getConfig();
     
     public ItemStack buildItem(int amount) {
-        final ItemStack item = this.itemBuilder.setAmount(amount).setEnchantGlint(this.glowing).asItemStack(true);
+        final ItemStack item = this.itemBuilder.setAmount(amount).setEnchantGlint(this.glowing).asItemStack();
 
         setUniqueId(item);
 
@@ -316,7 +315,7 @@ public class Voucher {
     }
     
     public ItemStack buildItem(final String argument, final int amount) {
-        final ItemStack item = this.itemBuilder.setAmount(amount).addPlaceholder("{arg}", argument).setEnchantGlint(this.glowing).asItemStack(true);
+        final ItemStack item = this.itemBuilder.setAmount(amount).addPlaceholder("{arg}", argument).setEnchantGlint(this.glowing).asItemStack();
 
         setUniqueId(item);
 
@@ -489,7 +488,7 @@ public class Voucher {
         String messageString;
 
         if (isList(path, file)) {
-            messageString = MsgUtils.color(StringUtils.toString(file.getStringList(path)));
+            messageString = StringUtils.toString(file.getStringList(path));
         } else {
             messageString = file.getString(path, "");
         }

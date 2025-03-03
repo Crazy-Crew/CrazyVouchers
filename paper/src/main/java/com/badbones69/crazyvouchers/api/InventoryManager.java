@@ -4,7 +4,7 @@ import com.badbones69.crazyvouchers.CrazyVouchers;
 import com.badbones69.crazyvouchers.api.builders.types.VoucherMenu;
 import com.badbones69.crazyvouchers.api.enums.misc.PersistentKeys;
 import com.badbones69.crazyvouchers.api.objects.Voucher;
-import com.badbones69.crazyvouchers.utils.MsgUtils;
+import com.ryderbelserion.fusion.core.util.StringUtils;
 import com.ryderbelserion.fusion.paper.builder.items.modern.ItemBuilder;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
@@ -32,9 +32,9 @@ public class InventoryManager {
     private final int amount = 36;
 
     public InventoryManager() {
-        this.nextButton = ItemBuilder.from(ItemType.ARROW).setDisplayName("&6&lNext >>");
+        this.nextButton = ItemBuilder.from(ItemType.ARROW).setDisplayName("<gold>Next >>");
 
-        this.backButton = ItemBuilder.from(ItemType.ARROW).setDisplayName("&6&l<< Back");
+        this.backButton = ItemBuilder.from(ItemType.ARROW).setDisplayName("<gold><< Back");
     }
 
     public final ItemStack getVoucher(final Voucher voucher) {
@@ -74,7 +74,7 @@ public class InventoryManager {
     public final ItemStack getBackButton(final Player player) {
         int page = getPage(player) - 1;
 
-        ItemStack itemStack = this.backButton.addDisplayLore("&7&lPage: &b" + page).asItemStack(true);
+        ItemStack itemStack = this.backButton.addDisplayLore("<gray>Page: <blue>" + page).asItemStack();
 
         itemStack.editMeta(itemMeta -> {
             final PersistentDataContainer container = itemMeta.getPersistentDataContainer();
@@ -88,7 +88,7 @@ public class InventoryManager {
     public final ItemStack getNextButton(final Player player) {
         int page = getPage(player) + 1;
 
-        ItemStack itemStack = this.nextButton.addDisplayLore("&7&lPage: &b" + page).asItemStack(true);
+        ItemStack itemStack = this.nextButton.addDisplayLore("<gray>Page: <blue>" + page).asItemStack();
 
         itemStack.editMeta(itemMeta -> {
             final PersistentDataContainer container = itemMeta.getPersistentDataContainer();
@@ -116,7 +116,7 @@ public class InventoryManager {
     }
 
     public void buildInventory(@NotNull final Player player, final int page) {
-        final VoucherMenu menu = new VoucherMenu(player, 54, page <= 0 ? getPage(player) : page, MsgUtils.color("&c&lCrazyVouchers"));
+        final VoucherMenu menu = new VoucherMenu(player, 54, page <= 0 ? getPage(player) : page, "<red>CrazyVouchers");
 
         player.openInventory(menu.build().getInventory());
     }

@@ -3,7 +3,6 @@ package com.badbones69.crazyvouchers.commands.features.admin;
 import com.badbones69.crazyvouchers.api.objects.Voucher;
 import com.badbones69.crazyvouchers.api.objects.VoucherCode;
 import com.badbones69.crazyvouchers.commands.BaseCommand;
-import com.badbones69.crazyvouchers.utils.MsgUtils;
 import dev.triumphteam.cmd.core.annotations.Command;
 import dev.triumphteam.cmd.core.annotations.Permission;
 import dev.triumphteam.cmd.core.annotations.Syntax;
@@ -23,19 +22,19 @@ public class CommandTypes extends BaseCommand {
         final List<Voucher> voucherCache = this.crazyManager.getVouchers();
 
         for (Voucher voucher : voucherCache) {
-            vouchers.append("&a").append(voucher.getName()).append("&8, ");
+            vouchers.append("<green>").append(voucher.getName()).append("<dark_gray>, ");
         }
 
         final List<VoucherCode> voucherCodes = this.crazyManager.getVoucherCodes();
 
         for (VoucherCode code : voucherCodes) {
-            codes.append("&a").append(code.getCode()).append("&8, ");
+            codes.append("<green>").append(code.getCode()).append("<dark_gray>, ");
         }
 
-        vouchers = new StringBuilder((vouchers.isEmpty()) ? "&cNone" : vouchers.substring(0, vouchers.length() - 2));
-        codes = new StringBuilder((codes.isEmpty()) ? "&cNone" : codes.substring(0, codes.length() - 2));
+        vouchers = new StringBuilder((vouchers.isEmpty()) ? "<red>None" : vouchers.substring(0, vouchers.length() - 2));
+        codes = new StringBuilder((codes.isEmpty()) ? "<red>None" : codes.substring(0, codes.length() - 2));
 
-        sender.sendMessage(MsgUtils.color("&e&lVouchers #" + voucherCache.size() + ":&f " + vouchers));
-        sender.sendMessage(MsgUtils.color("&e&lVoucher Codes #" + voucherCodes.size() + ":&f " + codes));
+        //sender.sendMessage(MsgUtils.color("<yellow>Vouchers #" + voucherCache.size() + ":&f " + vouchers));
+        //sender.sendMessage(MsgUtils.color("<yellow>Voucher Codes #" + voucherCodes.size() + ":&f " + codes));
     }
 }

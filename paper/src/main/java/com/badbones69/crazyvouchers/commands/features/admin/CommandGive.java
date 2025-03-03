@@ -51,7 +51,7 @@ public class CommandGive extends BaseCommand {
         placeholders.put("{player}", player.getName());
         placeholders.put("{voucher}", voucher.getName());
 
-        if (!Messages.sent_voucher.getMessage(sender).isBlank()) Messages.sent_voucher.sendMessage(sender, placeholders);
+        Messages.sent_voucher.sendMessage(sender, placeholders);
     }
 
     @Command(value = "giveall")

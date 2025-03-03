@@ -8,11 +8,11 @@ voucher:
   # The material.
   item: 'PAPER'
   # The name of the item.
-  name: '&bArg Example &3{arg}'
+  name: '<blue>Arg Example <aqua>{arg}'
   # The lore of the item.
   lore:
-  - '&7Use this voucher to rank up to &c{arg}'
-  - '&8(&e!&8) &dRight click to redeem.'
+  - '<gray>Use this voucher to rank up to <red>{arg}'
+  - '<dark_gray>(<yellow>!<dark_gray>) <light_purple>Right click to redeem.'
   # The player name
   player: ''
   # If the item should glow or not.
@@ -27,7 +27,7 @@ voucher:
   # All options when they right-click it.
   options:
     # The message sent when they right-click it.
-    message: '&7Congratulations, you have just ranked up to &6{arg}&7.'
+    message: '<gray>Congratulations, you have just ranked up to <gold>{arg}<gray>.'
     sound:
       # If the sounds should be enabled.
       toggle: true

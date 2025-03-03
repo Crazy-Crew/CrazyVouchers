@@ -98,7 +98,7 @@ public class ItemUtils {
                 }
             }
         } catch (Exception exception) {
-            itemBuilder.withType(ItemType.RED_TERRACOTTA).setDisplayName("&c&lERROR").withDisplayLore(Arrays.asList("&cThere is an error", "&cFor : &c" + (placeHolder != null ? placeHolder : "")));
+            itemBuilder.withType(ItemType.RED_TERRACOTTA).setDisplayName("<red>ERROR").withDisplayLore(Arrays.asList("<red>There is an error", "<red>For : <red>" + (placeHolder != null ? placeHolder : "")));
 
             exception.printStackTrace();
         }

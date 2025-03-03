@@ -22,11 +22,11 @@ vouchers: # Where you make your vouchers.
     # The material.
     item: 'DIAMOND_HELMET'
     # The name of the item.
-    name: '&8&l>&7&l>&cTrim Example&7&l<&8&l<'
+    name: '<dark_gray>><gray>><red>Trim Example<gray><<dark_gray><'
     # The lore of the item.
     lore:
-      - '&7Use this voucher to get fancy trims.'
-      - '&7&l(&6&l!&7&l) &7Right click to redeem.'
+      - '<gray>Use this voucher to get fancy trims.'
+      - '<gray>(<gold>!<gray>) <gray>Right click to redeem.'
     player: ''
     # If the item should glow or not.
     glowing: true
@@ -66,7 +66,7 @@ vouchers: # Where you make your vouchers.
     # All options when they right-click it.
     options:
       # The message sent when they right-click it.
-      message: '&7Congratulations, you have yourself fancy trims'
+      message: '<gray>Congratulations, you have yourself fancy trims'
       whitelist-worlds:
         # Should we check the worlds players have to be in?
         toggle: false
@@ -81,7 +81,7 @@ vouchers: # Where you make your vouchers.
           # If we should check players for this.
           toggle: false
           # If they don't have the permission, send this message.
-          message: '{prefix}You do not have the permission &c{permission} &7to use this voucher.'
+          message: '{prefix}You do not have the permission <red>{permission} <gray>to use this voucher.'
           # If they don't have this permission, they can't use the voucher.
           permissions:
             - 'your-permission'
@@ -89,7 +89,7 @@ vouchers: # Where you make your vouchers.
           # If we should check players for this.
           toggle: false
           # The message to send to a player if they can't use the voucher.
-          message: '{prefix}You already have the permission &c{permission} &7so you can''t use this voucher.'
+          message: '{prefix}You already have the permission <red>{permission} <gray>so you can''t use this voucher.'
           # If they have this permission, they can't use the voucher.
           permissions:
             - 'your-permission'
@@ -123,11 +123,11 @@ vouchers: # Where you make your vouchers.
     # The material.
     item: 'PAPER'
     # The name of the item.
-    name: '&bArg Example &3{arg}'
+    name: '<blue>Arg Example <aqua>{arg}'
     # The lore of the item.
     lore:
-      - '&7Use this voucher to rank up to &c{arg}'
-      - '&8(&e!&8) &dRight click to redeem.'
+      - '<gray>Use this voucher to rank up to <red>{arg}'
+      - '<dark_gray>(<yellow>!<dark_gray>) <light_purple>Right click to redeem.'
     # The player name
     player: ''
     # If the item should glow or not.
@@ -142,7 +142,7 @@ vouchers: # Where you make your vouchers.
     # All options when they right-click it.
     options:
       # The message sent when they right-click it.
-      message: '&7Congratulations, you have just ranked up to &6{arg}&7.'
+      message: '<gray>Congratulations, you have just ranked up to <gold>{arg}<gray>.'
       sound:
         # If the sounds should be enabled.
         toggle: true
@@ -158,11 +158,11 @@ vouchers: # Where you make your vouchers.
     # The material.
     item: 'PLAYER_HEAD'
     # The name of the item.
-    name: '&cA player head example'
+    name: '<red>A player head example'
     # The lore of the item.
     lore:
-      - '&7Use this voucher to get fancy trims.'
-      - '&7&l(&6&l!&7&l) &7Right click to redeem.'
+      - '<gray>Use this voucher to get fancy trims.'
+      - '<gray>(<gold>!<gray>) <gray>Right click to redeem.'
     player: 'Rukkhadevata'
     #player: 'https://textures.minecraft.net/texture/1ee3126ff2c343da525eef2b93272b9fed36273d0ea08c2616b80009948ad57e'
     # If the item should glow or not.
@@ -174,8 +174,8 @@ vouchers: # Where you make your vouchers.
     # All options when they right-click it.
     options:
       # The message sent when they right-click it.
-      message: '&7Congratulations, you have yourself a fancy head.'
+      message: '<gray>Congratulations, you have yourself a fancy head.'
     # The items to give when claiming the voucher.
     items:
-      - 'Item:PLAYER_HEAD, Player:https://textures.minecraft.net/texture/1ee3126ff2c343da525eef2b93272b9fed36273d0ea08c2616b80009948ad57e, Name:&cA fancy head, Lore:&eA fancy lore,&7with lines, Amount: 3, Glowing: true'
-      - 'Item:PLAYER_HEAD, Player:Rukkhadevata, Name:&cA fancy head, Lore:&eA fancy lore,&7with lines, Amount: 3, Glowing: true'
+      - 'Item:PLAYER_HEAD, Player:https://textures.minecraft.net/texture/1ee3126ff2c343da525eef2b93272b9fed36273d0ea08c2616b80009948ad57e, Name:<red>A fancy head, Lore:<yellow>A fancy lore,<gray>with lines, Amount: 3, Glowing: true'
+      - 'Item:PLAYER_HEAD, Player:Rukkhadevata, Name:<red>A fancy head, Lore:<yellow>A fancy lore,<gray>with lines, Amount: 3, Glowing: true'

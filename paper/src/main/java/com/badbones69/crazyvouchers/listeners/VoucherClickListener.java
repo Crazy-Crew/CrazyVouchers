@@ -10,15 +10,18 @@ import com.badbones69.crazyvouchers.api.enums.misc.PersistentKeys;
 import com.badbones69.crazyvouchers.api.enums.misc.PermissionKeys;
 import com.badbones69.crazyvouchers.api.events.VoucherRedeemEvent;
 import com.badbones69.crazyvouchers.api.objects.Voucher;
+import com.badbones69.crazyvouchers.api.objects.VoucherCommand;
 import com.badbones69.crazyvouchers.config.ConfigManager;
-import com.badbones69.crazyvouchers.utils.MsgUtils;
+import com.ryderbelserion.fusion.core.util.StringUtils;
+import com.ryderbelserion.fusion.paper.Fusion;
 import com.ryderbelserion.fusion.paper.builder.items.modern.ItemBuilder;
 import com.ryderbelserion.fusion.paper.enums.Scheduler;
 import com.ryderbelserion.fusion.paper.enums.Support;
 import com.ryderbelserion.fusion.paper.util.scheduler.FoliaScheduler;
 import io.papermc.paper.persistence.PersistentDataContainerView;
 import me.clip.placeholderapi.PlaceholderAPI;
-import org.bukkit.ChatColor;
+import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.serializer.plain.PlainTextComponentSerializer;
 import org.bukkit.GameMode;
 import org.bukkit.Location;
 import org.bukkit.Material;
@@ -39,8 +42,10 @@ import org.bukkit.inventory.EquipmentSlot;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.PlayerInventory;
 import org.bukkit.persistence.PersistentDataType;
-import org.jetbrains.annotations.NotNull;
 import com.badbones69.crazyvouchers.config.types.ConfigKeys;
+import org.bukkit.util.StringUtil;
+import org.jetbrains.annotations.NotNull;
+
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -50,11 +55,13 @@ import java.util.concurrent.atomic.AtomicBoolean;
 
 public class VoucherClickListener implements Listener {
 
-    private @NotNull final CrazyVouchers plugin = CrazyVouchers.get();
+    private final CrazyVouchers plugin = CrazyVouchers.get();
 
-    private @NotNull final CrazyManager crazyManager = this.plugin.getCrazyManager();
+    private final CrazyManager crazyManager = this.plugin.getCrazyManager();
 
     private final Server server = this.plugin.getServer();
+
+    private final Fusion fusion = this.plugin.getFusion();
 
     private final SettingsManager config = ConfigManager.getConfig();
     
@@ -179,7 +186,7 @@ public class VoucherClickListener implements Listener {
                 if (vouchers.contains(id)) {
                     Messages.dupe_protection.sendMessage(player);
 
-                    this.plugin.getServer().getOnlinePlayers().forEach(staff -> {
+                    this.server.getOnlinePlayers().forEach(staff -> {
                         if (PermissionKeys.crazyvouchers_notify.hasPermission(staff)) {
                             Messages.notify_staff.sendMessage(staff, new HashMap<>() {{
                                 put("{player}", player.getName());
@@ -188,37 +195,34 @@ public class VoucherClickListener implements Listener {
                         }
                     });
 
-                    if (this.config.getProperty(ConfigKeys.dupe_protection_toggle_warning)) {
-                        List<String> lore = item.getLore(); //todo() deprecated, switch to minimessage
+                    if (this.config.getProperty(ConfigKeys.dupe_protection_toggle_warning)) { //todo() untested!
+                        List<Component> lore = item.lore();
 
                         if (lore == null) lore = new ArrayList<>();
 
-                        final String option = this.config.getProperty(ConfigKeys.dupe_protection_warning);
+                        final String text = this.config.getProperty(ConfigKeys.dupe_protection_warning);
 
-                        boolean hasLine = false;
+                        boolean hasWarning = false;
 
-                        for (String line : lore) {
-                            final String cleanLine = ChatColor.stripColor(line); //todo() deprecated
-                            final String cleanOption = ChatColor.stripColor(MsgUtils.color(option)); //todo() deprecated
+                        for (final Component component : lore) {
+                            final String plain = PlainTextComponentSerializer.plainText().serialize(component);
 
-                            if (cleanLine.equalsIgnoreCase(cleanOption)) {
-                                hasLine = true;
+                            if (plain.equalsIgnoreCase(text)) {
+                                hasWarning = true;
 
                                 break;
                             }
                         }
 
-                        if (hasLine) return;
+                        if (hasWarning) return;
 
-                        final List<String> finalLore = lore;
+                        final Component warning = this.fusion.color(player, text, this.placeholders);
 
-                        item.editMeta(itemMeta -> {
-                            List<String> messages = new ArrayList<>(finalLore);
+                        lore.add(warning);
 
-                            messages.add(Support.placeholder_api.isEnabled() ? PlaceholderAPI.setPlaceholders(player, MsgUtils.color(option)) : MsgUtils.color(option));
+                        final List<Component> finalLore = lore;
 
-                            itemMeta.setLore(messages); //todo() deprecated
-                        });
+                        item.editMeta(itemMeta -> itemMeta.lore(finalLore));
                     }
 
                     return;
@@ -240,7 +244,7 @@ public class VoucherClickListener implements Listener {
                 }
 
                 if (voucher.hasCooldown() && voucher.isCooldown(player)){
-                    player.sendMessage(Messages.cooldown_active.getMessage(player, "{time}", String.valueOf(voucher.getCooldown())));
+                    Messages.cooldown_active.sendMessage(player, "{time}", String.valueOf(voucher.getCooldown()));
 
                     return;
                 } else {
@@ -255,9 +259,7 @@ public class VoucherClickListener implements Listener {
                     String newValue = PlaceholderAPI.setPlaceholders(player, placeholder);
 
                     if (!newValue.equals(value)) {
-                        String message = replacePlaceholders(voucher.getRequiredPlaceholdersMessage(), player);
-
-                        player.sendMessage(Methods.replacePlaceholders(this.placeholders, message, false));
+                        player.sendMessage(this.fusion.color(player, voucher.getRequiredPlaceholdersMessage(), this.placeholders));
 
                         shouldCancel.set(true);
                     }
@@ -306,13 +308,13 @@ public class VoucherClickListener implements Listener {
             }
 
             if (voucher.usesWhitelistWorlds() && !voucher.getWhitelistWorlds().contains(player.getWorld().getName().toLowerCase())) {
-                player.sendMessage(Methods.replacePlaceholders(this.placeholders, voucher.getWhitelistWorldMessage(), false));
+                player.sendMessage(this.fusion.color(player, voucher.getWhitelistWorldMessage(), this.placeholders));
 
                 new FoliaScheduler(Scheduler.global_scheduler) {
                     @Override
                     public void run() {
                         for (final String command : voucher.getWhitelistWorldCommands()) {
-                            server.dispatchCommand(server.getConsoleSender(), Methods.replacePlaceholders(placeholders, command, true));
+                            server.dispatchCommand(server.getConsoleSender(), Methods.placeholders(player, command, placeholders));
                         }
                     }
                 }.run();
@@ -350,30 +352,28 @@ public class VoucherClickListener implements Listener {
 
         populate(player, argument);
 
-        for (String command : voucher.getCommands()) {
-            command = replacePlaceholders(command, player);
-
-            this.server.dispatchCommand(this.server.getConsoleSender(), Methods.replacePlaceholders(this.placeholders, this.crazyManager.replaceRandom(command), true));
+        for (final String command : voucher.getCommands()) {
+            this.server.dispatchCommand(this.server.getConsoleSender(), Methods.placeholders(player, this.crazyManager.replaceRandom(command), placeholders));
         }
 
-        if (!voucher.getRandomCommands().isEmpty()) { // Picks a random command from the Random-Commands list.
-            for (String command : voucher.getRandomCommands().get(Methods.getRandom(voucher.getRandomCommands().size())).getCommands()) {
-                command = replacePlaceholders(command, player);
+        final List<VoucherCommand> randomCommands = voucher.getRandomCommands();
 
-                this.server.dispatchCommand(this.server.getConsoleSender(), Methods.replacePlaceholders(this.placeholders, this.crazyManager.replaceRandom(command), true));
+        if (!randomCommands.isEmpty()) { // Picks a random command from the Random-Commands list.
+            for (final String command : randomCommands.get(Methods.getRandom(randomCommands.size())).getCommands()) {
+                this.server.dispatchCommand(this.server.getConsoleSender(), Methods.placeholders(player, this.crazyManager.replaceRandom(command), placeholders));
             }
         }
 
-        if (!voucher.getChanceCommands().isEmpty()) { // Picks a command based on the chance system of the Chance-Commands list.
-            for (String command : voucher.getChanceCommands().get(Methods.getRandom(voucher.getChanceCommands().size())).getCommands()) {
-                command = replacePlaceholders(command, player);
+        final List<VoucherCommand> chanceCommands = voucher.getChanceCommands();
 
-                this.server.dispatchCommand(this.server.getConsoleSender(), Methods.replacePlaceholders(this.placeholders, this.crazyManager.replaceRandom(command), true));
+        if (!chanceCommands.isEmpty()) { // Picks a command based on the chance system of the Chance-Commands list.
+            for (final String command : chanceCommands.get(Methods.getRandom(chanceCommands.size())).getCommands()) {
+                this.server.dispatchCommand(this.server.getConsoleSender(), Methods.placeholders(player, this.crazyManager.replaceRandom(command), placeholders));
             }
         }
 
         for (final ItemBuilder itemStack : voucher.getItems()) {
-            Methods.addItem(player, itemStack.asItemStack(true));
+            Methods.addItem(player, itemStack.asItemStack());
         }
 
         if (voucher.playSounds()) {
@@ -384,10 +384,10 @@ public class VoucherClickListener implements Listener {
 
         if (voucher.useFirework()) Methods.firework(player.getLocation(), voucher.getFireworkColors());
 
-        if (!voucher.getVoucherUsedMessage().isEmpty()) {
-            String message = replacePlaceholders(voucher.getVoucherUsedMessage(), player);
+        final String message = voucher.getVoucherUsedMessage();
 
-            player.sendMessage(Methods.replacePlaceholders(this.placeholders, message, false));
+        if (!message.isEmpty()) {
+            player.sendMessage(this.fusion.color(player, message, this.placeholders));
         }
 
         if (voucher.useLimiter()) {
@@ -418,15 +418,9 @@ public class VoucherClickListener implements Listener {
 
                     FileKeys.data.save();
                 } else {
-                    this.plugin.getLogger().warning(id + " is already in the data.yml somehow.");
+                    this.plugin.getComponentLogger().warn("{} is already in the data.yml somehow.", id);
                 }
             }
         }
-    }
-
-    private String replacePlaceholders(String string, Player player) {
-        if (Support.placeholder_api.isEnabled()) return PlaceholderAPI.setPlaceholders(player, string);
-
-        return MsgUtils.color(string);
     }
 }

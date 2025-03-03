@@ -21,11 +21,11 @@ voucher:
   # The material.
   item: 'DIAMOND_HELMET'
   # The name of the item.
-  name: '&8&l>&7&l>&cTrim Example&7&l<&8&l<'
+  name: '<dark_gray>><gray>><red>Trim Example<gray><<dark_gray><'
   # The lore of the item.
   lore:
-  - '&7Use this voucher to get fancy trims.'
-  - '&7&l(&6&l!&7&l) &7Right click to redeem.'
+  - '<gray>Use this voucher to get fancy trims.'
+  - '<gray>(<gold>!<gray>) <gray>Right click to redeem.'
   player: ''
   # If the item should glow or not.
   glowing: true
@@ -66,7 +66,7 @@ voucher:
   # All options when they right-click it.
   options:
     # The message sent when they right-click it.
-    message: '&7Congratulations, you have yourself fancy trims'
+    message: '<gray>Congratulations, you have yourself fancy trims'
     whitelist-worlds:
       # Should we check the worlds players have to be in?
       toggle: false
@@ -81,7 +81,7 @@ voucher:
         # If we should check players for this.
         toggle: false
         # If they don't have the permission, send this message.
-        message: '{prefix}You do not have the permission &c{permission} &7to use this voucher.'
+        message: '{prefix}You do not have the permission <red>{permission} <gray>to use this voucher.'
         # If they don't have this permission, they can't use the voucher.
         permissions:
           - 'your-permission'
@@ -89,7 +89,7 @@ voucher:
         # If we should check players for this.
         toggle: false
         # The message to send to a player if they can't use the voucher.
-        message: '{prefix}You already have the permission &c{permission} &7so you can''t use this voucher.'
+        message: '{prefix}You already have the permission <red>{permission} <gray>so you can''t use this voucher.'
         # If they have this permission, they can't use the voucher.
         permissions:
           - 'your-permission'

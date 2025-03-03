@@ -26,12 +26,12 @@ voucher-code:
     # If the code is enabled.
     enabled: true
     # The message to send the player.
-    message: '{prefix}&7You have been given $10,000.'
+    message: '{prefix}<gray>You have been given $10,000.'
     whitelist-worlds:
       # Should we check the worlds players have to be in?
       toggle: false
       # The message to send.
-      message: '{prefix}&cYou can not use that voucher here as you are not in a whitelisted
+      message: '{prefix}<red>You can not use that voucher here as you are not in a whitelisted
         world for this voucher.'
       # The list of worlds they have to be in.
       worlds:
@@ -55,7 +55,7 @@ voucher-code:
         # If we should check players for this.
         toggle: false
         # The message to send to a player if they can't use the voucher.
-        message: '{prefix}&cYou have a blacklisted permission and can''t use this voucher.'
+        message: '{prefix}<red>You have a blacklisted permission and can''t use this voucher.'
         # If they have this permission, they can't use the voucher.
         permissions:
         - 'voucher.blacklist.startermoney'
