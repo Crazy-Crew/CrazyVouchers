@@ -36,13 +36,19 @@ public class ConfigKeys implements SettingsHolder {
     public static final Property<String> command_prefix = newProperty("settings.prefix", "&7[&6CrazyVouchers&7]: ");
 
     @Comment("""
-            This lets you decide between having the old file system like vouchers.yml/vouchercodes.yml or split into vouchers/codes.
+            This option allows you to switch between the following
+            ⤷ vouchers.yml and codes.yml
+             ⤷ these files handle all files!
+            ⤷ vouchers and codes that act like the crates folder in CrazyCrates
+             ⤷ each file is considered a voucher with the name of the file being the voucher name
             
-            It defaults to false, but you can always set it to true.
+            ⤷ Once you switch this, You should run /crazyvouchers migrate -mt VouchersSwitch otherwise you will have no vouchers.
             
-            This will not migrate back and forth you so make your choice to use this early on!
+            ⤷ Available types
+              ⤷ SINGLE
+              ⤷ MULTIPLE
             """)
-    public static final Property<Boolean> mono_file = newProperty("settings.use-old-file-system", false);
+    public static final Property<FileSystem> file_system = newBeanProperty(FileSystem.class, "settings.file-system", FileSystem.MULTIPLE);
 
     @Comment("Sends anonymous statistics to https://bstats.org/plugin/bukkit/Vouchers/4536")
     public static final Property<Boolean> toggle_metrics = newProperty("root.toggle-metrics", true);
