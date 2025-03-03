@@ -4,7 +4,8 @@ import ch.jalu.configme.Comment;
 import ch.jalu.configme.SettingsHolder;
 import ch.jalu.configme.configurationdata.CommentsConfiguration;
 import ch.jalu.configme.properties.Property;
-import ch.jalu.configme.properties.PropertyInitializer;
+import com.badbones69.crazyvouchers.api.enums.FileSystem;
+import static ch.jalu.configme.properties.PropertyInitializer.newBeanProperty;
 import static ch.jalu.configme.properties.PropertyInitializer.newProperty;
 
 public class ConfigKeys implements SettingsHolder {
@@ -53,11 +54,11 @@ public class ConfigKeys implements SettingsHolder {
     @Comment("Sends anonymous statistics to https://bstats.org/plugin/bukkit/Vouchers/4536")
     public static final Property<Boolean> toggle_metrics = newProperty("root.toggle-metrics", true);
 
-    @Comment("Should players have a voucher cooldown?")
-    public static final Property<Boolean> cooldown_toggle = newProperty("settings.cooldown.toggle", false);
+    //@Comment("Should players have a voucher cooldown?")
+    //public static final Property<Boolean> cooldown_toggle = newProperty("settings.cooldown.toggle", false);
 
-    @Comment("How many seconds should a player have to wait, before opening a new voucher?")
-    public static final Property<Integer> cooldown_wait = newProperty("settings.cooldown.interval", 5);
+    //@Comment("How many seconds should a player have to wait, before opening a new voucher?")
+    //public static final Property<Integer> cooldown_wait = newProperty("settings.cooldown.interval", 5);
 
     @Comment({
             "Vouchers will no longer be able to stack, as each one has a unique identifier",
