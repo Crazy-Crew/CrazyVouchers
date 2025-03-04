@@ -12,6 +12,7 @@ import com.badbones69.crazyvouchers.api.events.VoucherRedeemEvent;
 import com.badbones69.crazyvouchers.api.objects.Voucher;
 import com.badbones69.crazyvouchers.api.objects.VoucherCommand;
 import com.badbones69.crazyvouchers.config.ConfigManager;
+import com.badbones69.crazyvouchers.utils.ScheduleUtils;
 import com.ryderbelserion.fusion.core.util.StringUtils;
 import com.ryderbelserion.fusion.paper.Fusion;
 import com.ryderbelserion.fusion.paper.builder.items.modern.ItemBuilder;
@@ -310,14 +311,11 @@ public class VoucherClickListener implements Listener {
             if (voucher.usesWhitelistWorlds() && !voucher.getWhitelistWorlds().contains(player.getWorld().getName().toLowerCase())) {
                 player.sendMessage(this.fusion.color(player, voucher.getWhitelistWorldMessage(), this.placeholders));
 
-                new FoliaScheduler(Scheduler.global_scheduler) {
-                    @Override
-                    public void run() {
-                        for (final String command : voucher.getWhitelistWorldCommands()) {
-                            server.dispatchCommand(server.getConsoleSender(), Methods.placeholders(player, command, placeholders));
-                        }
+                ScheduleUtils.dispatch(consumer -> {
+                    for (final String command : voucher.getWhitelistWorldCommands()) {
+                        server.dispatchCommand(server.getConsoleSender(), Methods.placeholders(player, command, placeholders));
                     }
-                }.run();
+                });
 
                 return false;
             }
@@ -352,25 +350,27 @@ public class VoucherClickListener implements Listener {
 
         populate(player, argument);
 
-        for (final String command : voucher.getCommands()) {
-            this.server.dispatchCommand(this.server.getConsoleSender(), Methods.placeholders(player, this.crazyManager.replaceRandom(command), placeholders));
-        }
-
-        final List<VoucherCommand> randomCommands = voucher.getRandomCommands();
-
-        if (!randomCommands.isEmpty()) { // Picks a random command from the Random-Commands list.
-            for (final String command : randomCommands.get(Methods.getRandom(randomCommands.size())).getCommands()) {
+        ScheduleUtils.dispatch(consumer -> {
+            for (final String command : voucher.getCommands()) {
                 this.server.dispatchCommand(this.server.getConsoleSender(), Methods.placeholders(player, this.crazyManager.replaceRandom(command), placeholders));
             }
-        }
 
-        final List<VoucherCommand> chanceCommands = voucher.getChanceCommands();
+            final List<VoucherCommand> randomCommands = voucher.getRandomCommands();
 
-        if (!chanceCommands.isEmpty()) { // Picks a command based on the chance system of the Chance-Commands list.
-            for (final String command : chanceCommands.get(Methods.getRandom(chanceCommands.size())).getCommands()) {
-                this.server.dispatchCommand(this.server.getConsoleSender(), Methods.placeholders(player, this.crazyManager.replaceRandom(command), placeholders));
+            if (!randomCommands.isEmpty()) { // Picks a random command from the Random-Commands list.
+                for (final String command : randomCommands.get(Methods.getRandom(randomCommands.size())).getCommands()) {
+                    this.server.dispatchCommand(this.server.getConsoleSender(), Methods.placeholders(player, this.crazyManager.replaceRandom(command), placeholders));
+                }
             }
-        }
+
+            final List<VoucherCommand> chanceCommands = voucher.getChanceCommands();
+
+            if (!chanceCommands.isEmpty()) { // Picks a command based on the chance system of the Chance-Commands list.
+                for (final String command : chanceCommands.get(Methods.getRandom(chanceCommands.size())).getCommands()) {
+                    this.server.dispatchCommand(this.server.getConsoleSender(), Methods.placeholders(player, this.crazyManager.replaceRandom(command), placeholders));
+                }
+            }
+        });
 
         for (final ItemBuilder itemStack : voucher.getItems()) {
             Methods.addItem(player, itemStack.asItemStack());

@@ -10,6 +10,7 @@ import com.badbones69.crazyvouchers.api.objects.VoucherCommand;
 import com.badbones69.crazyvouchers.commands.BaseCommand;
 import com.badbones69.crazyvouchers.config.ConfigManager;
 import com.badbones69.crazyvouchers.config.types.ConfigKeys;
+import com.badbones69.crazyvouchers.utils.ScheduleUtils;
 import com.ryderbelserion.fusion.paper.builder.items.modern.ItemBuilder;
 import dev.triumphteam.cmd.core.annotations.ArgName;
 import dev.triumphteam.cmd.core.annotations.Command;
@@ -64,9 +65,11 @@ public class CommandRedeem extends BaseCommand {
                     if (!player.hasPermission(permission)) {
                         Messages.no_permission_to_use_voucher.sendMessage(player, placeholders);
 
-                        for (final String command : commands) {
-                            server.dispatchCommand(server.getConsoleSender(), Methods.placeholders(player, this.crazyManager.replaceRandom(command), placeholders));
-                        }
+                        ScheduleUtils.dispatch(consumer -> {
+                            for (final String command : commands) {
+                                server.dispatchCommand(server.getConsoleSender(), Methods.placeholders(player, this.crazyManager.replaceRandom(command), placeholders));
+                            }
+                        });
 
                         return;
                     }
@@ -79,9 +82,11 @@ public class CommandRedeem extends BaseCommand {
 
                     player.sendMessage(this.fusion.color(player, code.getWhitelistWorldMessage(), placeholders));
 
-                    for (final String command : commands) {
-                        server.dispatchCommand(server.getConsoleSender(), Methods.placeholders(player, this.crazyManager.replaceRandom(command), placeholders));
-                    }
+                    ScheduleUtils.dispatch(consumer -> {
+                        for (final String command : commands) {
+                            server.dispatchCommand(server.getConsoleSender(), Methods.placeholders(player, this.crazyManager.replaceRandom(command), placeholders));
+                        }
+                    });
 
                     return;
                 }
@@ -94,9 +99,11 @@ public class CommandRedeem extends BaseCommand {
                     if (player.hasPermission(permission.toLowerCase())) {
                         player.sendMessage(this.fusion.color(player, code.getBlacklistMessage(), placeholders));
 
-                        for (final String command : commands) {
-                            server.dispatchCommand(server.getConsoleSender(), Methods.placeholders(player, this.crazyManager.replaceRandom(command), placeholders));
-                        }
+                        ScheduleUtils.dispatch(consumer -> {
+                            for (final String command : commands) {
+                                server.dispatchCommand(server.getConsoleSender(), Methods.placeholders(player, this.crazyManager.replaceRandom(command), placeholders));
+                            }
+                        });
 
                         return;
                     }
@@ -146,25 +153,27 @@ public class CommandRedeem extends BaseCommand {
 
             FileKeys.users.save();
 
-            for (final String command : code.getCommands()) {
-                server.dispatchCommand(server.getConsoleSender(), Methods.placeholders(player, this.crazyManager.replaceRandom(command), placeholders));
-            }
-
-            final List<VoucherCommand> random = code.getRandomCommands();
-
-            if (!random.isEmpty()) { // Picks a random command from the Random-Commands list.
-                for (final String command : random.get(Methods.getRandom(random.size())).getCommands()) {
+            ScheduleUtils.dispatch(consumer -> {
+                for (final String command : code.getCommands()) {
                     server.dispatchCommand(server.getConsoleSender(), Methods.placeholders(player, this.crazyManager.replaceRandom(command), placeholders));
                 }
-            }
 
-            final List<VoucherCommand> chance = code.getChanceCommands();
+                final List<VoucherCommand> random = code.getRandomCommands();
 
-            if (!chance.isEmpty()) { // Picks a command based on the chance system of the Chance-Commands list.
-                for (String command : chance.get(Methods.getRandom(chance.size())).getCommands()) {
-                    server.dispatchCommand(server.getConsoleSender(), Methods.placeholders(player, this.crazyManager.replaceRandom(command), placeholders));
+                if (!random.isEmpty()) { // Picks a random command from the Random-Commands list.
+                    for (final String command : random.get(Methods.getRandom(random.size())).getCommands()) {
+                        server.dispatchCommand(server.getConsoleSender(), Methods.placeholders(player, this.crazyManager.replaceRandom(command), placeholders));
+                    }
                 }
-            }
+
+                final List<VoucherCommand> chance = code.getChanceCommands();
+
+                if (!chance.isEmpty()) { // Picks a command based on the chance system of the Chance-Commands list.
+                    for (String command : chance.get(Methods.getRandom(chance.size())).getCommands()) {
+                        server.dispatchCommand(server.getConsoleSender(), Methods.placeholders(player, this.crazyManager.replaceRandom(command), placeholders));
+                    }
+                }
+            });
 
             for (final ItemBuilder itemBuilder : code.getItems()) {
                 Methods.addItem(player, itemBuilder.asItemStack());

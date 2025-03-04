@@ -4,6 +4,7 @@ import ch.jalu.configme.SettingsManager;
 import com.badbones69.crazyvouchers.api.enums.FileKeys;
 import com.badbones69.crazyvouchers.api.enums.misc.PersistentKeys;
 import com.badbones69.crazyvouchers.config.ConfigManager;
+import com.badbones69.crazyvouchers.utils.ScheduleUtils;
 import com.ryderbelserion.fusion.paper.Fusion;
 import com.ryderbelserion.fusion.paper.enums.Scheduler;
 import com.ryderbelserion.fusion.paper.enums.Support;
@@ -75,14 +76,11 @@ public class Methods {
 
                     player.sendMessage(fusion.color(player, message, placeholders));
 
-                    new FoliaScheduler(Scheduler.global_scheduler) {
-                        @Override
-                        public void run() {
-                            for (final String command : commands) {
-                                server.dispatchCommand(server.getConsoleSender(), placeholders(player, command, placeholders));
-                            }
+                    ScheduleUtils.dispatch(consumer -> {
+                        for (final String command : commands) {
+                            server.dispatchCommand(server.getConsoleSender(), placeholders(player, command, placeholders));
                         }
-                    }.run();
+                    });
                 }
 
                 hasPermission = true;
