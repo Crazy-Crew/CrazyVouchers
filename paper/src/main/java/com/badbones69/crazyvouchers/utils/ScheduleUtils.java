@@ -12,6 +12,6 @@ public class ScheduleUtils {
             public void run() {
                 consumer.accept(this);
             }
-        }.run();
+        }.runNow();
     }
 }
