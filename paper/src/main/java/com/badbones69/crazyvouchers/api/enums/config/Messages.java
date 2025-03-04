@@ -25,6 +25,7 @@ public enum Messages {
     correct_usage(MiscKeys.correct_usage),
     same_player(MiscKeys.same_player),
     lacking_flag(MiscKeys.lacking_flag),
+    vouchers_list(MiscKeys.vouchers_list, true),
 
     error_migrating(CommandKeys.error_migrating),
     migration_not_available(CommandKeys.migration_not_available),

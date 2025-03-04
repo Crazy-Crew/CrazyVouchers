@@ -42,6 +42,9 @@ public class CrazyManager {
     private final List<Voucher> vouchers = new ArrayList<>();
     private final List<VoucherCode> voucherCodes = new ArrayList<>();
 
+    private final List<String> brokenVouchers = new ArrayList<>();
+    private final List<String> brokenVoucherCodes = new ArrayList<>();
+
     public void load() {
         // Used for when wanting to put in fake vouchers.
         // for(int i = 1; i <= 400; i++) vouchers.add(new Voucher(i));
@@ -64,28 +67,30 @@ public class CrazyManager {
                 if (section == null) return;
 
                 for (final String code : section.getKeys(false)) {
-                    this.voucherCodes.add(new VoucherCode(configuration, code));
+                    try {
+                        this.voucherCodes.add(new VoucherCode(configuration, code));
+                    } catch (Exception exception) {
+                        this.brokenVouchers.add(code);
+                    }
                 }
             }
 
             case MULTIPLE -> {
                 for (final String code : getCodesList()) {
-                    try {
-                        @Nullable final CustomFile file = this.fileManager.getFile(code, FileType.YAML);
+                    @Nullable final CustomFile file = this.fileManager.getFile(code, FileType.YAML);
 
-                        if (file != null) {
-                            final YamlConfiguration configuration = file.getConfiguration();
+                    if (file != null) {
+                        final YamlConfiguration configuration = file.getConfiguration();
 
-                            if (configuration != null) {
-                                this.voucherCodes.add(new VoucherCode(configuration, code));
-                            } else {
-                                this.logger.warn("Could not load code configuration for {}", code);
-                            }
+                        if (configuration != null) {
+                            this.voucherCodes.add(new VoucherCode(configuration, code));
                         } else {
-                            this.logger.warn("The code file named {} could not be found in the cache", code);
+                            this.logger.warn("Could not load code configuration for {}", code);
+                            this.brokenVoucherCodes.add(code);
                         }
-                    } catch (Exception exception) {
-                        exception.printStackTrace();
+                    } else {
+                        this.logger.warn("The code file named {} could not be found in the cache", code);
+                        this.brokenVoucherCodes.add(code);
                     }
                 }
             }
@@ -106,28 +111,30 @@ public class CrazyManager {
                 if (section == null) return;
 
                 for (final String voucher : section.getKeys(false)) {
-                    this.vouchers.add(new Voucher(configuration, voucher));
+                    try {
+                        this.vouchers.add(new Voucher(configuration, voucher));
+                    } catch (final Exception exception) {
+                        this.brokenVouchers.add(voucher);
+                    }
                 }
             }
 
             case MULTIPLE -> {
                 for (final String voucher : getVouchersList()) {
-                    try {
-                        @Nullable final CustomFile file = this.fileManager.getFile(voucher, FileType.YAML);
+                    @Nullable final CustomFile file = this.fileManager.getFile(voucher, FileType.YAML);
 
-                        if (file != null) {
-                            final YamlConfiguration configuration = file.getConfiguration();
+                    if (file != null) {
+                        final YamlConfiguration configuration = file.getConfiguration();
 
-                            if (configuration != null) {
-                                this.vouchers.add(new Voucher(configuration, voucher));
-                            } else {
-                                this.logger.warn("Could not load voucher configuration for {}", voucher);
-                            }
+                        if (configuration != null) {
+                            this.vouchers.add(new Voucher(configuration, voucher));
                         } else {
-                            this.logger.warn("The voucher file named {} could not be found in the cache", voucher);
+                            this.logger.warn("Could not load voucher configuration for {}", voucher);
+                            this.brokenVouchers.add(voucher);
                         }
-                    } catch (Exception exception) {
-                        exception.printStackTrace();
+                    } else {
+                        this.logger.warn("The voucher file named {} could not be found in the cache", voucher);
+                        this.brokenVouchers.add(voucher);
                     }
                 }
             }
@@ -158,11 +165,19 @@ public class CrazyManager {
     public final List<Voucher> getVouchers() {
         return Collections.unmodifiableList(this.vouchers);
     }
-    
+
+    public final List<String> getBrokenVouchers() {
+        return this.brokenVouchers;
+    }
+
     public final List<VoucherCode> getVoucherCodes() {
         return Collections.unmodifiableList(this.voucherCodes);
     }
-    
+
+    public final List<String> getBrokenVoucherCodes() {
+        return this.brokenVoucherCodes;
+    }
+
     public Voucher getVoucher(String voucherName) {
         for (Voucher voucher : getVouchers()) {
             if (voucher.getName().equalsIgnoreCase(voucherName)) {
