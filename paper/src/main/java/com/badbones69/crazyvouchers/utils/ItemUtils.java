@@ -80,9 +80,11 @@ public class ItemUtils {
                             itemBuilder.addEnchantment(getEnchant(option), level.map(Number::intValue).orElse(1));
                         }
 
-                        final PatternBuilder builder = itemBuilder.asPatternBuilder();
+                        if (itemBuilder.isBanner() || itemBuilder.isShield()) {
+                            final PatternBuilder builder = itemBuilder.asPatternBuilder();
 
-                        builder.addPattern(value, option).build();
+                            builder.addPattern(value, option).build();
+                        }
                     }
                 }
             }
