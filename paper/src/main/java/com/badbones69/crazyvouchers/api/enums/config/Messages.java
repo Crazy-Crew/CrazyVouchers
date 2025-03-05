@@ -168,6 +168,16 @@ public enum Messages {
         return this.isList;
     }
 
+    public void migrate() {
+        if (this.isList) {
+            this.locale.setProperty(this.properties, StringUtils.convert(this.locale.getProperty(this.properties), true));
+
+            return;
+        }
+
+        this.locale.setProperty(this.property, StringUtils.convert(this.locale.getProperty(this.property), true));
+    }
+
     private Component parse(final Audience audience, final Map<String, String> placeholders) {
         String message;
 

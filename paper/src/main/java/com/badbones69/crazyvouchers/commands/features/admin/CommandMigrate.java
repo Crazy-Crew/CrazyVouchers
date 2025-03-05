@@ -3,6 +3,7 @@ package com.badbones69.crazyvouchers.commands.features.admin;
 import com.badbones69.crazyvouchers.api.enums.config.Messages;
 import com.badbones69.crazyvouchers.commands.BaseCommand;
 import com.badbones69.crazyvouchers.commands.features.admin.migrate.enums.MigrationType;
+import com.badbones69.crazyvouchers.commands.features.admin.migrate.types.VoucherColorMigrator;
 import com.badbones69.crazyvouchers.commands.features.admin.migrate.types.VoucherFileMigrator;
 import com.badbones69.crazyvouchers.commands.features.admin.migrate.types.VoucherNbtMigrator;
 import com.badbones69.crazyvouchers.commands.features.admin.migrate.types.VoucherSwitchMigrator;
@@ -63,6 +64,8 @@ public class CommandMigrate extends BaseCommand {
 
                 new VoucherNbtMigrator(sender).run();
             }
+
+            case VOUCHERS_COLOR -> new VoucherColorMigrator(sender).run();
 
             case VOUCHERS_RENAME -> new VoucherFileMigrator(sender, type).run();
         }
