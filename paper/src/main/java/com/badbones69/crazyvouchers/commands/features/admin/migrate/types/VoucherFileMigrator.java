@@ -19,6 +19,10 @@ public class VoucherFileMigrator extends IVoucherMigrator {
     public void run() {
         switch (this.type) {
             case VOUCHERS_RENAME -> { // rename voucher-codes.yml to codes.yml
+                final File oldFile = new File(this.plugin.getDataFolder(), "voucher-codes.yml");
+
+                if (!oldFile.exists()) return;
+
                 final File file = new File(this.plugin.getDataFolder(), "codes.yml");
 
                 if (file.exists()) {
@@ -30,10 +34,6 @@ public class VoucherFileMigrator extends IVoucherMigrator {
 
                     file.renameTo(new File(backup, "codes-backup.yml"));
                 }
-
-                final File oldFile = new File(this.plugin.getDataFolder(), "voucher-codes.yml");
-
-                if (!oldFile.exists()) return;
 
                 oldFile.renameTo(file);
 
