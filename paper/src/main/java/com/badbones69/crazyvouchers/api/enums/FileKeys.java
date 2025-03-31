@@ -1,8 +1,8 @@
 package com.badbones69.crazyvouchers.api.enums;
 
 import com.badbones69.crazyvouchers.CrazyVouchers;
-import com.ryderbelserion.fusion.core.api.enums.FileType;
-import com.ryderbelserion.fusion.paper.files.FileManager;
+import com.ryderbelserion.fusion.api.enums.FileType;
+import com.ryderbelserion.fusion.paper.files.LegacyFileManager;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.jetbrains.annotations.NotNull;
 
@@ -19,7 +19,7 @@ public enum FileKeys {
 
     private @NotNull final CrazyVouchers plugin = CrazyVouchers.get();
 
-    private @NotNull final FileManager fileManager = this.plugin.getFileManager();
+    private @NotNull final LegacyFileManager fileManager = this.plugin.getFileManager();
 
     /**
      * A constructor to build a file

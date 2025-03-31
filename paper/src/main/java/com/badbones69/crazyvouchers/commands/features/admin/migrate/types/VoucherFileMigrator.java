@@ -4,7 +4,7 @@ import com.badbones69.crazyvouchers.api.enums.FileSystem;
 import com.badbones69.crazyvouchers.commands.features.admin.migrate.IVoucherMigrator;
 import com.badbones69.crazyvouchers.commands.features.admin.migrate.enums.MigrationType;
 import com.badbones69.crazyvouchers.config.types.ConfigKeys;
-import com.ryderbelserion.fusion.core.api.enums.FileType;
+import com.ryderbelserion.fusion.api.enums.FileType;
 import org.bukkit.command.CommandSender;
 import org.jetbrains.annotations.NotNull;
 import java.io.File;

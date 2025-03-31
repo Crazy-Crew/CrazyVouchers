@@ -11,15 +11,12 @@ import com.badbones69.crazyvouchers.listeners.VoucherClickListener;
 import com.badbones69.crazyvouchers.listeners.VoucherCraftListener;
 import com.badbones69.crazyvouchers.listeners.VoucherMiscListener;
 import com.badbones69.crazyvouchers.support.MetricsWrapper;
-import com.ryderbelserion.fusion.core.api.enums.FileType;
-import com.ryderbelserion.fusion.paper.Fusion;
-import com.ryderbelserion.fusion.paper.FusionApi;
-import com.ryderbelserion.fusion.paper.files.FileManager;
-import me.arcaniax.hdb.api.HeadDatabaseAPI;
+import com.ryderbelserion.fusion.api.enums.FileType;
+import com.ryderbelserion.fusion.paper.FusionPaper;
+import com.ryderbelserion.fusion.paper.files.LegacyFileManager;
 import org.bukkit.plugin.PluginManager;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
 import com.badbones69.crazyvouchers.config.types.ConfigKeys;
 import java.util.List;
 import java.util.Locale;
@@ -40,19 +37,15 @@ public class CrazyVouchers extends JavaPlugin {
 
     private CrazyManager crazyManager;
 
-    private HeadDatabaseAPI api;
-
-    private final FusionApi fusionApi = FusionApi.get();
-
-    private FileManager fileManager;
+    private FusionPaper api;
+    private LegacyFileManager fileManager;
 
     @Override
     public void onEnable() {
-        this.fusionApi.enable(this);
+        this.api = new FusionPaper(getComponentLogger(), getDataPath());
+        this.api.enable(this);
 
-        this.api = this.fusionApi.getDatabaseAPI();
-
-        this.fileManager = this.fusionApi.getFileManager();
+        this.fileManager = this.api.getLegacyFileManager();
 
         ConfigManager.load(getDataFolder());
 
@@ -91,31 +84,19 @@ public class CrazyVouchers extends JavaPlugin {
         }
     }
 
-    public @Nullable final HeadDatabaseAPI getApi() {
-        if (this.api == null) {
-            return null;
-        }
-
-        return this.api;
-    }
-
-    public @NotNull final Fusion getFusion() {
-        return this.fusionApi.getFusion();
-    }
-
-    public @NotNull final FusionApi getFusionApi() {
-        return this.fusionApi;
-    }
-
-    public @NotNull final InventoryManager getInventoryManager() {
+    public final InventoryManager getInventoryManager() {
         return this.inventoryManager;
     }
 
-    public @NotNull final CrazyManager getCrazyManager() {
+    public final CrazyManager getCrazyManager() {
         return this.crazyManager;
     }
 
-    public @NotNull FileManager getFileManager() {
+    public LegacyFileManager getFileManager() {
         return this.fileManager;
+    }
+
+    public final FusionPaper getFusion() {
+        return this.api;
     }
 }

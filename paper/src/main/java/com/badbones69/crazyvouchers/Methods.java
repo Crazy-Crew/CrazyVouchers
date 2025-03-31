@@ -1,14 +1,11 @@
 package com.badbones69.crazyvouchers;
 
-import ch.jalu.configme.SettingsManager;
 import com.badbones69.crazyvouchers.api.enums.FileKeys;
 import com.badbones69.crazyvouchers.api.enums.misc.PersistentKeys;
-import com.badbones69.crazyvouchers.config.ConfigManager;
 import com.badbones69.crazyvouchers.utils.ScheduleUtils;
-import com.ryderbelserion.fusion.paper.Fusion;
-import com.ryderbelserion.fusion.paper.enums.Scheduler;
-import com.ryderbelserion.fusion.paper.enums.Support;
-import com.ryderbelserion.fusion.paper.util.scheduler.FoliaScheduler;
+import com.ryderbelserion.fusion.paper.FusionPaper;
+import com.ryderbelserion.fusion.paper.api.enums.Support;
+import com.ryderbelserion.fusion.paper.api.scheduler.FoliaScheduler;
 import me.clip.placeholderapi.PlaceholderAPI;
 import net.kyori.adventure.text.Component;
 import org.bukkit.Color;
@@ -24,15 +21,12 @@ import org.bukkit.inventory.PlayerInventory;
 import org.bukkit.inventory.meta.FireworkMeta;
 import org.bukkit.persistence.PersistentDataContainer;
 import org.bukkit.persistence.PersistentDataType;
-import org.jetbrains.annotations.NotNull;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ThreadLocalRandom;
 
 public class Methods {
-
-    private @NotNull static final SettingsManager config = ConfigManager.getConfig();
 
     public static void removeItem(final ItemStack item, final Player player) {
         if (item.getAmount() <= 1) {
@@ -124,7 +118,7 @@ public class Methods {
 
     private static final CrazyVouchers plugin = CrazyVouchers.get();
 
-    private static final Fusion fusion = plugin.getFusion();
+    private static final FusionPaper fusion = plugin.getFusion();
 
     public static Component color(final String message, final Map<String, String> placeholders) {
         return fusion.color(message, placeholders);

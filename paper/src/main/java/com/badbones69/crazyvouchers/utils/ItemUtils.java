@@ -1,9 +1,8 @@
 package com.badbones69.crazyvouchers.utils;
 
-import com.ryderbelserion.fusion.core.util.StringUtils;
-import com.ryderbelserion.fusion.paper.builder.items.modern.ItemBuilder;
-import com.ryderbelserion.fusion.paper.builder.items.modern.types.PatternBuilder;
-import com.ryderbelserion.fusion.paper.util.PaperMethods;
+import com.ryderbelserion.fusion.api.utils.StringUtils;
+import com.ryderbelserion.fusion.paper.api.builder.items.modern.ItemBuilder;
+import com.ryderbelserion.fusion.paper.api.builder.items.modern.types.PatternBuilder;
 import org.bukkit.enchantments.Enchantment;
 import org.bukkit.inventory.ItemType;
 import java.util.Arrays;
@@ -72,7 +71,7 @@ public class ItemUtils {
                     }
 
                     default -> {
-                        final Enchantment enchantment = PaperMethods.getEnchantment(getEnchant(option));
+                        final Enchantment enchantment = com.ryderbelserion.fusion.paper.utils.ItemUtils.getEnchantment(getEnchant(option));
 
                         if (enchantment != null) {
                             final Optional<Number> level = StringUtils.tryParseInt(value);

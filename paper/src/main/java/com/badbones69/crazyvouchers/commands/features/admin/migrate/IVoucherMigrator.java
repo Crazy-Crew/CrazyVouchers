@@ -6,8 +6,8 @@ import com.badbones69.crazyvouchers.api.CrazyManager;
 import com.badbones69.crazyvouchers.api.enums.config.Messages;
 import com.badbones69.crazyvouchers.commands.features.admin.migrate.enums.MigrationType;
 import com.badbones69.crazyvouchers.config.ConfigManager;
-import com.ryderbelserion.fusion.core.util.StringUtils;
-import com.ryderbelserion.fusion.paper.files.FileManager;
+import com.ryderbelserion.fusion.api.utils.StringUtils;
+import com.ryderbelserion.fusion.paper.files.LegacyFileManager;
 import org.bukkit.command.CommandSender;
 import org.bukkit.configuration.ConfigurationSection;
 import org.jetbrains.annotations.NotNull;
@@ -26,7 +26,7 @@ public abstract class IVoucherMigrator {
 
     protected final SettingsManager messages = ConfigManager.getMessages();
 
-    protected final FileManager fileManager = this.plugin.getFileManager();
+    protected final LegacyFileManager fileManager = this.plugin.getFileManager();
 
     protected final File dataFolder = this.plugin.getDataFolder();
 

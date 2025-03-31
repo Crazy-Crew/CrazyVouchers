@@ -1,7 +1,7 @@
 package com.badbones69.crazyvouchers.utils;
 
-import com.ryderbelserion.fusion.paper.enums.Scheduler;
-import com.ryderbelserion.fusion.paper.util.scheduler.FoliaScheduler;
+import com.ryderbelserion.fusion.paper.api.enums.Scheduler;
+import com.ryderbelserion.fusion.paper.api.scheduler.FoliaScheduler;
 import java.util.function.Consumer;
 
 public class ScheduleUtils {

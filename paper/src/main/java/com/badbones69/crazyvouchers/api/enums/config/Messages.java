@@ -6,8 +6,9 @@ import com.badbones69.crazyvouchers.config.types.ConfigKeys;
 import com.badbones69.crazyvouchers.config.types.locale.CommandKeys;
 import com.badbones69.crazyvouchers.config.types.locale.MessageKeys;
 import com.badbones69.crazyvouchers.config.types.locale.MiscKeys;
-import com.ryderbelserion.fusion.core.FusionProvider;
-import com.ryderbelserion.fusion.core.util.StringUtils;
+import com.ryderbelserion.fusion.api.utils.StringUtils;
+import com.ryderbelserion.fusion.core.FusionCore;
+import com.ryderbelserion.fusion.core.utils.AdvUtils;
 import net.kyori.adventure.audience.Audience;
 import net.kyori.adventure.text.Component;
 import org.jetbrains.annotations.NotNull;
@@ -170,12 +171,12 @@ public enum Messages {
 
     public void migrate() {
         if (this.isList) {
-            this.locale.setProperty(this.properties, StringUtils.convert(this.locale.getProperty(this.properties), true));
+            this.locale.setProperty(this.properties, AdvUtils.convert(this.locale.getProperty(this.properties), true));
 
             return;
         }
 
-        this.locale.setProperty(this.property, StringUtils.convert(this.locale.getProperty(this.property), true));
+        this.locale.setProperty(this.property, AdvUtils.convert(this.locale.getProperty(this.property), true));
     }
 
     private Component parse(final Audience audience, final Map<String, String> placeholders) {
@@ -187,6 +188,6 @@ public enum Messages {
             message = getString();
         }
 
-        return FusionProvider.get().placeholders(audience, message, placeholders);
+        return FusionCore.FusionProvider.get().placeholders(audience, message, placeholders);
     }
 }

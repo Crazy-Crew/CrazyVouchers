@@ -4,7 +4,7 @@ import com.badbones69.crazyvouchers.Methods;
 import com.badbones69.crazyvouchers.api.enums.config.Messages;
 import com.badbones69.crazyvouchers.api.objects.Voucher;
 import com.badbones69.crazyvouchers.commands.BaseCommand;
-import com.ryderbelserion.fusion.paper.builder.PlayerBuilder;
+import com.ryderbelserion.fusion.paper.api.builder.PlayerBuilder;
 import dev.triumphteam.cmd.core.annotations.ArgName;
 import dev.triumphteam.cmd.core.annotations.Command;
 import dev.triumphteam.cmd.core.annotations.Optional;

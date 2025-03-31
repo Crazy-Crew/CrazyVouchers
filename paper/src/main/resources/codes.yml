@@ -36,7 +36,6 @@ voucher-codes: # Where you make your vouchers.
       - '15 eco give {player} 10000'
       - '10 eco give {player} 100000'
       - '5 eco give {player} 1000000'
-
     options:
       # If the option is case-sensitive or not.
       case-sensitive: false

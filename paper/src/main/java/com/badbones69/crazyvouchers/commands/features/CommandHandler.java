@@ -14,7 +14,7 @@ import com.badbones69.crazyvouchers.commands.features.admin.migrate.enums.Migrat
 import com.badbones69.crazyvouchers.commands.features.base.CommandHelp;
 import com.badbones69.crazyvouchers.commands.features.base.CommandReload;
 import com.badbones69.crazyvouchers.commands.features.relations.ArgumentRelations;
-import com.ryderbelserion.fusion.paper.builder.PlayerBuilder;
+import com.ryderbelserion.fusion.paper.api.builder.PlayerBuilder;
 import dev.triumphteam.cmd.bukkit.BukkitCommandManager;
 import dev.triumphteam.cmd.core.suggestion.SuggestionKey;
 import org.bukkit.Server;

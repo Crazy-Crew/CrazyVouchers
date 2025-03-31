@@ -10,6 +10,8 @@ project.version = rootProject.version
 repositories {
     maven("https://repo.extendedclip.com/content/repositories/placeholderapi/")
 
+    maven("https://repo.nexomc.com/snapshots/")
+
     maven("https://repo.oraxen.com/releases/")
 }
 
@@ -22,13 +24,7 @@ dependencies {
 
     implementation(libs.metrics)
 
-    compileOnly(libs.headdatabaseapi)
-
-    compileOnly(libs.placeholderapi)
-
-    //compileOnly(libs.itemsadder)
-
-    compileOnly(libs.oraxen)
+    compileOnly(libs.bundles.shared)
 }
 
 val component: SoftwareComponent = components["java"]

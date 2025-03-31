@@ -5,8 +5,8 @@ import com.badbones69.crazyvouchers.Methods;
 import com.badbones69.crazyvouchers.api.enums.FileSystem;
 import com.badbones69.crazyvouchers.api.enums.config.Messages;
 import com.badbones69.crazyvouchers.utils.ItemUtils;
-import com.ryderbelserion.fusion.paper.builder.items.modern.ItemBuilder;
-import com.ryderbelserion.fusion.paper.util.PaperMethods;
+import com.ryderbelserion.fusion.paper.api.builder.items.modern.ItemBuilder;
+import com.ryderbelserion.fusion.paper.utils.ColorUtils;
 import org.bukkit.Color;
 import org.bukkit.Sound;
 import org.bukkit.configuration.file.FileConfiguration;
@@ -148,7 +148,7 @@ public class VoucherCode {
             this.pitch = (float) file.getDouble(path + ".options.sound.pitch");
 
             for (final String sound : file.getStringList(path + "options.sound.sounds")) {
-                this.sounds.add(PaperMethods.getSound(sound));
+                this.sounds.add(com.ryderbelserion.fusion.paper.utils.ItemUtils.getSound(sound));
             }
         } else {
             this.soundToggle = false;
@@ -158,7 +158,7 @@ public class VoucherCode {
             this.fireworkToggle = file.getBoolean(path + "options.firework.toggle");
 
             for (String color : file.getString(path + "options.firework.colors", "").split(", ")) {
-                this.fireworkColors.add(PaperMethods.getColor(color));
+                this.fireworkColors.add(ColorUtils.getColor(color));
             }
         } else {
             this.fireworkToggle = false;

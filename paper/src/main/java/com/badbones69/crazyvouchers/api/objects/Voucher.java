@@ -7,9 +7,9 @@ import com.badbones69.crazyvouchers.api.CrazyManager;
 import com.badbones69.crazyvouchers.api.enums.FileSystem;
 import com.badbones69.crazyvouchers.api.enums.config.Messages;
 import com.badbones69.crazyvouchers.api.enums.misc.PersistentKeys;
-import com.ryderbelserion.fusion.core.util.StringUtils;
-import com.ryderbelserion.fusion.paper.builder.items.modern.ItemBuilder;
-import com.ryderbelserion.fusion.paper.util.PaperMethods;
+import com.ryderbelserion.fusion.api.utils.StringUtils;
+import com.ryderbelserion.fusion.paper.api.builder.items.modern.ItemBuilder;
+import com.ryderbelserion.fusion.paper.utils.ColorUtils;
 import org.bukkit.Color;
 import org.bukkit.Sound;
 import org.bukkit.configuration.file.FileConfiguration;
@@ -245,7 +245,7 @@ public class Voucher {
             this.pitch = (float) fileConfiguration.getDouble(path + "options.sound.pitch");
 
             for (final String sound : fileConfiguration.getStringList(path + "options.sound.sounds")) {
-                this.sounds.add(PaperMethods.getSound(sound));
+                this.sounds.add(com.ryderbelserion.fusion.paper.utils.ItemUtils.getSound(sound));
             }
         } else {
             this.soundToggle = false;
@@ -257,7 +257,7 @@ public class Voucher {
 
         if (fileConfiguration.getBoolean(path + "options.firework.toggle")) {
             for (String color : fileConfiguration.getString(path + "options.firework.colors", "").split(", ")) {
-                this.fireworkColors.add(PaperMethods.getColor(color));
+                this.fireworkColors.add(ColorUtils.getColor(color));
             }
 
             this.fireworkToggle = !fireworkColors.isEmpty();

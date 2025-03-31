@@ -13,12 +13,9 @@ import com.badbones69.crazyvouchers.api.objects.Voucher;
 import com.badbones69.crazyvouchers.api.objects.VoucherCommand;
 import com.badbones69.crazyvouchers.config.ConfigManager;
 import com.badbones69.crazyvouchers.utils.ScheduleUtils;
-import com.ryderbelserion.fusion.core.util.StringUtils;
-import com.ryderbelserion.fusion.paper.Fusion;
-import com.ryderbelserion.fusion.paper.builder.items.modern.ItemBuilder;
-import com.ryderbelserion.fusion.paper.enums.Scheduler;
-import com.ryderbelserion.fusion.paper.enums.Support;
-import com.ryderbelserion.fusion.paper.util.scheduler.FoliaScheduler;
+import com.ryderbelserion.fusion.paper.FusionPaper;
+import com.ryderbelserion.fusion.paper.api.builder.items.modern.ItemBuilder;
+import com.ryderbelserion.fusion.paper.api.enums.Support;
 import io.papermc.paper.persistence.PersistentDataContainerView;
 import me.clip.placeholderapi.PlaceholderAPI;
 import net.kyori.adventure.text.Component;
@@ -44,9 +41,6 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.PlayerInventory;
 import org.bukkit.persistence.PersistentDataType;
 import com.badbones69.crazyvouchers.config.types.ConfigKeys;
-import org.bukkit.util.StringUtil;
-import org.jetbrains.annotations.NotNull;
-
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -62,7 +56,7 @@ public class VoucherClickListener implements Listener {
 
     private final Server server = this.plugin.getServer();
 
-    private final Fusion fusion = this.plugin.getFusion();
+    private final FusionPaper fusion = this.plugin.getFusion();
 
     private final SettingsManager config = ConfigManager.getConfig();
     

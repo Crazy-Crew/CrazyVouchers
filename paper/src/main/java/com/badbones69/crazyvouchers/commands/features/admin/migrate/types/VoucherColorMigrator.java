@@ -7,9 +7,9 @@ import com.badbones69.crazyvouchers.api.objects.VoucherCode;
 import com.badbones69.crazyvouchers.commands.features.admin.migrate.IVoucherMigrator;
 import com.badbones69.crazyvouchers.commands.features.admin.migrate.enums.MigrationType;
 import com.badbones69.crazyvouchers.config.types.ConfigKeys;
-import com.ryderbelserion.fusion.core.api.enums.FileType;
-import com.ryderbelserion.fusion.core.util.StringUtils;
-import com.ryderbelserion.fusion.paper.files.CustomFile;
+import com.ryderbelserion.fusion.api.enums.FileType;
+import com.ryderbelserion.fusion.core.utils.AdvUtils;
+import com.ryderbelserion.fusion.paper.files.LegacyCustomFile;
 import org.bukkit.command.CommandSender;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.file.YamlConfiguration;
@@ -30,8 +30,8 @@ public class VoucherColorMigrator extends IVoucherMigrator {
         final List<String> success = new ArrayList<>();
 
         try {
-            this.config.setProperty(ConfigKeys.command_prefix, StringUtils.convert(this.config.getProperty(ConfigKeys.command_prefix), true));
-            this.config.setProperty(ConfigKeys.dupe_protection_warning, StringUtils.convert(this.config.getProperty(ConfigKeys.dupe_protection_warning), true));
+            this.config.setProperty(ConfigKeys.command_prefix, AdvUtils.convert(this.config.getProperty(ConfigKeys.command_prefix), true));
+            this.config.setProperty(ConfigKeys.dupe_protection_warning, AdvUtils.convert(this.config.getProperty(ConfigKeys.dupe_protection_warning), true));
 
             success.add("<green>⤷ config.yml");
 
@@ -70,7 +70,7 @@ public class VoucherColorMigrator extends IVoucherMigrator {
                             final String itemName = voucher.getString("name", key);
                             final List<String> itemLore = voucher.getStringList("lore");
 
-                            voucher.set("lore", StringUtils.convert(itemLore, true));
+                            voucher.set("lore", AdvUtils.convert(itemLore, true));
 
                             final String optionsMessage = voucher.getString("options.message", "");
                             final String optionsWorldMessage = voucher.getString("options.whitelist-worlds.message",
@@ -80,7 +80,7 @@ public class VoucherColorMigrator extends IVoucherMigrator {
                             final String optionsBlacklistMessage = voucher.getString("options.permission.blacklist-permission.message",
                                     "{prefix}You already have the permission <red>{permission} <gray>so you can''t use this voucher.");
 
-                            voucher.set("name", StringUtils.convert(itemName));
+                            voucher.set("name", AdvUtils.convert(itemName));
 
                             voucher.set("options.message", optionsMessage);
                             voucher.set("options.whitelist-worlds.message", optionsWorldMessage);
@@ -139,7 +139,7 @@ public class VoucherColorMigrator extends IVoucherMigrator {
                     final String name = code.getName();
                     final String file = code.getName() + ".yml";
 
-                    final CustomFile customFile = this.fileManager.getFile(name, FileType.YAML);
+                    final LegacyCustomFile customFile = this.fileManager.getFile(name, FileType.YAML);
 
                     if (customFile == null) {
                         failed.add("<red>⤷ " + file);
@@ -190,7 +190,7 @@ public class VoucherColorMigrator extends IVoucherMigrator {
                     final String name = voucher.getName();
                     final String file = voucher.getName() + ".yml";
 
-                    final CustomFile customFile = this.fileManager.getFile(name, FileType.YAML);
+                    final LegacyCustomFile customFile = this.fileManager.getFile(name, FileType.YAML);
 
                     if (customFile == null) {
                         failed.add("<red>⤷ " + file);
@@ -217,7 +217,7 @@ public class VoucherColorMigrator extends IVoucherMigrator {
                     final String itemName = section.getString("name", name);
                     final List<String> itemLore = section.getStringList("lore");
 
-                    section.set("lore", StringUtils.convert(itemLore, true));
+                    section.set("lore", AdvUtils.convert(itemLore, true));
 
                     final String optionsMessage = section.getString("options.message", "");
                     final String optionsWorldMessage = section.getString("options.whitelist-worlds.message",
@@ -227,7 +227,7 @@ public class VoucherColorMigrator extends IVoucherMigrator {
                     final String optionsBlacklistMessage = section.getString("options.permission.blacklist-permission.message",
                             "{prefix}You already have the permission <red>{permission} <gray>so you can''t use this voucher.");
 
-                    section.set("name", StringUtils.convert(itemName));
+                    section.set("name", AdvUtils.convert(itemName));
 
                     section.set("options.message", optionsMessage);
                     section.set("options.whitelist-worlds.message", optionsWorldMessage);

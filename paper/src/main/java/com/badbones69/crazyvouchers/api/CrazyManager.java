@@ -8,11 +8,11 @@ import com.badbones69.crazyvouchers.api.enums.misc.PersistentKeys;
 import com.badbones69.crazyvouchers.api.objects.Voucher;
 import com.badbones69.crazyvouchers.api.objects.VoucherCode;
 import com.badbones69.crazyvouchers.utils.ItemUtils;
-import com.ryderbelserion.fusion.core.api.enums.FileType;
-import com.ryderbelserion.fusion.core.util.FileUtils;
-import com.ryderbelserion.fusion.paper.builder.items.modern.ItemBuilder;
-import com.ryderbelserion.fusion.paper.files.CustomFile;
-import com.ryderbelserion.fusion.paper.files.FileManager;
+import com.ryderbelserion.fusion.api.enums.FileType;
+import com.ryderbelserion.fusion.api.utils.FileUtils;
+import com.ryderbelserion.fusion.paper.api.builder.items.modern.ItemBuilder;
+import com.ryderbelserion.fusion.paper.files.LegacyCustomFile;
+import com.ryderbelserion.fusion.paper.files.LegacyFileManager;
 import io.papermc.paper.persistence.PersistentDataContainerView;
 import net.kyori.adventure.text.logger.slf4j.ComponentLogger;
 import org.bukkit.Material;
@@ -35,7 +35,7 @@ public class CrazyManager {
 
     private final SettingsManager config = ConfigManager.getConfig();
 
-    private final FileManager fileManager = this.plugin.getFileManager();
+    private final LegacyFileManager fileManager = this.plugin.getFileManager();
 
     private final ComponentLogger logger = this.plugin.getComponentLogger();
 
@@ -77,7 +77,7 @@ public class CrazyManager {
 
             case MULTIPLE -> {
                 for (final String code : getCodesList()) {
-                    @Nullable final CustomFile file = this.fileManager.getFile(code, FileType.YAML);
+                    @Nullable final LegacyCustomFile file = this.fileManager.getFile(code, FileType.YAML);
 
                     if (file != null) {
                         final YamlConfiguration configuration = file.getConfiguration();
@@ -121,7 +121,7 @@ public class CrazyManager {
 
             case MULTIPLE -> {
                 for (final String voucher : getVouchersList()) {
-                    @Nullable final CustomFile file = this.fileManager.getFile(voucher, FileType.YAML);
+                    @Nullable final LegacyCustomFile file = this.fileManager.getFile(voucher, FileType.YAML);
 
                     if (file != null) {
                         final YamlConfiguration configuration = file.getConfiguration();
