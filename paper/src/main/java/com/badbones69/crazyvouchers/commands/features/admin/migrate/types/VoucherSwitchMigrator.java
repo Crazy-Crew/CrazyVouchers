@@ -12,6 +12,7 @@ import org.bukkit.configuration.file.YamlConfiguration;
 import org.jetbrains.annotations.NotNull;
 import java.io.File;
 import java.io.IOException;
+import java.nio.file.Path;
 import java.util.List;
 
 public class VoucherSwitchMigrator extends IVoucherMigrator {
@@ -131,10 +132,10 @@ public class VoucherSwitchMigrator extends IVoucherMigrator {
                     final ConfigurationSection new_section = voucher_config.contains("vouchers") ? voucher_config.getConfigurationSection("vouchers") : voucher_config.createSection("vouchers");
 
                     if (new_section != null) {
-                        final List<File> vouchers = FileUtils.getFiles(new File(this.dataFolder, "vouchers"), ".yml", true);
+                        final List<Path> vouchers = FileUtils.getFiles(this.plugin.getDataPath().resolve("vouchers"), ".yml");
 
-                        for (final File voucher : vouchers) {
-                            final String fileName = voucher.getName();
+                        for (final Path voucher : vouchers) {
+                            final String fileName = voucher.getFileName().toString();
 
                             final LegacyCustomFile customFile = this.fileManager.getFile(fileName, FileType.YAML);
 
@@ -178,10 +179,10 @@ public class VoucherSwitchMigrator extends IVoucherMigrator {
                     final ConfigurationSection new_section = code_config.contains("voucher-codes") ? code_config.getConfigurationSection("voucher-codes") : code_config.createSection("voucher-codes");
 
                     if (new_section != null) {
-                        final List<File> codes = FileUtils.getFiles(new File(this.dataFolder, "codes"), ".yml", true);
+                        final List<Path> codes = FileUtils.getFiles(this.plugin.getDataPath().resolve("codes"), ".yml");
 
-                        for (final File code : codes) {
-                            final String fileName = code.getName();
+                        for (final Path code : codes) {
+                            final String fileName = code.getFileName().toString();
 
                             final LegacyCustomFile customFile = this.fileManager.getFile(fileName, FileType.YAML);
 

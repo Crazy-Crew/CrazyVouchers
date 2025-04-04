@@ -27,6 +27,7 @@ import org.jetbrains.annotations.Nullable;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.Optional;
 import java.util.concurrent.ThreadLocalRandom;
 
 public class CrazyManager {
@@ -152,14 +153,14 @@ public class CrazyManager {
      * @return A list of crate names.
      */
     public final List<String> getVouchersList() {
-        return FileUtils.getNames(this.plugin.getDataFolder(), "vouchers", ".yml", true);
+        return FileUtils.getNamesWithoutExtension(Optional.of("vouchers"), this.plugin.getDataPath(), ".yml");
     }
 
     /**
      * @return A list of crate names.
      */
     public final List<String> getCodesList() {
-        return FileUtils.getNames(this.plugin.getDataFolder(), "codes", ".yml", true);
+        return FileUtils.getNamesWithoutExtension(Optional.of("codes"), this.plugin.getDataPath(), ".yml");
     }
     
     public final List<Voucher> getVouchers() {

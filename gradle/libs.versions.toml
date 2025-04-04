@@ -28,7 +28,7 @@ oraxen = "1.171.0"
 nbtapi = "2.14.1"
 
 # Fusion API
-fusion = "0.29.9"
+fusion = "0.30.2"
 
 # Triumph API
 cmds = "2.2.0"
