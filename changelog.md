@@ -1,3 +1,20 @@
+## Legacy Color Codes
+Legacy color codes are no longer supported, they have been replaced by MiniMessage, https://docs.advntr.dev/minimessage/format
+
+You can run /crazyvouchers migrate -mt VouchersColor which should convert existing configs to MiniMessage as best as possible
+
+### Other migration types
+We offer migration types for the following
+
+- VouchersDeprecated
+  - Any deprecated option will be replaced/removed with this
+- VouchersNbtApi
+  - Migrates old vouchers to new vouchers
+- VouchersSwitch
+  - Switches between single and multiple files
+- VouchersRename
+  - Renames voucher-codes.yml to codes.yml, This takes a backup of the previous file.
+
 ## Permissions
 Permissions are no longer the same, Permissions were renamed and the old nodes were always meant to be a temporary usage
 This allows more control over what you can give a player.
@@ -65,3 +82,6 @@ voucher:
 | `flame`                 | `ARROW_FIRE`               |
 | `infinity`              | `ARROW_INFINITE`           |
 | `luck_of_the_sea`       | `LUCK`                     |
+
+- No longer rely on ItemMeta anymore which means a large performance increase due to the nature of how ItemMeta works.
+- Replaced plugin.yml with paper-plugin.yml
