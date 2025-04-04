@@ -1,8 +1,10 @@
 package com.badbones69.crazyvouchers.utils;
 
+import com.badbones69.crazyvouchers.CrazyVouchers;
 import com.ryderbelserion.fusion.api.utils.StringUtils;
 import com.ryderbelserion.fusion.paper.api.builder.items.modern.ItemBuilder;
 import com.ryderbelserion.fusion.paper.api.builder.items.modern.types.PatternBuilder;
+import net.kyori.adventure.text.logger.slf4j.ComponentLogger;
 import org.bukkit.enchantments.Enchantment;
 import org.bukkit.inventory.ItemType;
 import java.util.Arrays;
@@ -11,6 +13,12 @@ import java.util.Optional;
 import java.util.stream.Collectors;
 
 public class ItemUtils {
+
+    private static final CrazyVouchers plugin = CrazyVouchers.get();
+
+    private static final boolean isLogging = plugin.getFusion().isVerbose();
+
+    private static final ComponentLogger logger = plugin.getComponentLogger();
 
     /**
      * Converts a String to an ItemBuilder.
@@ -55,7 +63,16 @@ public class ItemUtils {
                         }
                     }
                     case "lore" -> itemBuilder.withDisplayLore(Arrays.asList(value.split(",")));
-                    case "player" -> itemBuilder.asSkullBuilder().withName(value);
+                    case "player" -> {
+                        try {
+                            itemBuilder.asSkullBuilder().withName(value);
+                        } catch (final Exception exception) {
+                            if (isLogging) {
+                                logger.warn("Could create skull builder because the item is not a player head.");
+                                logger.warn("This warning is safe to ignore, it's a restriction of the current system.");
+                            }
+                        }
+                    }
                     case "skull" -> itemBuilder.withSkull(value);
                     case "unbreakable-item" -> {
                         if (value.isEmpty() || value.equalsIgnoreCase("true")) itemBuilder.setUnbreakable(true);
