@@ -41,6 +41,14 @@ public class ConfigKeys implements SettingsHolder {
     })
     public static final Property<Boolean> use_different_items_layout = newProperty("root.use-different-items-layout", false);
 
+    @Comment({
+            "This option will tell the plugin to send all messages as action bars or messages in chat.",
+            "",
+            "send_message -> sends messages in chat.",
+            "send_actionbar -> sends messages in actionbar.",
+            ""
+    })
+    public static final Property<State> message_state = newBeanProperty(State.class, "root.message-state", State.send_message);
     
     @Comment("The prefix that shows up for all commands.")
     public static final Property<String> command_prefix = newProperty("settings.prefix", "<gray>[<gold>CrazyVouchers<gray>]: ");

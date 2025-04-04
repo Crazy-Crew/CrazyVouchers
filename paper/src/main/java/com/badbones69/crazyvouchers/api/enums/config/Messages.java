@@ -2,6 +2,7 @@ package com.badbones69.crazyvouchers.api.enums.config;
 
 import ch.jalu.configme.SettingsManager;
 import ch.jalu.configme.properties.Property;
+import com.badbones69.crazyvouchers.api.enums.State;
 import com.badbones69.crazyvouchers.config.types.ConfigKeys;
 import com.badbones69.crazyvouchers.config.types.locale.CommandKeys;
 import com.badbones69.crazyvouchers.config.types.locale.MessageKeys;
@@ -106,15 +107,30 @@ public enum Messages {
     }
 
     public void sendMessage(final Audience sender, final String placeholder, final String replacement) {
-        sendRichMessage(sender, placeholder, replacement);
+        final State state = this.config.getProperty(ConfigKeys.message_state);
+
+        switch (state) {
+            case send_message -> sendRichMessage(sender, placeholder, replacement);
+            case send_actionbar -> sendActionBar(sender, placeholder, replacement);
+        }
     }
 
     public void sendMessage(final Audience sender, final Map<String, String> placeholders) {
-        sendRichMessage(sender, placeholders);
+        final State state = this.config.getProperty(ConfigKeys.message_state);
+
+        switch (state) {
+            case send_message -> sendRichMessage(sender, placeholders);
+            case send_actionbar -> sendActionBar(sender, placeholders);
+        }
     }
 
     public void sendMessage(final Audience sender) {
-        sendRichMessage(sender);
+        final State state = this.config.getProperty(ConfigKeys.message_state);
+
+        switch (state) {
+            case send_message -> sendRichMessage(sender);
+            case send_actionbar -> sendActionBar(sender);
+        }
     }
 
     public void sendActionBar(final Audience sender, final String placeholder, final String replacement) {
