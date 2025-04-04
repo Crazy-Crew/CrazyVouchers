@@ -144,8 +144,7 @@ public class Methods {
 
         container.set(PersistentKeys.no_firework_damage.getNamespacedKey(), PersistentDataType.BOOLEAN, true);
 
-        new FoliaScheduler(firework.getLocation()) {
-            @Override
+        new FoliaScheduler(null, firework) {
             public void run() {
                 firework.detonate();
             }
