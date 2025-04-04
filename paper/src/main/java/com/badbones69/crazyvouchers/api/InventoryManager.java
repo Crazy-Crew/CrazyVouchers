@@ -39,11 +39,7 @@ public class InventoryManager {
     public final ItemStack getVoucher(final Voucher voucher) {
         final ItemStack itemStack = voucher.buildItem();
 
-        itemStack.editMeta(itemMeta -> {
-            final PersistentDataContainer container = itemMeta.getPersistentDataContainer();
-
-            container.set(PersistentKeys.voucher_item_admin.getNamespacedKey(), PersistentDataType.STRING, voucher.getName());
-        });
+        itemStack.editPersistentDataContainer(container -> container.set(PersistentKeys.voucher_item_admin.getNamespacedKey(), PersistentDataType.STRING, voucher.getName()));
 
         return itemStack;
     }
@@ -75,11 +71,7 @@ public class InventoryManager {
 
         ItemStack itemStack = this.backButton.addDisplayLore("<gray>Page: <blue>" + page).asItemStack();
 
-        itemStack.editMeta(itemMeta -> {
-            final PersistentDataContainer container = itemMeta.getPersistentDataContainer();
-
-            container.set(PersistentKeys.back_button.getNamespacedKey(), PersistentDataType.INTEGER, page);
-        });
+        itemStack.editPersistentDataContainer(container -> container.set(PersistentKeys.back_button.getNamespacedKey(), PersistentDataType.INTEGER, page));
 
         return itemStack;
     }
@@ -89,11 +81,7 @@ public class InventoryManager {
 
         ItemStack itemStack = this.nextButton.addDisplayLore("<gray>Page: <blue>" + page).asItemStack();
 
-        itemStack.editMeta(itemMeta -> {
-            final PersistentDataContainer container = itemMeta.getPersistentDataContainer();
-
-            container.set(PersistentKeys.next_button.getNamespacedKey(), PersistentDataType.INTEGER, page);
-        });
+        itemStack.editPersistentDataContainer(container -> container.set(PersistentKeys.next_button.getNamespacedKey(), PersistentDataType.INTEGER, page));
 
         return itemStack;
     }

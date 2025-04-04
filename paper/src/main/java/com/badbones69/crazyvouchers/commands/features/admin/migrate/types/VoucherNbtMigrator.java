@@ -12,7 +12,6 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
-import org.bukkit.persistence.PersistentDataContainer;
 import org.bukkit.persistence.PersistentDataType;
 import org.jetbrains.annotations.NotNull;
 import java.util.UUID;
@@ -36,9 +35,7 @@ public class VoucherNbtMigrator extends IVoucherMigrator {
 
             NBT.get(item, nbt -> {
                 if (nbt.hasTag("voucher")) {
-                    item.editMeta(itemMeta -> {
-                        final PersistentDataContainer container = itemMeta.getPersistentDataContainer();
-
+                    item.editPersistentDataContainer(container -> {
                         if (ConfigManager.getConfig().getProperty(ConfigKeys.dupe_protection)) {
                             container.set(PersistentKeys.dupe_protection.getNamespacedKey(), PersistentDataType.STRING, UUID.randomUUID().toString());
                         }
@@ -48,11 +45,7 @@ public class VoucherNbtMigrator extends IVoucherMigrator {
                 }
 
                 if (nbt.hasTag("argument")) {
-                    item.editMeta(itemMeta -> {
-                        final PersistentDataContainer container = itemMeta.getPersistentDataContainer();
-
-                        container.set(PersistentKeys.voucher_arg.getNamespacedKey(), PersistentDataType.STRING, nbt.getString("argument"));
-                    });
+                    item.editPersistentDataContainer(container -> container.set(PersistentKeys.voucher_arg.getNamespacedKey(), PersistentDataType.STRING, nbt.getString("argument")));
                 }
             });
         }

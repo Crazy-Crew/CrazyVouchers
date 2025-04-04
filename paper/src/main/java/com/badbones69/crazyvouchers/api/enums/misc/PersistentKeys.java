@@ -11,6 +11,7 @@ public enum PersistentKeys {
     next_button("next_button"),
     no_firework_damage("firework"),
     dupe_protection("dupe_protection"),
+    dupe_protection_warning("dupe_protection_warning"),
 
     voucher_item("voucher_item"),
     voucher_arg("voucher_arg");

@@ -16,10 +16,11 @@ import com.badbones69.crazyvouchers.utils.ScheduleUtils;
 import com.ryderbelserion.fusion.paper.FusionPaper;
 import com.ryderbelserion.fusion.paper.api.builder.items.modern.ItemBuilder;
 import com.ryderbelserion.fusion.paper.api.enums.Support;
+import io.papermc.paper.datacomponent.DataComponentTypes;
+import io.papermc.paper.datacomponent.item.ItemLore;
 import io.papermc.paper.persistence.PersistentDataContainerView;
 import me.clip.placeholderapi.PlaceholderAPI;
 import net.kyori.adventure.text.Component;
-import net.kyori.adventure.text.serializer.plain.PlainTextComponentSerializer;
 import org.bukkit.GameMode;
 import org.bukkit.Location;
 import org.bukkit.Material;
@@ -190,34 +191,28 @@ public class VoucherClickListener implements Listener {
                         }
                     });
 
-                    if (this.config.getProperty(ConfigKeys.dupe_protection_toggle_warning)) { //todo() untested!
-                        List<Component> lore = item.lore();
-
-                        if (lore == null) lore = new ArrayList<>();
+                    if (this.config.getProperty(ConfigKeys.dupe_protection_toggle_warning)) {
+                        final ItemLore.Builder builder = ItemLore.lore();
 
                         final String text = this.config.getProperty(ConfigKeys.dupe_protection_warning);
 
-                        boolean hasWarning = false;
-
-                        for (final Component component : lore) {
-                            final String plain = PlainTextComponentSerializer.plainText().serialize(component);
-
-                            if (plain.equalsIgnoreCase(text)) {
-                                hasWarning = true;
-
-                                break;
-                            }
-                        }
+                        final boolean hasWarning = item.getPersistentDataContainer().has(PersistentKeys.dupe_protection_warning.getNamespacedKey());
 
                         if (hasWarning) return;
 
-                        final Component warning = this.fusion.color(player, text, this.placeholders);
+                        final ItemLore lore = item.getData(DataComponentTypes.LORE);
 
-                        lore.add(warning);
+                        if (lore != null) {
+                            builder.addLines(lore.lines());
+                        }
 
-                        final List<Component> finalLore = lore;
+                        final Component warning_text = this.fusion.color(player, text, this.placeholders);
 
-                        item.editMeta(itemMeta -> itemMeta.lore(finalLore));
+                        builder.addLine(warning_text);
+
+                        item.setData(DataComponentTypes.LORE, builder.build());
+
+                        item.editPersistentDataContainer(container -> container.set(PersistentKeys.dupe_protection_warning.getNamespacedKey(), PersistentDataType.STRING, text));
                     }
 
                     return;

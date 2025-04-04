@@ -289,11 +289,7 @@ public class Voucher {
 
         setUniqueId(item);
 
-        item.editMeta(itemMeta -> {
-            final PersistentDataContainer container = itemMeta.getPersistentDataContainer();
-
-            container.set(PersistentKeys.voucher_item.getNamespacedKey(), PersistentDataType.STRING, getName());
-        });
+        item.editPersistentDataContainer(container -> container.set(PersistentKeys.voucher_item.getNamespacedKey(), PersistentDataType.STRING, getName()));
 
         return item;
     }
@@ -317,9 +313,7 @@ public class Voucher {
 
         setUniqueId(item);
 
-        item.editMeta(itemMeta -> {
-            final PersistentDataContainer container = itemMeta.getPersistentDataContainer();
-
+        item.editPersistentDataContainer(container -> {
             container.set(PersistentKeys.voucher_item.getNamespacedKey(), PersistentDataType.STRING, getName());
 
             if (!argument.isEmpty()) container.set(PersistentKeys.voucher_arg.getNamespacedKey(), PersistentDataType.STRING, argument);
@@ -329,16 +323,10 @@ public class Voucher {
     }
 
     private void setUniqueId(final ItemStack item) {
-        final String uuid = UUID.randomUUID().toString();
-
         if (this.config.getProperty(ConfigKeys.dupe_protection)) {
-            item.editMeta(itemMeta -> {
-                final PersistentDataContainer container = itemMeta.getPersistentDataContainer();
+            final String uuid = UUID.randomUUID().toString();
 
-                if (this.config.getProperty(ConfigKeys.dupe_protection)) {
-                    container.set(PersistentKeys.dupe_protection.getNamespacedKey(), PersistentDataType.STRING, uuid);
-                }
-            });
+            item.editPersistentDataContainer(container -> container.set(PersistentKeys.dupe_protection.getNamespacedKey(), PersistentDataType.STRING, uuid));
         }
     }
 
