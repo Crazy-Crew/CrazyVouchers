@@ -1,3 +1,11 @@
+## New Items section
+I've made a new `Items` section which is currently in use in CrazyCrates, I am simply bringing it to CrazyVouchers.
+
+You can experiment with this option by enabling it in your `config.yml`
+
+- The command /crazyvouchers migrate -mt NewItemFormat will update all `Items` section to the best it can.
+  - The migration is one way, Please be wary of this and take backups.
+
 ## Legacy Color Codes
 Legacy color codes are no longer supported, they have been replaced by MiniMessage, https://docs.advntr.dev/minimessage/format
 
