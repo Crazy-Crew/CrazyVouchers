@@ -108,7 +108,7 @@ public class Voucher {
         this.hasCooldown = fileConfiguration.getBoolean(path + "cooldown.toggle", false);
         this.cooldownInterval = fileConfiguration.getInt(path + "cooldown.interval", 5);
 
-        this.itemBuilder = ItemBuilder.from(fileConfiguration.getString(path + "item", "Stone").toLowerCase())
+        this.itemBuilder = ItemBuilder.from(fileConfiguration.getString(path + "item", "stone").toLowerCase())
                 .setDisplayName(fileConfiguration.getString(path + "name", ""))
                 .withDisplayLore(fileConfiguration.getStringList(path + "lore"));
 
@@ -123,8 +123,8 @@ public class Voucher {
         if (fileConfiguration.contains(path + "display-damage")) this.itemBuilder.setItemDamage(fileConfiguration.getInt(path + "display-damage"));
 
         if (fileConfiguration.contains(path + "display-trim.material") && fileConfiguration.contains(path + "display-trim.pattern")) {
-            final String trimMaterial = fileConfiguration.getString(path + "display-trim.material", "QUARTZ").toLowerCase();
-            final String trimPattern = fileConfiguration.getString(path + "display-trim.pattern", "SENTRY").toLowerCase();
+            final String trimMaterial = fileConfiguration.getString(path + "display-trim.material", "quartz").toLowerCase();
+            final String trimPattern = fileConfiguration.getString(path + "display-trim.pattern", "sentry").toLowerCase();
 
             this.itemBuilder.setTrim(trimPattern, trimMaterial, false);
         }
