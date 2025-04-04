@@ -37,7 +37,7 @@ public class ConfigKeys implements SettingsHolder {
     public static final Property<String> command_prefix = newProperty("settings.prefix", "<gray>[<gold>CrazyVouchers<gray>]: ");
 
     @Comment("""
-            This option allows you to switch between the following
+            This option allows you to switch between the following:
             ⤷ vouchers.yml and codes.yml
              ⤷ these files handle all files!
             ⤷ vouchers and codes that act like the crates folder in CrazyCrates
