@@ -1,4 +1,4 @@
-package com.badbones69.crazyvouchers.commands.features.admin.migrate.types;
+package com.badbones69.crazyvouchers.commands.features.admin.migrate.types.deprecation;
 
 import com.badbones69.crazyvouchers.api.enums.FileKeys;
 import com.badbones69.crazyvouchers.api.enums.config.Messages;
@@ -18,9 +18,9 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
-public class VoucherColorMigrator extends IVoucherMigrator {
+public class LegacyColorMigrator extends IVoucherMigrator {
 
-    public VoucherColorMigrator(@NotNull final CommandSender sender) {
+    public LegacyColorMigrator(@NotNull final CommandSender sender) {
         super(sender, MigrationType.VOUCHERS_COLOR);
     }
 
