@@ -32,6 +32,15 @@ public class ConfigKeys implements SettingsHolder {
         
         conf.setComment("settings", header);
     }
+
+    @Comment({
+            "This will allow you to use a new items layout which should be much more straight forward, less prone to errors.",
+            "You can run /crazyvouchers migrate -mt NewItemFormat which should migrate all existing prizes after you set this to true",
+            "",
+            "Take a backup before you run the migration as there may be bugs."
+    })
+    public static final Property<Boolean> use_different_items_layout = newProperty("root.use-different-items-layout", false);
+
     
     @Comment("The prefix that shows up for all commands.")
     public static final Property<String> command_prefix = newProperty("settings.prefix", "<gray>[<gold>CrazyVouchers<gray>]: ");

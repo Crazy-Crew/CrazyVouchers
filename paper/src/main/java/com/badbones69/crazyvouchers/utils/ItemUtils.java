@@ -4,9 +4,15 @@ import com.badbones69.crazyvouchers.CrazyVouchers;
 import com.ryderbelserion.fusion.api.utils.StringUtils;
 import com.ryderbelserion.fusion.paper.api.builder.items.modern.ItemBuilder;
 import com.ryderbelserion.fusion.paper.api.builder.items.modern.types.PatternBuilder;
+import com.ryderbelserion.fusion.paper.api.builder.items.modern.types.PotionBuilder;
+import com.ryderbelserion.fusion.paper.api.builder.items.modern.types.SkullBuilder;
+import com.ryderbelserion.fusion.paper.api.builder.items.modern.types.SpawnerBuilder;
 import net.kyori.adventure.text.logger.slf4j.ComponentLogger;
+import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.enchantments.Enchantment;
 import org.bukkit.inventory.ItemType;
+import org.bukkit.potion.PotionEffectType;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
@@ -28,6 +34,132 @@ public class ItemUtils {
      */
     public static ItemBuilder convertString(String itemString) {
         return convertString(itemString, null);
+    }
+
+    public static List<ItemBuilder> convertConfigurationSection(final ConfigurationSection section) {
+        final List<ItemBuilder> cache = new ArrayList<>();
+
+        if (section == null) return cache;
+
+        for (final String key : section.getKeys(false)) {
+            final ConfigurationSection item = section.getConfigurationSection(key);
+
+            if (item == null) continue;
+
+            final ItemBuilder itemBuilder = ItemBuilder.from(item.getString("material", "stone"));
+
+            if (item.contains("data")) {
+                final String base64 = item.getString("data", null);
+
+                if (base64 != null && !base64.isEmpty()) { //todo() move this if check to fusion's itembuilder as we should not set a name if it's empty to ensure Minecraft can do it's thing.
+                    itemBuilder.withBase64(base64);
+                }
+            }
+
+            if (item.contains("name")) { //todo() move this if check to fusion's itembuilder as we should not set a name if it's empty to ensure Minecraft can do it's thing.
+                itemBuilder.setDisplayName(item.getString("name", ""));
+            }
+
+            if (item.contains("lore")) {
+                itemBuilder.withDisplayLore(item.getStringList("lore"));
+            }
+
+            itemBuilder.setAmount(item.getInt("amount", 1));
+
+            final ConfigurationSection enchantments = item.getConfigurationSection("enchantments");
+
+            if (enchantments != null) {
+                for (final String enchantment : enchantments.getKeys(false)) {
+                    final int level = enchantments.getInt(enchantment);
+
+                    itemBuilder.addEnchantment(enchantment, level);
+                }
+            }
+
+            itemBuilder.setCustomModelData(item.getString("custom-model-data", ""));
+
+            if (item.getBoolean("hide-tool-tip", false)) {
+                itemBuilder.hideToolTip();
+            }
+
+            itemBuilder.setUnbreakable(item.getBoolean("unbreakable-item", false));
+
+            // settings
+            itemBuilder.setEnchantGlint(item.getBoolean("settings.glowing", false));
+
+            final String player = item.getString("settings.player", null);
+
+            if (player != null && !player.isEmpty()) {
+                final SkullBuilder skullBuilder = itemBuilder.asSkullBuilder();
+
+                skullBuilder.withName(player).build();
+            }
+
+            itemBuilder.setItemDamage(item.getInt("settings.damage", 0));
+
+            itemBuilder.withSkull(item.getString("settings.skull", ""));
+
+            final String rgb = item.getString("settings.rgb", "");
+
+            final String color = item.getString("settings.color", "");
+
+            itemBuilder.setColor(!color.isEmpty() ? color : !rgb.isEmpty() ? rgb : "");
+
+            final String mobType = item.getString("settings.mob.type", null);
+
+            if (mobType != null && !mobType.isEmpty()) {
+                final SpawnerBuilder spawnerBuilder = itemBuilder.asSpawnerBuilder();
+
+                spawnerBuilder.withEntityType(com.ryderbelserion.fusion.paper.utils.ItemUtils.getEntity(mobType)).build();
+            }
+
+            itemBuilder.setTrim(item.getString("settings.trim.pattern", ""), item.getString("settings.trim.material", ""), false);
+
+            final ConfigurationSection potions = item.getConfigurationSection("settings.potions");
+
+            if (potions != null) {
+                final PotionBuilder potionBuilder = itemBuilder.asPotionBuilder();
+
+                for (final String potion : potions.getKeys(false)) {
+                    final PotionEffectType type = com.ryderbelserion.fusion.paper.utils.ItemUtils.getPotionEffect(potion);
+
+                    if (type != null) {
+                        final ConfigurationSection data = potions.getConfigurationSection(potion);
+
+                        if (data != null) {
+                            final int duration = data.getInt("duration", 10) * 20;
+                            final int level = data.getInt("level", 1);
+
+                            final boolean icon = data.getBoolean("style.icon", false);
+                            final boolean ambient = data.getBoolean("style.ambient", false);
+                            final boolean particles = data.getBoolean("style.particles", false);
+
+                            potionBuilder.withPotionEffect(type, duration, level, ambient, particles, icon);
+                        }
+                    }
+                }
+
+                potionBuilder.build();
+            }
+
+            final ConfigurationSection patterns = item.getConfigurationSection("settings.patterns");
+
+            if (patterns != null) {
+                for (final String pattern : patterns.getKeys(false)) {
+                    final String patternColor = patterns.getString(pattern, "white");
+
+                    final PatternBuilder patternBuilder = itemBuilder.asPatternBuilder();
+
+                    patternBuilder.addPattern(pattern, patternColor);
+
+                    patternBuilder.build();
+                }
+            }
+
+            cache.add(itemBuilder);
+        }
+
+        return cache;
     }
 
     /**

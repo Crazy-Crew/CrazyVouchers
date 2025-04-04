@@ -7,6 +7,7 @@ public enum MigrationType {
     VOUCHERS_DEPRECATED("VouchersDeprecated"),
     VOUCHERS_NBT_API("VouchersNbtApi"),
     VOUCHERS_SWITCH("VouchersSwitch"),
+    NEW_ITEM_FORMAT("NewItemFormat"),
     VOUCHERS_COLOR("VouchersColor"),
 
     VOUCHERS_RENAME("VouchersRename");

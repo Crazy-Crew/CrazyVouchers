@@ -1,5 +1,6 @@
 package com.badbones69.crazyvouchers.api.objects;
 
+import ch.jalu.configme.SettingsManager;
 import com.badbones69.crazyvouchers.CrazyVouchers;
 import com.badbones69.crazyvouchers.Methods;
 import com.badbones69.crazyvouchers.api.enums.FileSystem;
@@ -19,6 +20,8 @@ import java.util.Map;
 import java.util.logging.Level;
 
 public class VoucherCode {
+
+    private final SettingsManager config = ConfigManager.getConfig();
 
     private final String name;
     private final String code;
@@ -47,7 +50,8 @@ public class VoucherCode {
     private final List<Color> fireworkColors = new ArrayList<>();
     private final List<VoucherCommand> randomCommands = new ArrayList<>();
     private final List<VoucherCommand> chanceCommands = new ArrayList<>();
-    private final List<ItemBuilder> items = new ArrayList<>();
+
+    private final List<ItemBuilder> items;
 
     private final CrazyVouchers plugin = CrazyVouchers.get();
 
@@ -79,8 +83,10 @@ public class VoucherCode {
             }
         }
 
-        for (String itemString : file.getStringList(path + "items")) {
-            this.items.add(ItemUtils.convertString(itemString));
+        if (this.config.getProperty(ConfigKeys.use_different_items_layout) && !file.isList("items")) {
+            this.items = ItemUtils.convertConfigurationSection(file.getConfigurationSection("items"));
+        } else {
+            this.items = ItemUtils.convertStringList(file.getStringList(path + "items"));
         }
 
         this.caseSensitive = file.getBoolean(path + "options.case-sensitive", false);
@@ -95,7 +101,7 @@ public class VoucherCode {
             this.whitelistPermissionToggle = file.getBoolean(path + "options.permission.whitelist-permission.toggle");
 
             if (file.contains(path + "options.permission.whitelist-permission.node")) {
-                this.whitelistPermissions.add("voucher." + file.getString(path + "options.permission.whitelist-permission.node").toLowerCase());
+                this.whitelistPermissions.add("voucher." + file.getString(path + "options.permission.whitelist-permission.node", "").toLowerCase());
             }
 
             this.whitelistPermissions.addAll(file.getStringList(path + "options.permission.whitelist-permission.permissions").stream().map(String::toLowerCase).toList());

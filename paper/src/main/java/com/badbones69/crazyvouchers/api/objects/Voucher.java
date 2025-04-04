@@ -3,10 +3,10 @@ package com.badbones69.crazyvouchers.api.objects;
 import ch.jalu.configme.SettingsManager;
 import com.badbones69.crazyvouchers.CrazyVouchers;
 import com.badbones69.crazyvouchers.Methods;
-import com.badbones69.crazyvouchers.api.CrazyManager;
 import com.badbones69.crazyvouchers.api.enums.FileSystem;
 import com.badbones69.crazyvouchers.api.enums.config.Messages;
 import com.badbones69.crazyvouchers.api.enums.misc.PersistentKeys;
+import com.badbones69.crazyvouchers.utils.ItemUtils;
 import com.ryderbelserion.fusion.paper.api.builder.items.modern.ItemBuilder;
 import com.ryderbelserion.fusion.paper.utils.ColorUtils;
 import com.ryderbelserion.fusion.paper.utils.MiscUtils;
@@ -63,10 +63,11 @@ public class Voucher {
     private List<String> commands = new ArrayList<>();
     private final List<VoucherCommand> randomCommands = new ArrayList<>();
     private final List<VoucherCommand> chanceCommands = new ArrayList<>();
-    private final List<ItemBuilder> items = new ArrayList<>();
     private final Map<String, String> requiredPlaceholders = new HashMap<>();
 
     private final Map<UUID, Long> cooldowns = new HashMap<>();
+
+    private List<ItemBuilder> items = new ArrayList<>();
 
     private String requiredPlaceholdersMessage;
 
@@ -94,8 +95,6 @@ public class Voucher {
     }
 
     private final CrazyVouchers plugin = CrazyVouchers.get();
-
-    private final CrazyManager crazyManager = this.plugin.getCrazyManager();
 
     public Voucher(FileConfiguration fileConfiguration, String name) {
         this.name = name.replaceAll(".yml", "");
@@ -170,7 +169,11 @@ public class Voucher {
             }
         }
 
-        this.items.addAll(this.crazyManager.getItems(fileConfiguration, this.name));
+        if (this.config.getProperty(ConfigKeys.use_different_items_layout) && !fileConfiguration.isList("items")) {
+            this.items = ItemUtils.convertConfigurationSection(fileConfiguration.getConfigurationSection("items"));
+        } else {
+            this.items = ItemUtils.convertStringList(fileConfiguration.getStringList(path + "items"));
+        }
 
         this.usedMessage = getMessage(path + "options.message", fileConfiguration);
 
