@@ -1,20 +1,21 @@
 package com.badbones69.crazyvouchers.api.objects;
 
+import org.jetbrains.annotations.NotNull;
 import java.util.Arrays;
 import java.util.List;
-import java.util.concurrent.ThreadLocalRandom;
+import java.util.UUID;
 
 public class VoucherCommand {
     
-    private final Integer uuid;
+    private final UUID uuid;
     private final List<String> commands;
     
-    public VoucherCommand(String commandString) {
-        this.uuid = ThreadLocalRandom.current().nextInt();
+    public VoucherCommand(@NotNull final String commandString) {
+        this.uuid = UUID.randomUUID();
         this.commands = Arrays.asList(commandString.split(", "));
     }
     
-    public int getUUID() {
+    public UUID getUUID() {
         return this.uuid;
     }
     
@@ -22,7 +23,7 @@ public class VoucherCommand {
         return this.commands;
     }
     
-    public boolean isSimilar(VoucherCommand voucherCommand) {
-        return this.uuid.equals(voucherCommand.getUUID());
+    public boolean isSimilar(@NotNull final UUID uuid) {
+        return this.uuid.equals(uuid);
     }
 }

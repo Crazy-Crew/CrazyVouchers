@@ -5,6 +5,7 @@ import ch.jalu.configme.SettingsHolder;
 import ch.jalu.configme.configurationdata.CommentsConfiguration;
 import ch.jalu.configme.properties.Property;
 import com.badbones69.crazyvouchers.api.enums.FileSystem;
+import com.badbones69.crazyvouchers.api.enums.State;
 import static ch.jalu.configme.properties.PropertyInitializer.newBeanProperty;
 import static ch.jalu.configme.properties.PropertyInitializer.newProperty;
 
@@ -34,6 +35,13 @@ public class ConfigKeys implements SettingsHolder {
     }
 
     @Comment({
+            "This option will let you test a different way of picking random numbers. If you have any issues, You can set it back to false.",
+            "",
+            "If the option is set to false, items should be more random in theory."
+    })
+    public static final Property<Boolean> use_different_random = newProperty("root.use-different-random", false);
+
+    @Comment({
             "This will allow you to use a new items layout which should be much more straight forward, less prone to errors.",
             "You can run /crazyvouchers migrate -mt NewItemFormat which should migrate all existing prizes after you set this to true",
             "",
@@ -49,6 +57,12 @@ public class ConfigKeys implements SettingsHolder {
             ""
     })
     public static final Property<State> message_state = newBeanProperty(State.class, "root.message-state", State.send_message);
+
+    @Comment("This will wipe the example folder on /crazyvouchers reload or plugin startup. so you always have fresh examples to look at.")
+    public static final Property<Boolean> update_examples_folder = newProperty("root.update-examples-folder", true);
+
+    @Comment("Sends anonymous statistics to https://bstats.org/plugin/bukkit/Vouchers/4536")
+    public static final Property<Boolean> toggle_metrics = newProperty("root.toggle-metrics", true);
     
     @Comment("The prefix that shows up for all commands.")
     public static final Property<String> command_prefix = newProperty("settings.prefix", "<gray>[<gold>CrazyVouchers<gray>]: ");
@@ -67,15 +81,6 @@ public class ConfigKeys implements SettingsHolder {
               ⤷ MULTIPLE
             """)
     public static final Property<FileSystem> file_system = newBeanProperty(FileSystem.class, "settings.file-system", FileSystem.MULTIPLE);
-
-    @Comment("Sends anonymous statistics to https://bstats.org/plugin/bukkit/Vouchers/4536")
-    public static final Property<Boolean> toggle_metrics = newProperty("root.toggle-metrics", true);
-
-    //@Comment("Should players have a voucher cooldown?")
-    //public static final Property<Boolean> cooldown_toggle = newProperty("settings.cooldown.toggle", false);
-
-    //@Comment("How many seconds should a player have to wait, before opening a new voucher?")
-    //public static final Property<Integer> cooldown_wait = newProperty("settings.cooldown.interval", 5);
 
     @Comment({
             "Vouchers will no longer be able to stack, as each one has a unique identifier",

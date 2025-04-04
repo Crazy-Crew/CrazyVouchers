@@ -2,6 +2,7 @@ package com.badbones69.crazyvouchers.api;
 
 import ch.jalu.configme.SettingsManager;
 import com.badbones69.crazyvouchers.CrazyVouchers;
+import com.badbones69.crazyvouchers.Methods;
 import com.badbones69.crazyvouchers.api.enums.FileKeys;
 import com.badbones69.crazyvouchers.api.enums.FileSystem;
 import com.badbones69.crazyvouchers.api.enums.misc.PersistentKeys;
@@ -24,11 +25,11 @@ import com.badbones69.crazyvouchers.config.ConfigManager;
 import com.badbones69.crazyvouchers.config.types.ConfigKeys;
 import org.bukkit.persistence.PersistentDataType;
 import org.jetbrains.annotations.Nullable;
+import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
-import java.util.concurrent.ThreadLocalRandom;
 
 public class CrazyManager {
 
@@ -145,6 +146,21 @@ public class CrazyManager {
     public void reload() {
         this.vouchers.clear();
         this.voucherCodes.clear();
+
+        if (this.config.getProperty(ConfigKeys.update_examples_folder)) {
+            final Path path = this.plugin.getDataFolder().toPath();
+
+            List.of(
+                    "codes.yml",
+                    "data.yml",
+                    "users.yml",
+                    "vouchers.yml"
+            ).forEach(file -> FileUtils.extract(file, path.resolve("examples"), true));
+
+            FileUtils.extract("vouchers", path.resolve("examples"), true);
+            FileUtils.extract("codes", path.resolve("examples"), true);
+            FileUtils.extract("locale", path.resolve("examples"), true);
+        }
 
         load();
     }
@@ -296,7 +312,7 @@ public class CrazyManager {
     
     private long pickNumber(long min, long max) {
         try {
-            return min + ThreadLocalRandom.current().nextLong(max - min);
+            return min + Methods.getRandom().nextLong(max - min);
         } catch (IllegalArgumentException e) {
             return min;
         }

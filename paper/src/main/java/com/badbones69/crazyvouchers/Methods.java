@@ -2,12 +2,13 @@ package com.badbones69.crazyvouchers;
 
 import com.badbones69.crazyvouchers.api.enums.FileKeys;
 import com.badbones69.crazyvouchers.api.enums.misc.PersistentKeys;
+import com.badbones69.crazyvouchers.config.ConfigManager;
+import com.badbones69.crazyvouchers.config.types.ConfigKeys;
 import com.badbones69.crazyvouchers.utils.ScheduleUtils;
 import com.ryderbelserion.fusion.paper.FusionPaper;
 import com.ryderbelserion.fusion.paper.api.enums.Support;
 import com.ryderbelserion.fusion.paper.api.scheduler.FoliaScheduler;
 import me.clip.placeholderapi.PlaceholderAPI;
-import net.kyori.adventure.text.Component;
 import org.bukkit.Color;
 import org.bukkit.FireworkEffect;
 import org.bukkit.Location;
@@ -24,6 +25,8 @@ import org.bukkit.persistence.PersistentDataType;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
+import java.util.Random;
+import java.util.UUID;
 import java.util.concurrent.ThreadLocalRandom;
 
 public class Methods {
@@ -54,8 +57,20 @@ public class Methods {
         }
     }
 
+    public static boolean useDifferentRandom() {
+        return ConfigManager.getConfig().getProperty(ConfigKeys.use_different_random);
+    }
+
+    public static Random getRandom() {
+        return useDifferentRandom() ? ThreadLocalRandom.current() : new Random();
+    }
+
     public static int getRandom(int max) {
-        return ThreadLocalRandom.current().nextInt(max);
+        return getRandom().nextInt(max);
+    }
+
+    public static String randomUUID() {
+        return UUID.randomUUID().toString().replace("-", "").substring(0, 8);
     }
 
     public static boolean hasPermission(final boolean execute, final Player player, final List<String> permissions, final List<String> commands, final Map<String, String> placeholders, final String message, final String argument) {
@@ -91,13 +106,11 @@ public class Methods {
 
         inventory.setMaxStackSize(64);
 
-        final List<ItemStack> itemStacks = Arrays.asList(items);
-
-        itemStacks.forEach(item -> {
+        Arrays.asList(items).forEach(item -> {
             if (isInventoryFull(inventory)) {
-                player.getWorld().dropItem(player.getLocation(), item);
+                player.getWorld().dropItem(player.getLocation(), item.clone());
             } else {
-                inventory.setItem(inventory.firstEmpty(), item);
+                inventory.setItem(inventory.firstEmpty(), item.clone());
             }
         });
     }
@@ -119,10 +132,6 @@ public class Methods {
     private static final CrazyVouchers plugin = CrazyVouchers.get();
 
     private static final FusionPaper fusion = plugin.getFusion();
-
-    public static Component color(final String message, final Map<String, String> placeholders) {
-        return fusion.color(message, placeholders);
-    }
 
     public static boolean isInventoryFull(final PlayerInventory inventory) {
         return inventory.firstEmpty() == -1;
