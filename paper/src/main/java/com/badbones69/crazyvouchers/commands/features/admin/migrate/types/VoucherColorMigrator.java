@@ -67,26 +67,7 @@ public class VoucherColorMigrator extends IVoucherMigrator {
 
                             if (voucher == null) continue;
 
-                            final String itemName = voucher.getString("name", key);
-                            final List<String> itemLore = voucher.getStringList("lore");
-
-                            voucher.set("lore", AdvUtils.convert(itemLore, true));
-
-                            final String optionsMessage = voucher.getString("options.message", "");
-                            final String optionsWorldMessage = voucher.getString("options.whitelist-worlds.message",
-                                    "{prefix}You are not in any of the whitelisted worlds.");
-                            final String optionsWhitelistMessage = voucher.getString("options.permission.whitelist-permission.message",
-                                    "{prefix}You do not have the permission <red>{permission} <gray>to use this voucher.");
-                            final String optionsBlacklistMessage = voucher.getString("options.permission.blacklist-permission.message",
-                                    "{prefix}You already have the permission <red>{permission} <gray>so you can''t use this voucher.");
-
-                            voucher.set("name", AdvUtils.convert(itemName));
-
-                            voucher.set("options.message", optionsMessage);
-                            voucher.set("options.whitelist-worlds.message", optionsWorldMessage);
-
-                            voucher.set("options.permission.whitelist-permission.message", optionsWhitelistMessage);
-                            voucher.set("options.permission.blacklist-permission.message", optionsBlacklistMessage);
+                            processItems(key, voucher);
                         }
 
                         success.add("<green>⤷ vouchers.yml");
@@ -105,21 +86,7 @@ public class VoucherColorMigrator extends IVoucherMigrator {
                     final ConfigurationSection section = codes.getConfigurationSection("voucher-codes");
 
                     if (section != null) {
-                        final String optionsMessage = section.getString("options.message", "");
-                        final String optionsWorldMessage = section.getString("options.whitelist-worlds.message",
-                                "{prefix}<red>You can not use that voucher here as you are not in a whitelisted world for this voucher.");
-
-                        final String optionsWhitelistMessage = section.getString("options.permission.whitelist-permission.message",
-                                "{prefix}<red>You can not use that voucher here as you are not in a whitelisted world for this voucher.");
-
-                        final String optionsBlacklistMessage = section.getString("options.permission.blacklist-permission.message",
-                                "{prefix}<red>You can not use that voucher here as you are not in a whitelisted world for this voucher.");
-
-                        section.set("options.message", optionsMessage);
-                        section.set("options.whitelist-worlds.message", optionsWorldMessage);
-
-                        section.set("options.permission.whitelist-permission.message", optionsWhitelistMessage);
-                        section.set("options.permission.blacklist-permission.message", optionsBlacklistMessage);
+                        process(section);
 
                         success.add("<green>⤷ codes.yml");
 
@@ -163,21 +130,7 @@ public class VoucherColorMigrator extends IVoucherMigrator {
                         continue;
                     }
 
-                    final String optionsMessage = section.getString("options.message", "");
-                    final String optionsWorldMessage = section.getString("options.whitelist-worlds.message",
-                            "{prefix}<red>You can not use that voucher here as you are not in a whitelisted world for this voucher.");
-
-                    final String optionsWhitelistMessage = section.getString("options.permission.whitelist-permission.message",
-                            "{prefix}<red>You can not use that voucher here as you are not in a whitelisted world for this voucher.");
-
-                    final String optionsBlacklistMessage = section.getString("options.permission.blacklist-permission.message",
-                            "{prefix}<red>You can not use that voucher here as you are not in a whitelisted world for this voucher.");
-
-                    section.set("options.message", optionsMessage);
-                    section.set("options.whitelist-worlds.message", optionsWorldMessage);
-
-                    section.set("options.permission.whitelist-permission.message", optionsWhitelistMessage);
-                    section.set("options.permission.blacklist-permission.message", optionsBlacklistMessage);
+                    process(section);
 
                     success.add("<green>⤷ " + file);
 
@@ -214,26 +167,7 @@ public class VoucherColorMigrator extends IVoucherMigrator {
                         continue;
                     }
 
-                    final String itemName = section.getString("name", name);
-                    final List<String> itemLore = section.getStringList("lore");
-
-                    section.set("lore", AdvUtils.convert(itemLore, true));
-
-                    final String optionsMessage = section.getString("options.message", "");
-                    final String optionsWorldMessage = section.getString("options.whitelist-worlds.message",
-                            "{prefix}You are not in any of the whitelisted worlds.");
-                    final String optionsWhitelistMessage = section.getString("options.permission.whitelist-permission.message",
-                            "{prefix}You do not have the permission <red>{permission} <gray>to use this voucher.");
-                    final String optionsBlacklistMessage = section.getString("options.permission.blacklist-permission.message",
-                            "{prefix}You already have the permission <red>{permission} <gray>so you can''t use this voucher.");
-
-                    section.set("name", AdvUtils.convert(itemName));
-
-                    section.set("options.message", optionsMessage);
-                    section.set("options.whitelist-worlds.message", optionsWorldMessage);
-
-                    section.set("options.permission.whitelist-permission.message", optionsWhitelistMessage);
-                    section.set("options.permission.blacklist-permission.message", optionsBlacklistMessage);
+                    processItems(name, section);
 
                     success.add("<green>⤷ " + file);
 
@@ -253,6 +187,47 @@ public class VoucherColorMigrator extends IVoucherMigrator {
         this.fileManager.init();
 
         this.crazyManager.load();
+    }
+
+    private void processItems(@NotNull final String name, @NotNull final ConfigurationSection section) {
+        final String itemName = section.getString("name", name);
+        final List<String> itemLore = section.getStringList("lore");
+
+        section.set("lore", AdvUtils.convert(itemLore, true));
+
+        final String optionsMessage = section.getString("options.message", "");
+        final String optionsWorldMessage = section.getString("options.whitelist-worlds.message",
+                "{prefix}You are not in any of the whitelisted worlds.");
+        final String optionsWhitelistMessage = section.getString("options.permission.whitelist-permission.message",
+                "{prefix}You do not have the permission <red>{permission} <gray>to use this voucher.");
+        final String optionsBlacklistMessage = section.getString("options.permission.blacklist-permission.message",
+                "{prefix}You already have the permission <red>{permission} <gray>so you can''t use this voucher.");
+
+        section.set("name", AdvUtils.convert(itemName));
+
+        section.set("options.message", optionsMessage);
+        section.set("options.whitelist-worlds.message", optionsWorldMessage);
+
+        section.set("options.permission.whitelist-permission.message", optionsWhitelistMessage);
+        section.set("options.permission.blacklist-permission.message", optionsBlacklistMessage);
+    }
+
+    private void process(ConfigurationSection section) {
+        final String optionsMessage = section.getString("options.message", "");
+        final String optionsWorldMessage = section.getString("options.whitelist-worlds.message",
+                "{prefix}<red>You can not use that voucher here as you are not in a whitelisted world for this voucher.");
+
+        final String optionsWhitelistMessage = section.getString("options.permission.whitelist-permission.message",
+                "{prefix}<red>You can not use that voucher here as you are not in a whitelisted world for this voucher.");
+
+        final String optionsBlacklistMessage = section.getString("options.permission.blacklist-permission.message",
+                "{prefix}<red>You can not use that voucher here as you are not in a whitelisted world for this voucher.");
+
+        section.set("options.message", optionsMessage);
+        section.set("options.whitelist-worlds.message", optionsWorldMessage);
+
+        section.set("options.permission.whitelist-permission.message", optionsWhitelistMessage);
+        section.set("options.permission.blacklist-permission.message", optionsBlacklistMessage);
     }
 
     @Override
