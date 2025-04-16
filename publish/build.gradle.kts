@@ -55,11 +55,27 @@ tasks {
                     platformVersions.set(listOf(mcVersion))
 
                     dependencies {
-                        hangar("PlaceholderAPI") {
+                        url("PlaceholderAPI", "https://hangar.papermc.io/HelpChat/PlaceholderAPI") {
                             required = false
                         }
 
-                        url("Oraxen", "https://www.spigotmc.org/resources/%E2%98%84%EF%B8%8F-oraxen-custom-items-blocks-emotes-furniture-resourcepack-and-gui-1-18-1-20-4.72448/") {
+                        url("Oraxen", "https://polymart.org/product/629/oraxen") {
+                            required = false
+                        }
+
+                        url("Nexo", "https://polymart.org/resource/nexo.6901") {
+                            required = false
+                        }
+
+                        url("CMI", "https://www.spigotmc.org/resources/cmi-298-commands-insane-kits-portals-essentials-economy-mysql-sqlite-much-more.3742/") {
+                            required = false
+                        }
+
+                        url("DecentHolograms", "https://modrinth.com/plugin/decentholograms") {
+                            required = false
+                        }
+
+                        url("ItemsAdder", "https://polymart.org/product/1851/itemsadder") {
                             required = false
                         }
                     }
