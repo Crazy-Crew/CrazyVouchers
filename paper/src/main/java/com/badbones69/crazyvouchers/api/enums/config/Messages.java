@@ -9,7 +9,7 @@ import com.badbones69.crazyvouchers.config.types.locale.MessageKeys;
 import com.badbones69.crazyvouchers.config.types.locale.MiscKeys;
 import com.ryderbelserion.fusion.core.FusionCore;
 import com.ryderbelserion.fusion.core.utils.AdvUtils;
-import com.ryderbelserion.fusion.paper.utils.MiscUtils;
+import com.ryderbelserion.fusion.core.utils.StringUtils;
 import net.kyori.adventure.audience.Audience;
 import net.kyori.adventure.text.Component;
 import org.jetbrains.annotations.NotNull;
@@ -199,11 +199,11 @@ public enum Messages {
         String message;
 
         if (this.isList) {
-            message = MiscUtils.toString(getList());
+            message = StringUtils.toString(getList());
         } else {
             message = getString();
         }
 
-        return FusionCore.FusionProvider.get().placeholders(audience, message, placeholders);
+        return FusionCore.Provider.get().placeholders(audience, message, placeholders);
     }
 }

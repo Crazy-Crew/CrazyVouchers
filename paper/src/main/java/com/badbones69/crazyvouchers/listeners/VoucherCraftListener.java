@@ -35,7 +35,7 @@ public class VoucherCraftListener implements Listener {
         for (final ItemStack itemStack : inventory.getMatrix()) {
             if (itemStack == null || itemStack.getType() == Material.AIR) return;
 
-            final Voucher voucher = crazyManager.getVoucherFromItem(itemStack);
+            final Voucher voucher = this.crazyManager.getVoucherFromItem(itemStack);
 
             if (voucher == null) return;
 

@@ -9,8 +9,8 @@ import com.badbones69.crazyvouchers.api.enums.misc.PersistentKeys;
 import com.badbones69.crazyvouchers.api.objects.Voucher;
 import com.badbones69.crazyvouchers.api.objects.VoucherCode;
 import com.badbones69.crazyvouchers.utils.ItemUtils;
-import com.ryderbelserion.fusion.api.enums.FileType;
-import com.ryderbelserion.fusion.api.utils.FileUtils;
+import com.ryderbelserion.fusion.core.managers.files.FileType;
+import com.ryderbelserion.fusion.core.utils.FileUtils;
 import com.ryderbelserion.fusion.paper.api.builder.items.modern.ItemBuilder;
 import com.ryderbelserion.fusion.paper.files.LegacyCustomFile;
 import com.ryderbelserion.fusion.paper.files.LegacyFileManager;
@@ -169,14 +169,14 @@ public class CrazyManager {
      * @return A list of crate names.
      */
     public final List<String> getVouchersList() {
-        return FileUtils.getNamesWithoutExtension(Optional.of("vouchers"), this.plugin.getDataPath(), ".yml");
+        return FileUtils.getNamesWithoutExtension("vouchers", this.plugin.getDataPath(), ".yml");
     }
 
     /**
      * @return A list of crate names.
      */
     public final List<String> getCodesList() {
-        return FileUtils.getNamesWithoutExtension(Optional.of("codes"), this.plugin.getDataPath(), ".yml");
+        return FileUtils.getNamesWithoutExtension("codes", this.plugin.getDataPath(), ".yml");
     }
     
     public final List<Voucher> getVouchers() {

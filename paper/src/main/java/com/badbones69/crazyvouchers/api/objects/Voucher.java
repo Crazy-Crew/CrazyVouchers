@@ -7,9 +7,9 @@ import com.badbones69.crazyvouchers.api.enums.FileSystem;
 import com.badbones69.crazyvouchers.api.enums.config.Messages;
 import com.badbones69.crazyvouchers.api.enums.misc.PersistentKeys;
 import com.badbones69.crazyvouchers.utils.ItemUtils;
+import com.ryderbelserion.fusion.core.utils.StringUtils;
 import com.ryderbelserion.fusion.paper.api.builder.items.modern.ItemBuilder;
 import com.ryderbelserion.fusion.paper.utils.ColorUtils;
-import com.ryderbelserion.fusion.paper.utils.MiscUtils;
 import org.bukkit.Color;
 import org.bukkit.Sound;
 import org.bukkit.configuration.file.FileConfiguration;
@@ -125,7 +125,7 @@ public class Voucher {
             final String trimMaterial = fileConfiguration.getString(path + "display-trim.material", "quartz").toLowerCase();
             final String trimPattern = fileConfiguration.getString(path + "display-trim.pattern", "sentry").toLowerCase();
 
-            this.itemBuilder.setTrim(trimPattern, trimMaterial, false);
+            this.itemBuilder.setTrim(trimPattern, trimMaterial);
         }
 
         if (fileConfiguration.contains(path + "skull")) {
@@ -476,7 +476,7 @@ public class Voucher {
         String messageString;
 
         if (isList(path, file)) {
-            messageString = MiscUtils.toString(file.getStringList(path));
+            messageString = StringUtils.toString(file.getStringList(path));
         } else {
             messageString = file.getString(path, "");
         }
