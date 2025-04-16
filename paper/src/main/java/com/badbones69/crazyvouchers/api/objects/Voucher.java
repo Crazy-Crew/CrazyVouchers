@@ -257,6 +257,10 @@ public class Voucher {
             this.itemBuilder.hideToolTip();
         }
 
+        if (fileConfiguration.contains(path + "components.item-model.namespace") && fileConfiguration.contains(path + "components.item-model.key")) {
+            this.itemBuilder.setItemModel(fileConfiguration.getString(path + "components.item-model.namespace", ""), fileConfiguration.getString(path + "components.item-model.key", ""));
+        }
+
         if (fileConfiguration.getBoolean(path + "options.firework.toggle")) {
             for (String color : fileConfiguration.getString(path + "options.firework.colors", "").split(", ")) {
                 this.fireworkColors.add(ColorUtils.getColor(color));

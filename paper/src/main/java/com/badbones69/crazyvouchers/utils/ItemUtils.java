@@ -82,6 +82,8 @@ public class ItemUtils {
                 itemBuilder.hideToolTip();
             }
 
+            itemBuilder.setItemModel(item.getString("item-model.namespace", ""), item.getString("item-model.key", ""));
+
             itemBuilder.setUnbreakable(item.getBoolean("unbreakable-item", false));
 
             // settings

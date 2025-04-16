@@ -62,6 +62,13 @@ voucher:
   components:
     # Hides the entire tooltip
     hide-tooltip: false
+    # The item model, Mojang introduced this in 1.21.4... this replaces custom model data!
+    # Set this to blank for it to do nothing.
+    item-model:
+      # The namespace i.e. nexo
+      namespace: ""
+      # The key i.e. emerald_helmet
+      key: ""
   # All options when they right-click it.
   options:
     # The message sent when they right-click it.
