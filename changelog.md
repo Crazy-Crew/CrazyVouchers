@@ -1,4 +1,5 @@
-Please report any bugs to our GitHub issues tab!
+### Please report any bugs to our GitHub issues tab!
+https://github.com/Crazy-Crew/CrazyVouchers/issues
 
 ## New Items section
 I've made a new `Items` section which is currently in use in CrazyCrates, I am simply bringing it to CrazyVouchers.
@@ -100,3 +101,18 @@ voucher:
 - No longer rely on ItemMeta anymore which means a large performance increase due to the nature of how ItemMeta works.
 - Commands have been overhauled which will make adding new commands easier!
 - Replaced plugin.yml with paper-plugin.yml.
+- Added support for item models which serves as a replacement for `Custom Model Data`
+```yml
+voucher:
+  # Any generic component for the Item.
+  components:
+    # Hides the entire tooltip
+    hide-tooltip: false
+    # The item model, Mojang introduced this in 1.21.4... this replaces custom model data!
+    # Set this to blank for it to do nothing.
+    item-model:
+      # The namespace i.e. nexo
+      namespace: ""
+      # The key i.e. emerald_helmet
+      key: "" 
+```
