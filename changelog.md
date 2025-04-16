@@ -1,3 +1,5 @@
+Please report any bugs to our GitHub issues tab!
+
 ## New Items section
 I've made a new `Items` section which is currently in use in CrazyCrates, I am simply bringing it to CrazyVouchers.
 
@@ -7,9 +9,13 @@ You can experiment with this option by enabling it in your `config.yml`
   - The migration is one way, Please be wary of this and take backups.
 
 ## Legacy Color Codes
-Legacy color codes are no longer supported, they have been replaced by MiniMessage, https://docs.advntr.dev/minimessage/format
+Legacy color codes are no longer supported, They have been replaced by MiniMessage, https://docs.advntr.dev/minimessage/format
 
-You can run /crazyvouchers migrate -mt VouchersColor which should convert existing configs to MiniMessage as best as possible
+### Migrate
+- https://toolbox.helpch.at/converters/legacy/minimessage
+- https://www.birdflop.com/resources/rgb/
+  - Use the "Decode" option labeled experimental, I complained about legacy color code garbage about 2 years ago, they remembered and pinged me.
+- /crazyvouchers migrate -mt VouchersColor which will try it's best to convert them.
 
 ### Other migration types
 We offer migration types for the following
@@ -92,4 +98,5 @@ voucher:
 | `luck_of_the_sea`       | `LUCK`                     |
 
 - No longer rely on ItemMeta anymore which means a large performance increase due to the nature of how ItemMeta works.
-- Replaced plugin.yml with paper-plugin.yml
+- Commands have been overhauled which will make adding new commands easier!
+- Replaced plugin.yml with paper-plugin.yml.
