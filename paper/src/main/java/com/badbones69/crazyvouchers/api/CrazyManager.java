@@ -155,11 +155,11 @@ public class CrazyManager {
                     "data.yml",
                     "users.yml",
                     "vouchers.yml"
-            ).forEach(file -> FileUtils.extract(file, path.resolve("examples"), true));
+            ).forEach(file -> FileUtils.extract(file, path.resolve("examples"), true, false));
 
-            FileUtils.extract("vouchers", path.resolve("examples"), true);
-            FileUtils.extract("codes", path.resolve("examples"), true);
-            FileUtils.extract("locale", path.resolve("examples"), true);
+            FileUtils.extract("vouchers", path.resolve("examples"), true, false);
+            FileUtils.extract("codes", path.resolve("examples"), true, false);
+            FileUtils.extract("locale", path.resolve("examples"), true, false);
         }
 
         load();

@@ -28,7 +28,7 @@ itemsadder = "4.0.10"
 nbtapi = "2.14.1"
 
 # Fusion API
-fusion = "1.0.1"
+fusion = "1.6.0"
 
 # Triumph API
 cmds = "2.2.0"
