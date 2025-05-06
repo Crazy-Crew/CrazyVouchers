@@ -43,6 +43,7 @@ voucher-codes: # Where you make your vouchers.
       enabled: true
       # The message to send the player.
       message: '{prefix}<gray>You have been given $10,000.'
+      # The whitelist world settings.
       whitelist-worlds:
         # Should we check the worlds players have to be in?
         toggle: false
@@ -55,7 +56,9 @@ voucher-codes: # Where you make your vouchers.
         # The commands to run if they don't have the permission.
         commands:
           - 'msg {player} send command for whatever reason'
+      # The permission settings.
       permission:
+        # The whitelist permission settings
         whitelist-permission:
           # If we should check players for this.
           toggle: false
@@ -67,6 +70,7 @@ voucher-codes: # Where you make your vouchers.
           # The commands to run if they don't have the permission.
           commands:
             - 'msg {player} send command for whatever reason'
+        # The blacklist permission settings
         blacklist-permission:
           # If we should check players for this.
           toggle: false
@@ -81,7 +85,7 @@ voucher-codes: # Where you make your vouchers.
       limiter:
         # If this should be enabled.
         toggle: false
-        # The max amount of uses for the voucher.
+        # The max number of uses for the voucher.
         amount: 10
       sound:
         # If the sounds should be enabled.
