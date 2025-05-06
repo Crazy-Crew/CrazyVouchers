@@ -257,6 +257,10 @@ public class Voucher {
             this.itemBuilder.hideToolTip();
         }
 
+        if (fileConfiguration.contains(path + "components.hide-tooltip-advanced") && fileConfiguration.isList(path + "components.hide-tooltip-advanced")) {
+            this.itemBuilder.hideComponents(fileConfiguration.getStringList(path + "components.hide-tooltip-advanced"));
+        }
+
         if (fileConfiguration.contains(path + "components.item-model.namespace") && fileConfiguration.contains(path + "components.item-model.key")) {
             this.itemBuilder.setItemModel(fileConfiguration.getString(path + "components.item-model.namespace", ""), fileConfiguration.getString(path + "components.item-model.key", ""));
         }

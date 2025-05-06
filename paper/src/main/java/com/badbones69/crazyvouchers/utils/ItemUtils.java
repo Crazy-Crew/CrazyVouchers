@@ -82,6 +82,10 @@ public class ItemUtils {
                 itemBuilder.hideToolTip();
             }
 
+            if (item.contains("hide-tooltip-advanced") && item.isList("hide-tooltip-advanced")) {
+                itemBuilder.hideComponents(item.getStringList("hide-tooltip-advanced"));
+            }
+
             itemBuilder.setItemModel(item.getString("item-model.namespace", ""), item.getString("item-model.key", ""));
 
             itemBuilder.setUnbreakable(item.getBoolean("unbreakable-item", false));
