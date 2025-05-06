@@ -31,7 +31,7 @@ public class CommandMigrate extends BaseCommand {
         if (!hasFlag) {
             Messages.lacking_flag.sendMessage(sender, new HashMap<>() {{
                 put("{flag}", "-mt");
-                put("{usage}", "/crazyvouchers migrate -mt <migration_type>");
+                put("{usage}", "/crazyvouchers migrate -mt [type]");
             }});
 
             return;
