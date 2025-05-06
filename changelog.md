@@ -108,6 +108,10 @@ voucher:
   components:
     # Hides the entire tooltip
     hide-tooltip: false
+    # Hides components defined in this list. It allows more control than above.
+    # Leave the hide-tooltip false if you plan to use this.
+    hide-tooltip-advanced:
+      - "enchantments"
     # The item model, Mojang introduced this in 1.21.4... this replaces custom model data!
     # Set this to blank for it to do nothing.
     item-model:
