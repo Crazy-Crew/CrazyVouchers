@@ -14,16 +14,16 @@ import com.badbones69.crazyvouchers.utils.ScheduleUtils;
 import com.ryderbelserion.fusion.paper.api.builder.items.modern.ItemBuilder;
 import dev.triumphteam.cmd.core.annotations.ArgName;
 import dev.triumphteam.cmd.core.annotations.Command;
-import dev.triumphteam.cmd.core.annotations.Permission;
+import dev.triumphteam.cmd.bukkit.annotation.Permission;
 import dev.triumphteam.cmd.core.annotations.Suggestion;
 import dev.triumphteam.cmd.core.annotations.Syntax;
-import dev.triumphteam.cmd.core.enums.Mode;
 import org.bukkit.Location;
 import org.bukkit.Server;
 import org.bukkit.Sound;
 import org.bukkit.SoundCategory;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.entity.Player;
+import org.bukkit.permissions.PermissionDefault;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -31,7 +31,7 @@ import java.util.Map;
 public class CommandRedeem extends BaseCommand {
 
     @Command(value = "redeem")
-    @Permission(value = "crazyvouchers.redeem", def = Mode.OP)
+    @Permission(value = "crazyvouchers.redeem", def = PermissionDefault.OP)
     @Syntax("/crazyvouchers redeem [code]")
     public void redeem(final Player player, @ArgName("code") @Suggestion("codes") String name) {
         final Location location = player.getLocation();

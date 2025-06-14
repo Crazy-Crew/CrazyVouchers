@@ -5,10 +5,10 @@ import com.badbones69.crazyvouchers.api.objects.Voucher;
 import com.badbones69.crazyvouchers.api.objects.VoucherCode;
 import com.badbones69.crazyvouchers.commands.BaseCommand;
 import dev.triumphteam.cmd.core.annotations.Command;
-import dev.triumphteam.cmd.core.annotations.Permission;
+import dev.triumphteam.cmd.bukkit.annotation.Permission;
 import dev.triumphteam.cmd.core.annotations.Syntax;
-import dev.triumphteam.cmd.core.enums.Mode;
 import org.bukkit.command.CommandSender;
+import org.bukkit.permissions.PermissionDefault;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -16,7 +16,7 @@ import java.util.List;
 public class CommandTypes extends BaseCommand {
 
     @Command(value = "types", alias = "list")
-    @Permission(value = "crazyvouchers.types", def = Mode.OP)
+    @Permission(value = "crazyvouchers.types", def = PermissionDefault.OP)
     @Syntax("/crazyvouchers types")
     public void types(final CommandSender sender) {
         final List<Voucher> vouchers = this.crazyManager.getVouchers();

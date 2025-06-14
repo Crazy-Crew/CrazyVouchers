@@ -8,15 +8,15 @@ import com.badbones69.crazyvouchers.config.ConfigManager;
 import com.badbones69.crazyvouchers.config.types.ConfigKeys;
 import com.ryderbelserion.fusion.core.managers.files.FileType;
 import dev.triumphteam.cmd.core.annotations.Command;
-import dev.triumphteam.cmd.core.annotations.Permission;
+import dev.triumphteam.cmd.bukkit.annotation.Permission;
 import dev.triumphteam.cmd.core.annotations.Syntax;
-import dev.triumphteam.cmd.core.enums.Mode;
 import org.bukkit.command.CommandSender;
+import org.bukkit.permissions.PermissionDefault;
 
 public class CommandReload extends BaseCommand {
 
     @Command("reload")
-    @Permission(value = "crazyvouchers.reload", def = Mode.OP)
+    @Permission(value = "crazyvouchers.reload", def = PermissionDefault.OP)
     @Syntax("/crazyvouchers reload")
     public void reload(final CommandSender sender) {
         this.plugin.getFusion().reload();

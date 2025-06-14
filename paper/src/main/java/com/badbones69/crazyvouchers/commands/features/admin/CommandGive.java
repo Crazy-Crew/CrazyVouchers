@@ -5,16 +5,16 @@ import com.badbones69.crazyvouchers.api.enums.config.Messages;
 import com.badbones69.crazyvouchers.api.objects.Voucher;
 import com.badbones69.crazyvouchers.commands.BaseCommand;
 import com.ryderbelserion.fusion.paper.api.builder.PlayerBuilder;
+import dev.triumphteam.cmd.bukkit.annotation.Permission;
 import dev.triumphteam.cmd.core.annotations.ArgName;
 import dev.triumphteam.cmd.core.annotations.Command;
 import dev.triumphteam.cmd.core.annotations.Optional;
-import dev.triumphteam.cmd.core.annotations.Permission;
 import dev.triumphteam.cmd.core.annotations.Suggestion;
 import dev.triumphteam.cmd.core.annotations.Syntax;
-import dev.triumphteam.cmd.core.enums.Mode;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.permissions.PermissionDefault;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -23,7 +23,7 @@ import java.util.Map;
 public class CommandGive extends BaseCommand {
 
     @Command(value = "give")
-    @Permission(value = "crazyvouchers.give", def = Mode.OP)
+    @Permission(value = "crazyvouchers.give", def = PermissionDefault.OP)
     @Syntax("/crazyvouchers give [voucher] [amount] [player] [argument]")
     public void give(final CommandSender sender, @ArgName("voucher") @Suggestion("vouchers") String name, @ArgName("amount") @Suggestion("numbers") int amount, @ArgName("player") @Suggestion("players") PlayerBuilder target, @Optional String argument) {
         final Voucher voucher = this.crazyManager.getVoucher(name);
@@ -55,7 +55,7 @@ public class CommandGive extends BaseCommand {
     }
 
     @Command(value = "giveall")
-    @Permission(value = "crazyvouchers.giveall", def = Mode.OP)
+    @Permission(value = "crazyvouchers.giveall", def = PermissionDefault.OP)
     @Syntax("/crazyvouchers giveall [voucher] [amount] [argument]")
     public void all(final CommandSender sender, @ArgName("voucher") @Suggestion("vouchers") String name, @ArgName("amount") @Suggestion("numbers") int amount, @Optional String argument) {
         final Voucher voucher = this.crazyManager.getVoucher(name);

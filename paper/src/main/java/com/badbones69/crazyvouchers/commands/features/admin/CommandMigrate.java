@@ -10,19 +10,19 @@ import com.badbones69.crazyvouchers.commands.features.admin.migrate.types.Vouche
 import com.badbones69.crazyvouchers.commands.features.admin.migrate.types.deprecation.NewItemMigrator;
 import dev.triumphteam.cmd.core.annotations.Command;
 import dev.triumphteam.cmd.core.annotations.Flag;
-import dev.triumphteam.cmd.core.annotations.Permission;
+import dev.triumphteam.cmd.bukkit.annotation.Permission;
 import dev.triumphteam.cmd.core.annotations.Syntax;
 import dev.triumphteam.cmd.core.argument.keyed.Flags;
-import dev.triumphteam.cmd.core.enums.Mode;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
+import org.bukkit.permissions.PermissionDefault;
 import java.util.HashMap;
 import java.util.Optional;
 
 public class CommandMigrate extends BaseCommand {
 
     @Command(value = "migrate")
-    @Permission(value = "crazyvouchers.migrate", def = Mode.OP)
+    @Permission(value = "crazyvouchers.migrate", def = PermissionDefault.OP)
     @Syntax("/crazyvouchers migrate -mt [type]")
     @Flag(flag = "mt", longFlag = "migration_type", argument = String.class, suggestion = "migrators")
     public void migrate(final CommandSender sender, final Flags flags) {

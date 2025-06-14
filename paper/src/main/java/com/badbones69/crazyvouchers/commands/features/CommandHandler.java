@@ -44,9 +44,9 @@ public class CommandHandler {
 
         new ArgumentRelations(this.commandManager).build();
 
-        this.commandManager.registerSuggestion(SuggestionKey.of("players"), (sender, context) -> server.getOnlinePlayers().stream().map(Player::getName).toList());
+        this.commandManager.registerSuggestion(SuggestionKey.of("players"), sender -> server.getOnlinePlayers().stream().map(Player::getName).toList());
 
-        this.commandManager.registerSuggestion(SuggestionKey.of("numbers"), (sender, context) -> {
+        this.commandManager.registerSuggestion(SuggestionKey.of("numbers"), sender -> {
             final List<String> numbers = new ArrayList<>();
 
             for (int i = 1; i <= 100; i++) numbers.add(String.valueOf(i));
@@ -54,7 +54,7 @@ public class CommandHandler {
             return numbers;
         });
 
-        this.commandManager.registerSuggestion(SuggestionKey.of("doubles"), (sender, context) -> {
+        this.commandManager.registerSuggestion(SuggestionKey.of("doubles"), sender -> {
             final List<String> numbers = new ArrayList<>();
 
             int count = 0;
@@ -70,12 +70,12 @@ public class CommandHandler {
             return numbers;
         });
 
-        this.commandManager.registerSuggestion(SuggestionKey.of("codes"), (sender, context) -> {
+        this.commandManager.registerSuggestion(SuggestionKey.of("codes"), sender -> {
             final List<VoucherCode> codes = this.crazyManager.getVoucherCodes();
 
             final List<String> suggestions = new ArrayList<>();
 
-            if (sender instanceof Player player) {
+            if (sender.getSender() instanceof Player player) {
                 if (PermissionKeys.crazyvouchers_admin.hasPermission(player)) { // if they have this permission, they get all the codes.
                     suggestions.addAll(codes.stream().map(VoucherCode::getCode).toList());
 
@@ -99,12 +99,12 @@ public class CommandHandler {
             return suggestions;
         });
 
-        this.commandManager.registerSuggestion(SuggestionKey.of("vouchers"), (sender, context) -> {
+        this.commandManager.registerSuggestion(SuggestionKey.of("vouchers"), sender -> {
             final List<Voucher> codes = this.crazyManager.getVouchers();
 
             final List<String> suggestions = new ArrayList<>();
 
-            if (sender instanceof Player player) {
+            if (sender.getSender() instanceof Player player) {
                 if (PermissionKeys.crazyvouchers_admin.hasPermission(player)) { // if they have this permission, they get all the codes.
                     suggestions.addAll(codes.stream().map(Voucher::getName).toList());
 
@@ -115,7 +115,7 @@ public class CommandHandler {
             return suggestions;
         });
 
-        this.commandManager.registerSuggestion(SuggestionKey.of("migrators"), (sender, context) -> {
+        this.commandManager.registerSuggestion(SuggestionKey.of("migrators"), sender -> {
             final List<String> migrators = new ArrayList<>();
 
             for (MigrationType value : MigrationType.values()) {
