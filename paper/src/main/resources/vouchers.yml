@@ -119,7 +119,7 @@ vouchers: # Where you make your vouchers.
       is-edible: false
   RankUp:
     # The material.
-    item: 'PAPER'
+    item: 'paper'
     # The name of the item.
     name: '<blue>Arg Example <aqua>{arg}'
     # The lore of the item.
