@@ -27,7 +27,6 @@ vouchers: # Where you make your vouchers.
     lore:
       - '<gray>Use this voucher to get fancy trims.'
       - '<gray>(<gold>!<gray>) <gray>Right click to redeem.'
-    player: ''
     # If the item should glow or not.
     glowing: true
     # The commands to send.
@@ -127,8 +126,6 @@ vouchers: # Where you make your vouchers.
     lore:
       - '<gray>Use this voucher to rank up to <red>{arg}'
       - '<dark_gray>(<yellow>!<dark_gray>) <light_purple>Right click to redeem.'
-    # The player name
-    player: ''
     # If the item should glow or not.
     glowing: true
     # The commands to send.

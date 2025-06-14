@@ -26,7 +26,6 @@ voucher:
   lore:
   - '<gray>Use this voucher to get fancy trims.'
   - '<gray>(<gold>!<gray>) <gray>Right click to redeem.'
-  player: ''
   # If the item should glow or not.
   glowing: true
   # The commands to send.
