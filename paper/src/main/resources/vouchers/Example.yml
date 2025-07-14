@@ -49,15 +49,14 @@ voucher:
     - '15 eco give {player} 10000'
     - '10 eco give {player} 100000'
     - '5 eco give {player} 1000000'
-
-
   # The durability or damage to the item given in the preview gui.
   display-damage: 50
-
   # The trim applied to the item in the preview gui.
   display-trim:
-    material: quartz
-    pattern: sentry
+    # The trim material
+    material: 'quartz'
+    # The trim pattern
+    pattern: 'sentry'
   # Any generic component for the Item.
   components:
     # Hides the entire tooltip
@@ -77,6 +76,7 @@ voucher:
   options:
     # The message sent when they right-click it.
     message: '<gray>Congratulations, you have yourself fancy trims'
+    # Settings related to world whitelist.
     whitelist-worlds:
       # Should we check the worlds players have to be in?
       toggle: false
@@ -86,7 +86,9 @@ voucher:
       worlds:
         - 'world'
         - 'world_nether'
+    # The permission settings.
     permission:
+      # The whitelist permission settings.
       whitelist-permission:
         # If we should check players for this.
         toggle: false
@@ -95,6 +97,7 @@ voucher:
         # If they don't have this permission, they can't use the voucher.
         permissions:
           - 'your-permission'
+      # The blacklist permission settings.
       blacklist-permission:
         # If we should check players for this.
         toggle: false
@@ -103,6 +106,7 @@ voucher:
         # If they have this permission, they can't use the voucher.
         permissions:
           - 'your-permission'
+    # Limiter related settings.
     limiter:
       # If this should be enabled.
       toggle: false
@@ -128,6 +132,5 @@ voucher:
       toggle: true
       # The colors of the firework.
       colors: 'Black, Gray, Aqua'
-
     # If the voucher is edible
     is-edible: false

@@ -1,10 +1,9 @@
 voucher-code:
   # The code to use in /crazyvouchers redeem <code>
-  code: startermoney
-
+  code: 'startermoney'
   # Run normal commands when the code is redeemed.
   commands:
-    - eco give {player} 10000
+    - 'eco give {player} 10000'
   # Random Commands is completely random.
   random-commands:
     - 'eco give 50000'
@@ -19,6 +18,7 @@ voucher-code:
     - '15 eco give {player} 10000'
     - '10 eco give {player} 100000'
     - '5 eco give {player} 1000000'
+  # All options when they right-click it.
   options:
     # If the option is case-sensitive or not.
     case-sensitive: false
@@ -26,6 +26,7 @@ voucher-code:
     enabled: true
     # The message to send the player.
     message: '{prefix}<gray>You have been given $10,000.'
+    # The whitelist world settings.
     whitelist-worlds:
       # Should we check the worlds players have to be in?
       toggle: false
@@ -38,7 +39,9 @@ voucher-code:
       # The commands to run if they don't have the permission.
       commands:
         - 'msg {player} send command for whatever reason'
+    # The permission settings.
     permission:
+      # The whitelist permission settings.
       whitelist-permission:
         # If we should check players for this.
         toggle: false
@@ -50,6 +53,7 @@ voucher-code:
         # The commands to run if they don't have the permission.
         commands:
           - 'msg {player} send command for whatever reason'
+      # The blacklist permission settings.
       blacklist-permission:
         # If we should check players for this.
         toggle: false
@@ -58,14 +62,16 @@ voucher-code:
         # If they have this permission, they can't use the voucher.
         permissions:
         - 'voucher.blacklist.startermoney'
-          # The commands to run if they do have the permission.
+        # The commands to run if they do have the permission.
         commands:
           - 'msg {player} send command for whatever reason'
+    # Limiter related settings.
     limiter:
       # If this should be enabled.
       toggle: false
       # The max amount of uses for the voucher.
       amount: 10
+    # The sound settings.
     sound:
       # If the sounds should be enabled.
       toggle: true
@@ -77,6 +83,7 @@ voucher-code:
       # https://minecraft.wiki/w/Sounds.json
       sounds:
         - 'block.cherry_wood_button.click_on'
+    # The firework settings.
     firework:
       # If the fireworks should be enabled.
       toggle: true
