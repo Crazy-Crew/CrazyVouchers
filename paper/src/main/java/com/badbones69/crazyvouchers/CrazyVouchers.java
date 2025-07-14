@@ -68,7 +68,7 @@ public class CrazyVouchers extends JavaPlugin {
         new MetricsWrapper(4536).start();
 
         this.crazyManager = new CrazyManager();
-        this.crazyManager.load();
+        this.crazyManager.load(false);
 
         this.inventoryManager = new InventoryManager();
 

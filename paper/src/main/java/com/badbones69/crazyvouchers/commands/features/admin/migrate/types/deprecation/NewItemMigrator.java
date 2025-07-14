@@ -153,7 +153,7 @@ public class NewItemMigrator extends IVoucherMigrator {
         this.fileManager.init(new ArrayList<>());
 
         // reload crates
-        this.crazyManager.load();
+        this.crazyManager.load(true);
     }
 
     @Override

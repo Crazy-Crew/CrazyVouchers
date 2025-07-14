@@ -188,7 +188,7 @@ public class LegacyColorMigrator extends IVoucherMigrator {
 
         this.fileManager.init(new ArrayList<>());
 
-        this.crazyManager.load();
+        this.crazyManager.load(true);
     }
 
     private void processItems(@NotNull final String name, @NotNull final ConfigurationSection section) {

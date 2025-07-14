@@ -48,9 +48,13 @@ public class CrazyManager {
     private final List<String> brokenVouchers = new ArrayList<>();
     private final List<String> brokenVoucherCodes = new ArrayList<>();
 
-    public void load() {
+    public void load(final boolean isMigrator) {
         // Used for when wanting to put in fake vouchers.
         // for(int i = 1; i <= 400; i++) vouchers.add(new Voucher(i));
+
+        if (!isMigrator) {
+            loadExamples();
+        }
 
         loadVouchers();
         loadCodes();
@@ -152,6 +156,10 @@ public class CrazyManager {
         this.vouchers.clear();
         this.voucherCodes.clear();
 
+        load(false);
+    }
+
+    public void loadExamples() {
         if (this.config.getProperty(ConfigKeys.update_examples_folder)) {
             final List<FileAction> actions = new ArrayList<>();
 
@@ -172,8 +180,6 @@ public class CrazyManager {
                     "vouchers.yml"
             ).forEach(file -> FileUtils.extract(file, this.dataPath.resolve("examples"), actions));
         }
-
-        load();
     }
 
     public final List<Path> getVouchersList() {
