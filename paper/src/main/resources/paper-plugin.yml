@@ -2,9 +2,10 @@ name: '${name}'
 main: '${group}.${name}'
 
 version: '${version}'
-api-version: '${apiVersion}'
+api-version: '${minecraft}'
 description: '${description}'
-website: '${website}'
+
+authors: [ badbones69, ryderbelserion ]
 
 folia-supported: true
 
