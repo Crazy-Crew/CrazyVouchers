@@ -2,8 +2,6 @@ plugins {
     `config-paper`
 }
 
-project.version = rootProject.version
-
 repositories {
     maven("https://repo.extendedclip.com/content/repositories/placeholderapi/")
 
