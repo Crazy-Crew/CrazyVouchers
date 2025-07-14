@@ -7,8 +7,8 @@ import com.badbones69.crazyvouchers.api.enums.FileSystem;
 import com.badbones69.crazyvouchers.api.enums.config.Messages;
 import com.badbones69.crazyvouchers.api.enums.misc.PersistentKeys;
 import com.badbones69.crazyvouchers.utils.ItemUtils;
-import com.ryderbelserion.fusion.core.utils.StringUtils;
-import com.ryderbelserion.fusion.paper.api.builder.items.modern.ItemBuilder;
+import com.ryderbelserion.fusion.core.api.utils.StringUtils;
+import com.ryderbelserion.fusion.paper.api.builders.items.ItemBuilder;
 import com.ryderbelserion.fusion.paper.utils.ColorUtils;
 import org.bukkit.Color;
 import org.bukkit.Sound;
@@ -19,6 +19,8 @@ import org.bukkit.inventory.ItemType;
 import org.bukkit.persistence.PersistentDataType;
 import com.badbones69.crazyvouchers.config.ConfigManager;
 import com.badbones69.crazyvouchers.config.types.ConfigKeys;
+import org.jetbrains.annotations.NotNull;
+
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -96,9 +98,9 @@ public class Voucher {
 
     private final CrazyVouchers plugin = CrazyVouchers.get();
 
-    public Voucher(FileConfiguration fileConfiguration, String name) {
-        this.name = name.replaceAll(".yml", "");
+    public Voucher(@NotNull final FileConfiguration fileConfiguration, @NotNull final String name) {
         this.usesArgs = false;
+        this.name = name;
 
         final FileSystem system = this.config.getProperty(ConfigKeys.file_system);
 
@@ -480,7 +482,7 @@ public class Voucher {
         this.cooldowns.remove(player.getUniqueId());
     }
 
-    private String getMessage(String path, FileConfiguration file) {
+    private String getMessage(final String path, final FileConfiguration file) {
         String messageString;
 
         if (isList(path, file)) {
@@ -492,7 +494,7 @@ public class Voucher {
         return messageString;
     }
     
-    private boolean isList(String path, FileConfiguration file) {
+    private boolean isList(final String path, final FileConfiguration file) {
         return file.contains(path) && !file.getStringList(path).isEmpty();
     }
 }

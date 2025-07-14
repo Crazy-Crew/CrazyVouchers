@@ -20,7 +20,7 @@ public enum PersistentKeys {
 
     private final String NamespacedKey;
 
-    PersistentKeys(String NamespacedKey) {
+    PersistentKeys(@NotNull final String NamespacedKey) {
         this.NamespacedKey = NamespacedKey;
     }
 

@@ -1,5 +1,7 @@
 package com.badbones69.crazyvouchers.api.enums;
 
+import org.jetbrains.annotations.NotNull;
+
 public enum State {
 
     send_message("send_message"),
@@ -7,7 +9,7 @@ public enum State {
 
     private final String name;
 
-    State(String name) {
+    State(@NotNull final String name) {
         this.name = name;
     }
 

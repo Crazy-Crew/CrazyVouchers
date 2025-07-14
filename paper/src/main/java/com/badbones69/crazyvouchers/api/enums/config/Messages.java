@@ -7,9 +7,9 @@ import com.badbones69.crazyvouchers.config.types.ConfigKeys;
 import com.badbones69.crazyvouchers.config.types.locale.CommandKeys;
 import com.badbones69.crazyvouchers.config.types.locale.MessageKeys;
 import com.badbones69.crazyvouchers.config.types.locale.MiscKeys;
-import com.ryderbelserion.fusion.core.FusionCore;
-import com.ryderbelserion.fusion.core.utils.AdvUtils;
-import com.ryderbelserion.fusion.core.utils.StringUtils;
+import com.ryderbelserion.fusion.core.FusionProvider;
+import com.ryderbelserion.fusion.core.api.utils.AdvUtils;
+import com.ryderbelserion.fusion.core.api.utils.StringUtils;
 import net.kyori.adventure.audience.Audience;
 import net.kyori.adventure.text.Component;
 import org.jetbrains.annotations.NotNull;
@@ -204,6 +204,6 @@ public enum Messages {
             message = getString();
         }
 
-        return FusionCore.Provider.get().placeholders(audience, message, placeholders);
+        return FusionProvider.get().color(audience, message, placeholders);
     }
 }

@@ -7,11 +7,10 @@ import com.badbones69.crazyvouchers.api.enums.FileSystem;
 import com.badbones69.crazyvouchers.commands.features.admin.migrate.IVoucherMigrator;
 import com.badbones69.crazyvouchers.commands.features.admin.migrate.enums.MigrationType;
 import com.badbones69.crazyvouchers.config.types.ConfigKeys;
-import com.ryderbelserion.fusion.core.managers.files.FileType;
-import com.ryderbelserion.fusion.core.utils.FileUtils;
-import com.ryderbelserion.fusion.core.utils.StringUtils;
-import com.ryderbelserion.fusion.paper.files.LegacyCustomFile;
-import com.ryderbelserion.fusion.paper.files.LegacyFileManager;
+import com.ryderbelserion.fusion.core.api.utils.FileUtils;
+import com.ryderbelserion.fusion.core.api.utils.StringUtils;
+import com.ryderbelserion.fusion.paper.files.FileManager;
+import com.ryderbelserion.fusion.paper.files.types.PaperCustomFile;
 import com.ryderbelserion.fusion.paper.utils.ItemUtils;
 import org.bukkit.block.banner.PatternType;
 import org.bukkit.command.CommandSender;
@@ -28,7 +27,7 @@ import java.util.Map;
 
 public class NewItemMigrator extends IVoucherMigrator {
 
-    private final LegacyFileManager fileManager = this.plugin.getFileManager();
+    private final FileManager fileManager = this.plugin.getFileManager();
 
     public NewItemMigrator(final CommandSender sender) {
         super(sender, MigrationType.NEW_ITEM_FORMAT);
@@ -85,12 +84,10 @@ public class NewItemMigrator extends IVoucherMigrator {
             }
 
             case MULTIPLE -> {
-                final List<Path> vouchers = FileUtils.getFiles(getVouchersDirectory().toPath(), ".yml");
+                final List<Path> vouchers = FileUtils.getFiles(getVouchersDirectory(), ".yml");
 
                 for (final Path voucher : vouchers) {
-                    final String fileName = voucher.getFileName().toString();
-
-                    final LegacyCustomFile customFile = this.fileManager.getFile(fileName, FileType.YAML);
+                    final PaperCustomFile customFile = this.fileManager.getPaperCustomFile(voucher);
 
                     if (customFile == null) continue;
 
@@ -109,18 +106,16 @@ public class NewItemMigrator extends IVoucherMigrator {
                             customFile.save();
                         }
 
-                        success.add("<green>⤷ " + customFile.getEffectiveName());
+                        success.add("<green>⤷ " + customFile.getPrettyName());
                     } catch (final Exception exception) {
-                        failed.add("<red>⤷ " + customFile.getEffectiveName());
+                        failed.add("<red>⤷ " + customFile.getPrettyName());
                     }
                 }
 
-                final List<Path> codes = FileUtils.getFiles(getCodesDirectory().toPath(), ".yml");
+                final List<Path> codes = FileUtils.getFiles(getCodesDirectory(), ".yml");
 
                 for (final Path code : codes) {
-                    final String fileName = code.getFileName().toString();
-
-                    final LegacyCustomFile customFile = this.fileManager.getFile(fileName, FileType.YAML);
+                    final PaperCustomFile customFile = this.fileManager.getPaperCustomFile(code);
 
                     if (customFile == null) continue;
 
@@ -139,9 +134,9 @@ public class NewItemMigrator extends IVoucherMigrator {
                             customFile.save();
                         }
 
-                        success.add("<green>⤷ " + customFile.getEffectiveName());
+                        success.add("<green>⤷ " + customFile.getPrettyName());
                     } catch (final Exception exception) {
-                        failed.add("<red>⤷ " + customFile.getEffectiveName());
+                        failed.add("<red>⤷ " + customFile.getPrettyName());
                     }
                 }
             }
@@ -155,7 +150,7 @@ public class NewItemMigrator extends IVoucherMigrator {
             addAll(success);
         }}, convertedCrates, failedCrates);
 
-        this.fileManager.init();
+        this.fileManager.init(new ArrayList<>());
 
         // reload crates
         this.crazyManager.load();

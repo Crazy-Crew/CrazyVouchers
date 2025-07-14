@@ -1,5 +1,7 @@
 package com.badbones69.crazyvouchers.api.enums;
 
+import org.jetbrains.annotations.NotNull;
+
 import java.util.List;
 
 public enum Comments {
@@ -77,7 +79,7 @@ public enum Comments {
 
     private final List<String> comments;
 
-    Comments(final List<String> comments) {
+    Comments(@NotNull final List<String> comments) {
         this.comments = comments;
     }
 

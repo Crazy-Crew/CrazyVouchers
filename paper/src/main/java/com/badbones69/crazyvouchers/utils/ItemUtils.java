@@ -1,12 +1,12 @@
 package com.badbones69.crazyvouchers.utils;
 
 import com.badbones69.crazyvouchers.CrazyVouchers;
-import com.ryderbelserion.fusion.core.utils.StringUtils;
-import com.ryderbelserion.fusion.paper.api.builder.items.modern.ItemBuilder;
-import com.ryderbelserion.fusion.paper.api.builder.items.modern.types.PatternBuilder;
-import com.ryderbelserion.fusion.paper.api.builder.items.modern.types.PotionBuilder;
-import com.ryderbelserion.fusion.paper.api.builder.items.modern.types.SkullBuilder;
-import com.ryderbelserion.fusion.paper.api.builder.items.modern.types.SpawnerBuilder;
+import com.ryderbelserion.fusion.core.api.utils.StringUtils;
+import com.ryderbelserion.fusion.paper.api.builders.items.ItemBuilder;
+import com.ryderbelserion.fusion.paper.api.builders.items.types.PatternBuilder;
+import com.ryderbelserion.fusion.paper.api.builders.items.types.PotionBuilder;
+import com.ryderbelserion.fusion.paper.api.builders.items.types.SkullBuilder;
+import com.ryderbelserion.fusion.paper.api.builders.items.types.SpawnerBuilder;
 import net.kyori.adventure.text.logger.slf4j.ComponentLogger;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.enchantments.Enchantment;
@@ -184,7 +184,7 @@ public class ItemUtils {
                 String value = optionString.replace(option + ":", "").replace(option, "");
 
                 switch (option.toLowerCase()) {
-                    case "item" -> itemBuilder.withType(value.toLowerCase());
+                    case "item" -> itemBuilder.withCustomItem(value.toLowerCase());
                     case "name" -> itemBuilder.setDisplayName(value);
                     case "amount" -> {
                         try {
@@ -242,7 +242,7 @@ public class ItemUtils {
                     }
                 }
             }
-        } catch (Exception exception) {
+        } catch (final Exception exception) {
             itemBuilder.withType(ItemType.RED_TERRACOTTA).setDisplayName("<red>ERROR").withDisplayLore(Arrays.asList("<red>There is an error", "<red>For : <red>" + (placeHolder != null ? placeHolder : "")));
 
             exception.printStackTrace();

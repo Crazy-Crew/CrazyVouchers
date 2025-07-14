@@ -9,11 +9,11 @@ import com.badbones69.crazyvouchers.api.enums.misc.PersistentKeys;
 import com.badbones69.crazyvouchers.api.objects.Voucher;
 import com.badbones69.crazyvouchers.api.objects.VoucherCode;
 import com.badbones69.crazyvouchers.utils.ItemUtils;
-import com.ryderbelserion.fusion.core.managers.files.FileType;
-import com.ryderbelserion.fusion.core.utils.FileUtils;
-import com.ryderbelserion.fusion.paper.api.builder.items.modern.ItemBuilder;
-import com.ryderbelserion.fusion.paper.files.LegacyCustomFile;
-import com.ryderbelserion.fusion.paper.files.LegacyFileManager;
+import com.ryderbelserion.fusion.core.api.enums.FileAction;
+import com.ryderbelserion.fusion.core.api.utils.FileUtils;
+import com.ryderbelserion.fusion.paper.api.builders.items.ItemBuilder;
+import com.ryderbelserion.fusion.paper.files.FileManager;
+import com.ryderbelserion.fusion.paper.files.types.PaperCustomFile;
 import io.papermc.paper.persistence.PersistentDataContainerView;
 import net.kyori.adventure.text.logger.slf4j.ComponentLogger;
 import org.bukkit.Material;
@@ -29,15 +29,16 @@ import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
-import java.util.Optional;
 
 public class CrazyManager {
 
     private final CrazyVouchers plugin = CrazyVouchers.get();
 
+    private final Path dataPath = this.plugin.getDataPath();
+
     private final SettingsManager config = ConfigManager.getConfig();
 
-    private final LegacyFileManager fileManager = this.plugin.getFileManager();
+    private final FileManager fileManager = this.plugin.getFileManager();
 
     private final ComponentLogger logger = this.plugin.getComponentLogger();
 
@@ -78,21 +79,23 @@ public class CrazyManager {
             }
 
             case MULTIPLE -> {
-                for (final String code : getCodesList()) {
-                    @Nullable final LegacyCustomFile file = this.fileManager.getFile(code, FileType.YAML);
+                for (final Path code : getCodesList()) {
+                    @Nullable final PaperCustomFile file = this.fileManager.getPaperCustomFile(code);
 
                     if (file != null) {
                         final YamlConfiguration configuration = file.getConfiguration();
 
                         if (configuration != null) {
-                            this.voucherCodes.add(new VoucherCode(configuration, code));
+                            this.voucherCodes.add(new VoucherCode(configuration, file.getPrettyName()));
                         } else {
                             this.logger.warn("Could not load code configuration for {}", code);
-                            this.brokenVoucherCodes.add(code);
+
+                            this.brokenVouchers.add(file.getFileName());
                         }
                     } else {
                         this.logger.warn("The code file named {} could not be found in the cache", code);
-                        this.brokenVoucherCodes.add(code);
+
+                        this.brokenVouchers.add(code.getFileName().toString());
                     }
                 }
             }
@@ -122,21 +125,23 @@ public class CrazyManager {
             }
 
             case MULTIPLE -> {
-                for (final String voucher : getVouchersList()) {
-                    @Nullable final LegacyCustomFile file = this.fileManager.getFile(voucher, FileType.YAML);
+                for (final Path voucher : getVouchersList()) {
+                    @Nullable final PaperCustomFile file = this.fileManager.getPaperCustomFile(voucher);
 
                     if (file != null) {
                         final YamlConfiguration configuration = file.getConfiguration();
 
                         if (configuration != null) {
-                            this.vouchers.add(new Voucher(configuration, voucher));
+                            this.vouchers.add(new Voucher(configuration, file.getPrettyName()));
                         } else {
                             this.logger.warn("Could not load voucher configuration for {}", voucher);
-                            this.brokenVouchers.add(voucher);
+
+                            this.brokenVouchers.add(file.getFileName());
                         }
                     } else {
                         this.logger.warn("The voucher file named {} could not be found in the cache", voucher);
-                        this.brokenVouchers.add(voucher);
+
+                        this.brokenVouchers.add(voucher.getFileName().toString());
                     }
                 }
             }
@@ -148,35 +153,34 @@ public class CrazyManager {
         this.voucherCodes.clear();
 
         if (this.config.getProperty(ConfigKeys.update_examples_folder)) {
-            final Path path = this.plugin.getDataFolder().toPath();
+            final List<FileAction> actions = new ArrayList<>();
+
+            actions.add(FileAction.DELETE_FILE);
+            actions.add(FileAction.EXTRACT_FOLDER);
+
+            FileUtils.extract("vouchers", this.dataPath.resolve("examples"), actions);
+            FileUtils.extract("codes", this.dataPath.resolve("examples"), actions);
+            FileUtils.extract("locale", this.dataPath.resolve("examples"), actions);
+
+            actions.remove(FileAction.EXTRACT_FOLDER);
 
             List.of(
                     "codes.yml",
                     "data.yml",
                     "users.yml",
                     "vouchers.yml"
-            ).forEach(file -> FileUtils.extract(file, path.resolve("examples"), true, false));
-
-            FileUtils.extract("vouchers", path.resolve("examples"), true, false);
-            FileUtils.extract("codes", path.resolve("examples"), true, false);
-            FileUtils.extract("locale", path.resolve("examples"), true, false);
+            ).forEach(file -> FileUtils.extract(file, this.dataPath.resolve("examples"), actions));
         }
 
         load();
     }
 
-    /**
-     * @return A list of crate names.
-     */
-    public final List<String> getVouchersList() {
-        return FileUtils.getNamesWithoutExtension("vouchers", this.plugin.getDataPath(), ".yml");
+    public final List<Path> getVouchersList() {
+        return FileUtils.getFiles(this.plugin.getDataPath().resolve("vouchers"), ".yml");
     }
 
-    /**
-     * @return A list of crate names.
-     */
-    public final List<String> getCodesList() {
-        return FileUtils.getNamesWithoutExtension("codes", this.plugin.getDataPath(), ".yml");
+    public final List<Path> getCodesList() {
+        return FileUtils.getFiles(this.plugin.getDataPath().resolve("codes"), ".yml");
     }
     
     public final List<Voucher> getVouchers() {
@@ -195,7 +199,7 @@ public class CrazyManager {
         return this.brokenVoucherCodes;
     }
 
-    public Voucher getVoucher(String voucherName) {
+    public Voucher getVoucher(final String voucherName) {
         for (Voucher voucher : getVouchers()) {
             if (voucher.getName().equalsIgnoreCase(voucherName)) {
                 return voucher;
@@ -205,7 +209,7 @@ public class CrazyManager {
         return null;
     }
     
-    public boolean isVoucherName(String voucherName) {
+    public boolean isVoucherName(final String voucherName) {
         for (Voucher voucher : getVouchers()) {
             if (voucher.getName().equalsIgnoreCase(voucherName)) return false;
         }
@@ -213,7 +217,7 @@ public class CrazyManager {
         return true;
     }
     
-    public VoucherCode getVoucherCode(String voucherName) {
+    public VoucherCode getVoucherCode(final String voucherName) {
         for (VoucherCode voucher : getVoucherCodes()) {
             if (voucher.getCode().equalsIgnoreCase(voucherName)) return voucher;
         }
@@ -221,7 +225,7 @@ public class CrazyManager {
         return null;
     }
     
-    public boolean isVoucherCode(String voucherCode) {
+    public boolean isVoucherCode(final String voucherCode) {
         for (VoucherCode voucher : getVoucherCodes()) {
             if (voucher.isEnabled()) {
                 if (voucher.isCaseSensitive()) {
@@ -302,18 +306,18 @@ public class CrazyManager {
         return newString;
     }
 
-    public List<ItemBuilder> getItems(FileConfiguration file, String voucher) {
+    public List<ItemBuilder> getItems(final FileConfiguration file, final String voucher) {
         return ItemUtils.convertStringList(file.getStringList("voucher.items"), voucher);
     }
     
-    private boolean usesRandom(String string) {
+    private boolean usesRandom(final String string) {
         return string.toLowerCase().contains("{random}:");
     }
     
-    private long pickNumber(long min, long max) {
+    private long pickNumber(final long min, final long max) {
         try {
             return min + Methods.getRandom().nextLong(max - min);
-        } catch (IllegalArgumentException e) {
+        } catch (final IllegalArgumentException exception) {
             return min;
         }
     }

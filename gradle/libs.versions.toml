@@ -29,7 +29,7 @@ nexo = "1.6.0" # https://github.com/Nexo-MC
 ## Other
 triumph-cmds = "2.0.0-BETA-4" # https://github.com/TriumphTeam/triumph-cmds
 bStats = "3.1.0" # https://github.com/Bastian/bStats
-fusion = "1.6.0" # https://github.com/ryderbelserion/Fusion
+fusion = "1.22.4" # https://github.com/ryderbelserion/Fusion
 
 ## Gradle Plugins
 fix-javadoc = "1.19" # https://github.com/mfnalex/gradle-fix-javadoc-plugin

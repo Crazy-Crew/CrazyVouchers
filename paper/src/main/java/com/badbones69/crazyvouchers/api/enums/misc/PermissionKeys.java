@@ -23,7 +23,6 @@ public enum PermissionKeys {
     crazyvouchers_help("help", "Access to /crazyvouchers help", PermissionDefault.OP),
     crazyvouchers_reload("reload", "Access to /crazyvouchers reload", PermissionDefault.OP);
 
-
     private final String node;
     private final String description;
     private final PermissionDefault isDefault;

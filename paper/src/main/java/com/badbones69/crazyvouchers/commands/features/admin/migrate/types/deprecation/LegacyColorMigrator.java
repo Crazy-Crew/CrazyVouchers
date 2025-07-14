@@ -7,14 +7,13 @@ import com.badbones69.crazyvouchers.api.objects.VoucherCode;
 import com.badbones69.crazyvouchers.commands.features.admin.migrate.IVoucherMigrator;
 import com.badbones69.crazyvouchers.commands.features.admin.migrate.enums.MigrationType;
 import com.badbones69.crazyvouchers.config.types.ConfigKeys;
-import com.ryderbelserion.fusion.core.managers.files.FileType;
-import com.ryderbelserion.fusion.core.utils.AdvUtils;
-import com.ryderbelserion.fusion.paper.files.LegacyCustomFile;
+import com.ryderbelserion.fusion.core.api.utils.AdvUtils;
+import com.ryderbelserion.fusion.paper.files.types.PaperCustomFile;
 import org.bukkit.command.CommandSender;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.jetbrains.annotations.NotNull;
-import java.io.File;
+import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -102,11 +101,12 @@ public class LegacyColorMigrator extends IVoucherMigrator {
             case MULTIPLE -> {
                 final List<VoucherCode> codes = this.crazyManager.getVoucherCodes();
 
+                final Path code_dir = this.dataPath.resolve("codes");
+
                 for (final VoucherCode code : codes) {
-                    final String name = code.getName();
                     final String file = code.getName() + ".yml";
 
-                    final LegacyCustomFile customFile = this.fileManager.getFile(name, FileType.YAML);
+                    final PaperCustomFile customFile = this.fileManager.getPaperCustomFile(code_dir.resolve(file));
 
                     if (customFile == null) {
                         failed.add("<red>⤷ " + file);
@@ -139,11 +139,13 @@ public class LegacyColorMigrator extends IVoucherMigrator {
 
                 final List<Voucher> vouchers = this.crazyManager.getVouchers();
 
+                final Path voucher_dir = this.dataPath.resolve("codes");
+
                 for (final Voucher voucher : vouchers) {
                     final String name = voucher.getName();
                     final String file = voucher.getName() + ".yml";
 
-                    final LegacyCustomFile customFile = this.fileManager.getFile(name, FileType.YAML);
+                    final PaperCustomFile customFile = this.fileManager.getPaperCustomFile(voucher_dir.resolve(file));
 
                     if (customFile == null) {
                         failed.add("<red>⤷ " + file);
@@ -184,7 +186,7 @@ public class LegacyColorMigrator extends IVoucherMigrator {
             addAll(success);
         }}, convertedCount, failedCount);
 
-        this.fileManager.init();
+        this.fileManager.init(new ArrayList<>());
 
         this.crazyManager.load();
     }
@@ -236,12 +238,12 @@ public class LegacyColorMigrator extends IVoucherMigrator {
     }
 
     @Override
-    public final File getVouchersDirectory() {
-        return new File(this.plugin.getDataFolder(), "vouchers");
+    public final Path getVouchersDirectory() {
+        return this.dataPath.resolve("vouchers");
     }
 
     @Override
-    public final File getCodesDirectory() {
-        return new File(this.plugin.getDataFolder(), "codes");
+    public final Path getCodesDirectory() {
+        return this.dataPath.resolve("codes");
     }
 }

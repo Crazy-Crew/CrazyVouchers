@@ -1,7 +1,7 @@
 package com.badbones69.crazyvouchers.api.builders;
 
 import com.badbones69.crazyvouchers.CrazyVouchers;
-import com.ryderbelserion.fusion.core.utils.AdvUtils;
+import com.ryderbelserion.fusion.core.api.utils.AdvUtils;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;

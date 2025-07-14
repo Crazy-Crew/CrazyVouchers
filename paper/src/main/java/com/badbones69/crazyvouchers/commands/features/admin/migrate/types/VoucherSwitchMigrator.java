@@ -3,16 +3,17 @@ package com.badbones69.crazyvouchers.commands.features.admin.migrate.types;
 import com.badbones69.crazyvouchers.commands.features.admin.migrate.IVoucherMigrator;
 import com.badbones69.crazyvouchers.commands.features.admin.migrate.enums.MigrationType;
 import com.badbones69.crazyvouchers.config.types.ConfigKeys;
-import com.ryderbelserion.fusion.core.managers.files.FileType;
-import com.ryderbelserion.fusion.core.utils.FileUtils;
-import com.ryderbelserion.fusion.paper.files.LegacyCustomFile;
+import com.ryderbelserion.fusion.core.api.utils.FileUtils;
+import com.ryderbelserion.fusion.paper.files.types.PaperCustomFile;
 import org.bukkit.command.CommandSender;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.jetbrains.annotations.NotNull;
 import java.io.File;
 import java.io.IOException;
+import java.nio.file.Files;
 import java.nio.file.Path;
+import java.util.ArrayList;
 import java.util.List;
 
 public class VoucherSwitchMigrator extends IVoucherMigrator {
@@ -25,15 +26,15 @@ public class VoucherSwitchMigrator extends IVoucherMigrator {
     public void run() {
         switch (this.config.getProperty(ConfigKeys.file_system)) {
             case SINGLE -> {
-                final File voucher_directory = getVouchersDirectory();
-                final File code_directory = getCodesDirectory();
+                final Path voucher_directory = getVouchersDirectory();
+                final Path code_directory = getCodesDirectory();
 
-                final File voucher_file = new File(this.dataFolder, "vouchers.yml");
+                final Path voucher_file = this.dataPath.resolve("vouchers.yml");
 
                 YamlConfiguration voucher_config = null;
 
-                if (voucher_file.exists()) {
-                    voucher_config = YamlConfiguration.loadConfiguration(voucher_file);
+                if (Files.exists(voucher_file)) {
+                    voucher_config = YamlConfiguration.loadConfiguration(voucher_file.toFile());
                 }
 
                 if (voucher_config != null) {
@@ -43,17 +44,17 @@ public class VoucherSwitchMigrator extends IVoucherMigrator {
                         for (final String key : vouchers.getKeys(false)) {
                             final ConfigurationSection entry = vouchers.getConfigurationSection(key);
 
-                            final File file = new File(voucher_directory, key);
+                            final Path path = voucher_directory.resolve(key);
 
-                            if (!file.exists()) {
+                            if (!Files.exists(path)) {
                                 try {
-                                    file.createNewFile();
+                                    Files.createFile(path);
                                 } catch (IOException exception) {
                                     exception.printStackTrace();
                                 }
                             }
 
-                            final LegacyCustomFile customFile = new LegacyCustomFile(FileType.YAML, file, true);
+                            final PaperCustomFile customFile = new PaperCustomFile(path, new ArrayList<>());
 
                             customFile.load();
 
@@ -70,12 +71,12 @@ public class VoucherSwitchMigrator extends IVoucherMigrator {
                     }
                 }
 
-                final File code_file = new File(this.dataFolder, "codes.yml");
+                final Path code_file = this.dataPath.resolve("codes.yml");
 
                 YamlConfiguration code_config = null;
 
-                if (code_file.exists()) {
-                    code_config = YamlConfiguration.loadConfiguration(code_file);
+                if (Files.exists(code_file)) {
+                    code_config = YamlConfiguration.loadConfiguration(code_file.toFile());
                 }
 
                 if (code_config != null) {
@@ -85,19 +86,17 @@ public class VoucherSwitchMigrator extends IVoucherMigrator {
                         for (final String key : codes.getKeys(false)) {
                             final ConfigurationSection entry = codes.getConfigurationSection(key);
 
-                            final File file = new File(code_directory, key);
+                            final Path path = code_directory.resolve(key);
 
-                            if (!file.exists()) {
+                            if (!Files.exists(path)) {
                                 try {
-                                    file.createNewFile();
+                                    Files.createFile(path);
                                 } catch (IOException exception) {
                                     exception.printStackTrace();
                                 }
                             }
 
-                            final LegacyCustomFile customFile = new LegacyCustomFile(FileType.YAML, file, true);
-
-                            customFile.load();
+                            final PaperCustomFile customFile = new PaperCustomFile(path, new ArrayList<>());
 
                             final YamlConfiguration configuration = customFile.getConfiguration();
 
@@ -114,17 +113,17 @@ public class VoucherSwitchMigrator extends IVoucherMigrator {
             }
 
             case MULTIPLE -> {
-                final File voucher_file = new File(this.dataFolder, "vouchers.yml");
+                final Path voucher_file = this.dataPath.resolve("vouchers.yml");
 
-                if (!voucher_file.exists()) {
+                if (Files.exists(voucher_file)) {
                     try {
-                        voucher_file.createNewFile();
+                        Files.createFile(voucher_file);
                     } catch (final IOException exception) {
                         exception.printStackTrace();
                     }
                 }
 
-                final LegacyCustomFile voucher_custom_file = new LegacyCustomFile(FileType.YAML, voucher_file, true).load();
+                final PaperCustomFile voucher_custom_file = new PaperCustomFile(voucher_file, new ArrayList<>()).load();
 
                 final YamlConfiguration voucher_config = voucher_custom_file.getConfiguration();
 
@@ -132,14 +131,12 @@ public class VoucherSwitchMigrator extends IVoucherMigrator {
                     final ConfigurationSection new_section = voucher_config.contains("vouchers") ? voucher_config.getConfigurationSection("vouchers") : voucher_config.createSection("vouchers");
 
                     if (new_section != null) {
-                        final List<Path> vouchers = FileUtils.getFiles(this.plugin.getDataPath().resolve("vouchers"), ".yml");
+                        final List<Path> vouchers = FileUtils.getFiles(this.dataPath.resolve("vouchers"), ".yml");
 
                         for (final Path voucher : vouchers) {
                             final String fileName = voucher.getFileName().toString();
 
-                            final LegacyCustomFile customFile = this.fileManager.getFile(fileName, FileType.YAML);
-
-                            if (customFile == null) continue;
+                            final PaperCustomFile customFile = new PaperCustomFile(voucher, new ArrayList<>());
 
                             final YamlConfiguration configuration = customFile.getConfiguration();
 
@@ -157,21 +154,21 @@ public class VoucherSwitchMigrator extends IVoucherMigrator {
                         }
 
                         this.fileManager.addFile(voucher_custom_file);
-                        this.fileManager.removeFile("vouchers.yml", FileType.YAML, false);
+                        this.fileManager.removeFile(voucher_file, null);
                     }
                 }
 
-                final File code_file = new File(this.dataFolder, "codes.yml");
+                final Path code_file = this.dataPath.resolve("codes.yml");
 
-                if (!code_file.exists()) {
+                if (Files.exists(code_file)) {
                     try {
-                        code_file.createNewFile();
+                        Files.createFile(code_file);
                     } catch (final IOException exception) {
                         exception.printStackTrace();
                     }
                 }
 
-                final LegacyCustomFile code_custom_file = new LegacyCustomFile(FileType.YAML, code_file, true).load();
+                final PaperCustomFile code_custom_file = new PaperCustomFile(code_file, new ArrayList<>()).load();
 
                 final YamlConfiguration code_config = code_custom_file.getConfiguration();
 
@@ -184,9 +181,7 @@ public class VoucherSwitchMigrator extends IVoucherMigrator {
                         for (final Path code : codes) {
                             final String fileName = code.getFileName().toString();
 
-                            final LegacyCustomFile customFile = this.fileManager.getFile(fileName, FileType.YAML);
-
-                            if (customFile == null) continue;
+                            final PaperCustomFile customFile = new PaperCustomFile(code, new ArrayList<>());
 
                             final YamlConfiguration configuration = customFile.getConfiguration();
 
@@ -204,7 +199,7 @@ public class VoucherSwitchMigrator extends IVoucherMigrator {
                         }
 
                         this.fileManager.addFile(code_custom_file);
-                        this.fileManager.removeFile("codes.yml", FileType.YAML, false);
+                        this.fileManager.removeFile(code_file, null);
                     }
                 }
             }
@@ -217,13 +212,13 @@ public class VoucherSwitchMigrator extends IVoucherMigrator {
     }
 
     @Override
-    public final File getVouchersDirectory() {
-        return new File(this.plugin.getDataFolder(), "vouchers");
+    public final Path getVouchersDirectory() {
+        return this.dataPath.resolve("vouchers");
     }
 
     @Override
-    public final File getCodesDirectory() {
-        return new File(this.plugin.getDataFolder(), "codes");
+    public final Path getCodesDirectory() {
+        return this.dataPath.resolve("codes");
     }
 
     private void processItems(ConfigurationSection entry, ConfigurationSection section) {

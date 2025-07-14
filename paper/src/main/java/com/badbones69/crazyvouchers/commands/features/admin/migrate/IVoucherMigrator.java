@@ -6,12 +6,13 @@ import com.badbones69.crazyvouchers.api.CrazyManager;
 import com.badbones69.crazyvouchers.api.enums.config.Messages;
 import com.badbones69.crazyvouchers.commands.features.admin.migrate.enums.MigrationType;
 import com.badbones69.crazyvouchers.config.ConfigManager;
-import com.ryderbelserion.fusion.core.utils.StringUtils;
-import com.ryderbelserion.fusion.paper.files.LegacyFileManager;
+import com.ryderbelserion.fusion.core.api.utils.StringUtils;
+import com.ryderbelserion.fusion.paper.files.FileManager;
 import org.bukkit.command.CommandSender;
 import org.bukkit.configuration.ConfigurationSection;
 import org.jetbrains.annotations.NotNull;
 import java.io.File;
+import java.nio.file.Path;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
@@ -26,9 +27,9 @@ public abstract class IVoucherMigrator {
 
     protected final SettingsManager messages = ConfigManager.getMessages();
 
-    protected final LegacyFileManager fileManager = this.plugin.getFileManager();
+    protected final FileManager fileManager = this.plugin.getFileManager();
 
-    protected final File dataFolder = this.plugin.getDataFolder();
+    protected final Path dataPath = this.plugin.getDataPath();
 
     protected final CommandSender sender;
 
@@ -47,15 +48,15 @@ public abstract class IVoucherMigrator {
 
     public abstract void run();
 
-    public File getVouchersDirectory() {
+    public Path getVouchersDirectory() {
         return null;
     }
 
-    public File getCodesDirectory() {
+    public Path getCodesDirectory() {
         return null;
     }
 
-    public void sendMessage(List<String> files, final int success, final int failed) {
+    public void sendMessage(final List<String> files, final int success, final int failed) {
         Messages.successfully_migrated.sendMessage(this.sender, new HashMap<>() {{
             if (files.size() > 1) {
                 put("{files}", StringUtils.toString(files));
