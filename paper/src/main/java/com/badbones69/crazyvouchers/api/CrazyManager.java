@@ -165,6 +165,7 @@ public class CrazyManager {
             actions.remove(FileAction.EXTRACT_FOLDER);
 
             List.of(
+                    "config.yml",
                     "codes.yml",
                     "data.yml",
                     "users.yml",

@@ -31,7 +31,15 @@ public class ConfigKeys implements SettingsHolder {
                 ""
         };
         
-        conf.setComment("settings", header);
+        conf.setComment("root", header);
+
+        conf.setComment("settings", "Generic plugin settings.");
+
+        conf.setComment("settings.dupe-protection", "Dupe protection settings.");
+
+        conf.setComment("settings.dupe-protection.warning", "Dupe protection warning settings.");
+
+        conf.setComment("settings.recipes", "Recipe settings.");
     }
 
     @Comment({

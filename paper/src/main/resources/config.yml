@@ -1,0 +1,66 @@
+# Support: https://discord.gg/badbones-s-live-chat-182615261403283459
+# Github: https://github.com/Crazy-Crew
+#
+# Issues: https://github.com/Crazy-Crew/CrazyVouchers/issues
+# Features: https://github.com/Crazy-Crew/CrazyVouchers/issues
+root:
+  # This option will let you test a different way of picking random numbers. If you have any issues, You can set it back to false.
+  # 
+  # If the option is set to false, items should be more random in theory.
+  use-different-random: false
+  # This will allow you to use a new items layout which should be much more straight forward, less prone to errors.
+  # You can run /crazyvouchers migrate -mt NewItemFormat which should migrate all existing prizes after you set this to true
+  # 
+  # Take a backup before you run the migration as there may be bugs.
+  use-different-items-layout: false
+  # This option will tell the plugin to send all messages as action bars or messages in chat.
+  # 
+  # send_message -> sends messages in chat.
+  # send_actionbar -> sends messages in actionbar.
+  # 
+  message-state: send_message
+  # This will wipe the example folder on /crazyvouchers reload or plugin startup. so you always have fresh examples to look at.
+  update-examples-folder: true
+  # Sends anonymous statistics to https://bstats.org/plugin/bukkit/Vouchers/4536
+  toggle-metrics: true
+# Generic plugin settings.
+settings:
+  # The prefix that shows up for all commands.
+  prefix: '<gray>[<gold>CrazyVouchers<gray>]: '
+  # This option allows you to switch between the following:
+  # ⤷ vouchers.yml and codes.yml
+  #  ⤷ these files handle all files!
+  # ⤷ vouchers and codes that act like the crates folder in CrazyCrates
+  #  ⤷ each file is considered a voucher with the name of the file being the voucher name
+  # 
+  # ⤷ Once you switch this, You should run /crazyvouchers migrate -mt VouchersSwitch otherwise you will have no vouchers.
+  # 
+  # ⤷ Available types
+  #   ⤷ SINGLE
+  #   ⤷ MULTIPLE
+  # 
+  file-system: MULTIPLE
+  # Dupe protection settings.
+  dupe-protection:
+    # Vouchers will no longer be able to stack, as each one has a unique identifier
+    # Once the voucher is used, the uuid attached is thrown in a file.
+    # 
+    # If you turn this option off, no new uuids will be attached or checked
+    # however previous vouchers will still not stack, obviously.
+    enabled: false
+    # Dupe protection warning settings.
+    warning:
+      # This decides whether a line should be added to duplicated voucher lore to avoid scams.
+      enabled: false
+      # The line to add to the lore of an item. This message supports PlaceholderAPI
+      value: <red>This item has been duplicated
+  # Pick which locale you want to use if your server is in another language.
+  locale: en-US
+  # Whether you should only be allowed to use vouchers in survival.
+  survival-only: true
+  # Recipe settings.
+  recipes:
+    # Whether they should be allowed to use vouchers in recipes.
+    toggle: true
+    # Whether an alert should be sent when trying to use vouchers in recipes.
+    alert: false
