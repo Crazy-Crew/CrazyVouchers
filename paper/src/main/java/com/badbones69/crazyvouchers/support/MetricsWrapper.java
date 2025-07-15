@@ -7,11 +7,13 @@ import com.badbones69.crazyvouchers.config.ConfigManager;
 import com.badbones69.crazyvouchers.config.types.ConfigKeys;
 import org.bstats.bukkit.Metrics;
 import org.bstats.charts.SimplePie;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 public class MetricsWrapper {
 
-    private final CrazyVouchers plugin = CrazyVouchers.get();
-    private final Metrics metrics;
+    private @NotNull final CrazyVouchers plugin = CrazyVouchers.get();
+    private @Nullable final Metrics metrics;
 
     public MetricsWrapper(final int serviceId) {
         this.metrics = new Metrics(this.plugin, serviceId);

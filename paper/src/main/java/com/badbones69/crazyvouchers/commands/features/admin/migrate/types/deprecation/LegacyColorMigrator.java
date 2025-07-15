@@ -214,7 +214,7 @@ public class LegacyColorMigrator extends IVoucherMigrator {
         section.set("options.permission.blacklist-permission.message", optionsBlacklistMessage);
     }
 
-    private void process(ConfigurationSection section) {
+    private void process(@NotNull final ConfigurationSection section) {
         final String optionsMessage = section.getString("options.message", "");
         final String optionsWorldMessage = section.getString("options.whitelist-worlds.message",
                 "{prefix}<red>You can not use that voucher here as you are not in a whitelisted world for this voucher.");
@@ -238,12 +238,12 @@ public class LegacyColorMigrator extends IVoucherMigrator {
     }
 
     @Override
-    public final Path getVouchersDirectory() {
+    public @NotNull final Path getVouchersDirectory() {
         return this.dataPath.resolve("vouchers");
     }
 
     @Override
-    public final Path getCodesDirectory() {
+    public @NotNull final Path getCodesDirectory() {
         return this.dataPath.resolve("codes");
     }
 }

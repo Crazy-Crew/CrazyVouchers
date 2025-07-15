@@ -22,7 +22,7 @@ import java.util.logging.Level;
 
 public class VoucherCode {
 
-    private final SettingsManager config = ConfigManager.getConfig();
+    private @NotNull final SettingsManager config = ConfigManager.getConfig();
 
     private final String name;
     private final String code;
@@ -54,10 +54,10 @@ public class VoucherCode {
 
     private final List<ItemBuilder> items;
 
-    private final CrazyVouchers plugin = CrazyVouchers.get();
+    private @NotNull final CrazyVouchers plugin = CrazyVouchers.get();
 
     public VoucherCode(@NotNull final FileConfiguration file, @NotNull final String name) {
-        this.name = name.replaceAll(".yml", "");
+        this.name = name;
 
         final FileSystem system = ConfigManager.getConfig().getProperty(ConfigKeys.file_system);
 
@@ -172,7 +172,7 @@ public class VoucherCode {
         }
     }
 
-    public boolean hasPermission(final boolean execute, final Player player, final List<String> permissions, final List<String> commands, final Map<String, String> placeholders, final String message, final String argument) {
+    public boolean hasPermission(final boolean execute, @NotNull final Player player, @NotNull final List<String> permissions, @NotNull final List<String> commands, @NotNull final Map<String, String> placeholders, @NotNull final String message, @NotNull final String argument) {
         return Methods.hasPermission(execute, player, permissions, commands, placeholders, message, argument);
     }
     

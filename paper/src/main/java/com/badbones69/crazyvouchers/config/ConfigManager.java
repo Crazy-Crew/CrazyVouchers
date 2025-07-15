@@ -9,6 +9,8 @@ import com.badbones69.crazyvouchers.config.migrate.LocaleMigration;
 import com.badbones69.crazyvouchers.config.types.ConfigKeys;
 import com.badbones69.crazyvouchers.config.types.locale.MessageKeys;
 import com.badbones69.crazyvouchers.config.types.locale.MiscKeys;
+import org.jetbrains.annotations.NotNull;
+
 import java.io.File;
 
 public class ConfigManager {
@@ -20,7 +22,7 @@ public class ConfigManager {
     /**
      * Loads configuration files.
      */
-    public static void load(final File dataFolder) {
+    public static void load(@NotNull final File dataFolder) {
         YamlFileResourceOptions builder = YamlFileResourceOptions.builder().indentationSize(2).build();
 
         File configFile = new File(dataFolder, "config.yml");
@@ -63,14 +65,14 @@ public class ConfigManager {
     /**
      * @return gets config.yml
      */
-    public static SettingsManager getConfig() {
+    public static @NotNull SettingsManager getConfig() {
         return config;
     }
 
     /**
      * @return gets messages.yml
      */
-    public static SettingsManager getMessages() {
+    public static @NotNull SettingsManager getMessages() {
         return messages;
     }
 }

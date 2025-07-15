@@ -22,6 +22,7 @@ import org.bukkit.inventory.PlayerInventory;
 import org.bukkit.inventory.meta.FireworkMeta;
 import org.bukkit.persistence.PersistentDataContainer;
 import org.bukkit.persistence.PersistentDataType;
+import org.jetbrains.annotations.NotNull;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
@@ -31,7 +32,7 @@ import java.util.concurrent.ThreadLocalRandom;
 
 public class Methods {
 
-    public static void removeItem(final ItemStack item, final Player player) {
+    public static void removeItem(@NotNull final ItemStack item, @NotNull final Player player) {
         if (item.getAmount() <= 1) {
             player.getInventory().removeItem(item);
         } else if (item.getAmount() > 1) {
@@ -65,7 +66,7 @@ public class Methods {
         return useDifferentRandom() ? ThreadLocalRandom.current() : new Random();
     }
 
-    public static int getRandom(int max) {
+    public static int getRandom(final int max) {
         return getRandom().nextInt(max);
     }
 
@@ -73,7 +74,7 @@ public class Methods {
         return UUID.randomUUID().toString().replace("-", "").substring(0, 8);
     }
 
-    public static boolean hasPermission(final boolean execute, final Player player, final List<String> permissions, final List<String> commands, final Map<String, String> placeholders, final String message, final String argument) {
+    public static boolean hasPermission(final boolean execute, @NotNull final Player player, @NotNull final List<String> permissions, @NotNull final List<String> commands, @NotNull final Map<String, String> placeholders, @NotNull final String message, @NotNull final String argument) {
         boolean hasPermission = false;
 
         final Server server = player.getServer();
@@ -101,7 +102,7 @@ public class Methods {
         return hasPermission;
     }
 
-    public static void addItem(final Player player, final ItemStack... items) {
+    public static void addItem(@NotNull final Player player, @NotNull final ItemStack... items) {
         final PlayerInventory inventory = player.getInventory();
 
         inventory.setMaxStackSize(64);
@@ -115,7 +116,7 @@ public class Methods {
         });
     }
 
-    public static String placeholders(final CommandSender sender, final String message, final Map<String, String> placeholders) {
+    public static String placeholders(@NotNull final CommandSender sender, @NotNull final String message, @NotNull final Map<String, String> placeholders) {
         String line = message;
 
         if (sender instanceof Player player && Support.placeholder_api.isEnabled()) {
@@ -129,27 +130,27 @@ public class Methods {
         return line;
     }
 
-    private static final CrazyVouchers plugin = CrazyVouchers.get();
+    private static @NotNull final CrazyVouchers plugin = CrazyVouchers.get();
 
-    private static final FusionPaper fusion = plugin.getFusion();
+    private static @NotNull final FusionPaper fusion = plugin.getFusion();
 
-    public static boolean isInventoryFull(final PlayerInventory inventory) {
+    public static boolean isInventoryFull(@NotNull final PlayerInventory inventory) {
         return inventory.firstEmpty() == -1;
     }
 
-    public static void firework(final Location location, final List<Color> list) {
+    public static void firework(@NotNull final Location location, @NotNull final List<Color> list) {
         if (location.getWorld() == null) return;
 
-        Firework firework = location.getWorld().spawn(location, Firework.class);
+        final Firework firework = location.getWorld().spawn(location, Firework.class);
 
-        FireworkMeta meta = firework.getFireworkMeta();
+        final FireworkMeta meta = firework.getFireworkMeta();
 
         meta.addEffects(FireworkEffect.builder().with(FireworkEffect.Type.BALL_LARGE).withColor(list).trail(false).flicker(false).build());
         meta.setPower(0);
 
         firework.setFireworkMeta(meta);
 
-        PersistentDataContainer container = firework.getPersistentDataContainer();
+        final PersistentDataContainer container = firework.getPersistentDataContainer();
 
         container.set(PersistentKeys.no_firework_damage.getNamespacedKey(), PersistentDataType.BOOLEAN, true);
 

@@ -13,7 +13,7 @@ public enum State {
         this.name = name;
     }
 
-    public String getName() {
+    public @NotNull final String getName() {
         return this.name;
     }
 }

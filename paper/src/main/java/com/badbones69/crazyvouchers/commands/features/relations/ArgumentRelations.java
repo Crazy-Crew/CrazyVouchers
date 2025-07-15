@@ -9,7 +9,7 @@ import org.jetbrains.annotations.NotNull;
 
 public class ArgumentRelations {
 
-    private final BukkitCommandManager<CommandSender> commandManager;
+    private @NotNull final BukkitCommandManager<CommandSender> commandManager;
 
     public ArgumentRelations(@NotNull final BukkitCommandManager<CommandSender> commandManager) {
         this.commandManager = commandManager;

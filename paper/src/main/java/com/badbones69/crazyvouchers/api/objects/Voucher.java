@@ -20,7 +20,6 @@ import org.bukkit.persistence.PersistentDataType;
 import com.badbones69.crazyvouchers.config.ConfigManager;
 import com.badbones69.crazyvouchers.config.types.ConfigKeys;
 import org.jetbrains.annotations.NotNull;
-
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -182,6 +181,7 @@ public class Voucher {
         if (fileConfiguration.contains(path + "options.permission.whitelist-permission")) {
             this.whitelistPermissionToggle = fileConfiguration.getBoolean(path + "options.permission.whitelist-permission.toggle");
 
+            //todo() check if empty instead
             if (fileConfiguration.contains(path + "options.permission.whitelist-permission.node")) this.whitelistPermissions.add(fileConfiguration.getString(path + "options.permission.whitelist-permission.node").toLowerCase());
 
             this.whitelistPermissions.addAll(fileConfiguration.getStringList(path + "options.permission.whitelist-permission.permissions").stream().map(String::toLowerCase).toList());
@@ -233,9 +233,10 @@ public class Voucher {
         }
 
         if (fileConfiguration.contains(path + "options.required-placeholders")) {
-            for (String key : fileConfiguration.getConfigurationSection(path + "options.required-placeholders").getKeys(false)) {
+            for (final String key : fileConfiguration.getConfigurationSection(path + "options.required-placeholders").getKeys(false)) { //todo() null check instead
                 String placeholder = fileConfiguration.getString(path + "options.required-placeholders." + key + ".placeholder");
                 String value = fileConfiguration.getString(path + "options.required-placeholders." + key + ".value");
+
                 this.requiredPlaceholders.put(placeholder, value);
             }
         }
@@ -294,9 +295,9 @@ public class Voucher {
         return buildItem(1);
     }
 
-    private final SettingsManager config = ConfigManager.getConfig();
+    private @NotNull final SettingsManager config = ConfigManager.getConfig();
     
-    public ItemStack buildItem(int amount) {
+    public ItemStack buildItem(final int amount) {
         final ItemStack item = this.itemBuilder.setAmount(amount).setEnchantGlint(this.glowing).asItemStack();
 
         setUniqueId(item);
@@ -306,7 +307,7 @@ public class Voucher {
         return item;
     }
 
-    public List<ItemStack> buildItems(String argument, int amount) {
+    public List<ItemStack> buildItems(@NotNull final String argument, final int amount) {
         final List<ItemStack> itemStacks = new ArrayList<>();
 
         if (this.config.getProperty(ConfigKeys.dupe_protection)) {
@@ -320,7 +321,7 @@ public class Voucher {
         return itemStacks;
     }
     
-    public ItemStack buildItem(final String argument, final int amount) {
+    public ItemStack buildItem(@NotNull final String argument, final int amount) {
         final ItemStack item = this.itemBuilder.setAmount(amount).addPlaceholder("{arg}", argument).setEnchantGlint(this.glowing).asItemStack();
 
         setUniqueId(item);
@@ -334,7 +335,7 @@ public class Voucher {
         return item;
     }
 
-    private void setUniqueId(final ItemStack item) {
+    private void setUniqueId(@NotNull final ItemStack item) {
         if (this.config.getProperty(ConfigKeys.dupe_protection)) {
             final String uuid = UUID.randomUUID().toString();
 
@@ -342,7 +343,7 @@ public class Voucher {
         }
     }
 
-    public boolean hasPermission(final boolean execute, final Player player, final List<String> permissions, final List<String> commands, final Map<String, String> placeholders, final String message, final String argument) {
+    public boolean hasPermission(final boolean execute, @NotNull final Player player, @NotNull final List<String> permissions, @NotNull final List<String> commands, @NotNull final Map<String, String> placeholders, @NotNull final String message, @NotNull final String argument) {
         return Methods.hasPermission(execute, player, permissions, commands, placeholders, message, argument);
     }
 
@@ -470,19 +471,19 @@ public class Voucher {
         return this.cooldownInterval;
     }
 
-    public boolean isCooldown(final Player player) {
+    public boolean isCooldown(@NotNull final Player player) {
         return this.cooldowns.getOrDefault(player.getUniqueId(), 0L) >= System.currentTimeMillis();
     }
 
-    public void addCooldown(final Player player) {
+    public void addCooldown(@NotNull final Player player) {
         this.cooldowns.put(player.getUniqueId(), System.currentTimeMillis() + (1000L * getCooldown()));
     }
 
-    public void removeCooldown(final Player player) {
+    public void removeCooldown(@NotNull final Player player) {
         this.cooldowns.remove(player.getUniqueId());
     }
 
-    private String getMessage(final String path, final FileConfiguration file) {
+    private String getMessage(@NotNull final String path, @NotNull final FileConfiguration file) {
         String messageString;
 
         if (isList(path, file)) {
@@ -494,7 +495,7 @@ public class Voucher {
         return messageString;
     }
     
-    private boolean isList(final String path, final FileConfiguration file) {
+    private boolean isList(@NotNull final String path, @NotNull final FileConfiguration file) {
         return file.contains(path) && !file.getStringList(path).isEmpty();
     }
 }

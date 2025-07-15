@@ -12,6 +12,8 @@ import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.enchantments.Enchantment;
 import org.bukkit.inventory.ItemType;
 import org.bukkit.potion.PotionEffectType;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -20,11 +22,11 @@ import java.util.stream.Collectors;
 
 public class ItemUtils {
 
-    private static final CrazyVouchers plugin = CrazyVouchers.get();
+    private static @NotNull final CrazyVouchers plugin = CrazyVouchers.get();
+
+    private static @NotNull final ComponentLogger logger = plugin.getComponentLogger();
 
     private static final boolean isLogging = plugin.getFusion().isVerbose();
-
-    private static final ComponentLogger logger = plugin.getComponentLogger();
 
     /**
      * Converts a String to an ItemBuilder.
@@ -32,11 +34,11 @@ public class ItemUtils {
      * @param itemString the string you wish to convert.
      * @return the string as an ItemBuilder.
      */
-    public static ItemBuilder convertString(String itemString) {
-        return convertString(itemString, null);
+    public static ItemBuilder convertString(@NotNull final String itemString) {
+        return convertString(itemString, "");
     }
 
-    public static List<ItemBuilder> convertConfigurationSection(final ConfigurationSection section) {
+    public static List<ItemBuilder> convertConfigurationSection(@Nullable final ConfigurationSection section) {
         final List<ItemBuilder> cache = new ArrayList<>();
 
         if (section == null) return cache;
@@ -175,7 +177,7 @@ public class ItemUtils {
      * @param placeHolder the placeholder to use if there is an error.
      * @return the string as an ItemBuilder.
      */
-    public static ItemBuilder convertString(String itemString, String placeHolder) {
+    public static ItemBuilder convertString(@NotNull final String itemString, @NotNull final String placeHolder) {
         ItemBuilder itemBuilder = ItemBuilder.from(ItemType.STONE);
 
         try {
@@ -243,7 +245,7 @@ public class ItemUtils {
                 }
             }
         } catch (final Exception exception) {
-            itemBuilder.withType(ItemType.RED_TERRACOTTA).setDisplayName("<red>ERROR").withDisplayLore(Arrays.asList("<red>There is an error", "<red>For : <red>" + (placeHolder != null ? placeHolder : "")));
+            itemBuilder.withType(ItemType.RED_TERRACOTTA).setDisplayName("<red>ERROR").withDisplayLore(Arrays.asList("<red>There is an error", "<red>For : <red>" + placeHolder));
 
             exception.printStackTrace();
         }
@@ -257,8 +259,8 @@ public class ItemUtils {
      * @param itemStrings the list of Strings.
      * @return the list of ItemBuilders.
      */
-    public static List<ItemBuilder> convertStringList(List<String> itemStrings) {
-        return convertStringList(itemStrings, null);
+    public static List<ItemBuilder> convertStringList(@NotNull final List<String> itemStrings) {
+        return convertStringList(itemStrings, "");
     }
 
     /**
@@ -268,11 +270,11 @@ public class ItemUtils {
      * @param placeholder the placeholder for errors.
      * @return the list of ItemBuilders.
      */
-    public static List<ItemBuilder> convertStringList(List<String> itemStrings, String placeholder) {
+    public static List<ItemBuilder> convertStringList(@NotNull final List<String> itemStrings, @NotNull final String placeholder) {
         return itemStrings.stream().map(itemString -> convertString(itemString, placeholder)).collect(Collectors.toList());
     }
 
-    public static String getEnchant(String enchant) {
+    public static String getEnchant(@NotNull final String enchant) {
         if (enchant.isEmpty()) return "";
 
         switch (enchant) {

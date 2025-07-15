@@ -8,23 +8,24 @@ import com.badbones69.crazyvouchers.config.ConfigManager;
 import com.ryderbelserion.fusion.paper.FusionPaper;
 import com.ryderbelserion.fusion.paper.files.FileManager;
 import dev.triumphteam.cmd.core.annotations.Command;
+import org.jetbrains.annotations.NotNull;
 import java.nio.file.Path;
 
 @Command(value = "crazyvouchers", alias = {"vouchers", "voucher"})
 public abstract class BaseCommand {
 
-    protected final CrazyVouchers plugin = CrazyVouchers.get();
+    protected @NotNull final CrazyVouchers plugin = CrazyVouchers.get();
 
-    protected final Path dataPath = this.plugin.getDataPath();
+    protected @NotNull final Path dataPath = this.plugin.getDataPath();
 
-    protected final FileManager fileManager = this.plugin.getFileManager();
+    protected @NotNull final FileManager fileManager = this.plugin.getFileManager();
 
-    protected final CrazyManager crazyManager = this.plugin.getCrazyManager();
+    protected @NotNull final CrazyManager crazyManager = this.plugin.getCrazyManager();
 
-    protected final InventoryManager inventoryManager = this.plugin.getInventoryManager();
+    protected @NotNull final InventoryManager inventoryManager = this.plugin.getInventoryManager();
 
-    protected final FusionPaper fusion = this.plugin.getFusion();
+    protected @NotNull final FusionPaper fusion = this.plugin.getFusion();
 
-    protected final SettingsManager config = ConfigManager.getConfig();
+    protected @NotNull final SettingsManager config = ConfigManager.getConfig();
 
 }

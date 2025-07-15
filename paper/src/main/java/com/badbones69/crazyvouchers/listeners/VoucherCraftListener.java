@@ -17,6 +17,7 @@ import org.bukkit.inventory.CraftingInventory;
 import org.bukkit.inventory.ItemStack;
 import org.jetbrains.annotations.NotNull;
 import com.badbones69.crazyvouchers.config.types.ConfigKeys;
+import org.jetbrains.annotations.Nullable;
 
 public class VoucherCraftListener implements Listener {
 
@@ -24,7 +25,7 @@ public class VoucherCraftListener implements Listener {
 
     private @NotNull final CrazyManager crazyManager = this.plugin.getCrazyManager();
 
-    private final SettingsManager config = ConfigManager.getConfig();
+    private @NotNull final SettingsManager config = ConfigManager.getConfig();
 
     @EventHandler(priority = EventPriority.NORMAL, ignoreCancelled = true)
     public void prepareItemCraft(PrepareItemCraftEvent event) {
@@ -35,7 +36,7 @@ public class VoucherCraftListener implements Listener {
         for (final ItemStack itemStack : inventory.getMatrix()) {
             if (itemStack == null || itemStack.getType() == Material.AIR) return;
 
-            final Voucher voucher = this.crazyManager.getVoucherFromItem(itemStack);
+            @Nullable final Voucher voucher = this.crazyManager.getVoucherFromItem(itemStack);
 
             if (voucher == null) return;
 

@@ -54,8 +54,8 @@ public class VoucherFileMigrator extends IVoucherMigrator {
                 }
 
                 if (this.config.getProperty(ConfigKeys.file_system) == FileSystem.SINGLE) {
-                    this.fileManager.removeFile(this.dataPath.resolve("voucher-codes.yml"), null);
-                    this.fileManager.addFile(this.dataPath.resolve("codes.yml"), FileType.PAPER, new ArrayList<>(), null);
+                    this.fileManager.removeFile(oldPath, null);
+                    this.fileManager.addFile(newPath, FileType.PAPER, new ArrayList<>(), null);
 
                     this.crazyManager.loadCodes();
                 }

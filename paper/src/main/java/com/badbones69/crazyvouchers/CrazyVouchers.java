@@ -91,19 +91,19 @@ public class CrazyVouchers extends JavaPlugin {
         }
     }
 
-    public final InventoryManager getInventoryManager() {
+    public @NotNull final InventoryManager getInventoryManager() {
         return this.inventoryManager;
     }
 
-    public final CrazyManager getCrazyManager() {
+    public @NotNull final CrazyManager getCrazyManager() {
         return this.crazyManager;
     }
 
-    public FileManager getFileManager() {
+    public @NotNull final FileManager getFileManager() {
         return this.fileManager;
     }
 
-    public final FusionPaper getFusion() {
+    public @NotNull final FusionPaper getFusion() {
         return this.fusion;
     }
 }

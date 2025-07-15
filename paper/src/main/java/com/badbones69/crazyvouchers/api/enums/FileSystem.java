@@ -13,7 +13,7 @@ public enum FileSystem {
         this.name = name;
     }
 
-    public final String getName() {
+    public @NotNull final String getName() {
         return this.name;
     }
 }

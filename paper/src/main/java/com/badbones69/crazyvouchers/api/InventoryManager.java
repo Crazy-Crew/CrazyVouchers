@@ -35,7 +35,7 @@ public class InventoryManager {
         this.backButton = ItemBuilder.from(ItemType.ARROW).setDisplayName("<gold><< Back");
     }
 
-    public final ItemStack getVoucher(final Voucher voucher) {
+    public final ItemStack getVoucher(@NotNull final Voucher voucher) {
         final ItemStack itemStack = voucher.buildItem();
 
         itemStack.editPersistentDataContainer(container -> container.set(PersistentKeys.voucher_item_admin.getNamespacedKey(), PersistentDataType.STRING, voucher.getName()));
@@ -65,7 +65,7 @@ public class InventoryManager {
         return items;
     }
 
-    public final ItemStack getBackButton(final Player player) {
+    public final ItemStack getBackButton(@NotNull final Player player) {
         int page = getPage(player) - 1;
 
         ItemStack itemStack = this.backButton.addDisplayLore("<gray>Page: <blue>" + page).asItemStack();
@@ -75,7 +75,7 @@ public class InventoryManager {
         return itemStack;
     }
 
-    public final ItemStack getNextButton(final Player player) {
+    public final ItemStack getNextButton(@NotNull final Player player) {
         int page = getPage(player) + 1;
 
         ItemStack itemStack = this.nextButton.addDisplayLore("<gray>Page: <blue>" + page).asItemStack();

@@ -201,7 +201,7 @@ public enum Properties {
      * @param message the message to check
      * @return the finalized message to set
      */
-    private String replace(@NotNull final String message) {
+    private @NotNull String replace(@NotNull final String message) {
         return message.replaceAll("%Arg%", "{arg}")
                 .replaceAll("%arg%", "{arg}")
                 .replaceAll("%Player%", "{player}")

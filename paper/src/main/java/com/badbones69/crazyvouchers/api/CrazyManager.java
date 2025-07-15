@@ -24,6 +24,7 @@ import org.bukkit.inventory.ItemStack;
 import com.badbones69.crazyvouchers.config.ConfigManager;
 import com.badbones69.crazyvouchers.config.types.ConfigKeys;
 import org.bukkit.persistence.PersistentDataType;
+import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import java.nio.file.Path;
 import java.util.ArrayList;
@@ -32,21 +33,21 @@ import java.util.List;
 
 public class CrazyManager {
 
-    private final CrazyVouchers plugin = CrazyVouchers.get();
+    private @NotNull final CrazyVouchers plugin = CrazyVouchers.get();
 
-    private final Path dataPath = this.plugin.getDataPath();
+    private @NotNull final Path dataPath = this.plugin.getDataPath();
 
-    private final SettingsManager config = ConfigManager.getConfig();
+    private @NotNull final SettingsManager config = ConfigManager.getConfig();
 
-    private final FileManager fileManager = this.plugin.getFileManager();
+    private @NotNull final FileManager fileManager = this.plugin.getFileManager();
 
-    private final ComponentLogger logger = this.plugin.getComponentLogger();
+    private @NotNull final ComponentLogger logger = this.plugin.getComponentLogger();
 
-    private final List<Voucher> vouchers = new ArrayList<>();
-    private final List<VoucherCode> voucherCodes = new ArrayList<>();
+    private @NotNull final List<Voucher> vouchers = new ArrayList<>();
+    private @NotNull final List<VoucherCode> voucherCodes = new ArrayList<>();
 
-    private final List<String> brokenVouchers = new ArrayList<>();
-    private final List<String> brokenVoucherCodes = new ArrayList<>();
+    private @NotNull final List<String> brokenVouchers = new ArrayList<>();
+    private @NotNull final List<String> brokenVoucherCodes = new ArrayList<>();
 
     public void load(final boolean isMigrator) {
         // Used for when wanting to put in fake vouchers.
@@ -182,32 +183,34 @@ public class CrazyManager {
         }
     }
 
-    public final List<Path> getVouchersList() {
-        return FileUtils.getFiles(this.plugin.getDataPath().resolve("vouchers"), ".yml");
+    public @NotNull final List<Path> getVouchersList() {
+        return FileUtils.getFiles(this.dataPath.resolve("vouchers"), ".yml");
     }
 
-    public final List<Path> getCodesList() {
-        return FileUtils.getFiles(this.plugin.getDataPath().resolve("codes"), ".yml");
+    public @NotNull final List<Path> getCodesList() {
+        return FileUtils.getFiles(this.dataPath.resolve("codes"), ".yml");
     }
     
-    public final List<Voucher> getVouchers() {
+    public @NotNull final List<Voucher> getVouchers() {
         return Collections.unmodifiableList(this.vouchers);
     }
 
-    public final List<String> getBrokenVouchers() {
+    public @NotNull final List<String> getBrokenVouchers() {
         return this.brokenVouchers;
     }
 
-    public final List<VoucherCode> getVoucherCodes() {
+    public @NotNull final List<VoucherCode> getVoucherCodes() {
         return Collections.unmodifiableList(this.voucherCodes);
     }
 
-    public final List<String> getBrokenVoucherCodes() {
+    public @NotNull final List<String> getBrokenVoucherCodes() {
         return this.brokenVoucherCodes;
     }
 
-    public Voucher getVoucher(final String voucherName) {
-        for (Voucher voucher : getVouchers()) {
+    public @Nullable Voucher getVoucher(@NotNull final String voucherName) {
+        if (voucherName.isEmpty()) return null;
+
+        for (final Voucher voucher : getVouchers()) {
             if (voucher.getName().equalsIgnoreCase(voucherName)) {
                 return voucher;
             }
@@ -216,24 +219,30 @@ public class CrazyManager {
         return null;
     }
     
-    public boolean isVoucherName(final String voucherName) {
-        for (Voucher voucher : getVouchers()) {
+    public boolean isVoucherName(@NotNull final String voucherName) {
+        if (voucherName.isEmpty()) return false;
+
+        for (final Voucher voucher : getVouchers()) {
             if (voucher.getName().equalsIgnoreCase(voucherName)) return false;
         }
 
         return true;
     }
     
-    public VoucherCode getVoucherCode(final String voucherName) {
-        for (VoucherCode voucher : getVoucherCodes()) {
+    public @Nullable VoucherCode getVoucherCode(@NotNull final String voucherName) {
+        if (voucherName.isEmpty()) return null;
+
+        for (final VoucherCode voucher : getVoucherCodes()) {
             if (voucher.getCode().equalsIgnoreCase(voucherName)) return voucher;
         }
 
         return null;
     }
     
-    public boolean isVoucherCode(final String voucherCode) {
-        for (VoucherCode voucher : getVoucherCodes()) {
+    public boolean isVoucherCode(@NotNull final String voucherCode) {
+        if (voucherCode.isEmpty()) return false;
+
+        for (final VoucherCode voucher : getVoucherCodes()) {
             if (voucher.isEnabled()) {
                 if (voucher.isCaseSensitive()) {
                     if (voucher.getCode().equals(voucherCode)) return true;
@@ -246,15 +255,17 @@ public class CrazyManager {
         return false;
     }
 
-    public Voucher getVoucherFromItem(final ItemStack item) {
+    public @Nullable Voucher getVoucherFromItem(@NotNull final ItemStack item) {
+        if (item.getType() == Material.AIR) return null;
+
+        final PersistentDataContainerView container = item.getPersistentDataContainer();
+
         Voucher voucher = null;
 
-        if (item.getType() != Material.AIR) {
-            final PersistentDataContainerView container = item.getPersistentDataContainer();
+        if (container.has(PersistentKeys.voucher_item.getNamespacedKey())) {
+            final String voucherName = container.getOrDefault(PersistentKeys.voucher_item.getNamespacedKey(), PersistentDataType.STRING, "");
 
-            if (container.has(PersistentKeys.voucher_item.getNamespacedKey())) {
-                final String voucherName = container.get(PersistentKeys.voucher_item.getNamespacedKey(), PersistentDataType.STRING);
-
+            if (!voucherName.isEmpty()) {
                 voucher = getVoucher(voucherName);
             }
         }
@@ -262,28 +273,24 @@ public class CrazyManager {
         return voucher;
     }
 
-    public String getArgument(final ItemStack item, final Voucher voucher) {
-        if (item.getType() != Material.AIR) {
-            final PersistentDataContainerView container = item.getPersistentDataContainer();
+    public @NotNull String getArgument(@NotNull final ItemStack item, @NotNull final Voucher voucher) {
+        if (item.getType() == Material.AIR || !voucher.usesArguments()) return "";
 
-            if (voucher.usesArguments()) {
-                if (container.has(PersistentKeys.voucher_item.getNamespacedKey()) && container.has(PersistentKeys.voucher_arg.getNamespacedKey())) {
-                    final String arg = container.get(PersistentKeys.voucher_arg.getNamespacedKey(), PersistentDataType.STRING);
-                    final String voucherName = container.get(PersistentKeys.voucher_item.getNamespacedKey(), PersistentDataType.STRING);
+        final PersistentDataContainerView container = item.getPersistentDataContainer();
 
-                    if (voucherName != null) {
-                        if (voucherName.equalsIgnoreCase(voucher.getName())) {
-                            return arg;
-                        }
-                    }
-                }
+        if (container.has(PersistentKeys.voucher_item.getNamespacedKey()) && container.has(PersistentKeys.voucher_arg.getNamespacedKey())) {
+            final String arg = container.getOrDefault(PersistentKeys.voucher_arg.getNamespacedKey(), PersistentDataType.STRING, "");
+            final String voucherName = container.getOrDefault(PersistentKeys.voucher_item.getNamespacedKey(), PersistentDataType.STRING, "");
+
+            if (!voucherName.isEmpty() && voucherName.equalsIgnoreCase(voucher.getName())) {
+                return arg;
             }
         }
 
-        return null;
+        return "";
     }
     
-    public String replaceRandom(String string) {
+    public @NotNull String replaceRandom(@NotNull String string) {
         String newString = string;
 
         if (usesRandom(string)) {
@@ -296,6 +303,7 @@ public class CrazyManager {
                     try {
                         long min = Long.parseLong(word.split("-")[0]);
                         long max = Long.parseLong(word.split("-")[1]);
+
                         stringBuilder.append(pickNumber(min, max)).append(" ");
                     } catch (Exception e) {
                         stringBuilder.append("1 ");
@@ -313,11 +321,11 @@ public class CrazyManager {
         return newString;
     }
 
-    public List<ItemBuilder> getItems(final FileConfiguration file, final String voucher) {
+    public @NotNull List<ItemBuilder> getItems(@NotNull final FileConfiguration file, @NotNull final String voucher) {
         return ItemUtils.convertStringList(file.getStringList("voucher.items"), voucher);
     }
     
-    private boolean usesRandom(final String string) {
+    private boolean usesRandom(@NotNull final String string) {
         return string.toLowerCase().contains("{random}:");
     }
     

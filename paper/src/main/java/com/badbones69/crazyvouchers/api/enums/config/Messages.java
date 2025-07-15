@@ -106,7 +106,7 @@ public enum Messages {
         return parse(sender, placeholders);
     }
 
-    public void sendMessage(final Audience sender, final String placeholder, final String replacement) {
+    public void sendMessage(@NotNull final Audience sender, @NotNull final String placeholder, @NotNull final String replacement) {
         final State state = this.config.getProperty(ConfigKeys.message_state);
 
         switch (state) {
@@ -115,7 +115,7 @@ public enum Messages {
         }
     }
 
-    public void sendMessage(final Audience sender, final Map<String, String> placeholders) {
+    public void sendMessage(@NotNull final Audience sender, @NotNull final Map<String, String> placeholders) {
         final State state = this.config.getProperty(ConfigKeys.message_state);
 
         switch (state) {
@@ -124,7 +124,7 @@ public enum Messages {
         }
     }
 
-    public void sendMessage(final Audience sender) {
+    public void sendMessage(@NotNull final Audience sender) {
         final State state = this.config.getProperty(ConfigKeys.message_state);
 
         switch (state) {
@@ -133,7 +133,7 @@ public enum Messages {
         }
     }
 
-    public void sendActionBar(final Audience sender, final String placeholder, final String replacement) {
+    public void sendActionBar(@NotNull final Audience sender, @NotNull final String placeholder, @NotNull final String replacement) {
         final Component component = getMessage(sender, placeholder, replacement);
 
         if (component.equals(Component.empty())) return;
@@ -141,7 +141,7 @@ public enum Messages {
         sender.sendActionBar(component);
     }
 
-    public void sendActionBar(final Audience sender, final Map<String, String> placeholders) {
+    public void sendActionBar(@NotNull final Audience sender, @NotNull final Map<String, String> placeholders) {
         final Component component = getMessage(sender, placeholders);
 
         if (component.equals(Component.empty())) return;
@@ -149,7 +149,7 @@ public enum Messages {
         sender.sendActionBar(component);
     }
 
-    public void sendActionBar(final Audience sender) {
+    public void sendActionBar(@NotNull final Audience sender) {
         final Component component = getMessage(sender);
 
         if (component.equals(Component.empty())) return;
@@ -157,7 +157,7 @@ public enum Messages {
         sender.sendActionBar(component);
     }
 
-    public void sendRichMessage(final Audience sender, final String placeholder, final String replacement) {
+    public void sendRichMessage(@NotNull final Audience sender, @NotNull final String placeholder, @NotNull final String replacement) {
         final Component component = getMessage(sender, placeholder, replacement);
 
         if (component.equals(Component.empty())) return;
@@ -165,7 +165,7 @@ public enum Messages {
         sender.sendMessage(component);
     }
 
-    public void sendRichMessage(final Audience sender, final Map<String, String> placeholders) {
+    public void sendRichMessage(@NotNull final Audience sender, @NotNull final Map<String, String> placeholders) {
         final Component component = getMessage(sender, placeholders);
 
         if (component.equals(Component.empty())) return;
@@ -173,7 +173,7 @@ public enum Messages {
         sender.sendMessage(component);
     }
 
-    public void sendRichMessage(final Audience sender) {
+    public void sendRichMessage(@NotNull final Audience sender) {
         final Component component = getMessage(sender);
 
         if (component.equals(Component.empty())) return;
@@ -195,7 +195,7 @@ public enum Messages {
         this.locale.setProperty(this.property, AdvUtils.convert(this.locale.getProperty(this.property), true));
     }
 
-    private Component parse(final Audience audience, final Map<String, String> placeholders) {
+    private @NotNull Component parse(@NotNull final Audience audience, @NotNull final Map<String, String> placeholders) {
         String message;
 
         if (this.isList) {

@@ -42,6 +42,8 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.PlayerInventory;
 import org.bukkit.persistence.PersistentDataType;
 import com.badbones69.crazyvouchers.config.types.ConfigKeys;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -83,14 +85,14 @@ public class VoucherClickListener implements Listener {
         final PlayerInventory inventory = player.getInventory();
 
         if (event.getHand() == EquipmentSlot.OFF_HAND) {
-            Voucher voucher = this.crazyManager.getVoucherFromItem(inventory.getItemInOffHand());
+            @Nullable final Voucher voucher = this.crazyManager.getVoucherFromItem(inventory.getItemInOffHand());
 
             if (voucher != null) {
                 event.setCancelled(true);
             }
         }
 
-        Voucher voucher = this.crazyManager.getVoucherFromItem(inventory.getItemInMainHand());
+        @Nullable final Voucher voucher = this.crazyManager.getVoucherFromItem(inventory.getItemInMainHand());
 
         if (voucher != null) {
             event.setCancelled(true);
@@ -109,7 +111,7 @@ public class VoucherClickListener implements Listener {
         if (event.getHand() == EquipmentSlot.OFF_HAND && event.getHand() != null) { // ???
             final ItemStack itemStack = inventory.getItemInOffHand();
 
-            Voucher voucher = this.crazyManager.getVoucherFromItem(itemStack);
+            @Nullable final Voucher voucher = this.crazyManager.getVoucherFromItem(itemStack);
 
             if (voucher != null && !voucher.isEdible()) {
                 event.setCancelled(true);
@@ -125,7 +127,7 @@ public class VoucherClickListener implements Listener {
         if (event.getHand() != EquipmentSlot.HAND) return; // ???
 
         if (action == Action.RIGHT_CLICK_BLOCK || action == Action.RIGHT_CLICK_AIR) {
-            Voucher voucher = this.crazyManager.getVoucherFromItem(item);
+            @Nullable final Voucher voucher = this.crazyManager.getVoucherFromItem(item);
 
             if (voucher != null && !voucher.isEdible()) {
                 event.setCancelled(true);
@@ -159,7 +161,7 @@ public class VoucherClickListener implements Listener {
         if (event.getHand() == EquipmentSlot.HAND && this.crazyManager.getVoucherFromItem(getItemInHand(event.getPlayer())) != null) event.setCancelled(true);
     }
     
-    private void useVoucher(Player player, Voucher voucher, ItemStack item) {
+    private void useVoucher(@NotNull final Player player, @NotNull final Voucher voucher, @NotNull final ItemStack item) {
         final FileConfiguration user = FileKeys.users.getConfiguration();
         final FileConfiguration data = FileKeys.data.getConfiguration();
 
@@ -285,11 +287,11 @@ public class VoucherClickListener implements Listener {
         }
     }
 
-    private ItemStack getItemInHand(final Player player) {
+    private ItemStack getItemInHand(@NotNull final Player player) {
         return player.getInventory().getItemInMainHand();
     }
 
-    private boolean passesPermissionChecks(final Player player, final Voucher voucher, final String argument) {
+    private boolean passesPermissionChecks(@NotNull final Player player, @NotNull final Voucher voucher, @NotNull final String argument) {
         populate(player, argument);
 
         if (!player.isOp()) {
@@ -317,7 +319,7 @@ public class VoucherClickListener implements Listener {
         return true;
     }
 
-    private void populate(final Player player, final String argument) {
+    private void populate(@NotNull final Player player, @NotNull final String argument) {
         this.placeholders.put("{arg}", argument != null ? argument : "{arg}");
         this.placeholders.put("{player}", player.getName());
         this.placeholders.put("{world}", player.getWorld().getName());
@@ -330,7 +332,7 @@ public class VoucherClickListener implements Listener {
         this.placeholders.put("{prefix}", ConfigManager.getConfig().getProperty(ConfigKeys.command_prefix));
     }
 
-    private void voucherClick(Player player, ItemStack item, Voucher voucher, String argument) {
+    private void voucherClick(@NotNull final Player player, @NotNull final ItemStack item, @NotNull final Voucher voucher, @NotNull final String argument) {
         Methods.removeItem(item, player);
 
         if (voucher.hasCooldown()){
@@ -366,7 +368,7 @@ public class VoucherClickListener implements Listener {
         }
 
         if (voucher.playSounds()) {
-            for (Sound sound : voucher.getSounds()) {
+            for (final Sound sound : voucher.getSounds()) {
                 player.playSound(player.getLocation(), sound, SoundCategory.PLAYERS, voucher.getVolume(), voucher.getPitch());
             }
         }

@@ -24,7 +24,7 @@ public enum PersistentKeys {
         this.NamespacedKey = NamespacedKey;
     }
 
-    public NamespacedKey getNamespacedKey() {
+    public @NotNull final NamespacedKey getNamespacedKey() {
         return new NamespacedKey(this.plugin, this.plugin.getName().toLowerCase() + "_" + this.NamespacedKey);
     }
 }

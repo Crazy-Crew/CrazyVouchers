@@ -24,7 +24,7 @@ public class VoucherMenu extends InventoryBuilder {
 
     private @NotNull final InventoryManager inventoryManager = this.plugin.getInventoryManager();
 
-    public VoucherMenu(final Player player, final int size, final int page, final String title) {
+    public VoucherMenu(@NotNull final Player player, final int size, final int page, @NotNull final String title) {
         super(player, size, page, title);
     }
 

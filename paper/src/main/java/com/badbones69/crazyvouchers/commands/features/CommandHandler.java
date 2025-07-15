@@ -22,16 +22,18 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.bukkit.permissions.Permission;
 import org.bukkit.plugin.PluginManager;
+import org.jetbrains.annotations.NotNull;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 
 public class CommandHandler {
 
-    private final CrazyVouchers plugin = CrazyVouchers.get();
+    private @NotNull final CrazyVouchers plugin = CrazyVouchers.get();
 
-    private final CrazyManager crazyManager = this.plugin.getCrazyManager();
+    private @NotNull final CrazyManager crazyManager = this.plugin.getCrazyManager();
 
-    private final BukkitCommandManager<CommandSender> commandManager = BukkitCommandManager.create(this.plugin);
+    private @NotNull final BukkitCommandManager<CommandSender> commandManager = BukkitCommandManager.create(this.plugin);
 
     public CommandHandler() {
         load();
@@ -90,7 +92,7 @@ public class CommandHandler {
                     final List<String> commands = blacklist ? code.getBlacklistCommands() : whitelist ? code.getWhitelistCommands() : List.of();
                     final String message = blacklist ? code.getBlacklistMessage() : whitelist ? code.getWhitelistWorldMessage() : "";
 
-                    if (code.hasPermission(false, player, permissions, commands, null, message, "")) {
+                    if (code.hasPermission(false, player, permissions, commands, new HashMap<>(), message, "")) {
                         suggestions.add(code.getCode());
                     }
                 });
@@ -157,7 +159,7 @@ public class CommandHandler {
         }
     }
 
-    public final BukkitCommandManager<CommandSender> getCommandManager() {
+    public @NotNull final BukkitCommandManager<CommandSender> getCommandManager() {
         return this.commandManager;
     }
 }

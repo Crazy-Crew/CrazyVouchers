@@ -54,6 +54,10 @@ public class CommandRedeem extends BaseCommand {
 
         final VoucherCode code = this.crazyManager.getVoucherCode(name);
 
+        if (code == null) {
+            return;
+        }
+
         final Server server = this.plugin.getServer();
 
         // Checking the permissions of the code.
@@ -118,7 +122,7 @@ public class CommandRedeem extends BaseCommand {
 
         if (data.contains("Players." + uuid)) {
             if (data.contains("Players." + uuid + ".Codes." + code.getName())) {
-                if (data.getString("Players." + uuid + ".Codes." + code.getName()).equalsIgnoreCase("used")) {
+                if (data.getString("Players." + uuid + ".Codes." + code.getName(), "").equalsIgnoreCase("used")) {
                     Messages.code_used.sendMessage(player, placeholders);
 
                     return;

@@ -11,7 +11,6 @@ import com.ryderbelserion.fusion.paper.files.FileManager;
 import org.bukkit.command.CommandSender;
 import org.bukkit.configuration.ConfigurationSection;
 import org.jetbrains.annotations.NotNull;
-import java.io.File;
 import java.nio.file.Path;
 import java.util.HashMap;
 import java.util.List;
@@ -19,17 +18,17 @@ import java.util.Locale;
 
 public abstract class IVoucherMigrator {
 
-    protected final CrazyVouchers plugin = CrazyVouchers.get();
+    protected @NotNull final CrazyVouchers plugin = CrazyVouchers.get();
 
-    protected final CrazyManager crazyManager = this.plugin.getCrazyManager();
+    protected @NotNull final CrazyManager crazyManager = this.plugin.getCrazyManager();
 
-    protected final SettingsManager config = ConfigManager.getConfig();
+    protected @NotNull final SettingsManager config = ConfigManager.getConfig();
 
-    protected final SettingsManager messages = ConfigManager.getMessages();
+    protected @NotNull final SettingsManager messages = ConfigManager.getMessages();
 
-    protected final FileManager fileManager = this.plugin.getFileManager();
+    protected @NotNull final FileManager fileManager = this.plugin.getFileManager();
 
-    protected final Path dataPath = this.plugin.getDataPath();
+    protected @NotNull final Path dataPath = this.plugin.getDataPath();
 
     protected final CommandSender sender;
 
@@ -48,15 +47,15 @@ public abstract class IVoucherMigrator {
 
     public abstract void run();
 
-    public Path getVouchersDirectory() {
-        return null;
+    public @NotNull Path getVouchersDirectory() {
+        return this.dataPath;
     }
 
-    public Path getCodesDirectory() {
-        return null;
+    public @NotNull Path getCodesDirectory() {
+        return this.dataPath;
     }
 
-    public void sendMessage(final List<String> files, final int success, final int failed) {
+    public void sendMessage(@NotNull final List<String> files, final int success, final int failed) {
         Messages.successfully_migrated.sendMessage(this.sender, new HashMap<>() {{
             if (files.size() > 1) {
                 put("{files}", StringUtils.toString(files));
@@ -71,7 +70,7 @@ public abstract class IVoucherMigrator {
         }});
     }
 
-    public final String time() {
+    public @NotNull final String time() {
         final double time = (double) (System.nanoTime() - this.startTime) / 1.0E9D;
 
         return String.format(Locale.ROOT, "%.3fs", time);

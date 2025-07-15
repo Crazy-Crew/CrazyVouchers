@@ -2,6 +2,7 @@ package com.badbones69.crazyvouchers.api.builders;
 
 import com.badbones69.crazyvouchers.CrazyVouchers;
 import com.ryderbelserion.fusion.core.api.utils.AdvUtils;
+import org.bukkit.Server;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -14,6 +15,7 @@ import org.jetbrains.annotations.NotNull;
 public abstract class InventoryBuilder implements InventoryHolder, Listener {
 
     protected @NotNull final CrazyVouchers plugin = CrazyVouchers.get();
+    protected @NotNull final Server server = this.plugin.getServer();
 
     private Inventory inventory;
     private Player player;
@@ -21,21 +23,21 @@ public abstract class InventoryBuilder implements InventoryHolder, Listener {
     private int size;
     private int page;
 
-    public InventoryBuilder(final Player player, final int size, final String title) {
+    public InventoryBuilder(@NotNull final Player player, final int size, @NotNull final String title) {
         this.title = title;
         this.player = player;
         this.size = size;
 
-        this.inventory = this.plugin.getServer().createInventory(this, this.size, AdvUtils.parse(this.title));
+        this.inventory = this.server.createInventory(this, this.size, AdvUtils.parse(this.title));
     }
 
-    public InventoryBuilder(final Player player, final int size, final int page, final String title) {
+    public InventoryBuilder(@NotNull final Player player, final int size, final int page, @NotNull final String title) {
         this.title = title;
         this.player = player;
         this.size = size;
         this.page = page;
 
-        this.inventory = this.plugin.getServer().createInventory(this, this.size, AdvUtils.parse(this.title));
+        this.inventory = this.server.createInventory(this, this.size, AdvUtils.parse(this.title));
     }
 
     public InventoryBuilder() {}
@@ -49,7 +51,7 @@ public abstract class InventoryBuilder implements InventoryHolder, Listener {
         run(event);
     }
 
-    public void size(int size) {
+    public void size(final int size) {
         this.size = size;
     }
 
@@ -57,7 +59,7 @@ public abstract class InventoryBuilder implements InventoryHolder, Listener {
         return this.size;
     }
 
-    public void setPage(int page) {
+    public void setPage(final int page) {
         this.page = page;
     }
 
@@ -65,21 +67,20 @@ public abstract class InventoryBuilder implements InventoryHolder, Listener {
         return this.page;
     }
 
-    public void title(String title) {
+    public void title(@NotNull final String title) {
         this.title = title;
     }
 
-    public boolean contains(String message) {
+    public boolean contains(@NotNull final String message) {
         return this.title.contains(message);
     }
 
-    public Player getPlayer() {
+    public @NotNull final Player getPlayer() {
         return this.player;
     }
 
     @Override
-    @NotNull
-    public Inventory getInventory() {
+    public @NotNull Inventory getInventory() {
         return this.inventory;
     }
 }

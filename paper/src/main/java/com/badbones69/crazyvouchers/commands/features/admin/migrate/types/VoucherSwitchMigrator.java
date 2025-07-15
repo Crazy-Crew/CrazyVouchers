@@ -9,7 +9,6 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.jetbrains.annotations.NotNull;
-import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -212,16 +211,16 @@ public class VoucherSwitchMigrator extends IVoucherMigrator {
     }
 
     @Override
-    public final Path getVouchersDirectory() {
+    public @NotNull final Path getVouchersDirectory() {
         return this.dataPath.resolve("vouchers");
     }
 
     @Override
-    public final Path getCodesDirectory() {
+    public @NotNull final Path getCodesDirectory() {
         return this.dataPath.resolve("codes");
     }
 
-    private void processItems(ConfigurationSection entry, ConfigurationSection section) {
+    private void processItems(@NotNull final ConfigurationSection entry, @NotNull final ConfigurationSection section) {
         if (entry.contains("item")) {
             final String item = entry.getString("item");
 
@@ -281,7 +280,7 @@ public class VoucherSwitchMigrator extends IVoucherMigrator {
         process(entry, section);
     }
 
-    private void process(final ConfigurationSection entry, final ConfigurationSection section) {
+    private void process(@NotNull final ConfigurationSection entry, @NotNull final ConfigurationSection section) {
         if (entry.contains("commands")) {
             final List<String> commands = entry.getStringList("commands");
 
