@@ -102,7 +102,7 @@ public class VoucherClickListener implements Listener {
     // This must run as highest, so it doesn't cause other plugins to check
     // the items that were added to the players inventory and replaced the item in the player's hand.
     @EventHandler(priority = EventPriority.HIGHEST)
-    public void onVoucherClick(PlayerInteractEvent event) { // this whole event confuses me, I hate interact events.
+    public void onVoucherClick(PlayerInteractEvent event) {
         final Player player = event.getPlayer();
         final Action action = event.getAction();
 
@@ -113,51 +113,75 @@ public class VoucherClickListener implements Listener {
         if (slot == null) return;
 
         if (slot == EquipmentSlot.OFF_HAND) {
-            final ItemStack itemStack = inventory.getItemInOffHand();
+            final Voucher voucher = this.crazyManager.getVoucherFromItem(inventory.getItemInOffHand());
 
-            @Nullable final Voucher voucher = this.crazyManager.getVoucherFromItem(itemStack);
+            if (voucher == null) return;
+            if (voucher.isEdible()) return;
 
-            if (voucher != null && !voucher.isEdible()) {
-                event.setCancelled(true);
+            Messages.no_permission_to_use_voucher_offhand.sendMessage(player);
 
-                Messages.no_permission_to_use_voucher_offhand.sendMessage(player);
-            }
+            this.fusion.log("warn", "{} tried to use the voucher in off-hand.", player.getName());
+
+            event.setCancelled(true);
 
             return;
         }
 
         if (slot != EquipmentSlot.HAND) return;
+        if (action != Action.RIGHT_CLICK_BLOCK || action == Action.RIGHT_CLICK_AIR) return;
 
         final ItemStack item = inventory.getItemInMainHand();
+        final Voucher voucher = this.crazyManager.getVoucherFromItem(item);
 
-        if (action == Action.RIGHT_CLICK_BLOCK || action == Action.RIGHT_CLICK_AIR) {
-            @Nullable final Voucher voucher = this.crazyManager.getVoucherFromItem(item);
+        if (voucher == null) return;
+        if (voucher.isEdible()) return;
 
-            if (voucher != null && !voucher.isEdible()) {
-                event.setCancelled(true);
+        useVoucher(player, voucher, item);
 
-                useVoucher(player, voucher, item);
-            }
-        }
+        event.setCancelled(true);
     }
     
     @EventHandler(ignoreCancelled = true)
     public void onItemConsume(PlayerItemConsumeEvent event) {
+        final EquipmentSlot slot = event.getHand();
+
+        if (slot == null) return;
+        if (slot == EquipmentSlot.HAND) return;
+
+        final Player player = event.getPlayer();
+        final PlayerInventory inventory = player.getInventory();
+
+        if (slot == EquipmentSlot.OFF_HAND) {
+            final Voucher voucher = this.crazyManager.getVoucherFromItem(inventory.getItemInOffHand());
+
+            if (voucher == null) return;
+            if (!voucher.isEdible()) return;
+
+            Messages.no_permission_to_use_voucher_offhand.sendMessage(player);
+
+            this.fusion.log("warn", "{} tried to use the voucher in off-hand like it's a piece of food.", player.getName());
+
+            event.setCancelled(true);
+
+            return;
+        }
+
         final ItemStack item = event.getItem();
 
         final Voucher voucher = this.crazyManager.getVoucherFromItem(item);
 
-        if (voucher != null && voucher.isEdible()) {
-            final Player player = event.getPlayer();
+        if (voucher == null) return;
+        if (!voucher.isEdible()) return;
 
-            event.setCancelled(true);
-            
-            if (item.getAmount() > 1) {
-                Messages.unstack_item.sendMessage(player);
-            } else {
-                useVoucher(player, voucher, item);
-            }
+        event.setCancelled(true);
+
+        if (item.getAmount() > 1) {
+            Messages.unstack_item.sendMessage(player);
+
+            return;
         }
+
+        useVoucher(player, voucher, item);
     }
     
     @EventHandler(priority = EventPriority.LOW, ignoreCancelled = true)
