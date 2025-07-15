@@ -37,7 +37,6 @@ public class Voucher {
     private final int cooldownInterval;
 
     private boolean usesArgs;
-    private final boolean glowing;
     private final String usedMessage;
     private final boolean whitelistPermissionToggle;
     private final List<String> whitelistPermissions = new ArrayList<>();
@@ -89,7 +88,6 @@ public class Voucher {
         this.soundToggle = false;
         this.fireworkToggle = false;
         this.isEdible = false;
-        this.glowing = false;
 
         this.hasCooldown = false;
         this.cooldownInterval = 0;
@@ -133,7 +131,9 @@ public class Voucher {
             this.itemBuilder.withSkull(fileConfiguration.getString(path + "skull", ""));
         }
 
-        this.glowing = fileConfiguration.getBoolean(path + "glowing", false);
+        if (fileConfiguration.contains(path + "glowing")) {
+            this.itemBuilder.setEnchantGlint(fileConfiguration.getBoolean(path + "glowing", false));
+        }
 
         if (this.itemBuilder.getPlainName().toLowerCase().contains("{arg}")) this.usesArgs = true;
 
@@ -298,7 +298,9 @@ public class Voucher {
     private @NotNull final SettingsManager config = ConfigManager.getConfig();
     
     public ItemStack buildItem(final int amount) {
-        final ItemStack item = this.itemBuilder.setAmount(amount).setEnchantGlint(this.glowing).asItemStack();
+        this.itemBuilder.setAmount(amount);
+
+        final ItemStack item = this.itemBuilder.build().asItemStack();
 
         setUniqueId(item);
 
@@ -322,7 +324,7 @@ public class Voucher {
     }
     
     public ItemStack buildItem(@NotNull final String argument, final int amount) {
-        final ItemStack item = this.itemBuilder.setAmount(amount).addPlaceholder("{arg}", argument).setEnchantGlint(this.glowing).asItemStack();
+        final ItemStack item = this.itemBuilder.setAmount(amount).addPlaceholder("{arg}", argument).asItemStack();
 
         setUniqueId(item);
 
