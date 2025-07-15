@@ -108,7 +108,11 @@ public class VoucherClickListener implements Listener {
 
         final PlayerInventory inventory = player.getInventory();
 
-        if (event.getHand() == EquipmentSlot.OFF_HAND && event.getHand() != null) { // ???
+        final EquipmentSlot slot = event.getHand();
+
+        if (slot == null) return;
+
+        if (slot == EquipmentSlot.OFF_HAND) {
             final ItemStack itemStack = inventory.getItemInOffHand();
 
             @Nullable final Voucher voucher = this.crazyManager.getVoucherFromItem(itemStack);
@@ -122,9 +126,9 @@ public class VoucherClickListener implements Listener {
             return;
         }
 
-        ItemStack item = inventory.getItemInMainHand();
+        if (slot != EquipmentSlot.HAND) return;
 
-        if (event.getHand() != EquipmentSlot.HAND) return; // ???
+        final ItemStack item = inventory.getItemInMainHand();
 
         if (action == Action.RIGHT_CLICK_BLOCK || action == Action.RIGHT_CLICK_AIR) {
             @Nullable final Voucher voucher = this.crazyManager.getVoucherFromItem(item);

@@ -34,7 +34,7 @@ public class Methods {
 
     public static void removeItem(@NotNull final ItemStack item, @NotNull final Player player) {
         if (item.getAmount() <= 1) {
-            player.getInventory().removeItem(item);
+            player.getInventory().setItemInMainHand(null); // it's always the main hand, we don't allow off-hand usage
         } else if (item.getAmount() > 1) {
             item.setAmount(item.getAmount() - 1);
         }
