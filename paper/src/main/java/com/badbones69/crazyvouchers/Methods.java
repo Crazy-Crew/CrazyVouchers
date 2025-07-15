@@ -105,13 +105,11 @@ public class Methods {
     public static void addItem(@NotNull final Player player, @NotNull final ItemStack... items) {
         final PlayerInventory inventory = player.getInventory();
 
-        inventory.setMaxStackSize(64);
-
         Arrays.asList(items).forEach(item -> {
             if (isInventoryFull(inventory)) {
                 player.getWorld().dropItem(player.getLocation(), item.clone());
             } else {
-                inventory.setItem(inventory.firstEmpty(), item.clone());
+                inventory.addItem(item.clone());
             }
         });
     }
