@@ -23,11 +23,9 @@ import me.clip.placeholderapi.PlaceholderAPI;
 import net.kyori.adventure.text.Component;
 import org.bukkit.GameMode;
 import org.bukkit.Location;
-import org.bukkit.Material;
 import org.bukkit.Server;
 import org.bukkit.Sound;
 import org.bukkit.SoundCategory;
-import org.bukkit.block.Block;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
@@ -43,7 +41,6 @@ import org.bukkit.inventory.PlayerInventory;
 import org.bukkit.persistence.PersistentDataType;
 import com.badbones69.crazyvouchers.config.types.ConfigKeys;
 import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -67,40 +64,6 @@ public class VoucherClickListener implements Listener {
 
     private final Map<String, String> placeholders = new HashMap<>();
 
-    @EventHandler(priority = EventPriority.HIGHEST)
-    public void onSpawnerChange(PlayerInteractEvent event) {
-        final ItemStack item = getItemInHand(event.getPlayer());
-        final Player player = event.getPlayer();
-        final Action action = event.getAction();
-        final Block block = event.getClickedBlock();
-
-        if (action != Action.RIGHT_CLICK_BLOCK) return;
-
-        if (block == null) return;
-
-        if (block.getType() != Material.SPAWNER) return;
-
-        if (!item.getType().toString().endsWith("SPAWN_EGG")) return;
-
-        final PlayerInventory inventory = player.getInventory();
-
-        if (event.getHand() == EquipmentSlot.OFF_HAND) {
-            @Nullable final Voucher voucher = this.crazyManager.getVoucherFromItem(inventory.getItemInOffHand());
-
-            if (voucher != null) {
-                event.setCancelled(true);
-            }
-        }
-
-        @Nullable final Voucher voucher = this.crazyManager.getVoucherFromItem(inventory.getItemInMainHand());
-
-        if (voucher != null) {
-            event.setCancelled(true);
-        }
-    }
-    
-    // This must run as highest, so it doesn't cause other plugins to check
-    // the items that were added to the players inventory and replaced the item in the player's hand.
     @EventHandler(priority = EventPriority.HIGHEST)
     public void onVoucherClick(PlayerInteractEvent event) {
         final Player player = event.getPlayer();
