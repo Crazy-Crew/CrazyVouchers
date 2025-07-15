@@ -47,7 +47,7 @@ public class MiscKeys implements SettingsHolder {
             "<dark_gray>»</dark_gray> <gold>Code Statistics <dark_gray>[</dark_gray><green>{active_codes}</green><dark_gray>/</dark_gray><gold>{total_codes}</gold><dark_gray>]</dark_gray>",
             "<dark_gray>-</dark_gray> {codes}",
             "<dark_gray>»</dark_gray> <gold>Voucher Statistics <dark_gray>[</dark_gray><green>{active_vouchers}</green><dark_gray>/</dark_gray><gold>{total_vouchers}</gold><dark_gray>]</dark_gray>",
-            "<dark-gray>-</dark_gray> {vouchers}",
+            "<dark_gray>-</dark_gray> {vouchers}",
             "<bold><gold>━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━</gold></bold>"
     ));
 }
