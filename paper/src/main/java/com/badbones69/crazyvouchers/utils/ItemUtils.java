@@ -205,7 +205,7 @@ public class ItemUtils {
                     case "lore" -> itemBuilder.withDisplayLore(Arrays.asList(value.split(",")));
                     case "player" -> {
                         try {
-                            itemBuilder.asSkullBuilder().withName(value);
+                            itemBuilder.asSkullBuilder().withName(value).build();
                         } catch (final Exception exception) {
                             if (isLogging) {
                                 logger.warn("Could create skull builder because the item is not a player head.");
