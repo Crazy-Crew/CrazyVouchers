@@ -133,7 +133,7 @@ public class Voucher {
             this.itemBuilder.withSkull(fileConfiguration.getString(path + "skull", ""));
         }
 
-        this.glowing = fileConfiguration.getBoolean(path + "glowing");
+        this.glowing = fileConfiguration.getBoolean(path + "glowing", false);
 
         if (this.itemBuilder.getPlainName().toLowerCase().contains("{arg}")) this.usesArgs = true;
 
