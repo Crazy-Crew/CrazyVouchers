@@ -214,10 +214,9 @@ public class ItemUtils {
                         }
                     }
                     case "skull" -> itemBuilder.withSkull(value);
-                    case "unbreakable-item" -> {
-                        if (value.isEmpty() || value.equalsIgnoreCase("true")) itemBuilder.setUnbreakable(true);
-                    }
-
+                    case "unbreakable-item" -> itemBuilder.setUnbreakable(StringUtils.tryParseBoolean(value).orElse(false));
+                    case "custom-model-data" -> itemBuilder.setCustomModelData(value);
+                    case "hide-tool-tip" -> itemBuilder.hideToolTip();
                     case "trim" -> {
                         String[] split = value.split("!"); // trim:trim_pattern!trim_material
 
@@ -226,6 +225,8 @@ public class ItemUtils {
 
                         itemBuilder.setTrim(trim.toLowerCase(), material.toLowerCase());
                     }
+
+                    case "glowing" -> itemBuilder.setEnchantGlint(StringUtils.tryParseBoolean(value).orElse(false));
 
                     default -> {
                         final Enchantment enchantment = com.ryderbelserion.fusion.paper.utils.ItemUtils.getEnchantment(getEnchant(option));
