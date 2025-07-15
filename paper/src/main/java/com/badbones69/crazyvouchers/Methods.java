@@ -34,7 +34,7 @@ public class Methods {
 
     public static void removeItem(@NotNull final ItemStack item, @NotNull final Player player) {
         if (item.getAmount() <= 1) {
-            player.getInventory().remove(item);
+            player.getInventory().removeItem(item);
         } else if (item.getAmount() > 1) {
             item.setAmount(item.getAmount() - 1);
         }
