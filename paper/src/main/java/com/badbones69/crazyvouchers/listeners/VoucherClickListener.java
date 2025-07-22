@@ -91,7 +91,7 @@ public class VoucherClickListener implements Listener {
         }
 
         if (slot != EquipmentSlot.HAND) return;
-        if (action != Action.RIGHT_CLICK_BLOCK || action == Action.RIGHT_CLICK_AIR) return;
+        if (action != Action.RIGHT_CLICK_BLOCK || action != Action.RIGHT_CLICK_AIR) return;
 
         final ItemStack item = inventory.getItemInMainHand();
         final Voucher voucher = this.crazyManager.getVoucherFromItem(item);
