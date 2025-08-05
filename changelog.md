@@ -102,6 +102,8 @@ voucher:
 - Commands have been overhauled which will make adding new commands easier!
 - Replaced plugin.yml with paper-plugin.yml.
 - Added support for item models which serves as a replacement for `Custom Model Data`
+- Fixed an issue with anti-craft not working.
+- `Updated to 1.21.8`
 ```yml
 voucher:
   # Any generic component for the Item.

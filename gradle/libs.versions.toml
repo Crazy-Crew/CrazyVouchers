@@ -1,20 +1,20 @@
 [versions]
 ## Paper
 paperweight = "2.0.0-beta.17" # https://github.com/PaperMC/paperweight
-paper = "1.21.7-R0.1-SNAPSHOT" # https://github.com/PaperMC/Paper
+paper = "1.21.8-R0.1-SNAPSHOT" # https://github.com/PaperMC/Paper
 
 ## JetBrains
 annotations = "24.1.0" # https://github.com/JetBrains/java-annotations
 kotlin = "2.1.20" # https://github.com/JetBrains/kotlin
 
 ## Kyori
-adventure = "4.21.0" # https://github.com/KyoriPowered/adventure
+adventure = "4.22.0" # https://github.com/KyoriPowered/adventure
 
 ## Minecraft
-minecraft = "1.21.7" # https://minecraft.net
+minecraft = "1.21.8" # https://minecraft.net
 
 ## Deprecated API
-nbtapi = "2.14.1"
+nbtapi = "2.15.1"
 
 ## Plugin Version
 crazyvouchers = "5.0.0"
