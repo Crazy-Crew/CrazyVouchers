@@ -1,11 +1,8 @@
 package com.badbones69.crazyvouchers.listeners;
 
 import ch.jalu.configme.SettingsManager;
-import com.badbones69.crazyvouchers.CrazyVouchers;
-import com.badbones69.crazyvouchers.api.CrazyManager;
 import com.badbones69.crazyvouchers.api.enums.config.Messages;
 import com.badbones69.crazyvouchers.api.enums.misc.PersistentKeys;
-import com.badbones69.crazyvouchers.api.objects.Voucher;
 import com.badbones69.crazyvouchers.config.ConfigManager;
 import io.papermc.paper.persistence.PersistentDataContainerView;
 import org.bukkit.Material;
@@ -17,13 +14,8 @@ import org.bukkit.inventory.CraftingInventory;
 import org.bukkit.inventory.ItemStack;
 import org.jetbrains.annotations.NotNull;
 import com.badbones69.crazyvouchers.config.types.ConfigKeys;
-import org.jetbrains.annotations.Nullable;
 
 public class VoucherCraftListener implements Listener {
-
-    private @NotNull final CrazyVouchers plugin = CrazyVouchers.get();
-
-    private @NotNull final CrazyManager crazyManager = this.plugin.getCrazyManager();
 
     private @NotNull final SettingsManager config = ConfigManager.getConfig();
 
@@ -35,10 +27,6 @@ public class VoucherCraftListener implements Listener {
 
         for (final ItemStack itemStack : inventory.getMatrix()) {
             if (itemStack == null || itemStack.getType() == Material.AIR) return;
-
-            @Nullable final Voucher voucher = this.crazyManager.getVoucherFromItem(itemStack);
-
-            if (voucher == null) return;
 
             final PersistentDataContainerView container = itemStack.getPersistentDataContainer();
 
