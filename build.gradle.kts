@@ -105,7 +105,7 @@ feather {
 
                         field(
                             ":hammer: Changelog",
-                            content
+                            "[Click](https://modrinth.com/plugin/${rootProject.name.lowercase()}/version/${rootProject.version})"
                         )
                     }
                 }
