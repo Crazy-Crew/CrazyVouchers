@@ -77,8 +77,8 @@ public class VouchersDeprecated extends IVoucherMigrator {
                 final Path voucher_dir = this.dataPath.resolve("vouchers");
 
                 for (final Voucher voucher : this.crazyManager.getVouchers()) {
-                    final String name = voucher.getName();
-                    final String file = voucher.getName() + ".yml";
+                    final String name = voucher.getStrippedName();
+                    final String file = voucher.getName();
 
                     final PaperCustomFile customFile = this.fileManager.getPaperCustomFile(voucher_dir.resolve(file));
 

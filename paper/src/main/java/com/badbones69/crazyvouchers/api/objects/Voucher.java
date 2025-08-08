@@ -294,6 +294,10 @@ public class Voucher {
     public String getName() {
         return this.name;
     }
+
+    public String getStrippedName() {
+        return getName().replace(".yml", "");
+    }
     
     public boolean usesArguments() {
         return this.usesArgs;
