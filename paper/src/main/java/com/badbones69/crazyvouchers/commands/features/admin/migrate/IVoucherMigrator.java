@@ -7,6 +7,7 @@ import com.badbones69.crazyvouchers.api.enums.config.Messages;
 import com.badbones69.crazyvouchers.commands.features.admin.migrate.enums.MigrationType;
 import com.badbones69.crazyvouchers.config.ConfigManager;
 import com.ryderbelserion.fusion.core.api.utils.StringUtils;
+import com.ryderbelserion.fusion.paper.FusionPaper;
 import com.ryderbelserion.fusion.paper.files.FileManager;
 import org.bukkit.command.CommandSender;
 import org.bukkit.configuration.ConfigurationSection;
@@ -19,6 +20,8 @@ import java.util.Locale;
 public abstract class IVoucherMigrator {
 
     protected @NotNull final CrazyVouchers plugin = CrazyVouchers.get();
+
+    protected final FusionPaper fusion = this.plugin.getFusion();
 
     protected @NotNull final CrazyManager crazyManager = this.plugin.getCrazyManager();
 

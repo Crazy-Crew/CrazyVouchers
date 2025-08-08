@@ -36,13 +36,25 @@ public class VouchersDeprecated extends IVoucherMigrator {
                         for (final String key : section.getKeys(false)) {
                             final ConfigurationSection voucher = section.getConfigurationSection(key);
 
-                            if (voucher == null) continue;
+                            if (voucher == null) {
+                                this.fusion.log("warn", "<red>{}</red> is not a valid configuration section.", key);
 
-                            if (!voucher.contains("item")) continue;
+                                continue;
+                            }
+
+                            if (!voucher.contains("item")) {
+                                this.fusion.log("warn", "<red>vouchers.{}.item</red> does not exist.", key);
+
+                                continue;
+                            }
 
                             final String displayItem = voucher.getString("item", "");
 
-                            if (!displayItem.contains("#")) continue;
+                            if (!displayItem.contains("#")) {
+                                this.fusion.log("warn", "<red>vouchers.{}.item</red> does not contain <red>custom model data</red>, We cannot migrate.", key);
+
+                                continue;
+                            }
 
                             final String[] split = displayItem.split("#");
                             final String material = split[0];
@@ -71,6 +83,8 @@ public class VouchersDeprecated extends IVoucherMigrator {
                     final PaperCustomFile customFile = this.fileManager.getPaperCustomFile(voucher_dir.resolve(file));
 
                     if (customFile == null) {
+                        this.fusion.log("warn", "<red>{}</red> does not exist in the file cache", name);
+
                         failed.add("<red>⤷ " + file);
 
                         continue;
@@ -79,6 +93,8 @@ public class VouchersDeprecated extends IVoucherMigrator {
                     final YamlConfiguration configuration = customFile.getConfiguration();
 
                     if (configuration == null) {
+                        this.fusion.log("warn", "<red>{}</red> configuration is invalid, likely not loaded properly. Please check console :)", name);
+
                         failed.add("<red>⤷ " + file);
 
                         continue;
@@ -87,16 +103,30 @@ public class VouchersDeprecated extends IVoucherMigrator {
                     final ConfigurationSection section = configuration.getConfigurationSection("voucher");
 
                     if (section == null) {
+                        this.fusion.log("warn", "Configuration section for <red>{}</red> was not found.", name);
+
                         failed.add("<red>⤷ " + file);
 
                         continue;
                     }
 
-                    if (!section.contains("item")) continue;
+                    if (!section.contains("item")) {
+                        this.fusion.log("warn", "<red>{}</red> does not contain <red>voucher.item</red> path in the configuration section.", name);
+
+                        failed.add("<red>⤷ " + file);
+
+                        continue;
+                    }
 
                     final String displayItem = section.getString("item", "");
 
-                    if (!displayItem.contains("#")) continue;
+                    if (!displayItem.contains("#")) {
+                        this.fusion.log("warn", "<red>voucher.item</red> does not contain <red>custom model data</red>, We cannot migrate for file {}.", name);
+
+                        failed.add("<red>⤷ " + file);
+
+                        continue;
+                    }
 
                     final String[] split = displayItem.split("#");
                     final String material = split[0];
