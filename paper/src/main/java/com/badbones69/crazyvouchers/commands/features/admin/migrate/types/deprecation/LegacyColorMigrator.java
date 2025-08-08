@@ -139,7 +139,7 @@ public class LegacyColorMigrator extends IVoucherMigrator {
 
                 final List<Voucher> vouchers = this.crazyManager.getVouchers();
 
-                final Path voucher_dir = this.dataPath.resolve("codes");
+                final Path voucher_dir = this.dataPath.resolve("vouchers");
 
                 for (final Voucher voucher : vouchers) {
                     final String name = voucher.getName();
