@@ -110,6 +110,14 @@ public class Voucher {
                 .setDisplayName(fileConfiguration.getString(path + "name", ""))
                 .withDisplayLore(fileConfiguration.getStringList(path + "lore"));
 
+        if (fileConfiguration.contains(path + "custom-model-data")) {
+            if (fileConfiguration.isInt(path + "custom-model-data")) {
+                this.itemBuilder.setCustomModelData(fileConfiguration.getInt(path + "custom-model-data", -1));
+            } else {
+                this.itemBuilder.setCustomModelData(fileConfiguration.getString(path + "custom-model-data", ""));
+            }
+        }
+
         if (fileConfiguration.contains(path + "player")) {
             final String playerName = fileConfiguration.getString(path + "player", "");
 

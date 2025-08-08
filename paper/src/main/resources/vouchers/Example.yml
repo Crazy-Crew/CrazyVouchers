@@ -28,6 +28,8 @@ voucher:
   - '<gray>(<gold>!<gray>) <gray>Right click to redeem.'
   # If the item should glow or not.
   glowing: true
+  # An example of how to use custom model data
+  custom-model-data: -1
   # The commands to send.
   commands:
     - 'msg {player} wow you claimed a voucher.'
