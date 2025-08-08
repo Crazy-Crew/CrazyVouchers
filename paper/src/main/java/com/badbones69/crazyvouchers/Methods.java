@@ -79,8 +79,8 @@ public class Methods {
 
         final Server server = player.getServer();
 
-        for (String permission : permissions) {
-            if (player.hasPermission(permission.toLowerCase().replace("{arg}", argument != null ? argument : "{arg}"))) {
+        for (final String permission : permissions) {
+            if (player.hasPermission(permission.toLowerCase().replace("{arg}", !argument.isEmpty() ? argument : "{arg}"))) {
                 if (execute) {
                     placeholders.put("{permission}", permission);
 

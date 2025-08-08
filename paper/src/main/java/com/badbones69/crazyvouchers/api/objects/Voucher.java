@@ -371,8 +371,8 @@ public class Voucher {
         }
     }
 
-    public boolean hasPermission(final boolean execute, @NotNull final Player player, @NotNull final List<String> permissions, @NotNull final List<String> commands, @NotNull final Map<String, String> placeholders, @NotNull final String message, @NotNull final String argument) {
-        return Methods.hasPermission(execute, player, permissions, commands, placeholders, message, argument);
+    public boolean hasPermission(@NotNull final Player player, @NotNull final List<String> permissions, @NotNull final List<String> commands, @NotNull final Map<String, String> placeholders, @NotNull final String message, @NotNull final String argument) {
+        return Methods.hasPermission(true, player, permissions, commands, placeholders, message, argument);
     }
 
     public String getVoucherUsedMessage() {

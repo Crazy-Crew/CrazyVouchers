@@ -92,7 +92,7 @@ public class CommandHandler {
                     final List<String> commands = blacklist ? code.getBlacklistCommands() : whitelist ? code.getWhitelistCommands() : List.of();
                     final String message = blacklist ? code.getBlacklistMessage() : whitelist ? code.getWhitelistWorldMessage() : "";
 
-                    if (code.hasPermission(false, player, permissions, commands, new HashMap<>(), message, "")) {
+                    if (code.hasPermission(player, permissions, commands, new HashMap<>(), message, "")) {
                         suggestions.add(code.getCode());
                     }
                 });

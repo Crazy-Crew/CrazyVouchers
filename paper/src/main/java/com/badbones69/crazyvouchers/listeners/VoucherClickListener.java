@@ -285,26 +285,35 @@ public class VoucherClickListener implements Listener {
     private boolean passesPermissionChecks(@NotNull final Player player, @NotNull final Voucher voucher, @NotNull final String argument) {
         populate(player, argument);
 
-        if (!player.isOp()) {
-            if (voucher.useWhiteListPermissions()) {
-                return voucher.hasPermission(true, player, voucher.getWhitelistPermissions(), voucher.getWhitelistCommands(), this.placeholders, voucher.getWhitelistPermissionMessage(), argument);
-            }
+        if (player.isOp()) {
+            return true;
+        }
 
-            if (voucher.usesWhitelistWorlds() && !voucher.getWhitelistWorlds().contains(player.getWorld().getName().toLowerCase())) {
-                player.sendMessage(this.fusion.color(player, voucher.getWhitelistWorldMessage(), this.placeholders));
+        final boolean blacklist = voucher.useBlackListPermissions();
+        final boolean whitelist = voucher.useWhiteListPermissions();
 
-                ScheduleUtils.dispatch(consumer -> {
-                    for (final String command : voucher.getWhitelistWorldCommands()) {
-                        server.dispatchCommand(server.getConsoleSender(), Methods.placeholders(player, command, placeholders));
-                    }
-                });
+        final List<String> permissions = blacklist ? voucher.getBlackListPermissions() : whitelist ? voucher.getWhitelistPermissions() : List.of();
+        final List<String> commands = blacklist ? voucher.getBlacklistCommands() : whitelist ? voucher.getWhitelistCommands() : List.of();
+        final String message = blacklist ? voucher.getBlackListMessage() : whitelist ? voucher.getWhitelistWorldMessage() : "";
 
-                return false;
-            }
+        if (whitelist && !voucher.hasPermission(player, permissions, commands, this.placeholders, message, argument)) {
+            return false;
+        }
 
-            if (voucher.useBlackListPermissions()) {
-                return voucher.hasPermission(true, player, voucher.getBlackListPermissions(), voucher.getBlacklistCommands(), this.placeholders, voucher.getBlackListMessage(), argument);
-            }
+        if (voucher.usesWhitelistWorlds() && !voucher.getWhitelistWorlds().contains(player.getWorld().getName().toLowerCase())) {
+            player.sendMessage(this.fusion.color(player, voucher.getWhitelistWorldMessage(), this.placeholders));
+
+            ScheduleUtils.dispatch(consumer -> {
+                for (final String command : voucher.getWhitelistWorldCommands()) {
+                    server.dispatchCommand(server.getConsoleSender(), Methods.placeholders(player, command, placeholders));
+                }
+            });
+
+            return false;
+        }
+
+        if (blacklist && voucher.hasPermission(player, permissions, commands, this.placeholders, message, argument)) {
+            return true;
         }
 
         return true;
