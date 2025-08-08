@@ -106,9 +106,23 @@ public class Voucher {
         this.hasCooldown = fileConfiguration.getBoolean(path + "cooldown.toggle", false);
         this.cooldownInterval = fileConfiguration.getInt(path + "cooldown.interval", 5);
 
-        this.itemBuilder = ItemBuilder.from(fileConfiguration.getString(path + "item", "stone").toLowerCase())
+        String material = fileConfiguration.getString(path + "item", "stone").toLowerCase();
+        String model_data = "";
+
+        if (material.contains("#")) {
+            final String[] split = material.split("#");
+
+            material = split[0];
+            model_data = split[1];
+        }
+
+        this.itemBuilder = ItemBuilder.from(material)
                 .setDisplayName(fileConfiguration.getString(path + "name", ""))
                 .withDisplayLore(fileConfiguration.getStringList(path + "lore"));
+
+        if (!model_data.isEmpty()) {
+            this.itemBuilder.setCustomModelData(model_data);
+        }
 
         if (fileConfiguration.contains(path + "custom-model-data")) {
             if (fileConfiguration.isInt(path + "custom-model-data")) {
