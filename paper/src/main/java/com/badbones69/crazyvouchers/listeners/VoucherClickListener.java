@@ -313,7 +313,7 @@ public class VoucherClickListener implements Listener {
         }
 
         if (blacklist && voucher.hasPermission(player, permissions, commands, this.placeholders, message, argument)) {
-            return true;
+            return false;
         }
 
         return true;

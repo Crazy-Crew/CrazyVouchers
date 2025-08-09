@@ -73,9 +73,13 @@ public class LegacyColorMigrator extends IVoucherMigrator {
 
                         FileKeys.vouchers.save();
                     } else {
+                        this.fusion.log("warn", "Failed to migrate vouchers.yml due to the configuration section being null.");
+
                         failed.add("<red>⤷ vouchers.yml");
                     }
                 } else {
+                    this.fusion.log("warn", "Failed to migrate vouchers.yml due to the file configuration being null.");
+
                     failed.add("<red>⤷ vouchers.yml");
                 }
 
@@ -91,9 +95,13 @@ public class LegacyColorMigrator extends IVoucherMigrator {
 
                         FileKeys.codes.save();
                     } else {
+                        this.fusion.log("warn", "Failed to migrate codes.yml due to the configuration section being null.");
+
                         failed.add("<red>⤷ codes.yml");
                     }
                 } else {
+                    this.fusion.log("warn", "Failed to migrate codes.yml due to the file configuration being null.");
+
                     failed.add("<red>⤷ codes.yml");
                 }
             }
@@ -109,6 +117,8 @@ public class LegacyColorMigrator extends IVoucherMigrator {
                     final PaperCustomFile customFile = this.fileManager.getPaperCustomFile(code_dir.resolve(file));
 
                     if (customFile == null) {
+                        this.fusion.log("warn", "Failed to migrate code {}, because the file is not in the cache.", file);
+
                         failed.add("<red>⤷ " + file);
 
                         continue;
@@ -117,6 +127,8 @@ public class LegacyColorMigrator extends IVoucherMigrator {
                     final YamlConfiguration configuration = customFile.getConfiguration();
 
                     if (configuration == null) {
+                        this.fusion.log("warn", "Failed to migrate code {}, because the file configuration is null.", file);
+
                         failed.add("<red>⤷ " + file);
 
                         continue;
@@ -125,6 +137,8 @@ public class LegacyColorMigrator extends IVoucherMigrator {
                     final ConfigurationSection section = configuration.getConfigurationSection("voucher-code");
 
                     if (section == null) {
+                        this.fusion.log("warn", "Failed to migrate code {}, because the configuration section is null.", file);
+
                         failed.add("<red>⤷ " + file);
 
                         continue;
@@ -148,6 +162,8 @@ public class LegacyColorMigrator extends IVoucherMigrator {
                     final PaperCustomFile customFile = this.fileManager.getPaperCustomFile(voucher_dir.resolve(file));
 
                     if (customFile == null) {
+                        this.fusion.log("warn", "Failed to migrate code {}, because the file is not in the cache.", file);
+
                         failed.add("<red>⤷ " + file);
 
                         continue;
@@ -156,6 +172,8 @@ public class LegacyColorMigrator extends IVoucherMigrator {
                     final YamlConfiguration configuration = customFile.getConfiguration();
 
                     if (configuration == null) {
+                        this.fusion.log("warn", "Failed to migrate code {}, because the file configuration is null.", file);
+
                         failed.add("<red>⤷ " + file);
 
                         continue;
@@ -164,6 +182,8 @@ public class LegacyColorMigrator extends IVoucherMigrator {
                     final ConfigurationSection section = configuration.getConfigurationSection("voucher");
 
                     if (section == null) {
+                        this.fusion.log("warn", "Failed to migrate code {}, because the configuration section is null.", file);
+
                         failed.add("<red>⤷ " + file);
 
                         continue;

@@ -15,6 +15,7 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.persistence.PersistentDataType;
 import org.jetbrains.annotations.NotNull;
 import java.util.UUID;
+import java.util.concurrent.atomic.AtomicInteger;
 
 public class VoucherNbtMigrator extends IVoucherMigrator {
 
@@ -30,11 +31,20 @@ public class VoucherNbtMigrator extends IVoucherMigrator {
 
         final ItemStack[] contents = inventory.getContents();
 
+        AtomicInteger count = new AtomicInteger();
+
         for (final ItemStack item : contents) {
             if (item == null || item.getType() == Material.AIR) continue;
 
             NBT.get(item, nbt -> {
-                if (nbt.hasTag("voucher")) {
+                final boolean hasVoucherTag = nbt.hasTag("voucher");
+                final boolean hasVoucherArg = nbt.hasTag("argument");
+
+                if (hasVoucherTag || hasVoucherArg) {
+                    count.getAndIncrement();
+                }
+
+                if (hasVoucherArg) {
                     item.editPersistentDataContainer(container -> {
                         if (ConfigManager.getConfig().getProperty(ConfigKeys.dupe_protection)) {
                             container.set(PersistentKeys.dupe_protection.getNamespacedKey(), PersistentDataType.STRING, UUID.randomUUID().toString());
@@ -44,11 +54,13 @@ public class VoucherNbtMigrator extends IVoucherMigrator {
                     });
                 }
 
-                if (nbt.hasTag("argument")) {
+                if (hasVoucherArg) {
                     item.editPersistentDataContainer(container -> container.set(PersistentKeys.voucher_arg.getNamespacedKey(), PersistentDataType.STRING, nbt.getString("argument")));
                 }
             });
         }
+
+        this.fusion.log("warn", "Successfully migrated <green>{}</green> items that were using legacy api!", count);
 
         Messages.migrated_old_vouchers.sendMessage(player);
     }

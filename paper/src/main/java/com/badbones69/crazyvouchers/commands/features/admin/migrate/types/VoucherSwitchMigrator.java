@@ -59,15 +59,27 @@ public class VoucherSwitchMigrator extends IVoucherMigrator {
 
                             final YamlConfiguration configuration = customFile.getConfiguration();
 
-                            if (configuration == null) continue;
+                            if (configuration == null) {
+                                this.fusion.log("warn", "Failed to switch voucher {}, because section is null.", key);
 
-                            if (entry == null) continue;
+                                continue;
+                            }
+
+                            if (entry == null) {
+                                this.fusion.log("warn", "Failed to switch voucher {}, because configuration section is null.", key);
+
+                                continue;
+                            }
 
                             final ConfigurationSection section = configuration.createSection("voucher");
 
                             processItems(entry, section);
                         }
+                    } else {
+                        this.fusion.log("warn", "Failed to move vouchers.yml into vouchers, because the section is null.");
                     }
+                } else {
+                    this.fusion.log("warn", "Failed to move vouchers.yml into vouchers, because configuration is null.");
                 }
 
                 final Path code_file = this.dataPath.resolve("codes.yml");
@@ -99,15 +111,27 @@ public class VoucherSwitchMigrator extends IVoucherMigrator {
 
                             final YamlConfiguration configuration = customFile.getConfiguration();
 
-                            if (configuration == null) continue;
+                            if (configuration == null) {
+                                this.fusion.log("warn", "Failed to switch code {}, because section is null.", key);
 
-                            if (entry == null) continue;
+                                continue;
+                            }
+
+                            if (entry == null) {
+                                this.fusion.log("warn", "Failed to switch code {}, because configuration section is null.", key);
+
+                                continue;
+                            }
 
                             final ConfigurationSection section = configuration.createSection("voucher-code");
 
                             process(entry, section);
                         }
+                    } else {
+                        this.fusion.log("warn", "Failed to move codes.yml into vouchers, because the section is null.");
                     }
+                } else {
+                    this.fusion.log("warn", "Failed to move codes.yml into vouchers, because configuration is null.");
                 }
             }
 
@@ -139,22 +163,42 @@ public class VoucherSwitchMigrator extends IVoucherMigrator {
 
                             final YamlConfiguration configuration = customFile.getConfiguration();
 
-                            if (configuration == null) continue;
+                            if (configuration == null) {
+                                this.fusion.log("warn", "Failed to switch voucher {}, because configuration is null.", voucher);
+
+                                continue;
+                            }
 
                             final ConfigurationSection entry = configuration.getConfigurationSection("voucher");
 
-                            if (entry == null) continue;
+                            if (entry == null) {
+                                this.fusion.log("warn", "Failed to switch voucher {}, because configuration section is null.", voucher);
+
+                                continue;
+                            }
 
                             final ConfigurationSection section = new_section.createSection(fileName);
 
                             processItems(entry, section);
 
                             voucher_custom_file.save();
+
+                            final String path = section.getCurrentPath();
+
+                            if (path != null) {
+                                this.fusion.log("warn", "Successfully moved voucher {} to {} in vouchers.yml.", voucher, path);
+                            }
                         }
 
                         this.fileManager.addFile(voucher_custom_file);
                         this.fileManager.removeFile(voucher_file, null);
+
+                        this.fusion.log("warn", "Added voucher {} to the cache, and removed the old voucher file named {}", voucher_custom_file.getPrettyName(), voucher_file);
+                    } else {
+                        this.fusion.log("warn", "Failed to move vouchers into vouchers.yml, because the section is null.");
                     }
+                } else {
+                    this.fusion.log("warn", "Failed to move vouchers into vouchers.yml, because configuration is null.");
                 }
 
                 final Path code_file = this.dataPath.resolve("codes.yml");
@@ -184,22 +228,42 @@ public class VoucherSwitchMigrator extends IVoucherMigrator {
 
                             final YamlConfiguration configuration = customFile.getConfiguration();
 
-                            if (configuration == null) continue;
+                            if (configuration == null) {
+                                this.fusion.log("warn", "Failed to switch code {}, because configuration is null.", code);
+
+                                continue;
+                            }
 
                             final ConfigurationSection entry = configuration.getConfigurationSection("voucher-code");
 
-                            if (entry == null) continue;
+                            if (entry == null) {
+                                this.fusion.log("warn", "Failed to switch code {}, because configuration section is null.", code);
+
+                                continue;
+                            }
 
                             final ConfigurationSection section = new_section.createSection(fileName);
 
                             processItems(entry, section);
 
                             code_custom_file.save();
+
+                            final String path = section.getCurrentPath();
+
+                            if (path != null) {
+                                this.fusion.log("warn", "Successfully moved code {} to {} in codes.yml.", code, path);
+                            }
                         }
 
                         this.fileManager.addFile(code_custom_file);
                         this.fileManager.removeFile(code_file, null);
+
+                        this.fusion.log("warn", "Added code {} to the cache, and removed the old code file named {}", code_custom_file.getPrettyName(), code_file);
+                    } else {
+                        this.fusion.log("warn", "Failed to move codes into codes.yml, because the section is null.");
                     }
+                } else {
+                    this.fusion.log("warn", "Failed to move codes into codes.yml, because configuration is null.");
                 }
             }
         }

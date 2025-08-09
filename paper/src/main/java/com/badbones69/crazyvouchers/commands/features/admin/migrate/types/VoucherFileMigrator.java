@@ -25,7 +25,11 @@ public class VoucherFileMigrator extends IVoucherMigrator {
             case VOUCHERS_RENAME -> { // rename voucher-codes.yml to codes.yml
                 final Path oldPath = this.dataPath.resolve("voucher-codes.yml");
 
-                if (!Files.exists(oldPath)) return;
+                if (!Files.exists(oldPath)) {
+                    this.fusion.log("warn", "The file {} does not exist at the path.", oldPath);
+
+                    return;
+                }
 
                 final Path newPath = this.dataPath.resolve("codes.yml");
 
@@ -35,6 +39,8 @@ public class VoucherFileMigrator extends IVoucherMigrator {
                     if (!Files.exists(backup)) {
                         try {
                             Files.createDirectory(backup);
+
+                            this.fusion.log("warn", "Successfully created the backup {}", backup);
                         } catch (final IOException exception) {
                             exception.printStackTrace();
                         }
@@ -42,6 +48,8 @@ public class VoucherFileMigrator extends IVoucherMigrator {
 
                     try {
                         Files.move(backup, newPath, StandardCopyOption.REPLACE_EXISTING);
+
+                        this.fusion.log("warn", "Successfully moved {} to {}.", backup, newPath);
                     } catch (final IOException exception) {
                         exception.printStackTrace();
                     }
@@ -49,6 +57,8 @@ public class VoucherFileMigrator extends IVoucherMigrator {
 
                 try {
                     Files.move(oldPath, newPath, StandardCopyOption.REPLACE_EXISTING);
+
+                    this.fusion.log("warn", "Successfully moved {} to {}.", oldPath, newPath);
                 } catch (final Exception exception) {
                     exception.printStackTrace();
                 }
