@@ -355,7 +355,7 @@ public class Voucher {
         setUniqueId(item);
 
         item.editPersistentDataContainer(container -> {
-            container.set(PersistentKeys.voucher_item.getNamespacedKey(), PersistentDataType.STRING, getName());
+            container.set(PersistentKeys.voucher_item.getNamespacedKey(), PersistentDataType.STRING, getStrippedName());
 
             if (!argument.isEmpty()) container.set(PersistentKeys.voucher_arg.getNamespacedKey(), PersistentDataType.STRING, argument);
         });

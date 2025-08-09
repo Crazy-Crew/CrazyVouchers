@@ -108,7 +108,7 @@ public class CommandHandler {
 
             if (sender.getSender() instanceof Player player) {
                 if (PermissionKeys.crazyvouchers_admin.hasPermission(player)) { // if they have this permission, they get all the codes.
-                    suggestions.addAll(codes.stream().map(Voucher::getName).toList());
+                    suggestions.addAll(codes.stream().map(Voucher::getStrippedName).toList());
 
                     return suggestions;
                 }

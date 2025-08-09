@@ -211,7 +211,7 @@ public class CrazyManager {
         if (voucherName.isEmpty()) return null;
 
         for (final Voucher voucher : getVouchers()) {
-            if (voucher.getName().equalsIgnoreCase(voucherName)) {
+            if (voucher.getStrippedName().equalsIgnoreCase(voucherName)) {
                 return voucher;
             }
         }
@@ -223,7 +223,7 @@ public class CrazyManager {
         if (voucherName.isEmpty()) return false;
 
         for (final Voucher voucher : getVouchers()) {
-            if (voucher.getName().equalsIgnoreCase(voucherName)) return false;
+            if (voucher.getStrippedName().equalsIgnoreCase(voucherName)) return false;
         }
 
         return true;
