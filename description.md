@@ -38,7 +38,7 @@ If you do not want this anonymous data sent, You currently have to go to the `bS
 
 <hr>
 
-CrazyVouchers has been partnered with [Apex Hosting](https://billing.apexminecrafthosting.com/aff.php?aff=5511) for the last decade.
+CrazyCrew has been partnered with [Apex Hosting](https://billing.apexminecrafthosting.com/aff.php?aff=5511) for the last decade.
 
 Apex Hosting is a well established hosting company letting you create servers for various other games such as Rust, or Palworld, and Satisfactory.
 
