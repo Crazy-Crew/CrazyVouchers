@@ -48,6 +48,7 @@ import java.util.Map;
 import java.util.UUID;
 import java.util.concurrent.atomic.AtomicBoolean;
 
+@SuppressWarnings("UnstableApiUsage")
 public class VoucherClickListener implements Listener {
 
     private final CrazyVouchers plugin = CrazyVouchers.get();
