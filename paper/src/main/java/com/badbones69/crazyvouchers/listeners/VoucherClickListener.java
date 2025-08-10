@@ -320,7 +320,7 @@ public class VoucherClickListener implements Listener {
     }
 
     private void populate(@NotNull final Player player, @NotNull final String argument) {
-        this.placeholders.put("{arg}", argument != null ? argument : "{arg}");
+        this.placeholders.put("{arg}", !argument.isEmpty() ? argument : "{arg}");
         this.placeholders.put("{player}", player.getName());
         this.placeholders.put("{world}", player.getWorld().getName());
 
