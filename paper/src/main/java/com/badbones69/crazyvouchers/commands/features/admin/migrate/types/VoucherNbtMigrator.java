@@ -44,7 +44,7 @@ public class VoucherNbtMigrator extends IVoucherMigrator {
                     count.getAndIncrement();
                 }
 
-                if (hasVoucherArg) {
+                if (hasVoucherTag) {
                     item.editPersistentDataContainer(container -> {
                         if (ConfigManager.getConfig().getProperty(ConfigKeys.dupe_protection)) {
                             container.set(PersistentKeys.dupe_protection.getNamespacedKey(), PersistentDataType.STRING, UUID.randomUUID().toString());
