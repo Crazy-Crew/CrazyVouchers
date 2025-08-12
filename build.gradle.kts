@@ -1,5 +1,3 @@
-import java.nio.file.Files
-
 plugins {
     alias(libs.plugins.minotaur)
     alias(libs.plugins.feather)
@@ -10,21 +8,15 @@ plugins {
 
 val git = feather.getGit()
 
-val commitHash: String? = git.getCurrentCommitHash().subSequence(0, 7).toString()
+val commitHash: String = git.getCurrentCommitHash().subSequence(0, 7).toString()
 val isSnapshot: Boolean = git.getCurrentBranch() == "dev"
-val changelog = rootProject.file("changelog.md")
+val content: String = if (isSnapshot) "[$commitHash](https://github.com/Crazy-Crew/${rootProject.name}/commit/$commitHash) ${git.getCurrentCommit()}" else rootProject.file("changelog.md").readText(Charsets.UTF_8)
 val minecraft = libs.versions.minecraft.get()
 val versions = listOf(minecraft)
 
 rootProject.description = "Give your players as many rewards as you like in a compact form called a voucher!"
 rootProject.version = if (isSnapshot) "$minecraft-$commitHash" else libs.versions.crazyvouchers.get()
 rootProject.group = "com.badbones69.crazyvouchers"
-
-val content: String = if (isSnapshot) "[$commitHash](https://github.com/Crazy-Crew/${rootProject.name}/commit/$commitHash) ${git.getCurrentCommit()}" else if (Files.lines(changelog.toPath()).count() > 3) {
-    "[Click](https://modrinth.com/plugin/${rootProject.name.lowercase()}/version/${rootProject.version})"
-} else {
-    changelog.readText(Charsets.UTF_8)
-}
 
 feather {
     rootDirectory = rootProject.rootDir.toPath()
@@ -113,7 +105,7 @@ feather {
 
                         field(
                             ":hammer: Changelog",
-                            content
+                            "[Click](https://modrinth.com/plugin/${rootProject.name.lowercase()}/version/${rootProject.version})"
                         )
                     }
                 }
