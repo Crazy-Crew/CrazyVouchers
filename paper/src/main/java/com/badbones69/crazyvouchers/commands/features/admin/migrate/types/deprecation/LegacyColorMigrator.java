@@ -227,11 +227,11 @@ public class LegacyColorMigrator extends IVoucherMigrator {
 
         section.set("name", AdvUtils.convert(itemName));
 
-        section.set("options.message", optionsMessage);
-        section.set("options.whitelist-worlds.message", optionsWorldMessage);
+        section.set("options.message", AdvUtils.convert(optionsMessage));
+        section.set("options.whitelist-worlds.message", AdvUtils.convert(optionsWorldMessage));
 
-        section.set("options.permission.whitelist-permission.message", optionsWhitelistMessage);
-        section.set("options.permission.blacklist-permission.message", optionsBlacklistMessage);
+        section.set("options.permission.whitelist-permission.message", AdvUtils.convert(optionsWhitelistMessage));
+        section.set("options.permission.blacklist-permission.message", AdvUtils.convert(optionsBlacklistMessage));
     }
 
     private void process(@NotNull final ConfigurationSection section) {
@@ -245,11 +245,11 @@ public class LegacyColorMigrator extends IVoucherMigrator {
         final String optionsBlacklistMessage = section.getString("options.permission.blacklist-permission.message",
                 "{prefix}<red>You can not use that voucher here as you are not in a whitelisted world for this voucher.");
 
-        section.set("options.message", optionsMessage);
-        section.set("options.whitelist-worlds.message", optionsWorldMessage);
+        section.set("options.message", AdvUtils.convert(optionsMessage));
+        section.set("options.whitelist-worlds.message", AdvUtils.convert(optionsWorldMessage));
 
-        section.set("options.permission.whitelist-permission.message", optionsWhitelistMessage);
-        section.set("options.permission.blacklist-permission.message", optionsBlacklistMessage);
+        section.set("options.permission.whitelist-permission.message", AdvUtils.convert(optionsWhitelistMessage));
+        section.set("options.permission.blacklist-permission.message", AdvUtils.convert(optionsBlacklistMessage));
     }
 
     @Override
