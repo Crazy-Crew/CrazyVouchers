@@ -1,1 +1,2 @@
-- Fixed yet another issue with some messages not being converted to MiniMessage with the color migrator.
+- Fixed an issue where we were using the wrong message for whitelist permissions.
+  - The whitelist-world message was used instead by mistake since the methods are so similar.

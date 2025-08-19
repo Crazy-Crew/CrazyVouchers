@@ -295,7 +295,7 @@ public class VoucherClickListener implements Listener {
 
         final List<String> permissions = blacklist ? voucher.getBlackListPermissions() : whitelist ? voucher.getWhitelistPermissions() : List.of();
         final List<String> commands = blacklist ? voucher.getBlacklistCommands() : whitelist ? voucher.getWhitelistCommands() : List.of();
-        final String message = blacklist ? voucher.getBlackListMessage() : whitelist ? voucher.getWhitelistWorldMessage() : "";
+        final String message = blacklist ? voucher.getBlackListMessage() : whitelist ? voucher.getWhitelistPermissionMessage() : "";
 
         if (whitelist && !voucher.hasPermission(player, permissions, commands, this.placeholders, message, argument)) {
             return false;
