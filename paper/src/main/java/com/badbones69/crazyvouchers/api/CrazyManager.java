@@ -2,7 +2,6 @@ package com.badbones69.crazyvouchers.api;
 
 import ch.jalu.configme.SettingsManager;
 import com.badbones69.crazyvouchers.CrazyVouchers;
-import com.badbones69.crazyvouchers.Methods;
 import com.badbones69.crazyvouchers.api.enums.FileKeys;
 import com.badbones69.crazyvouchers.api.enums.FileSystem;
 import com.badbones69.crazyvouchers.api.enums.misc.PersistentKeys;
@@ -289,51 +288,8 @@ public class CrazyManager {
 
         return "";
     }
-    
-    public @NotNull String replaceRandom(@NotNull String string) {
-        String newString = string;
-
-        if (usesRandom(string)) {
-            StringBuilder stringBuilder = new StringBuilder();
-
-            for (String word : newString.split(" ")) {
-                if (word.toLowerCase().startsWith("{random}:")) {
-                    word = word.toLowerCase().replace("{random}:", "");
-
-                    try {
-                        long min = Long.parseLong(word.split("-")[0]);
-                        long max = Long.parseLong(word.split("-")[1]);
-
-                        stringBuilder.append(pickNumber(min, max)).append(" ");
-                    } catch (Exception e) {
-                        stringBuilder.append("1 ");
-                    }
-                } else {
-                    stringBuilder.append(word).append(" ");
-                }
-            }
-
-            string = stringBuilder.toString();
-
-            newString = string.substring(0, string.length() - 1);
-        }
-
-        return newString;
-    }
 
     public @NotNull List<ItemBuilder> getItems(@NotNull final FileConfiguration file, @NotNull final String voucher) {
         return ItemUtils.convertStringList(file.getStringList("voucher.items"), voucher);
-    }
-    
-    private boolean usesRandom(@NotNull final String string) {
-        return string.toLowerCase().contains("{random}:");
-    }
-    
-    private long pickNumber(final long min, final long max) {
-        try {
-            return min + Methods.getRandom().nextLong(max - min);
-        } catch (final IllegalArgumentException exception) {
-            return min;
-        }
     }
 }

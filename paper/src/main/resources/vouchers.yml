@@ -39,20 +39,44 @@ vouchers: # Where you make your vouchers.
     items:
       - 'Item:diamond_helmet, Damage:50, Trim:sentry!quartz, Amount:1, protection:4, respiration:1, aqua_affinity:3, unbreaking:3, thorns:3'
       - 'Item:diamond_chestplate, Damage:50, Trim:dune!redstone, Amount:1, protection:4, unbreaking:3, thorns:3'
-    # Random Commands is completely random.
-    random-commands:
-      - 'eco give 50000'
-      - 'eco give 5000'
-      - 'eco give 1000'
-      - 'give {player} diamond 5'
     # https://docs.crazycrew.us/docs/plugins/crazyvouchers/guides/chance-system
     # Lets you run commands with % chances.
-    chance-commands:
-      - '45 eco give {player} 100'
-      - '25 eco give {player} 1000'
-      - '15 eco give {player} 10000'
-      - '10 eco give {player} 100000'
-      - '5 eco give {player} 1000000'
+    random-commands:
+      "1":
+        # The chance for these to run
+        weight: 45.0
+        # The commands to run
+        commands:
+          - "eco give {player} 100"
+      "2":
+        # The chance for these to run
+        weight: 25.0
+        # The commands to run
+        commands:
+          - "eco give {player} 1000"
+      "3":
+        # The chance for these to run
+        weight: 15.0
+        # The commands to run
+        commands:
+          - "eco give {player} 10000"
+      "4":
+        # The chance for these to run
+        weight: 10.0
+        # The commands to run
+        commands:
+          - "eco give {player} 100000"
+      "5":
+        # The chance for these to run
+        weight: 5.0
+        # The commands to run
+        commands:
+          - "eco give {player} 1000000"
+      # No chance is provided, thus we will pick random commands.
+      "6":
+       # The commands to run
+       commands:
+         - "give {player} diamond 5"
     # The durability or damage to the item given in the preview gui.
     display-damage: 50
     # The trim applied to the item in the preview gui.

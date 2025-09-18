@@ -10,9 +10,7 @@ import com.badbones69.crazyvouchers.api.enums.misc.PersistentKeys;
 import com.badbones69.crazyvouchers.api.enums.misc.PermissionKeys;
 import com.badbones69.crazyvouchers.api.events.VoucherRedeemEvent;
 import com.badbones69.crazyvouchers.api.objects.Voucher;
-import com.badbones69.crazyvouchers.api.objects.VoucherCommand;
 import com.badbones69.crazyvouchers.config.ConfigManager;
-import com.badbones69.crazyvouchers.utils.ScheduleUtils;
 import com.ryderbelserion.fusion.core.api.enums.Support;
 import com.ryderbelserion.fusion.paper.FusionPaper;
 import com.ryderbelserion.fusion.paper.api.builders.items.ItemBuilder;
@@ -302,13 +300,9 @@ public class VoucherClickListener implements Listener {
         }
 
         if (voucher.usesWhitelistWorlds() && !voucher.getWhitelistWorlds().contains(player.getWorld().getName().toLowerCase())) {
-            player.sendMessage(this.fusion.color(player, voucher.getWhitelistWorldMessage(), this.placeholders));
+            Methods.dispatch(player, List.of(voucher.getWhitelistWorldMessage()), this.placeholders, false);
 
-            ScheduleUtils.dispatch(consumer -> {
-                for (final String command : voucher.getWhitelistWorldCommands()) {
-                    server.dispatchCommand(server.getConsoleSender(), Methods.placeholders(player, command, placeholders));
-                }
-            });
+            Methods.dispatch(player, voucher.getWhitelistWorldCommands(), this.placeholders, true);
 
             return false;
         }
@@ -322,6 +316,7 @@ public class VoucherClickListener implements Listener {
 
     private void populate(@NotNull final Player player, @NotNull final String argument) {
         this.placeholders.put("{arg}", !argument.isEmpty() ? argument : "{arg}");
+
         this.placeholders.put("{player}", player.getName());
         this.placeholders.put("{world}", player.getWorld().getName());
 
@@ -336,33 +331,13 @@ public class VoucherClickListener implements Listener {
     private void voucherClick(@NotNull final Player player, @NotNull final ItemStack item, @NotNull final Voucher voucher, @NotNull final String argument) {
         Methods.removeItem(item, player);
 
-        if (voucher.hasCooldown()){
+        if (voucher.hasCooldown()) {
             voucher.addCooldown(player);
         }
 
         populate(player, argument);
 
-        ScheduleUtils.dispatch(consumer -> {
-            for (final String command : voucher.getCommands()) {
-                this.server.dispatchCommand(this.server.getConsoleSender(), Methods.placeholders(player, this.crazyManager.replaceRandom(command), placeholders));
-            }
-
-            final List<VoucherCommand> randomCommands = voucher.getRandomCommands();
-
-            if (!randomCommands.isEmpty()) { // Picks a random command from the Random-Commands list.
-                for (final String command : randomCommands.get(Methods.getRandom(randomCommands.size())).getCommands()) {
-                    this.server.dispatchCommand(this.server.getConsoleSender(), Methods.placeholders(player, this.crazyManager.replaceRandom(command), placeholders));
-                }
-            }
-
-            final List<VoucherCommand> chanceCommands = voucher.getChanceCommands();
-
-            if (!chanceCommands.isEmpty()) { // Picks a command based on the chance system of the Chance-Commands list.
-                for (final String command : chanceCommands.get(Methods.getRandom(chanceCommands.size())).getCommands()) {
-                    this.server.dispatchCommand(this.server.getConsoleSender(), Methods.placeholders(player, this.crazyManager.replaceRandom(command), placeholders));
-                }
-            }
-        });
+        voucher.dispatchCommands(player, this.placeholders);
 
         for (final ItemBuilder itemStack : voucher.getItems()) {
             Methods.addItem(player, itemStack.asItemStack());

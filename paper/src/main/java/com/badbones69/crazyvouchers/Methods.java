@@ -5,10 +5,8 @@ import com.badbones69.crazyvouchers.api.enums.misc.PersistentKeys;
 import com.badbones69.crazyvouchers.config.ConfigManager;
 import com.badbones69.crazyvouchers.config.types.ConfigKeys;
 import com.badbones69.crazyvouchers.utils.ScheduleUtils;
-import com.ryderbelserion.fusion.core.api.enums.Support;
 import com.ryderbelserion.fusion.paper.FusionPaper;
 import com.ryderbelserion.fusion.paper.api.scheduler.FoliaScheduler;
-import me.clip.placeholderapi.PlaceholderAPI;
 import org.bukkit.Color;
 import org.bukkit.FireworkEffect;
 import org.bukkit.Location;
@@ -31,6 +29,10 @@ import java.util.UUID;
 import java.util.concurrent.ThreadLocalRandom;
 
 public class Methods {
+
+    private static @NotNull final CrazyVouchers plugin = CrazyVouchers.get();
+
+    private static @NotNull final FusionPaper fusion = plugin.getFusion();
 
     public static void removeItem(@NotNull final ItemStack item, @NotNull final Player player) {
         if (item.getAmount() <= 1) {
@@ -77,20 +79,16 @@ public class Methods {
     public static boolean hasPermission(final boolean execute, @NotNull final Player player, @NotNull final List<String> permissions, @NotNull final List<String> commands, @NotNull final Map<String, String> placeholders, @NotNull final String message, @NotNull final String argument) {
         boolean hasPermission = false;
 
-        final Server server = player.getServer();
-
         for (final String permission : permissions) {
-            if (player.hasPermission(permission.toLowerCase().replace("{arg}", !argument.isEmpty() ? argument : "{arg}"))) {
+            final String arg = argument.isEmpty() ? "{arg}" : argument;
+            final String cleanPermission = permission.toLowerCase().replace("{arg}", arg);
+
+            if (player.hasPermission(cleanPermission)) {
                 if (execute) {
                     placeholders.put("{permission}", permission);
 
-                    player.sendMessage(fusion.color(player, message, placeholders));
-
-                    ScheduleUtils.dispatch(consumer -> {
-                        for (final String command : commands) {
-                            server.dispatchCommand(server.getConsoleSender(), placeholders(player, command, placeholders));
-                        }
-                    });
+                    dispatch(player, List.of(message), placeholders, false);
+                    dispatch(player, commands, placeholders, true);
                 }
 
                 hasPermission = true;
@@ -115,22 +113,35 @@ public class Methods {
     }
 
     public static String placeholders(@NotNull final CommandSender sender, @NotNull final String message, @NotNull final Map<String, String> placeholders) {
-        String line = message;
-
-        if (sender instanceof Player player && Support.placeholder_api.isEnabled()) {
-            line = PlaceholderAPI.setPlaceholders(player, line);
-        }
+        String safeLine = message;
 
         for (final String placeholder : placeholders.keySet()) {
-            line = line.replace(placeholder, placeholders.get(placeholder)).replace(placeholder.toLowerCase(), placeholders.get(placeholder));
+            safeLine = safeLine.replace(placeholder, placeholders.get(placeholder)).replace(placeholder.toLowerCase(), placeholders.get(placeholder));
         }
 
-        return line;
+        return fusion.parsePlaceholders(sender, safeLine);
     }
 
-    private static @NotNull final CrazyVouchers plugin = CrazyVouchers.get();
+    public static void dispatch(@NotNull final Player player, @NotNull final List<String> values, @NotNull final Map<String, String> placeholders, final boolean isCommand) {
+        if (values.isEmpty()) return;
 
-    private static @NotNull final FusionPaper fusion = plugin.getFusion();
+        final Server server = player.getServer();
+        final CommandSender sender = server.getConsoleSender();
+
+        if (isCommand) {
+            ScheduleUtils.dispatch(consumer -> {
+                for (final String value : values) {
+                    server.dispatchCommand(sender, placeholders(player, value, placeholders));
+                }
+            });
+
+            return;
+        }
+
+        for (final String value : values) {
+            player.sendMessage(fusion.color(player, value, placeholders));
+        }
+    }
 
     public static boolean isInventoryFull(@NotNull final PlayerInventory inventory) {
         return inventory.firstEmpty() == -1;

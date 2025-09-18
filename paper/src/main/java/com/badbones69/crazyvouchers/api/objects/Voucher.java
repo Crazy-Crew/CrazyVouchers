@@ -8,10 +8,12 @@ import com.badbones69.crazyvouchers.api.enums.config.Messages;
 import com.badbones69.crazyvouchers.api.enums.misc.PersistentKeys;
 import com.badbones69.crazyvouchers.utils.ItemUtils;
 import com.ryderbelserion.fusion.core.api.utils.StringUtils;
+import com.ryderbelserion.fusion.paper.FusionPaper;
 import com.ryderbelserion.fusion.paper.api.builders.items.ItemBuilder;
 import com.ryderbelserion.fusion.paper.utils.ColorUtils;
 import org.bukkit.Color;
 import org.bukkit.Sound;
+import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
@@ -20,14 +22,12 @@ import org.bukkit.persistence.PersistentDataType;
 import com.badbones69.crazyvouchers.config.ConfigManager;
 import com.badbones69.crazyvouchers.config.types.ConfigKeys;
 import org.jetbrains.annotations.NotNull;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.UUID;
-import java.util.logging.Level;
+import java.util.*;
 
 public class Voucher {
+
+    private final CrazyVouchers plugin = CrazyVouchers.get();
+    private final FusionPaper fusion = this.plugin.getFusion();
 
     private final ItemBuilder itemBuilder;
 
@@ -60,9 +60,12 @@ public class Voucher {
     private final boolean fireworkToggle;
     private final List<Color> fireworkColors = new ArrayList<>();
     private boolean isEdible;
+
+    private final Map<String, VoucherCommand> randomCommands = new HashMap<>();
+    private double totalWeight = 0.0D;
+
     private List<String> commands = new ArrayList<>();
-    private final List<VoucherCommand> randomCommands = new ArrayList<>();
-    private final List<VoucherCommand> chanceCommands = new ArrayList<>();
+
     private final Map<String, String> requiredPlaceholders = new HashMap<>();
 
     private final Map<UUID, Long> cooldowns = new HashMap<>();
@@ -92,8 +95,6 @@ public class Voucher {
         this.hasCooldown = false;
         this.cooldownInterval = 0;
     }
-
-    private final CrazyVouchers plugin = CrazyVouchers.get();
 
     public Voucher(@NotNull final FileConfiguration fileConfiguration, @NotNull final String name) {
         this.usesArgs = false;
@@ -135,7 +136,7 @@ public class Voucher {
         if (fileConfiguration.contains(path + "player")) {
             final String playerName = fileConfiguration.getString(path + "player", "");
 
-            if (!playerName.isEmpty() || !playerName.isBlank()) {
+            if (!playerName.isEmpty()) {
                 this.itemBuilder.asSkullBuilder().withName(playerName).build();
             }
         }
@@ -171,24 +172,27 @@ public class Voucher {
 
         if (fileConfiguration.contains(path + "commands")) this.commands = fileConfiguration.getStringList(path + "commands");
 
-        if (fileConfiguration.contains(path + "random-commands")) {
-            for (String commands : fileConfiguration.getStringList(path + "random-commands")) {
-                this.randomCommands.add(new VoucherCommand(commands));
-            }
+        if (fileConfiguration.contains(path + "chance-commands")) {
+            this.fusion.log("warn", "We've detected that you have the list version of chance-commands which is no longer used, Please run /crazyvouchers migrate -mt VouchersDeprecated");
         }
 
-        if (fileConfiguration.contains(path + "chance-commands")) {
-            for (String line : fileConfiguration.getStringList(path + "chance-commands")) { // - '{chance} {command}, {command}, {command}, ... etc'
-                try {
-                    String[] split = line.split(" ");
-                    VoucherCommand voucherCommand = new VoucherCommand(line.substring(split[0].length() + 1));
+        if (fileConfiguration.contains(path + "random-commands")) { // combined random and chance commands
+            if (fileConfiguration.isList(path + "random-commands")) {
+                this.fusion.log("warn", "We've detected that you have the list version of random-commands which is no longer used, Please run /crazyvouchers migrate -mt VouchersDeprecated");
+            } else {
+                final ConfigurationSection section = fileConfiguration.getConfigurationSection(path + "random-commands");
 
-                    for (int i = 1; i <= Integer.parseInt(split[0]); i++) {
-                        this.chanceCommands.add(voucherCommand);
+                if (section != null) {
+                    for (final String key : section.getKeys(false)) {
+                        final ConfigurationSection command = section.getConfigurationSection(key);
+
+                        if (command == null) continue;
+
+                        this.randomCommands.putIfAbsent(key, new VoucherCommand(command.getStringList("commands"), command.getDouble("weight", -1)));
                     }
-                } catch (Exception exception) {
-                    this.plugin.getLogger().log(Level.SEVERE,"An issue occurred when trying to use chance commands.", exception);
                 }
+
+                this.totalWeight = this.randomCommands.values().stream().filter(filter -> filter.getWeight() <= 0.0D).mapToDouble(VoucherCommand::getWeight).sum();
             }
         }
 
@@ -363,6 +367,34 @@ public class Voucher {
         return item;
     }
 
+    public void dispatchCommands(@NotNull final Player player, @NotNull final Map<String, String> placeholders) {
+        Methods.dispatch(player, this.commands, placeholders, true); // dispatch normal commands
+
+        // dispatch commands without a weight option randomly
+        final List<VoucherCommand> randomCommands = this.randomCommands.values().stream().filter(filter -> filter.getWeight() > 0.0D).toList();
+        final VoucherCommand randomCommand = randomCommands.get(Methods.getRandom(randomCommands.size()));
+
+        Methods.dispatch(player, randomCommand.getCommands(), placeholders, true);
+
+        // dispatch commands while accounting for the weight on each one.
+        // if a section has Weight, and a list of commands. all those commands will execute if the Weight is picked.
+        final List<VoucherCommand> chanceCommands = this.randomCommands.values().stream().filter(filter -> filter.getWeight() <= 0.0D).toList();
+
+        Methods.dispatch(player, getCommand(chanceCommands).getCommands(), placeholders, true);
+    }
+
+    public VoucherCommand getCommand(@NotNull final List<VoucherCommand> commands) {
+        int index = 0;
+
+        for (double value = Methods.getRandom().nextDouble() * this.totalWeight; index < commands.size() - 1; index++) {
+            value -= commands.get(index).getWeight();
+
+            if (value <= 0.0) break;
+        }
+
+        return commands.get(index);
+    }
+
     private void setUniqueId(@NotNull final ItemStack item) {
         if (this.config.getProperty(ConfigKeys.dupe_protection)) {
             final String uuid = UUID.randomUUID().toString();
@@ -466,15 +498,15 @@ public class Voucher {
     public List<String> getCommands() {
         return this.commands;
     }
-    
-    public List<VoucherCommand> getRandomCommands() {
+
+    public Map<String, VoucherCommand> getRandomCommands() {
         return this.randomCommands;
     }
-    
-    public List<VoucherCommand> getChanceCommands() {
-        return this.chanceCommands;
+
+    public double getTotalWeight() {
+        return this.totalWeight;
     }
-    
+
     public List<ItemBuilder> getItems() {
         return this.items;
     }

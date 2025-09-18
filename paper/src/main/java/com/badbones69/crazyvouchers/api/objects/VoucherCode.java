@@ -1,7 +1,6 @@
 package com.badbones69.crazyvouchers.api.objects;
 
 import ch.jalu.configme.SettingsManager;
-import com.badbones69.crazyvouchers.CrazyVouchers;
 import com.badbones69.crazyvouchers.Methods;
 import com.badbones69.crazyvouchers.api.enums.FileSystem;
 import com.badbones69.crazyvouchers.api.enums.config.Messages;
@@ -10,15 +9,16 @@ import com.ryderbelserion.fusion.paper.api.builders.items.ItemBuilder;
 import com.ryderbelserion.fusion.paper.utils.ColorUtils;
 import org.bukkit.Color;
 import org.bukkit.Sound;
+import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.entity.Player;
 import com.badbones69.crazyvouchers.config.ConfigManager;
 import com.badbones69.crazyvouchers.config.types.ConfigKeys;
 import org.jetbrains.annotations.NotNull;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.logging.Level;
 
 public class VoucherCode {
 
@@ -49,12 +49,11 @@ public class VoucherCode {
     private float pitch;
     private final boolean fireworkToggle;
     private final List<Color> fireworkColors = new ArrayList<>();
-    private final List<VoucherCommand> randomCommands = new ArrayList<>();
-    private final List<VoucherCommand> chanceCommands = new ArrayList<>();
+
+    private final Map<String, VoucherCommand> randomCommands = new HashMap<>();
+    private double totalWeight = 0.0D;
 
     private final List<ItemBuilder> items;
-
-    private @NotNull final CrazyVouchers plugin = CrazyVouchers.get();
 
     public VoucherCode(@NotNull final FileConfiguration file, @NotNull final String name) {
         this.name = name;
@@ -67,21 +66,20 @@ public class VoucherCode {
         this.code = file.getString(path + "code", "");
         this.commands = file.getStringList(path + "commands");
 
-        for (final String commands : file.getStringList(path + "random-commands")) {
-            this.randomCommands.add(new VoucherCommand(commands));
-        }
+        if (file.contains(path + "random-commands")) { // combined random and chance commands
+            final ConfigurationSection section = file.getConfigurationSection(path + "random-commands");
 
-        for (final String line : file.getStringList(path + "chance-commands")) {
-            try {
-                String[] split = line.split(" ");
-                VoucherCommand voucherCommand = new VoucherCommand(line.substring(split[0].length() + 1));
+            if (section != null) {
+                for (final String key : section.getKeys(false)) {
+                    final ConfigurationSection command = section.getConfigurationSection(key);
 
-                for (int i = 1; i <= Integer.parseInt(split[0]); i++) {
-                    this.chanceCommands.add(voucherCommand);
+                    if (command == null) continue;
+
+                    this.randomCommands.putIfAbsent(key, new VoucherCommand(command.getStringList("commands"), command.getDouble("weight", -1)));
                 }
-            } catch (final Exception exception) {
-                this.plugin.getLogger().log(Level.SEVERE, "An issued occurred when trying to use chance commands.", exception);
             }
+
+            this.totalWeight = this.randomCommands.values().stream().filter(filter -> filter.getWeight() <= 0.0D).mapToDouble(VoucherCommand::getWeight).sum();
         }
 
         if (this.config.getProperty(ConfigKeys.use_different_items_layout) && !file.isList("items")) {
@@ -172,8 +170,40 @@ public class VoucherCode {
         }
     }
 
+    public void dispatchCommands(@NotNull final Player player, @NotNull final Map<String, String> placeholders) {
+        Methods.dispatch(player, this.commands, placeholders, true); // dispatch normal commands
+
+        // dispatch commands without a weight option randomly
+        final List<VoucherCommand> randomCommands = this.randomCommands.values().stream().filter(filter -> filter.getWeight() > 0.0D).toList();
+        final VoucherCommand randomCommand = randomCommands.get(Methods.getRandom(randomCommands.size()));
+
+        Methods.dispatch(player, randomCommand.getCommands(), placeholders, true);
+
+        // dispatch commands while accounting for the weight on each one.
+        // if a section has Weight, and a list of commands. all those commands will execute if the Weight is picked.
+        final List<VoucherCommand> chanceCommands = this.randomCommands.values().stream().filter(filter -> filter.getWeight() <= 0.0D).toList();
+
+        Methods.dispatch(player, getCommand(chanceCommands).getCommands(), placeholders, true);
+    }
+
+    public VoucherCommand getCommand(@NotNull final List<VoucherCommand> commands) {
+        int index = 0;
+
+        for (double value = Methods.getRandom().nextDouble() * this.totalWeight; index < commands.size() - 1; index++) {
+            value -= commands.get(index).getWeight();
+
+            if (value <= 0.0) break;
+        }
+
+        return commands.get(index);
+    }
+
     public boolean hasPermission(@NotNull final Player player, @NotNull final List<String> permissions, @NotNull final List<String> commands, @NotNull final Map<String, String> placeholders, @NotNull final String message, @NotNull final String argument) {
         return Methods.hasPermission(false, player, permissions, commands, placeholders, message, argument);
+    }
+
+    public String getStrippedName() {
+        return this.name.replaceAll(".yml", "");
     }
     
     public String getName() {
@@ -276,14 +306,14 @@ public class VoucherCode {
         return this.fireworkColors;
     }
     
-    public List<VoucherCommand> getRandomCommands() {
+    public Map<String, VoucherCommand> getRandomCommands() {
         return this.randomCommands;
     }
-    
-    public List<VoucherCommand> getChanceCommands() {
-        return this.chanceCommands;
+
+    public double getTotalWeight() {
+        return this.totalWeight;
     }
-    
+
     public List<ItemBuilder> getItems() {
         return this.items;
     }

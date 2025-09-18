@@ -22,20 +22,44 @@ voucher-codes: # Where you make your vouchers.
     # Run normal commands when the code is redeemed.
     commands:
       - 'eco give {player} 10000'
-    # Random Commands is completely random.
-    random-commands:
-      - 'eco give 50000'
-      - 'eco give 5000'
-      - 'eco give 1000'
-      - 'give {player} diamond 5'
     # https://docs.crazycrew.us/docs/plugins/crazyvouchers/guides/chance-system
     # Lets you run commands with % chances.
-    chance-commands:
-      - '45 eco give {player} 100'
-      - '25 eco give {player} 1000'
-      - '15 eco give {player} 10000'
-      - '10 eco give {player} 100000'
-      - '5 eco give {player} 1000000'
+    random-commands:
+      "1":
+       # The chance for these to run
+       weight: 45.0
+       # The commands to run
+       commands:
+         - "eco give {player} 100"
+      "2":
+        # The chance for these to run
+        weight: 25.0
+        # The commands to run
+        commands:
+          - "eco give {player} 1000"
+      "3":
+        # The chance for these to run
+        weight: 15.0
+        # The commands to run
+        commands:
+          - "eco give {player} 10000"
+      "4":
+        # The chance for these to run
+        weight: 10.0
+        # The commands to run
+        commands:
+          - "eco give {player} 100000"
+      "5":
+        # The chance for these to run
+        weight: 5.0
+        # The commands to run
+        commands:
+          - "eco give {player} 1000000"
+      # No chance is provided, thus we will pick random commands.
+      "6":
+        # The commands to run
+        commands:
+          - "give {player} diamond 5"
     # All options when they right-click it.
     options:
       # If the option is case-sensitive or not.
