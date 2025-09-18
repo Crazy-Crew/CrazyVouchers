@@ -37,8 +37,10 @@ voucher:
   items:
     - 'Item:diamond_helmet, Damage:50, Trim:sentry!quartz, Amount:1, protection:4, respiration:1, aqua_affinity:3, unbreaking:3, thorns:3'
     - 'Item:diamond_chestplate, Damage:50, Trim:dune!redstone, Amount:1, protection:4, unbreaking:3, thorns:3'
-  # https://docs.crazycrew.us/docs/plugins/crazyvouchers/guides/chance-system
-  # Lets you run commands with % chances.
+  # https://docs.crazycrew.us/docs/plugins/crazyvouchers/guides/weight-system
+  # This section has 2 systems, Weight Based, and Random
+  # They run independent of each other, Any commands without a Weight option
+  # will be run separately as how random-commands used to function.
   random-commands:
     "1":
       # The chance for these to run

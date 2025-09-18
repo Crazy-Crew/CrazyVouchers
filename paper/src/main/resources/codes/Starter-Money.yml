@@ -4,8 +4,10 @@ voucher-code:
   # Run normal commands when the code is redeemed.
   commands:
     - 'eco give {player} 10000'
-  # https://docs.crazycrew.us/docs/plugins/crazyvouchers/guides/chance-system
-  # Lets you run commands with % chances.
+  # https://docs.crazycrew.us/docs/plugins/crazyvouchers/guides/weight-system
+  # This section has 2 systems, Weight Based, and Random
+  # They run independent of each other, Any commands without a Weight option
+  # will be run separately as how random-commands used to function.
   random-commands:
     "1":
       # The chance for these to run
