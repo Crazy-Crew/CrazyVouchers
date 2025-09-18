@@ -284,7 +284,7 @@ public class VouchersDeprecated extends IVoucherMigrator {
 
             final String[] chance = command.split(" ");
 
-            commandSection.set("weight", Integer.parseInt(chance[0])); // gets the first 2 numbers of the string if they followed proper syntax.
+            commandSection.set("weight", Double.parseDouble(chance[0])); // gets the first 2 numbers of the string if they followed proper syntax.
 
             if (commandSection.contains("commands")) {
                 final List<String> values = commandSection.getStringList("commands");

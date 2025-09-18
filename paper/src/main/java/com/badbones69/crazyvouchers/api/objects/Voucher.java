@@ -188,7 +188,7 @@ public class Voucher {
 
                         if (command == null) continue;
 
-                        this.randomCommands.putIfAbsent(key, new VoucherCommand(command.getStringList("commands"), command.getDouble("weight", -1)));
+                        this.randomCommands.putIfAbsent(key, new VoucherCommand(command.getStringList("commands"), command.getDouble("weight", 0.0D)));
                     }
                 }
 
