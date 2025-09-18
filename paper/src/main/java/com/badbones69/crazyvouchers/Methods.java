@@ -5,6 +5,7 @@ import com.badbones69.crazyvouchers.api.enums.misc.PersistentKeys;
 import com.badbones69.crazyvouchers.config.ConfigManager;
 import com.badbones69.crazyvouchers.config.types.ConfigKeys;
 import com.badbones69.crazyvouchers.utils.ScheduleUtils;
+import com.ryderbelserion.fusion.core.api.utils.StringUtils;
 import com.ryderbelserion.fusion.paper.FusionPaper;
 import com.ryderbelserion.fusion.paper.api.scheduler.FoliaScheduler;
 import org.bukkit.Color;
@@ -21,14 +22,14 @@ import org.bukkit.inventory.meta.FireworkMeta;
 import org.bukkit.persistence.PersistentDataContainer;
 import org.bukkit.persistence.PersistentDataType;
 import org.jetbrains.annotations.NotNull;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Map;
-import java.util.Random;
-import java.util.UUID;
+import java.util.*;
 import java.util.concurrent.ThreadLocalRandom;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 public class Methods {
+
+    private static @NotNull final Pattern randomNumberMatcher = Pattern.compile("\\{random}:(\\d+)-(\\d+)");
 
     private static @NotNull final CrazyVouchers plugin = CrazyVouchers.get();
 
@@ -131,7 +132,7 @@ public class Methods {
         if (isCommand) {
             ScheduleUtils.dispatch(consumer -> {
                 for (final String value : values) {
-                    server.dispatchCommand(sender, placeholders(player, value, placeholders));
+                    server.dispatchCommand(sender, placeholders(player, getRandomNumber(value), placeholders));
                 }
             });
 
@@ -141,6 +142,30 @@ public class Methods {
         for (final String value : values) {
             player.sendMessage(fusion.color(player, value, placeholders));
         }
+    }
+
+    public static String getRandomNumber(@NotNull final String value) {
+        String safeLine = value;
+
+        if (safeLine.contains("{random}")) {
+            final Matcher matcher = randomNumberMatcher.matcher(safeLine);
+
+            final Optional<Number> minRange = StringUtils.tryParseInt(matcher.group(1));
+            final Optional<Number> maxRange = StringUtils.tryParseInt(matcher.group(2));
+
+            if (minRange.isPresent() && maxRange.isPresent()) {
+                final int minimum = minRange.get().intValue();
+                final int maximum = maxRange.get().intValue();
+
+                final int amount = Methods.getRandom().nextInt(minimum, maximum);
+
+                safeLine = safeLine.replace("{random}:%s-%s".formatted(minimum, maximum), String.valueOf(amount));
+            } else {
+                fusion.log("warn", "The values supplied with {random} seem to not be integers. {}", value);
+            }
+        }
+
+        return safeLine;
     }
 
     public static boolean isInventoryFull(@NotNull final PlayerInventory inventory) {
