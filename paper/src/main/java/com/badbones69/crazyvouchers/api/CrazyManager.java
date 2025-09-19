@@ -352,8 +352,4 @@ public class CrazyManager {
 
         return "";
     }
-
-    public @NotNull List<ItemBuilder> getItems(@NotNull final FileConfiguration file, @NotNull final String voucher) {
-        return ItemUtils.convertStringList(file.getStringList("voucher.items"), voucher);
-    }
 }
