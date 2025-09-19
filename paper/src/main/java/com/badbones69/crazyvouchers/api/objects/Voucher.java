@@ -20,6 +20,7 @@ import com.badbones69.crazyvouchers.config.ConfigManager;
 import com.badbones69.crazyvouchers.config.types.ConfigKeys;
 import org.jetbrains.annotations.NotNull;
 import java.util.*;
+import java.util.stream.Collectors;
 
 public class Voucher {
 
@@ -30,41 +31,40 @@ public class Voucher {
 
     private final String name;
 
-    private int cooldownInterval = 5;
-    private boolean hasCooldown = false;
+    private final int cooldownInterval;
+    private final boolean hasCooldown;
 
-    private boolean usesArgs = false;
-    private String usedMessage = "";
     private final boolean hasArguments;
+    private final String usedMessage;
 
-    private boolean whitelistPermissionToggle = false;
+    private final boolean whitelistPermissionToggle;
     private final List<String> whitelistPermissions = new ArrayList<>();
     private List<String> whitelistCommands = new ArrayList<>();
     private final String whitelistPermissionMessage;
 
-    private boolean whitelistWorldsToggle = false;
+    private final boolean whitelistWorldsToggle;
     private final String whitelistWorldMessage;
     private final List<String> whitelistWorlds = new ArrayList<>();
     private List<String> whitelistWorldCommands = new ArrayList<>();
 
-    private boolean blacklistPermissionsToggle = false;
+    private final boolean blacklistPermissionsToggle;
     private final String blacklistPermissionMessage;
     private List<String> blacklistCommands = new ArrayList<>();
     private List<String> blacklistPermissions = new ArrayList<>();
 
-    private boolean limiterToggle = false;
-    private int limiterLimit = 0;
+    private final boolean limiterToggle;
+    private final int limiterLimit;
 
-    private boolean twoStepAuthentication = false;
+    private final boolean twoStepAuthentication;
 
-    private boolean soundToggle = false;
-    private float volume = 1.0F;
-    private float pitch = 1.0F;
+    private final boolean soundToggle;
+    private final float volume;
+    private final float pitch;
     private final List<Sound> sounds = new ArrayList<>();
 
-    private boolean fireworkToggle = false;
+    private final boolean fireworkToggle;
     private final List<Color> fireworkColors = new ArrayList<>();
-    private boolean isEdible = false;
+    private final boolean isEdible;
 
     private final List<VoucherCommand> randomCommands = new ArrayList<>();
 
@@ -246,7 +246,11 @@ public class Voucher {
 
         this.totalWeight = this.randomCommands.stream().filter(filter -> filter.getWeight() >= 0.0D).mapToDouble(VoucherCommand::getWeight).sum();
     }
-    
+
+    public String getStrippedName() {
+        return this.name.replace(".yml", "");
+    }
+
     public String getName() {
         return this.name;
     }
