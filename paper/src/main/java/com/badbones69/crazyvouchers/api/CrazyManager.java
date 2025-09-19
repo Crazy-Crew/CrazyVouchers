@@ -88,7 +88,15 @@ public class CrazyManager {
 
                 for (final String code : section.getKeys(false)) {
                     try {
-                        this.voucherCodes.add(new VoucherCode(configuration, code));
+                        final ConfigurationSection codeSection = section.getConfigurationSection(code);
+
+                        if (codeSection == null) {
+                            this.fusion.log("warn", "The section for {} could not be found in voucher-codes.yml", code);
+
+                            continue;
+                        }
+
+                        this.voucherCodes.add(new VoucherCode(codeSection, code));
                     } catch (final Exception exception) {
                         this.brokenVoucherCodes.add(code);
                     }
@@ -109,6 +117,16 @@ public class CrazyManager {
 
                     if (!file.isLoaded()) {
                         this.logger.warn("Could not load code configuration for {}", code);
+
+                        this.brokenVoucherCodes.add(file.getFileName());
+
+                        continue;
+                    }
+
+                    final ConfigurationSection section = file.getConfiguration().getConfigurationSection("voucher-code");
+
+                    if (section == null) {
+                        this.logger.warn("Could not find voucher code configuration section for {}", code);
 
                         this.brokenVoucherCodes.add(file.getFileName());
 
