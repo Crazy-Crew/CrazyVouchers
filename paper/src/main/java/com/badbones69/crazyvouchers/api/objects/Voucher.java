@@ -35,6 +35,7 @@ public class Voucher {
 
     private boolean usesArgs = false;
     private String usedMessage = "";
+    private final boolean hasArguments;
 
     private boolean whitelistPermissionToggle = false;
     private final List<String> whitelistPermissions = new ArrayList<>();
@@ -128,17 +129,7 @@ public class Voucher {
             this.itemBuilder.setEnchantGlint(section.getBoolean("glowing", false));
         }
 
-        if (this.itemBuilder.getPlainName().toLowerCase().contains("{arg}")) this.usesArgs = true;
-
-        if (!this.usesArgs) {
-            for (String lore : this.itemBuilder.getPlainLore()) {
-                if (lore.toLowerCase().contains("{arg}")) {
-                    this.usesArgs = true;
-
-                    break;
-                }
-            }
-        }
+        this.hasArguments = this.itemBuilder.getPlainName().toLowerCase().contains("{arg}") || !this.itemBuilder.getPlainLore().stream().filter(line -> line.contains("{arg}")).toList().isEmpty();
 
         this.commands = section.isList("commands") ? section.getStringList("commands") : List.of(section.getString("commands", ""));
 
@@ -260,12 +251,8 @@ public class Voucher {
         return this.name;
     }
 
-    public String getStrippedName() {
-        return getName().replace(".yml", "");
-    }
-    
-    public boolean usesArguments() {
-        return this.usesArgs;
+    public boolean hasArguments() {
+        return this.hasArguments;
     }
     
     public ItemStack buildItem() {
