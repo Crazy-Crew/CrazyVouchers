@@ -258,52 +258,64 @@ public class CrazyManager {
         return Collections.unmodifiableList(this.brokenVoucherCodes);
     }
 
-    public @Nullable Voucher getVoucher(@NotNull final String voucherName) {
-        if (voucherName.isEmpty()) return null;
-
-        for (final Voucher voucher : getVouchers()) {
-            if (voucher.getStrippedName().equalsIgnoreCase(voucherName)) {
-                return voucher;
-            }
-        }
-
-        return null;
-    }
-    
-    public boolean isVoucherName(@NotNull final String voucherName) {
-        if (voucherName.isEmpty()) return false;
-
-        for (final Voucher voucher : getVouchers()) {
-            if (voucher.getStrippedName().equalsIgnoreCase(voucherName)) return false;
-        }
-
-        return true;
-    }
-    
     public @Nullable VoucherCode getVoucherCode(@NotNull final String voucherName) {
-        if (voucherName.isEmpty()) return null;
+        VoucherCode voucherCode = null;
 
-        for (final VoucherCode voucher : getVoucherCodes()) {
-            if (voucher.getCode().equalsIgnoreCase(voucherName)) return voucher;
+        if (voucherName.isEmpty()) return voucherCode;
+
+        for (final VoucherCode value : getVoucherCodes()) {
+            if (!value.getCode().equalsIgnoreCase(voucherName)) continue;
+
+            voucherCode = value;
+
+            break;
         }
 
-        return null;
+        return voucherCode;
     }
-    
+
     public boolean isVoucherCode(@NotNull final String voucherCode) {
         if (voucherCode.isEmpty()) return false;
 
+        boolean isVoucherCode = false;
+
         for (final VoucherCode voucher : getVoucherCodes()) {
-            if (voucher.isEnabled()) {
-                if (voucher.isCaseSensitive()) {
-                    if (voucher.getCode().equals(voucherCode)) return true;
-                } else {
-                    if (voucher.getCode().equalsIgnoreCase(voucherCode)) return true;
+            if (!voucher.isEnabled()) continue;
+
+            if (voucher.isCaseSensitive()) {
+                isVoucherCode = voucher.getCode().equals(voucherCode);
+
+                if (isVoucherCode) {
+                    break;
                 }
+
+                continue;
+            }
+
+            isVoucherCode = voucher.getCode().equalsIgnoreCase(voucherCode);
+
+            if (isVoucherCode) {
+                break;
             }
         }
 
-        return false;
+        return isVoucherCode;
+    }
+
+    public @Nullable Voucher getVoucher(@NotNull final String voucherName) {
+        Voucher safeVoucher = null;
+
+        if (voucherName.isEmpty()) return safeVoucher;
+
+        for (final Voucher voucher : getVouchers()) {
+            if (!voucher.getStrippedName().equalsIgnoreCase(voucherName)) continue;
+
+            safeVoucher = voucher;
+
+            break;
+        }
+
+        return safeVoucher;
     }
 
     public @Nullable Voucher getVoucherFromItem(@NotNull final ItemStack item) {
@@ -321,15 +333,11 @@ public class CrazyManager {
             }
         }
 
-        if (voucher == null) return null;
-
-        this.fusion.log("warn", "Class ID: {}, {}", voucher.getName(), Integer.toHexString(System.identityHashCode(voucher)));
-
         return voucher;
     }
 
     public @NotNull String getArgument(@NotNull final ItemStack item, @NotNull final Voucher voucher) {
-        if (item.getType() == Material.AIR || !voucher.usesArguments()) return "";
+        if (item.getType() == Material.AIR || !voucher.hasArguments()) return "";
 
         final PersistentDataContainerView container = item.getPersistentDataContainer();
 
