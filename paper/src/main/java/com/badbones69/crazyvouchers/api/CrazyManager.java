@@ -10,6 +10,7 @@ import com.badbones69.crazyvouchers.api.objects.VoucherCode;
 import com.badbones69.crazyvouchers.utils.ItemUtils;
 import com.ryderbelserion.fusion.core.api.enums.FileAction;
 import com.ryderbelserion.fusion.core.api.utils.FileUtils;
+import com.ryderbelserion.fusion.paper.FusionPaper;
 import com.ryderbelserion.fusion.paper.api.builders.items.ItemBuilder;
 import com.ryderbelserion.fusion.paper.files.FileManager;
 import com.ryderbelserion.fusion.paper.files.types.PaperCustomFile;
@@ -18,7 +19,6 @@ import net.kyori.adventure.text.logger.slf4j.ComponentLogger;
 import org.bukkit.Material;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.file.FileConfiguration;
-import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.inventory.ItemStack;
 import com.badbones69.crazyvouchers.config.ConfigManager;
 import com.badbones69.crazyvouchers.config.types.ConfigKeys;
@@ -33,6 +33,8 @@ import java.util.List;
 public class CrazyManager {
 
     private @NotNull final CrazyVouchers plugin = CrazyVouchers.get();
+
+    private @NotNull final FusionPaper fusion = this.plugin.getFusion();
 
     private @NotNull final Path dataPath = this.plugin.getDataPath();
 
@@ -49,9 +51,6 @@ public class CrazyManager {
     private @NotNull final List<String> brokenVoucherCodes = new ArrayList<>();
 
     public void load(final boolean isMigrator) {
-        // Used for when wanting to put in fake vouchers.
-        // for(int i = 1; i <= 400; i++) vouchers.add(new Voucher(i));
-
         if (!isMigrator) {
             loadExamples();
         }
@@ -65,18 +64,33 @@ public class CrazyManager {
 
         switch (type) {
             case SINGLE -> {
-                final FileConfiguration configuration = FileKeys.codes.getConfiguration();
+                final PaperCustomFile config = FileKeys.codes.getCustomFile();
 
-                if (configuration == null) return;
+                if (config == null) {
+                    this.logger.warn("The voucher file named {} could not be found in the cache", FileKeys.codes.getName());
 
+                    return;
+                }
+
+                if (!config.isLoaded()) {
+                    this.logger.warn("The {} was not loaded into memory.", FileKeys.codes.getName());
+
+                    return;
+                }
+
+                final FileConfiguration configuration = config.getConfiguration();
                 final ConfigurationSection section = configuration.getConfigurationSection("voucher-codes");
 
-                if (section == null) return;
+                if (section == null) {
+                    this.logger.warn("The configuration section we need for {} could not be found.", FileKeys.codes.getName());
+
+                    return;
+                }
 
                 for (final String code : section.getKeys(false)) {
                     try {
                         this.voucherCodes.add(new VoucherCode(configuration, code));
-                    } catch (Exception exception) {
+                    } catch (final Exception exception) {
                         this.brokenVouchers.add(code);
                     }
                 }
@@ -84,23 +98,25 @@ public class CrazyManager {
 
             case MULTIPLE -> {
                 for (final Path code : getCodesList()) {
-                    @Nullable final PaperCustomFile file = this.fileManager.getPaperCustomFile(code);
+                    final PaperCustomFile file = this.fileManager.getPaperCustomFile(code);
 
-                    if (file != null) {
-                        final YamlConfiguration configuration = file.getConfiguration();
-
-                        if (configuration != null) {
-                            this.voucherCodes.add(new VoucherCode(configuration, file.getPrettyName()));
-                        } else {
-                            this.logger.warn("Could not load code configuration for {}", code);
-
-                            this.brokenVouchers.add(file.getFileName());
-                        }
-                    } else {
+                    if (file == null) {
                         this.logger.warn("The code file named {} could not be found in the cache", code);
 
                         this.brokenVouchers.add(code.getFileName().toString());
+
+                        continue;
                     }
+
+                    if (!file.isLoaded()) {
+                        this.logger.warn("Could not load code configuration for {}", code);
+
+                        this.brokenVouchers.add(file.getFileName());
+
+                        continue;
+                    }
+
+                    this.voucherCodes.add(new VoucherCode(file.getConfiguration(), file.getPrettyName()));
                 }
             }
         }
@@ -111,13 +127,28 @@ public class CrazyManager {
 
         switch (type) {
             case SINGLE -> {
-                final FileConfiguration configuration = FileKeys.vouchers.getConfiguration();
+                final PaperCustomFile config = FileKeys.vouchers.getCustomFile();
 
-                if (configuration == null) return;
+                if (config == null) {
+                    this.logger.warn("The voucher file named {} could not be found in the cache", FileKeys.vouchers.getName());
 
+                    return;
+                }
+
+                if (!config.isLoaded()) {
+                    this.logger.warn("The {} was not loaded into memory.", FileKeys.vouchers.getName());
+
+                    return;
+                }
+
+                final FileConfiguration configuration = config.getConfiguration();
                 final ConfigurationSection section = configuration.getConfigurationSection("vouchers");
 
-                if (section == null) return;
+                if (section == null) {
+                    this.logger.warn("The configuration section we need for {} could not be found.", FileKeys.vouchers.getName());
+
+                    return;
+                }
 
                 for (final String voucher : section.getKeys(false)) {
                     try {
@@ -130,31 +161,33 @@ public class CrazyManager {
 
             case MULTIPLE -> {
                 for (final Path voucher : getVouchersList()) {
-                    @Nullable final PaperCustomFile file = this.fileManager.getPaperCustomFile(voucher);
+                    final PaperCustomFile file = this.fileManager.getPaperCustomFile(voucher);
 
-                    if (file != null) {
-                        final YamlConfiguration configuration = file.getConfiguration();
-
-                        if (configuration != null) {
-                            this.vouchers.add(new Voucher(configuration, file.getPrettyName()));
-                        } else {
-                            this.logger.warn("Could not load voucher configuration for {}", voucher);
-
-                            this.brokenVouchers.add(file.getFileName());
-                        }
-                    } else {
+                    if (file == null) {
                         this.logger.warn("The voucher file named {} could not be found in the cache", voucher);
 
                         this.brokenVouchers.add(voucher.getFileName().toString());
+
+                        continue;
                     }
+
+                    if (!file.isLoaded()) {
+                        this.logger.warn("Could not load voucher configuration for {}", voucher);
+
+                        this.brokenVoucherCodes.add(file.getFileName());
+
+                        continue;
+                    }
+
+                    this.vouchers.add(new Voucher(file.getConfiguration(), file.getPrettyName()));
                 }
             }
         }
     }
 
     public void reload() {
-        this.vouchers.clear();
         this.voucherCodes.clear();
+        this.vouchers.clear();
 
         load(false);
     }
@@ -268,6 +301,10 @@ public class CrazyManager {
                 voucher = getVoucher(voucherName);
             }
         }
+
+        if (voucher == null) return null;
+
+        this.fusion.log("warn", "Class ID: {}, {}", voucher.getName(), Integer.toHexString(System.identityHashCode(voucher)));
 
         return voucher;
     }

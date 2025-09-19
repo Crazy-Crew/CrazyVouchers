@@ -15,6 +15,7 @@ public enum FileKeys {
     data("data.yml");
 
     private final Path path;
+    private final String name;
 
     private @NotNull final CrazyVouchers plugin = CrazyVouchers.get();
 
@@ -29,6 +30,7 @@ public enum FileKeys {
      */
     FileKeys(@NotNull final String fileName) {
         this.path = this.dataPath.resolve(fileName);
+        this.name = fileName;
     }
 
     public final YamlConfiguration getConfiguration() {
@@ -37,6 +39,10 @@ public enum FileKeys {
 
     public final PaperCustomFile getCustomFile() {
         return this.fileManager.getPaperCustomFile(this.path);
+    }
+
+    public final String getName() {
+        return this.name;
     }
 
     public void save() {
