@@ -19,6 +19,7 @@ import net.kyori.adventure.text.logger.slf4j.ComponentLogger;
 import org.bukkit.Material;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.file.FileConfiguration;
+import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.inventory.ItemStack;
 import com.badbones69.crazyvouchers.config.ConfigManager;
 import com.badbones69.crazyvouchers.config.types.ConfigKeys;
@@ -141,7 +142,7 @@ public class CrazyManager {
                     return;
                 }
 
-                final FileConfiguration configuration = config.getConfiguration();
+                final YamlConfiguration configuration = config.getConfiguration();
                 final ConfigurationSection section = configuration.getConfigurationSection("vouchers");
 
                 if (section == null) {
@@ -152,7 +153,15 @@ public class CrazyManager {
 
                 for (final String voucher : section.getKeys(false)) {
                     try {
-                        this.vouchers.add(new Voucher(configuration, voucher));
+                        final ConfigurationSection voucherSection = section.getConfigurationSection(voucher);
+
+                        if (voucherSection == null) {
+                            this.fusion.log("warn", "The section for {} could not be found in vouchers.yml", voucher);
+
+                            continue;
+                        }
+
+                        this.vouchers.add(new Voucher(voucherSection, voucher));
                     } catch (final Exception exception) {
                         this.brokenVouchers.add(voucher);
                     }
@@ -174,12 +183,22 @@ public class CrazyManager {
                     if (!file.isLoaded()) {
                         this.logger.warn("Could not load voucher configuration for {}", voucher);
 
-                        this.brokenVoucherCodes.add(file.getFileName());
+                        this.brokenVouchers.add(file.getFileName());
 
                         continue;
                     }
 
-                    this.vouchers.add(new Voucher(file.getConfiguration(), file.getPrettyName()));
+                    final ConfigurationSection section = file.getConfiguration().getConfigurationSection("voucher");
+
+                    if (section == null) {
+                        this.logger.warn("Could not find voucher configuration section for {}", voucher);
+
+                        this.brokenVouchers.add(file.getFileName());
+
+                        continue;
+                    }
+
+                    this.vouchers.add(new Voucher(section, file.getPrettyName()));
                 }
             }
         }
@@ -227,16 +246,32 @@ public class CrazyManager {
         return Collections.unmodifiableList(this.vouchers);
     }
 
+    public void addBrokenVoucher(@NotNull final String voucher) {
+        this.brokenVouchers.add(voucher);
+    }
+
+    public void removeBrokenVoucher(@NotNull final String voucher) {
+        this.brokenVouchers.remove(voucher);
+    }
+
     public @NotNull final List<String> getBrokenVouchers() {
-        return this.brokenVouchers;
+        return Collections.unmodifiableList(this.brokenVouchers);
     }
 
     public @NotNull final List<VoucherCode> getVoucherCodes() {
         return Collections.unmodifiableList(this.voucherCodes);
     }
 
+    public void addBrokenVoucherCode(@NotNull final String voucher) {
+        this.brokenVoucherCodes.add(voucher);
+    }
+
+    public void removeBrokenVoucherCode(@NotNull final String voucher) {
+        this.brokenVoucherCodes.remove(voucher);
+    }
+
     public @NotNull final List<String> getBrokenVoucherCodes() {
-        return this.brokenVoucherCodes;
+        return Collections.unmodifiableList(this.brokenVoucherCodes);
     }
 
     public @Nullable Voucher getVoucher(@NotNull final String voucherName) {

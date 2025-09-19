@@ -3,7 +3,6 @@ package com.badbones69.crazyvouchers.api.objects;
 import ch.jalu.configme.SettingsManager;
 import com.badbones69.crazyvouchers.CrazyVouchers;
 import com.badbones69.crazyvouchers.Methods;
-import com.badbones69.crazyvouchers.api.enums.FileSystem;
 import com.badbones69.crazyvouchers.api.enums.config.Messages;
 import com.badbones69.crazyvouchers.api.enums.misc.PersistentKeys;
 import com.badbones69.crazyvouchers.utils.ItemUtils;
@@ -14,7 +13,6 @@ import com.ryderbelserion.fusion.paper.utils.ColorUtils;
 import org.bukkit.Color;
 import org.bukkit.Sound;
 import org.bukkit.configuration.ConfigurationSection;
-import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.persistence.PersistentDataType;
@@ -28,45 +26,44 @@ public class Voucher {
     private final CrazyVouchers plugin = CrazyVouchers.get();
     private final FusionPaper fusion = this.plugin.getFusion();
 
-    private final FileConfiguration fileConfiguration;
     private final ItemBuilder itemBuilder;
 
     private final String name;
 
-    private final int cooldownInterval;
-    private final boolean hasCooldown;
+    private int cooldownInterval = 5;
+    private boolean hasCooldown = false;
 
     private boolean usesArgs = false;
-    private final String usedMessage;
+    private String usedMessage = "";
 
-    private final boolean whitelistPermissionToggle;
+    private boolean whitelistPermissionToggle = false;
     private final List<String> whitelistPermissions = new ArrayList<>();
     private List<String> whitelistCommands = new ArrayList<>();
-    private String whitelistPermissionMessage;
+    private final String whitelistPermissionMessage;
 
-    private final boolean whitelistWorldsToggle;
-    private String whitelistWorldMessage;
+    private boolean whitelistWorldsToggle = false;
+    private final String whitelistWorldMessage;
     private final List<String> whitelistWorlds = new ArrayList<>();
     private List<String> whitelistWorldCommands = new ArrayList<>();
 
-    private final boolean blacklistPermissionsToggle;
-    private String blacklistPermissionMessage;
+    private boolean blacklistPermissionsToggle = false;
+    private final String blacklistPermissionMessage;
     private List<String> blacklistCommands = new ArrayList<>();
     private List<String> blacklistPermissions = new ArrayList<>();
 
-    private final boolean limiterToggle;
-    private final int limiterLimit;
+    private boolean limiterToggle = false;
+    private int limiterLimit = 0;
 
-    private final boolean twoStepAuthentication;
+    private boolean twoStepAuthentication = false;
 
-    private final boolean soundToggle;
-    private float volume;
-    private float pitch;
+    private boolean soundToggle = false;
+    private float volume = 1.0F;
+    private float pitch = 1.0F;
     private final List<Sound> sounds = new ArrayList<>();
 
-    private final boolean fireworkToggle;
+    private boolean fireworkToggle = false;
     private final List<Color> fireworkColors = new ArrayList<>();
-    private final boolean isEdible;
+    private boolean isEdible = false;
 
     private final List<VoucherCommand> randomCommands = new ArrayList<>();
 
@@ -74,26 +71,21 @@ public class Voucher {
 
     private final Map<UUID, Long> cooldowns = new HashMap<>();
 
-    private List<String> commands = new ArrayList<>();
-
     private final List<ItemBuilder> items;
 
-    private double totalWeight;
+    private final String requiredPlaceholdersMessage;
 
-    private String requiredPlaceholdersMessage;
+    private final List<String> commands;
 
-    public Voucher(@NotNull final FileConfiguration fileConfiguration, @NotNull final String name) {
-        this.fileConfiguration = fileConfiguration;
+    private final double totalWeight;
+
+    public Voucher(@NotNull final ConfigurationSection section, @NotNull final String name) {
         this.name = name;
 
-        final FileSystem system = this.config.getProperty(ConfigKeys.file_system);
+        this.hasCooldown = section.getBoolean("cooldown.toggle", false);
+        this.cooldownInterval = section.getInt("cooldown.interval", 5);
 
-        final String path = system == FileSystem.SINGLE ? "vouchers." + name + "." : "voucher.";
-
-        this.hasCooldown = this.fileConfiguration.getBoolean(path + "cooldown.toggle", false);
-        this.cooldownInterval = this.fileConfiguration.getInt(path + "cooldown.interval", 5);
-
-        String material = this.fileConfiguration.getString(path + "item", "stone").toLowerCase();
+        String material = section.getString("item", "stone").toLowerCase();
         String model_data = "";
 
         if (material.contains("#")) {
@@ -104,44 +96,36 @@ public class Voucher {
         }
 
         this.itemBuilder = ItemBuilder.from(material)
-                .setDisplayName(this.fileConfiguration.getString(path + "name", ""))
-                .withDisplayLore(this.fileConfiguration.getStringList(path + "lore"));
+                .setDisplayName(section.getString("name", ""))
+                .withDisplayLore(section.isList("lore") ? section.getStringList("lore") : List.of(section.getString("lore", "")));
 
         if (!model_data.isEmpty()) {
             this.itemBuilder.setCustomModelData(model_data);
         }
 
-        if (this.fileConfiguration.contains(path + "custom-model-data")) {
-            if (this.fileConfiguration.isInt(path + "custom-model-data")) {
-                this.itemBuilder.setCustomModelData(this.fileConfiguration.getInt(path + "custom-model-data", -1));
-            } else {
-                this.itemBuilder.setCustomModelData(this.fileConfiguration.getString(path + "custom-model-data", ""));
-            }
+        if (section.contains("custom-model-data")) {
+            this.itemBuilder.setCustomModelData(section.getString("custom-model-data", "-1"));
         }
 
-        if (this.fileConfiguration.contains(path + "player")) {
-            final String playerName = this.fileConfiguration.getString(path + "player", "");
+        final String playerName = section.getString("player", "");
 
-            if (!playerName.isEmpty()) {
-                this.itemBuilder.asSkullBuilder().withName(playerName).build();
-            }
+        if (!playerName.isEmpty()) {
+            this.itemBuilder.asSkullBuilder().withName(playerName).build();
         }
 
-        if (this.fileConfiguration.contains(path + "display-damage")) this.itemBuilder.setItemDamage(this.fileConfiguration.getInt(path + "display-damage"));
+        this.itemBuilder.setItemDamage(section.getInt("display-damage", -1));
 
-        if (this.fileConfiguration.contains(path + "display-trim.material") && this.fileConfiguration.contains(path + "display-trim.pattern")) {
-            final String trimMaterial = this.fileConfiguration.getString(path + "display-trim.material", "quartz").toLowerCase();
-            final String trimPattern = this.fileConfiguration.getString(path + "display-trim.pattern", "sentry").toLowerCase();
+        final String trimMaterial = section.getString("display-trim.material", "").toLowerCase();
+        final String trimPattern = section.getString("display-trim.pattern", "").toLowerCase();
 
+        if (!trimMaterial.isEmpty() && !trimPattern.isEmpty()) {
             this.itemBuilder.setTrim(trimPattern, trimMaterial);
         }
 
-        if (this.fileConfiguration.contains(path + "skull")) {
-            this.itemBuilder.withSkull(this.fileConfiguration.getString(path + "skull", ""));
-        }
+        this.itemBuilder.withSkull(section.getString("skull", ""));
 
-        if (this.fileConfiguration.contains(path + "glowing")) {
-            this.itemBuilder.setEnchantGlint(this.fileConfiguration.getBoolean(path + "glowing", false));
+        if (section.contains("glowing")) {
+            this.itemBuilder.setEnchantGlint(section.getBoolean("glowing", false));
         }
 
         if (this.itemBuilder.getPlainName().toLowerCase().contains("{arg}")) this.usesArgs = true;
@@ -156,150 +140,117 @@ public class Voucher {
             }
         }
 
-        if (this.fileConfiguration.contains(path + "commands")) this.commands = this.fileConfiguration.getStringList(path + "commands");
+        this.commands = section.isList("commands") ? section.getStringList("commands") : List.of(section.getString("commands", ""));
 
-        if (this.config.getProperty(ConfigKeys.use_different_items_layout) && !this.fileConfiguration.isList("items")) {
-            this.items = ItemUtils.convertConfigurationSection(this.fileConfiguration.getConfigurationSection("items"));
+        if (this.config.getProperty(ConfigKeys.use_different_items_layout) && !section.isList("items")) {
+            this.items = ItemUtils.convertConfigurationSection(section.getConfigurationSection("items"));
         } else {
-            this.items = ItemUtils.convertStringList(this.fileConfiguration.getStringList(path + "items"));
+            this.items = ItemUtils.convertStringList(section.getStringList("items"));
         }
 
-        this.usedMessage = getMessage(path + "options.message", this.fileConfiguration);
+        this.usedMessage = getMessage(section, "options.message", "");
 
-        if (this.fileConfiguration.contains(path + "options.permission.whitelist-permission")) {
-            this.whitelistPermissionToggle = this.fileConfiguration.getBoolean(path + "options.permission.whitelist-permission.toggle");
+        this.whitelistPermissionToggle = section.getBoolean("options.permission.whitelist-permission.toggle", false);
+        this.whitelistCommands = section.isList("options.permission.whitelist-permission.commands") ? section.getStringList("options.permission.whitelist-permission.commands")
+                : List.of(section.getString("options.permission.whitelist-permission.commands", ""));
+        this.whitelistPermissionMessage = getMessage(section, "options.permission.whitelist-permission.message", Messages.no_permission_to_use_voucher.getString());
 
-            //todo() check if empty instead
-            if (this.fileConfiguration.contains(path + "options.permission.whitelist-permission.node")) this.whitelistPermissions.add(fileConfiguration.getString(path + "options.permission.whitelist-permission.node").toLowerCase());
+        this.whitelistPermissions.addAll(section.getStringList("options.permission.whitelist-permission.permissions").stream().map(String::toLowerCase).toList());
 
-            this.whitelistPermissions.addAll(this.fileConfiguration.getStringList(path + "options.permission.whitelist-permission.permissions").stream().map(String::toLowerCase).toList());
-            this.whitelistCommands = this.fileConfiguration.getStringList(path + "options.permission.whitelist-permission.commands");
-            this.whitelistPermissionMessage = this.fileConfiguration.contains(path + "options.permission.whitelist-permission.message") ? getMessage(path + "options.permission.whitelist-permission.message", this.fileConfiguration) :
-                    Messages.no_permission_to_use_voucher.getString();
-        } else {
-            this.whitelistPermissionToggle = false;
+        final String permission = section.getString("options.permission.whitelist-permission.node", "").toLowerCase();
+
+        if (!permission.isEmpty()) {
+            this.whitelistPermissions.add(permission);
         }
 
-        if (this.fileConfiguration.contains(path + "options.whitelist-worlds.toggle")) {
-            this.whitelistWorlds.addAll(this.fileConfiguration.getStringList(path + "options.whitelist-worlds.worlds").stream().map(String::toLowerCase).toList());
+        this.whitelistWorldsToggle = section.getBoolean("options.whitelist-worlds.toggle", false);
+        this.whitelistWorldCommands = section.isList("options.whitelist-worlds.commands") ? section.getStringList("options.whitelist-worlds.commands")
+                : List.of(section.getString("options.whitelist-worlds.commands", ""));
+        this.whitelistWorldMessage = getMessage(section, "options.whitelist-worlds.message", Messages.not_in_whitelisted_world.getString());
 
-            if (this.fileConfiguration.contains(path + "options.whitelist-worlds.message")) {
-                this.whitelistWorldMessage = getMessage(path + "options.whitelist-worlds.message", this.fileConfiguration);
-            } else {
-                this.whitelistWorldMessage = Messages.not_in_whitelisted_world.getString();
-            }
+        this.whitelistWorlds.addAll(section.getStringList("options.whitelist-worlds.worlds").stream().map(String::toLowerCase).toList());
 
-            this.whitelistWorldCommands = this.fileConfiguration.getStringList(path + "options.whitelist-worlds.commands");
-            this.whitelistWorldsToggle = !this.whitelistWorlds.isEmpty() && this.fileConfiguration.getBoolean(path + "options.whitelist-worlds.toggle");
-        } else {
-            this.whitelistWorldsToggle = false;
-        }
+        this.blacklistPermissionsToggle = section.getBoolean("options.permission.blacklist-permission.toggle", false);
+        this.blacklistPermissionMessage = getMessage(section, "options.permission.blacklist-permission.message", Messages.has_blacklist_permission.getString());
+        this.blacklistPermissions = section.isList("options.permission.blacklist-permission.permissions") ? section.getStringList("options.permission.blacklist-permission.permissions")
+                : List.of(section.getString("options.permission.blacklist-permission.permissions", ""));
+        this.blacklistCommands = section.isList("options.permission.blacklist-permission.commands") ? section.getStringList("options.permission.blacklist-permission.commands")
+                : List.of(section.getString("options.permission.blacklist-permission.commands", ""));
 
-        if (this.fileConfiguration.contains(path + "options.permission.blacklist-permission")) {
-            this.blacklistPermissionsToggle = this.fileConfiguration.getBoolean(path + "options.permission.blacklist-permission.toggle");
+        this.limiterToggle = section.getBoolean("options.limiter.toggle", false);
+        this.limiterLimit = section.getInt("options.limiter.limit", 0);
 
-            if (this.fileConfiguration.contains(path + "options.permission.blacklist-permission.message")) {
-                this.blacklistPermissionMessage = getMessage(path + "options.permission.blacklist-permission.message", this.fileConfiguration);
-            } else {
-                this.blacklistPermissionMessage = Messages.has_blacklist_permission.getString();
-            }
+        this.requiredPlaceholdersMessage = getMessage(section, "options.required-placeholders-message", "");
 
-            this.blacklistPermissions = this.fileConfiguration.getStringList(path + "options.permission.blacklist-permission.permissions");
-            this.blacklistCommands = this.fileConfiguration.getStringList(path + "options.permission.blacklist-permission.commands");
-        } else {
-            this.blacklistPermissionsToggle = false;
-        }
+        final ConfigurationSection requiredSection = section.getConfigurationSection("options.required-placeholders");
 
-        if (this.fileConfiguration.contains(path + "options.limiter")) {
-            this.limiterToggle = this.fileConfiguration.getBoolean(path + "options.limiter.toggle");
-            this.limiterLimit = this.fileConfiguration.getInt(path + "options.limiter.limit");
-        } else {
-            this.limiterToggle = false;
-            this.limiterLimit = 0;
-        }
+        if (requiredSection != null) {
+            for (final String key : requiredSection.getKeys(false)) {
+                final ConfigurationSection internalSection = requiredSection.getConfigurationSection(key);
 
-        if (this.fileConfiguration.contains(path + "options.required-placeholders-message")) {
-            this.requiredPlaceholdersMessage = getMessage(path + "options.required-placeholders-message", fileConfiguration);
-        }
+                if (internalSection == null) continue;
 
-        if (this.fileConfiguration.contains(path + "options.required-placeholders")) {
-            for (final String key : this.fileConfiguration.getConfigurationSection(path + "options.required-placeholders").getKeys(false)) { //todo() null check instead
-                String placeholder = this.fileConfiguration.getString(path + "options.required-placeholders." + key + ".placeholder");
-                String value = this.fileConfiguration.getString(path + "options.required-placeholders." + key + ".value");
+                final String placeholder = internalSection.getString("placeholder", "");
+                final String value = internalSection.getString("value", "");
+
+                if (placeholder.isEmpty() || value.isEmpty()) continue;
 
                 this.requiredPlaceholders.put(placeholder, value);
             }
         }
 
-        this.twoStepAuthentication = this.fileConfiguration.contains(path + "options.two-step-authentication") && this.fileConfiguration.getBoolean(path + "options.two-step-authentication");
+        this.twoStepAuthentication = section.getBoolean("options.two-step-authentication", false);
 
-        if (this.fileConfiguration.contains(path + "options.sound")) {
-            this.soundToggle = this.fileConfiguration.getBoolean(path + "options.sound.toggle");
+        this.soundToggle = section.getBoolean("options.sound.toggle", false);
+        this.volume = (float) section.getDouble("options.sound.volume", 1.0);
+        this.pitch = (float) section.getDouble("options.sound.pitch", 1.0);
 
-            this.volume = (float) this.fileConfiguration.getDouble(path + "options.sound.volume");
-            this.pitch = (float) this.fileConfiguration.getDouble(path + "options.sound.pitch");
-
-            for (final String sound : this.fileConfiguration.getStringList(path + "options.sound.sounds")) {
+        if (this.soundToggle) {
+            for (final String sound : section.getStringList("options.sound.sounds")) {
                 this.sounds.add(com.ryderbelserion.fusion.paper.utils.ItemUtils.getSound(sound));
             }
-        } else {
-            this.soundToggle = false;
         }
 
-        if (this.fileConfiguration.getBoolean(path + "components.hide-tooltip", false)) {
+        if (section.getBoolean("components.hide-tooltip", false)) {
             this.itemBuilder.hideToolTip();
         }
 
-        if (this.fileConfiguration.contains(path + "components.hide-tooltip-advanced") && this.fileConfiguration.isList(path + "components.hide-tooltip-advanced")) {
-            this.itemBuilder.hideComponents(fileConfiguration.getStringList(path + "components.hide-tooltip-advanced"));
+        if (section.isList("components.hide-tooltip-advanced")) {
+            this.itemBuilder.hideComponents(section.getStringList("components.hide-tooltip-advanced"));
         }
 
-        if (this.fileConfiguration.contains(path + "components.item-model.namespace") && fileConfiguration.contains(path + "components.item-model.key")) {
-            this.itemBuilder.setItemModel(this.fileConfiguration.getString(path + "components.item-model.namespace", ""), this.fileConfiguration.getString(path + "components.item-model.key", ""));
-        }
+        this.itemBuilder.setItemModel(section.getString("components.item-model.namespace", ""), section.getString("components.item-model.key", ""));
 
-        if (this.fileConfiguration.getBoolean(path + "options.firework.toggle")) {
-            for (String color : this.fileConfiguration.getString(path + "options.firework.colors", "").split(", ")) {
+        this.fireworkToggle = section.getBoolean("options.firework.toggle", false);
+
+        if (this.fireworkToggle) {
+            for (final String color : section.getString("options.firework.colors", "").split(", ")) {
                 this.fireworkColors.add(ColorUtils.getColor(color));
             }
-
-            this.fireworkToggle = !fireworkColors.isEmpty();
-        } else {
-            this.fireworkToggle = false;
         }
 
-        if (this.fileConfiguration.getBoolean(path + "options.is-edible")) {
-            this.isEdible = this.itemBuilder.isEdible();
-        } else {
-            this.isEdible = false;
-        }
+        this.isEdible = section.getBoolean("options.is-edible", false) && this.itemBuilder.isEdible();
 
-        if (this.fileConfiguration.contains(path + "chance-commands")) {
+        if (section.contains("chance-commands")) {
             this.fusion.log("warn", "We detected that you have the list version of chance-commands which is no longer used, Please run /crazyvouchers migrate -mt VouchersDeprecated");
         }
 
-        if (!this.fileConfiguration.contains(path + "random-commands")) {
-            return;
-        }
+        if (section.contains("random-commands")) {
+            if (section.isList("random-commands")) {
+                this.fusion.log("warn", "We've detected that you have the list version of random-commands which is no longer used, Please run /crazyvouchers migrate -mt VouchersDeprecated");
+            } else {
+                final ConfigurationSection randomCommands = section.getConfigurationSection("random-commands");
 
-        if (this.fileConfiguration.isList(path + "random-commands")) {
-            this.fusion.log("warn", "We've detected that you have the list version of random-commands which is no longer used, Please run /crazyvouchers migrate -mt VouchersDeprecated");
+                if (randomCommands != null) {
+                    for (final String key : randomCommands.getKeys(false)) {
+                        final ConfigurationSection command = randomCommands.getConfigurationSection(key);
 
-            return;
-        }
+                        if (command == null) continue;
 
-        final ConfigurationSection section = this.fileConfiguration.getConfigurationSection(path + "random-commands");
-
-        if (section == null) {
-            return;
-        }
-
-        for (final String key : section.getKeys(false)) {
-            final ConfigurationSection command = section.getConfigurationSection(key);
-
-            if (command == null) continue;
-
-            this.randomCommands.add(new VoucherCommand(command.getStringList("commands"), command.getDouble("weight", 0.0D)));
+                        this.randomCommands.add(new VoucherCommand(command.getStringList("commands"), command.getDouble("weight", 0.0D)));
+                    }
+                }
+            }
         }
 
         this.totalWeight = this.randomCommands.stream().filter(filter -> filter.getWeight() >= 0.0D).mapToDouble(VoucherCommand::getWeight).sum();
@@ -540,19 +491,17 @@ public class Voucher {
         this.cooldowns.remove(player.getUniqueId());
     }
 
-    private String getMessage(@NotNull final String path, @NotNull final FileConfiguration file) {
-        String messageString;
-
-        if (isList(path, file)) {
-            messageString = StringUtils.toString(file.getStringList(path));
-        } else {
-            messageString = file.getString(path, "");
+    private String getMessage(@NotNull final ConfigurationSection section, @NotNull final String path, @NotNull final String defaultValue) {
+        String safeMessage;
+        
+        if (section.isList(path)) {
+            safeMessage = StringUtils.toString(section.getStringList(path));
+        
+            return safeMessage;
         }
-
-        return messageString;
-    }
-    
-    private boolean isList(@NotNull final String path, @NotNull final FileConfiguration file) {
-        return file.contains(path) && !file.getStringList(path).isEmpty();
+        
+        safeMessage = section.getString(path, defaultValue);
+        
+        return safeMessage;
     }
 }
