@@ -92,7 +92,7 @@ public class CrazyManager {
                     try {
                         this.voucherCodes.add(new VoucherCode(configuration, code));
                     } catch (final Exception exception) {
-                        this.brokenVouchers.add(code);
+                        this.brokenVoucherCodes.add(code);
                     }
                 }
             }
@@ -104,7 +104,7 @@ public class CrazyManager {
                     if (file == null) {
                         this.logger.warn("The code file named {} could not be found in the cache", code);
 
-                        this.brokenVouchers.add(code.getFileName().toString());
+                        this.brokenVoucherCodes.add(code.getFileName().toString());
 
                         continue;
                     }
@@ -112,7 +112,7 @@ public class CrazyManager {
                     if (!file.isLoaded()) {
                         this.logger.warn("Could not load code configuration for {}", code);
 
-                        this.brokenVouchers.add(file.getFileName());
+                        this.brokenVoucherCodes.add(file.getFileName());
 
                         continue;
                     }
@@ -246,28 +246,12 @@ public class CrazyManager {
         return Collections.unmodifiableList(this.vouchers);
     }
 
-    public void addBrokenVoucher(@NotNull final String voucher) {
-        this.brokenVouchers.add(voucher);
-    }
-
-    public void removeBrokenVoucher(@NotNull final String voucher) {
-        this.brokenVouchers.remove(voucher);
-    }
-
     public @NotNull final List<String> getBrokenVouchers() {
         return Collections.unmodifiableList(this.brokenVouchers);
     }
 
     public @NotNull final List<VoucherCode> getVoucherCodes() {
         return Collections.unmodifiableList(this.voucherCodes);
-    }
-
-    public void addBrokenVoucherCode(@NotNull final String voucher) {
-        this.brokenVoucherCodes.add(voucher);
-    }
-
-    public void removeBrokenVoucherCode(@NotNull final String voucher) {
-        this.brokenVoucherCodes.remove(voucher);
     }
 
     public @NotNull final List<String> getBrokenVoucherCodes() {
