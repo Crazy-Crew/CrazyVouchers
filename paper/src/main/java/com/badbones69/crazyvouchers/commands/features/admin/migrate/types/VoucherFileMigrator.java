@@ -4,7 +4,6 @@ import com.badbones69.crazyvouchers.api.enums.FileSystem;
 import com.badbones69.crazyvouchers.commands.features.admin.migrate.IVoucherMigrator;
 import com.badbones69.crazyvouchers.commands.features.admin.migrate.enums.MigrationType;
 import com.badbones69.crazyvouchers.config.types.ConfigKeys;
-import com.ryderbelserion.fusion.core.files.enums.FileType;
 import org.bukkit.command.CommandSender;
 import org.jetbrains.annotations.NotNull;
 import java.io.IOException;
@@ -65,7 +64,7 @@ public class VoucherFileMigrator extends IVoucherMigrator {
                 if (this.config.getProperty(ConfigKeys.file_system) == FileSystem.SINGLE) {
                     this.fileManager.removeFile(oldPath);
 
-                    this.fileManager.addFile(newPath, FileType.PAPER);
+                    this.fileManager.addPaperFile(newPath);
 
                     this.crazyManager.loadCodes();
                 }

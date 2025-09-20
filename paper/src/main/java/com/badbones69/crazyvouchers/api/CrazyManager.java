@@ -66,12 +66,6 @@ public class CrazyManager {
             case SINGLE -> {
                 final PaperCustomFile config = FileKeys.codes.getCustomFile();
 
-                if (config == null) {
-                    this.logger.warn("The voucher file named {} could not be found in the cache", FileKeys.codes.getName());
-
-                    return;
-                }
-
                 if (!config.isLoaded()) {
                     this.logger.warn("The {} was not loaded into memory.", FileKeys.codes.getName());
 
@@ -106,7 +100,7 @@ public class CrazyManager {
 
             case MULTIPLE -> {
                 for (final Path code : getCodesList()) {
-                    final @NotNull Optional<PaperCustomFile> optional = this.fileManager.getPaperFile(code);
+                    @NotNull final Optional<PaperCustomFile> optional = this.fileManager.getPaperFile(code);
 
                     if (optional.isEmpty()) {
                         this.logger.warn("The code file named {} could not be found in the cache", code);
@@ -150,12 +144,6 @@ public class CrazyManager {
         switch (type) {
             case SINGLE -> {
                 final PaperCustomFile config = FileKeys.vouchers.getCustomFile();
-
-                if (config == null) {
-                    this.logger.warn("The voucher file named {} could not be found in the cache", FileKeys.vouchers.getName());
-
-                    return;
-                }
 
                 if (!config.isLoaded()) {
                     this.logger.warn("The {} was not loaded into memory.", FileKeys.vouchers.getName());

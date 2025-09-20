@@ -11,7 +11,6 @@ import com.badbones69.crazyvouchers.listeners.VoucherClickListener;
 import com.badbones69.crazyvouchers.listeners.VoucherCraftListener;
 import com.badbones69.crazyvouchers.listeners.VoucherMiscListener;
 import com.badbones69.crazyvouchers.support.MetricsWrapper;
-import com.ryderbelserion.fusion.core.files.enums.FileType;
 import com.ryderbelserion.fusion.paper.FusionPaper;
 import com.ryderbelserion.fusion.paper.files.PaperFileManager;
 import org.bukkit.plugin.PluginManager;
@@ -54,14 +53,15 @@ public class CrazyVouchers extends JavaPlugin {
 
         final FileSystem system = ConfigManager.getConfig().getProperty(ConfigKeys.file_system);
 
-        this.fileManager.addFile(path.resolve("users.yml"), FileType.PAPER)
-                .addFile(path.resolve("data.yml"), FileType.PAPER);
+        this.fileManager.addPaperFile(path.resolve("users.yml"))
+                .addPaperFile(path.resolve("data.yml"));
+
 
         switch (system) {
-            case SINGLE -> this.fileManager.addFile(path.resolve("codes.yml"), FileType.PAPER)
-                    .addFile(path.resolve("vouchers.yml"), FileType.PAPER);
-            case MULTIPLE -> this.fileManager.addFolder(path.resolve("codes"), FileType.PAPER)
-                    .addFolder(path.resolve("vouchers"), FileType.PAPER);
+            case SINGLE -> this.fileManager.addPaperFile(path.resolve("codes.yml"))
+                    .addPaperFile(path.resolve("vouchers.yml"));
+            case MULTIPLE -> this.fileManager.addPaperFolder(path.resolve("codes"))
+                    .addPaperFolder(path.resolve("vouchers"));
         }
 
         new MetricsWrapper(4536).start();

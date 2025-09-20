@@ -6,7 +6,6 @@ import com.badbones69.crazyvouchers.api.enums.config.Messages;
 import com.badbones69.crazyvouchers.commands.BaseCommand;
 import com.badbones69.crazyvouchers.config.ConfigManager;
 import com.badbones69.crazyvouchers.config.types.ConfigKeys;
-import com.ryderbelserion.fusion.core.files.enums.FileType;
 import dev.triumphteam.cmd.core.annotations.Command;
 import dev.triumphteam.cmd.bukkit.annotation.Permission;
 import dev.triumphteam.cmd.core.annotations.Syntax;
@@ -27,20 +26,20 @@ public class CommandReload extends BaseCommand {
 
         this.fileManager.purge();
 
-        this.fileManager.addFile(this.dataPath.resolve("users.yml"), FileType.PAPER)
-                .addFile(this.dataPath.resolve("data.yml"), FileType.PAPER);
+        this.fileManager.addPaperFile(this.dataPath.resolve("users.yml"))
+                .addPaperFile(this.dataPath.resolve("data.yml"));
 
         switch (system) {
             case MULTIPLE -> {
                 this.fileManager.removeFile(this.dataPath.resolve("codes.yml"))
                         .removeFile(this.dataPath.resolve("vouchers.yml"));
 
-                this.fileManager.addFolder(this.dataPath.resolve("codes"), FileType.PAPER)
-                        .addFolder(this.dataPath.resolve("vouchers"), FileType.PAPER);
+                this.fileManager.addPaperFolder(this.dataPath.resolve("codes"))
+                        .addPaperFolder(this.dataPath.resolve("vouchers"));
             }
 
-            case SINGLE -> this.fileManager.addFile(this.dataPath.resolve("codes.yml"), FileType.PAPER)
-                    .addFile(this.dataPath.resolve("vouchers.yml"), FileType.PAPER);
+            case SINGLE -> this.fileManager.addPaperFile(this.dataPath.resolve("codes.yml"))
+                    .addPaperFile(this.dataPath.resolve("vouchers.yml"));
         }
 
         Methods.janitor();
