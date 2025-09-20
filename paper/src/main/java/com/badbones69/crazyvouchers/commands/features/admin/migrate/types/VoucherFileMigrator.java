@@ -4,14 +4,13 @@ import com.badbones69.crazyvouchers.api.enums.FileSystem;
 import com.badbones69.crazyvouchers.commands.features.admin.migrate.IVoucherMigrator;
 import com.badbones69.crazyvouchers.commands.features.admin.migrate.enums.MigrationType;
 import com.badbones69.crazyvouchers.config.types.ConfigKeys;
-import com.ryderbelserion.fusion.core.api.enums.FileType;
+import com.ryderbelserion.fusion.core.files.enums.FileType;
 import org.bukkit.command.CommandSender;
 import org.jetbrains.annotations.NotNull;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.StandardCopyOption;
-import java.util.ArrayList;
 
 public class VoucherFileMigrator extends IVoucherMigrator {
 
@@ -64,8 +63,9 @@ public class VoucherFileMigrator extends IVoucherMigrator {
                 }
 
                 if (this.config.getProperty(ConfigKeys.file_system) == FileSystem.SINGLE) {
-                    this.fileManager.removeFile(oldPath, null);
-                    this.fileManager.addFile(newPath, FileType.PAPER, new ArrayList<>(), null);
+                    this.fileManager.removeFile(oldPath);
+
+                    this.fileManager.addFile(newPath, FileType.PAPER);
 
                     this.crazyManager.loadCodes();
                 }

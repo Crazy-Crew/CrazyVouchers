@@ -14,6 +14,7 @@ import org.jetbrains.annotations.NotNull;
 import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 import java.util.UUID;
 
 public class VouchersDeprecated extends IVoucherMigrator {
@@ -134,9 +135,9 @@ public class VouchersDeprecated extends IVoucherMigrator {
                     final String name = voucher.getStrippedName();
                     final String file = voucher.getName();
 
-                    final PaperCustomFile customFile = this.fileManager.getPaperCustomFile(voucher_dir.resolve(file));
+                    final Optional<PaperCustomFile> optional = this.fileManager.getPaperFile(voucher_dir.resolve(file));
 
-                    if (customFile == null) {
+                    if (optional.isEmpty()) {
                         this.fusion.log("warn", "<red>{}</red> does not exist in the file cache", name);
 
                         failed.add("<red>⤷ " + file);
@@ -144,15 +145,17 @@ public class VouchersDeprecated extends IVoucherMigrator {
                         continue;
                     }
 
-                    final YamlConfiguration configuration = customFile.getConfiguration();
+                    final PaperCustomFile customFile = optional.get();
 
-                    if (configuration == null) {
+                    if (!customFile.isLoaded()) {
                         this.fusion.log("warn", "<red>{}</red> configuration is invalid, likely not loaded properly. Please check console :)", name);
 
                         failed.add("<red>⤷ " + file);
 
                         continue;
                     }
+
+                    final YamlConfiguration configuration = customFile.getConfiguration();
 
                     final ConfigurationSection section = configuration.getConfigurationSection("voucher");
 
@@ -208,9 +211,9 @@ public class VouchersDeprecated extends IVoucherMigrator {
                     final String name = voucher.getStrippedName();
                     final String file = voucher.getName();
 
-                    final PaperCustomFile customFile = this.fileManager.getPaperCustomFile(code_dir.resolve(file));
+                    final Optional<PaperCustomFile> optional = this.fileManager.getPaperFile(code_dir.resolve(file));
 
-                    if (customFile == null) {
+                    if (optional.isEmpty()) {
                         this.fusion.log("warn", "<red>{}</red> does not exist in the file cache", name);
 
                         failed.add("<red>⤷ " + file);
@@ -218,15 +221,17 @@ public class VouchersDeprecated extends IVoucherMigrator {
                         continue;
                     }
 
-                    final YamlConfiguration configuration = customFile.getConfiguration();
+                    final PaperCustomFile customFile = optional.get();
 
-                    if (configuration == null) {
+                    if (!customFile.isLoaded()) {
                         this.fusion.log("warn", "<red>{}</red> configuration is invalid, likely not loaded properly. Please check console :)", name);
 
                         failed.add("<red>⤷ " + file);
 
                         continue;
                     }
+
+                    final YamlConfiguration configuration = customFile.getConfiguration();
 
                     final ConfigurationSection section = configuration.getConfigurationSection("voucher-code");
 
@@ -268,8 +273,6 @@ public class VouchersDeprecated extends IVoucherMigrator {
             addAll(failed);
             addAll(success);
         }}, convertedCount, failedCount);
-
-        this.fileManager.init(new ArrayList<>());
 
         this.crazyManager.load(true);
     }

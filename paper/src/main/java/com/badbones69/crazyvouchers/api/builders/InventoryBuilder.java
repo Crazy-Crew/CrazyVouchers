@@ -1,7 +1,7 @@
 package com.badbones69.crazyvouchers.api.builders;
 
 import com.badbones69.crazyvouchers.CrazyVouchers;
-import com.ryderbelserion.fusion.core.api.utils.AdvUtils;
+import com.ryderbelserion.fusion.paper.FusionPaper;
 import org.bukkit.Server;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
@@ -16,6 +16,7 @@ public abstract class InventoryBuilder implements InventoryHolder, Listener {
 
     protected @NotNull final CrazyVouchers plugin = CrazyVouchers.get();
     protected @NotNull final Server server = this.plugin.getServer();
+    protected @NotNull final FusionPaper fusion = this.plugin.getFusion();
 
     private Inventory inventory;
     private Player player;
@@ -28,7 +29,7 @@ public abstract class InventoryBuilder implements InventoryHolder, Listener {
         this.player = player;
         this.size = size;
 
-        this.inventory = this.server.createInventory(this, this.size, AdvUtils.parse(this.title));
+        this.inventory = this.server.createInventory(this, this.size, this.fusion.parse(this.title));
     }
 
     public InventoryBuilder(@NotNull final Player player, final int size, final int page, @NotNull final String title) {
@@ -37,7 +38,7 @@ public abstract class InventoryBuilder implements InventoryHolder, Listener {
         this.size = size;
         this.page = page;
 
-        this.inventory = this.server.createInventory(this, this.size, AdvUtils.parse(this.title));
+        this.inventory = this.server.createInventory(this, this.size, this.fusion.parse(this.title));
     }
 
     public InventoryBuilder() {}

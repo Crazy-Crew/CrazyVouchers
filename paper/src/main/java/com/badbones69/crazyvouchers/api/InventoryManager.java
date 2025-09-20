@@ -4,7 +4,7 @@ import com.badbones69.crazyvouchers.CrazyVouchers;
 import com.badbones69.crazyvouchers.api.builders.types.VoucherMenu;
 import com.badbones69.crazyvouchers.api.enums.misc.PersistentKeys;
 import com.badbones69.crazyvouchers.api.objects.Voucher;
-import com.ryderbelserion.fusion.paper.api.builders.items.ItemBuilder;
+import com.ryderbelserion.fusion.paper.builders.ItemBuilder;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.ItemType;
@@ -30,9 +30,9 @@ public class InventoryManager {
     private final int amount = 36;
 
     public InventoryManager() {
-        this.nextButton = ItemBuilder.from(ItemType.ARROW).setDisplayName("<gold>Next >>");
+        this.nextButton = new ItemBuilder(ItemType.ARROW).withDisplayName("<gold>Next >>");
 
-        this.backButton = ItemBuilder.from(ItemType.ARROW).setDisplayName("<gold><< Back");
+        this.backButton = new ItemBuilder(ItemType.ARROW).withDisplayName("<gold><< Back");
     }
 
     public final ItemStack getVoucher(@NotNull final Voucher voucher) {

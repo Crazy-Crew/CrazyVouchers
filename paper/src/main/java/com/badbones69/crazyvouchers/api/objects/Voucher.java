@@ -6,9 +6,10 @@ import com.badbones69.crazyvouchers.Methods;
 import com.badbones69.crazyvouchers.api.enums.config.Messages;
 import com.badbones69.crazyvouchers.api.enums.misc.PersistentKeys;
 import com.badbones69.crazyvouchers.utils.ItemUtils;
-import com.ryderbelserion.fusion.core.api.utils.StringUtils;
+import com.ryderbelserion.fusion.core.utils.StringUtils;
 import com.ryderbelserion.fusion.paper.FusionPaper;
-import com.ryderbelserion.fusion.paper.api.builders.items.ItemBuilder;
+import com.ryderbelserion.fusion.paper.builders.ItemBuilder;
+import com.ryderbelserion.fusion.paper.builders.types.custom.CustomBuilder;
 import com.ryderbelserion.fusion.paper.utils.ColorUtils;
 import org.bukkit.Color;
 import org.bukkit.Sound;
@@ -25,6 +26,7 @@ public class Voucher {
 
     private final CrazyVouchers plugin = CrazyVouchers.get();
     private final FusionPaper fusion = this.plugin.getFusion();
+    private final StringUtils utils = this.fusion.getStringUtils();
 
     private final ItemBuilder itemBuilder;
 
@@ -99,16 +101,18 @@ public class Voucher {
 
         final List<String> displayLore = section.isList("lore") ? section.getStringList("lore") : List.of(section.getString("lore", ""));
 
-        this.itemBuilder = ItemBuilder.from(material)
-                .setDisplayName(displayName)
+        this.itemBuilder = new ItemBuilder(material)
+                .withDisplayName(displayName)
                 .withDisplayLore(displayLore);
 
+        final CustomBuilder customBuilder = this.itemBuilder.asCustomBuilder();
+
         if (!model_data.isEmpty()) {
-            this.itemBuilder.setCustomModelData(model_data);
+            customBuilder.setCustomModelData(model_data);
         }
 
         if (section.contains("custom-model-data")) {
-            this.itemBuilder.setCustomModelData(section.getString("custom-model-data", "-1"));
+            customBuilder.setCustomModelData(section.getString("custom-model-data", "-1"));
         }
 
         final String playerName = section.getString("player", "");
@@ -129,7 +133,7 @@ public class Voucher {
         this.itemBuilder.withSkull(section.getString("skull", ""));
 
         if (section.contains("glowing")) {
-            this.itemBuilder.setEnchantGlint(section.getBoolean("glowing", false));
+            this.itemBuilder.addEnchantGlint(section.getBoolean("glowing", false));
         }
 
         this.commands = section.isList("commands") ? section.getStringList("commands") : List.of(section.getString("commands", ""));
@@ -213,7 +217,9 @@ public class Voucher {
             this.itemBuilder.hideComponents(section.getStringList("components.hide-tooltip-advanced"));
         }
 
-        this.itemBuilder.setItemModel(section.getString("components.item-model.namespace", ""), section.getString("components.item-model.key", ""));
+        customBuilder.setItemModel(section.getString("components.item-model.namespace", ""), section.getString("components.item-model.key", ""));
+
+        customBuilder.build();
 
         this.fireworkToggle = section.getBoolean("options.firework.toggle", false);
 
@@ -491,7 +497,7 @@ public class Voucher {
         String safeMessage;
         
         if (section.isList(path)) {
-            safeMessage = StringUtils.toString(section.getStringList(path));
+            safeMessage = this.utils.toString(section.getStringList(path));
         
             return safeMessage;
         }

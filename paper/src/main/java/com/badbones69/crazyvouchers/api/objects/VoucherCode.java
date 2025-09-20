@@ -5,9 +5,9 @@ import com.badbones69.crazyvouchers.CrazyVouchers;
 import com.badbones69.crazyvouchers.Methods;
 import com.badbones69.crazyvouchers.api.enums.config.Messages;
 import com.badbones69.crazyvouchers.utils.ItemUtils;
-import com.ryderbelserion.fusion.core.api.utils.StringUtils;
+import com.ryderbelserion.fusion.core.utils.StringUtils;
 import com.ryderbelserion.fusion.paper.FusionPaper;
-import com.ryderbelserion.fusion.paper.api.builders.items.ItemBuilder;
+import com.ryderbelserion.fusion.paper.builders.ItemBuilder;
 import com.ryderbelserion.fusion.paper.utils.ColorUtils;
 import org.bukkit.Color;
 import org.bukkit.Sound;
@@ -24,6 +24,7 @@ public class VoucherCode {
 
     private @NotNull final CrazyVouchers plugin = CrazyVouchers.get();
     private @NotNull final FusionPaper fusion = this.plugin.getFusion();
+    private @NotNull final StringUtils utils = this.fusion.getStringUtils();
     private @NotNull final SettingsManager config = ConfigManager.getConfig();
 
     private final String name;
@@ -310,7 +311,7 @@ public class VoucherCode {
         String safeMessage;
 
         if (section.isList(path)) {
-            safeMessage = StringUtils.toString(section.getStringList(path));
+            safeMessage = this.utils.toString(section.getStringList(path));
 
             return safeMessage;
         }

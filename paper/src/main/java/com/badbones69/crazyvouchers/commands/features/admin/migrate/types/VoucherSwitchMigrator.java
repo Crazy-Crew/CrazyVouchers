@@ -3,7 +3,6 @@ package com.badbones69.crazyvouchers.commands.features.admin.migrate.types;
 import com.badbones69.crazyvouchers.commands.features.admin.migrate.IVoucherMigrator;
 import com.badbones69.crazyvouchers.commands.features.admin.migrate.enums.MigrationType;
 import com.badbones69.crazyvouchers.config.types.ConfigKeys;
-import com.ryderbelserion.fusion.core.api.utils.FileUtils;
 import com.ryderbelserion.fusion.paper.files.types.PaperCustomFile;
 import org.bukkit.command.CommandSender;
 import org.bukkit.configuration.ConfigurationSection;
@@ -12,7 +11,6 @@ import org.jetbrains.annotations.NotNull;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.util.ArrayList;
 import java.util.List;
 
 public class VoucherSwitchMigrator extends IVoucherMigrator {
@@ -53,13 +51,11 @@ public class VoucherSwitchMigrator extends IVoucherMigrator {
                                 }
                             }
 
-                            final PaperCustomFile customFile = new PaperCustomFile(path, new ArrayList<>());
+                            final PaperCustomFile customFile = new PaperCustomFile(this.fileManager, path, consumer -> {});
 
                             customFile.load();
 
-                            final YamlConfiguration configuration = customFile.getConfiguration();
-
-                            if (configuration == null) {
+                            if (!customFile.isLoaded()) {
                                 this.fusion.log("warn", "Failed to switch voucher {}, because section is null.", key);
 
                                 continue;
@@ -70,6 +66,8 @@ public class VoucherSwitchMigrator extends IVoucherMigrator {
 
                                 continue;
                             }
+
+                            final YamlConfiguration configuration = customFile.getConfiguration();
 
                             final ConfigurationSection section = configuration.createSection("voucher");
 
@@ -107,11 +105,11 @@ public class VoucherSwitchMigrator extends IVoucherMigrator {
                                 }
                             }
 
-                            final PaperCustomFile customFile = new PaperCustomFile(path, new ArrayList<>());
+                            final PaperCustomFile customFile = new PaperCustomFile(this.fileManager, path, consumer -> {});
 
-                            final YamlConfiguration configuration = customFile.getConfiguration();
+                            customFile.load();
 
-                            if (configuration == null) {
+                            if (!customFile.isLoaded()) {
                                 this.fusion.log("warn", "Failed to switch code {}, because section is null.", key);
 
                                 continue;
@@ -122,6 +120,8 @@ public class VoucherSwitchMigrator extends IVoucherMigrator {
 
                                 continue;
                             }
+
+                            final YamlConfiguration configuration = customFile.getConfiguration();
 
                             final ConfigurationSection section = configuration.createSection("voucher-code");
 
@@ -146,28 +146,27 @@ public class VoucherSwitchMigrator extends IVoucherMigrator {
                     }
                 }
 
-                final PaperCustomFile voucher_custom_file = new PaperCustomFile(voucher_file, new ArrayList<>()).load();
+                final PaperCustomFile voucher_custom_file = new PaperCustomFile(this.fileManager, voucher_file, consumer -> {}).load();
 
-                final YamlConfiguration voucher_config = voucher_custom_file.getConfiguration();
-
-                if (voucher_config != null) {
+                if (voucher_custom_file.isLoaded()) {
+                    final YamlConfiguration voucher_config = voucher_custom_file.getConfiguration();
                     final ConfigurationSection new_section = voucher_config.contains("vouchers") ? voucher_config.getConfigurationSection("vouchers") : voucher_config.createSection("vouchers");
 
                     if (new_section != null) {
-                        final List<Path> vouchers = FileUtils.getFiles(this.dataPath.resolve("vouchers"), ".yml");
+                        final List<Path> vouchers = this.fusion.getFiles(this.dataPath.resolve("vouchers"), ".yml");
 
                         for (final Path voucher : vouchers) {
                             final String fileName = voucher.getFileName().toString();
 
-                            final PaperCustomFile customFile = new PaperCustomFile(voucher, new ArrayList<>());
+                            final PaperCustomFile customFile = new PaperCustomFile(this.fileManager, voucher, consumer -> {});
 
-                            final YamlConfiguration configuration = customFile.getConfiguration();
-
-                            if (configuration == null) {
+                            if (!customFile.isLoaded()) {
                                 this.fusion.log("warn", "Failed to switch voucher {}, because configuration is null.", voucher);
 
                                 continue;
                             }
+
+                            final YamlConfiguration configuration = customFile.getConfiguration();
 
                             final ConfigurationSection entry = configuration.getConfigurationSection("voucher");
 
@@ -190,8 +189,8 @@ public class VoucherSwitchMigrator extends IVoucherMigrator {
                             }
                         }
 
-                        this.fileManager.addFile(voucher_custom_file);
-                        this.fileManager.removeFile(voucher_file, null);
+                        this.fileManager.addPaperFile(voucher_custom_file);
+                        this.fileManager.removeFile(voucher_file);
 
                         this.fusion.log("warn", "Added voucher {} to the cache, and removed the old voucher file named {}", voucher_custom_file.getPrettyName(), voucher_file);
                     } else {
@@ -211,28 +210,28 @@ public class VoucherSwitchMigrator extends IVoucherMigrator {
                     }
                 }
 
-                final PaperCustomFile code_custom_file = new PaperCustomFile(code_file, new ArrayList<>()).load();
+                final PaperCustomFile code_custom_file = new PaperCustomFile(this.fileManager, code_file, consumer -> {}).load();
 
-                final YamlConfiguration code_config = code_custom_file.getConfiguration();
+                if (code_custom_file.isLoaded()) {
+                    final YamlConfiguration code_config = code_custom_file.getConfiguration();
 
-                if (code_config != null) {
                     final ConfigurationSection new_section = code_config.contains("voucher-codes") ? code_config.getConfigurationSection("voucher-codes") : code_config.createSection("voucher-codes");
 
                     if (new_section != null) {
-                        final List<Path> codes = FileUtils.getFiles(this.plugin.getDataPath().resolve("codes"), ".yml");
+                        final List<Path> codes = this.fusion.getFiles(this.plugin.getDataPath().resolve("codes"), ".yml");
 
                         for (final Path code : codes) {
                             final String fileName = code.getFileName().toString();
 
-                            final PaperCustomFile customFile = new PaperCustomFile(code, new ArrayList<>());
+                            final PaperCustomFile customFile = new PaperCustomFile(this.fileManager, code, consumer -> {});
 
-                            final YamlConfiguration configuration = customFile.getConfiguration();
-
-                            if (configuration == null) {
+                            if (!customFile.isLoaded()) {
                                 this.fusion.log("warn", "Failed to switch code {}, because configuration is null.", code);
 
                                 continue;
                             }
+
+                            final YamlConfiguration configuration = customFile.getConfiguration();
 
                             final ConfigurationSection entry = configuration.getConfigurationSection("voucher-code");
 
@@ -255,8 +254,8 @@ public class VoucherSwitchMigrator extends IVoucherMigrator {
                             }
                         }
 
-                        this.fileManager.addFile(code_custom_file);
-                        this.fileManager.removeFile(code_file, null);
+                        this.fileManager.addPaperFile(code_custom_file);
+                        this.fileManager.removeFile(code_file);
 
                         this.fusion.log("warn", "Added code {} to the cache, and removed the old code file named {}", code_custom_file.getPrettyName(), code_file);
                     } else {

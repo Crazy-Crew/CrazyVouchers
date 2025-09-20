@@ -2,14 +2,14 @@ package com.badbones69.crazyvouchers.api.enums.config;
 
 import ch.jalu.configme.SettingsManager;
 import ch.jalu.configme.properties.Property;
+import com.badbones69.crazyvouchers.CrazyVouchers;
 import com.badbones69.crazyvouchers.api.enums.State;
 import com.badbones69.crazyvouchers.config.types.ConfigKeys;
 import com.badbones69.crazyvouchers.config.types.locale.CommandKeys;
 import com.badbones69.crazyvouchers.config.types.locale.MessageKeys;
 import com.badbones69.crazyvouchers.config.types.locale.MiscKeys;
-import com.ryderbelserion.fusion.core.FusionProvider;
-import com.ryderbelserion.fusion.core.api.utils.AdvUtils;
-import com.ryderbelserion.fusion.core.api.utils.StringUtils;
+import com.ryderbelserion.fusion.core.utils.StringUtils;
+import com.ryderbelserion.fusion.paper.FusionPaper;
 import net.kyori.adventure.audience.Audience;
 import net.kyori.adventure.text.Component;
 import org.jetbrains.annotations.NotNull;
@@ -61,6 +61,12 @@ public enum Messages {
     cannot_put_items_in_crafting_table(MessageKeys.cannot_put_items_in_crafting_table),
     migrated_old_vouchers(MessageKeys.migrated_old_vouchers),
     help(MessageKeys.help, true);
+
+    private final CrazyVouchers plugin = CrazyVouchers.get();
+
+    private final FusionPaper fusion = this.plugin.getFusion();
+
+    private final StringUtils utils = this.fusion.getStringUtils();
 
     private Property<String> property;
 
@@ -187,23 +193,23 @@ public enum Messages {
 
     public void migrate() {
         if (this.isList) {
-            this.locale.setProperty(this.properties, AdvUtils.convert(this.locale.getProperty(this.properties), true));
+            this.locale.setProperty(this.properties, this.utils.convertLegacy(this.locale.getProperty(this.properties), true));
 
             return;
         }
 
-        this.locale.setProperty(this.property, AdvUtils.convert(this.locale.getProperty(this.property), true));
+        this.locale.setProperty(this.property, this.utils.convertLegacy(this.locale.getProperty(this.property), true));
     }
 
     private @NotNull Component parse(@NotNull final Audience audience, @NotNull final Map<String, String> placeholders) {
         String message;
 
         if (this.isList) {
-            message = StringUtils.toString(getList());
+            message = this.utils.toString(getList());
         } else {
             message = getString();
         }
 
-        return FusionProvider.get().color(audience, message, placeholders);
+        return this.fusion.parse(audience, message, placeholders);
     }
 }

@@ -6,9 +6,9 @@ import com.badbones69.crazyvouchers.api.CrazyManager;
 import com.badbones69.crazyvouchers.api.enums.config.Messages;
 import com.badbones69.crazyvouchers.commands.features.admin.migrate.enums.MigrationType;
 import com.badbones69.crazyvouchers.config.ConfigManager;
-import com.ryderbelserion.fusion.core.api.utils.StringUtils;
+import com.ryderbelserion.fusion.core.utils.StringUtils;
 import com.ryderbelserion.fusion.paper.FusionPaper;
-import com.ryderbelserion.fusion.paper.files.FileManager;
+import com.ryderbelserion.fusion.paper.files.PaperFileManager;
 import org.bukkit.command.CommandSender;
 import org.bukkit.configuration.ConfigurationSection;
 import org.jetbrains.annotations.NotNull;
@@ -21,7 +21,9 @@ public abstract class IVoucherMigrator {
 
     protected @NotNull final CrazyVouchers plugin = CrazyVouchers.get();
 
-    protected final FusionPaper fusion = this.plugin.getFusion();
+    protected @NotNull final FusionPaper fusion = this.plugin.getFusion();
+
+    protected @NotNull final StringUtils utils = this.fusion.getStringUtils();
 
     protected @NotNull final CrazyManager crazyManager = this.plugin.getCrazyManager();
 
@@ -29,7 +31,7 @@ public abstract class IVoucherMigrator {
 
     protected @NotNull final SettingsManager messages = ConfigManager.getMessages();
 
-    protected @NotNull final FileManager fileManager = this.plugin.getFileManager();
+    protected @NotNull final PaperFileManager fileManager = this.plugin.getFileManager();
 
     protected @NotNull final Path dataPath = this.plugin.getDataPath();
 
@@ -61,7 +63,7 @@ public abstract class IVoucherMigrator {
     public void sendMessage(@NotNull final List<String> files, final int success, final int failed) {
         Messages.successfully_migrated.sendMessage(this.sender, new HashMap<>() {{
             if (files.size() > 1) {
-                put("{files}", StringUtils.toString(files));
+                put("{files}", utils.toString(files));
             } else {
                 put("{files}", files.getFirst());
             }

@@ -11,15 +11,14 @@ import com.badbones69.crazyvouchers.listeners.VoucherClickListener;
 import com.badbones69.crazyvouchers.listeners.VoucherCraftListener;
 import com.badbones69.crazyvouchers.listeners.VoucherMiscListener;
 import com.badbones69.crazyvouchers.support.MetricsWrapper;
-import com.ryderbelserion.fusion.core.api.enums.FileType;
+import com.ryderbelserion.fusion.core.files.enums.FileType;
 import com.ryderbelserion.fusion.paper.FusionPaper;
-import com.ryderbelserion.fusion.paper.files.FileManager;
+import com.ryderbelserion.fusion.paper.files.PaperFileManager;
 import org.bukkit.plugin.PluginManager;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.jetbrains.annotations.NotNull;
 import com.badbones69.crazyvouchers.config.types.ConfigKeys;
 import java.nio.file.Path;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
 
@@ -40,12 +39,12 @@ public class CrazyVouchers extends JavaPlugin {
     private CrazyManager crazyManager;
 
     private FusionPaper fusion;
-    private FileManager fileManager;
+    private PaperFileManager fileManager;
 
     @Override
     public void onEnable() {
-        this.fusion = new FusionPaper(getComponentLogger(), getDataPath());
-        this.fusion.enable(this);
+        this.fusion = new FusionPaper(this);
+        this.fusion.init();
 
         this.fileManager = this.fusion.getFileManager();
 
@@ -55,14 +54,14 @@ public class CrazyVouchers extends JavaPlugin {
 
         final FileSystem system = ConfigManager.getConfig().getProperty(ConfigKeys.file_system);
 
-        this.fileManager.addFile(path.resolve("users.yml"), FileType.PAPER, new ArrayList<>(), null)
-                .addFile(path.resolve("data.yml"), FileType.PAPER, new ArrayList<>(), null);
+        this.fileManager.addFile(path.resolve("users.yml"), FileType.PAPER)
+                .addFile(path.resolve("data.yml"), FileType.PAPER);
 
         switch (system) {
-            case SINGLE -> this.fileManager.addFile(path.resolve("codes.yml"), FileType.PAPER, new ArrayList<>(), null)
-                    .addFile(path.resolve("vouchers.yml"), FileType.PAPER, new ArrayList<>(), null);
-            case MULTIPLE -> this.fileManager.addFolder(path.resolve("codes"), FileType.PAPER, new ArrayList<>(), null)
-                    .addFolder(path.resolve("vouchers"), FileType.PAPER, new ArrayList<>(), null);
+            case SINGLE -> this.fileManager.addFile(path.resolve("codes.yml"), FileType.PAPER)
+                    .addFile(path.resolve("vouchers.yml"), FileType.PAPER);
+            case MULTIPLE -> this.fileManager.addFolder(path.resolve("codes"), FileType.PAPER)
+                    .addFolder(path.resolve("vouchers"), FileType.PAPER);
         }
 
         new MetricsWrapper(4536).start();
@@ -97,7 +96,7 @@ public class CrazyVouchers extends JavaPlugin {
         return this.crazyManager;
     }
 
-    public @NotNull final FileManager getFileManager() {
+    public @NotNull final PaperFileManager getFileManager() {
         return this.fileManager;
     }
 

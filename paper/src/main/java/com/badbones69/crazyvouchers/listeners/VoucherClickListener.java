@@ -11,9 +11,9 @@ import com.badbones69.crazyvouchers.api.enums.misc.PermissionKeys;
 import com.badbones69.crazyvouchers.api.events.VoucherRedeemEvent;
 import com.badbones69.crazyvouchers.api.objects.Voucher;
 import com.badbones69.crazyvouchers.config.ConfigManager;
-import com.ryderbelserion.fusion.core.api.enums.Support;
+import com.ryderbelserion.fusion.core.api.support.ModSupport;
 import com.ryderbelserion.fusion.paper.FusionPaper;
-import com.ryderbelserion.fusion.paper.api.builders.items.ItemBuilder;
+import com.ryderbelserion.fusion.paper.builders.ItemBuilder;
 import io.papermc.paper.datacomponent.DataComponentTypes;
 import io.papermc.paper.datacomponent.item.ItemLore;
 import io.papermc.paper.persistence.PersistentDataContainerView;
@@ -198,7 +198,7 @@ public class VoucherClickListener implements Listener {
                             builder.addLines(lore.lines());
                         }
 
-                        final Component warning_text = this.fusion.color(player, text, this.placeholders);
+                        final Component warning_text = this.fusion.parse(player, text, this.placeholders);
 
                         builder.addLine(warning_text);
 
@@ -234,14 +234,14 @@ public class VoucherClickListener implements Listener {
                 }
             }
 
-            if (Support.placeholder_api.isEnabled()) {
-                AtomicBoolean shouldCancel = new AtomicBoolean(false);
+            if (this.fusion.isModReady(ModSupport.placeholder_api)) {
+                final AtomicBoolean shouldCancel = new AtomicBoolean(false);
 
                 voucher.getRequiredPlaceholders().forEach((placeholder, value) -> {
-                    String newValue = PlaceholderAPI.setPlaceholders(player, placeholder);
+                    final String newValue = PlaceholderAPI.setPlaceholders(player, placeholder);
 
                     if (!newValue.equals(value)) {
-                        player.sendMessage(this.fusion.color(player, voucher.getRequiredPlaceholdersMessage(), this.placeholders));
+                        player.sendMessage(this.fusion.parse(player, voucher.getRequiredPlaceholdersMessage(), this.placeholders));
 
                         shouldCancel.set(true);
                     }
@@ -270,7 +270,8 @@ public class VoucherClickListener implements Listener {
 
             this.twoAuth.remove(uuid);
 
-            VoucherRedeemEvent event = new VoucherRedeemEvent(player, voucher, argument);
+            final VoucherRedeemEvent event = new VoucherRedeemEvent(player, voucher, argument);
+
             this.server.getPluginManager().callEvent(event);
 
             if (!event.isCancelled()) voucherClick(player, item, voucher, argument);
@@ -354,7 +355,7 @@ public class VoucherClickListener implements Listener {
         final String message = voucher.getVoucherUsedMessage();
 
         if (!message.isEmpty()) {
-            player.sendMessage(this.fusion.color(player, message, this.placeholders));
+            player.sendMessage(this.fusion.parse(player, message, this.placeholders));
         }
 
         if (voucher.useLimiter()) {

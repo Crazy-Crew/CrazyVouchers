@@ -1,12 +1,14 @@
 package com.badbones69.crazyvouchers.utils;
 
 import com.badbones69.crazyvouchers.CrazyVouchers;
-import com.ryderbelserion.fusion.core.api.utils.StringUtils;
-import com.ryderbelserion.fusion.paper.api.builders.items.ItemBuilder;
-import com.ryderbelserion.fusion.paper.api.builders.items.types.PatternBuilder;
-import com.ryderbelserion.fusion.paper.api.builders.items.types.PotionBuilder;
-import com.ryderbelserion.fusion.paper.api.builders.items.types.SkullBuilder;
-import com.ryderbelserion.fusion.paper.api.builders.items.types.SpawnerBuilder;
+import com.ryderbelserion.fusion.core.utils.StringUtils;
+import com.ryderbelserion.fusion.paper.FusionPaper;
+import com.ryderbelserion.fusion.paper.builders.ItemBuilder;
+import com.ryderbelserion.fusion.paper.builders.types.PatternBuilder;
+import com.ryderbelserion.fusion.paper.builders.types.PotionBuilder;
+import com.ryderbelserion.fusion.paper.builders.types.SkullBuilder;
+import com.ryderbelserion.fusion.paper.builders.types.SpawnerBuilder;
+import com.ryderbelserion.fusion.paper.builders.types.custom.CustomBuilder;
 import net.kyori.adventure.text.logger.slf4j.ComponentLogger;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.enchantments.Enchantment;
@@ -26,7 +28,9 @@ public class ItemUtils {
 
     private static @NotNull final ComponentLogger logger = plugin.getComponentLogger();
 
-    private static final boolean isLogging = plugin.getFusion().isVerbose();
+    private static @NotNull final FusionPaper fusion = plugin.getFusion();
+
+    private static @NotNull final StringUtils utils = fusion.getStringUtils();
 
     /**
      * Converts a String to an ItemBuilder.
@@ -48,23 +52,13 @@ public class ItemUtils {
 
             if (item == null) continue;
 
-            final ItemBuilder itemBuilder = ItemBuilder.from(item.getString("material", "stone"));
+            final ItemBuilder itemBuilder = new ItemBuilder(item.getString("material", "stone"));
 
-            if (item.contains("data")) {
-                final String base64 = item.getString("data", null);
+            itemBuilder.withBase64(item.getString("data", ""));
 
-                if (base64 != null && !base64.isEmpty()) { //todo() move this if check to fusion's itembuilder as we should not set a name if it's empty to ensure Minecraft can do it's thing.
-                    itemBuilder.withBase64(base64);
-                }
-            }
+            itemBuilder.withDisplayName(item.getString("name", ""));
 
-            if (item.contains("name")) { //todo() move this if check to fusion's itembuilder as we should not set a name if it's empty to ensure Minecraft can do it's thing.
-                itemBuilder.setDisplayName(item.getString("name", ""));
-            }
-
-            if (item.contains("lore")) {
-                itemBuilder.withDisplayLore(item.getStringList("lore"));
-            }
+            itemBuilder.withDisplayLore(item.getStringList("lore"));
 
             itemBuilder.setAmount(item.getInt("amount", 1));
 
@@ -78,7 +72,9 @@ public class ItemUtils {
                 }
             }
 
-            itemBuilder.setCustomModelData(item.getString("custom-model-data", ""));
+            final CustomBuilder customBuilder = itemBuilder.asCustomBuilder();
+
+            customBuilder.setCustomModelData(item.getString("custom-model-data", ""));
 
             if (item.getBoolean("hide-tool-tip", false)) {
                 itemBuilder.hideToolTip();
@@ -88,12 +84,14 @@ public class ItemUtils {
                 itemBuilder.hideComponents(item.getStringList("hide-tooltip-advanced"));
             }
 
-            itemBuilder.setItemModel(item.getString("item-model.namespace", ""), item.getString("item-model.key", ""));
+            customBuilder.setItemModel(item.getString("item-model.namespace", ""), item.getString("item-model.key", ""));
 
             itemBuilder.setUnbreakable(item.getBoolean("unbreakable-item", false));
 
             // settings
-            itemBuilder.setEnchantGlint(item.getBoolean("settings.glowing", false));
+            if (item.contains("settings.glowing")) {
+                itemBuilder.addEnchantGlint(item.getBoolean("settings.glowing", false));
+            }
 
             final String player = item.getString("settings.player", null);
 
@@ -164,6 +162,8 @@ public class ItemUtils {
                 }
             }
 
+            customBuilder.build();
+
             cache.add(itemBuilder);
         }
 
@@ -178,7 +178,7 @@ public class ItemUtils {
      * @return the string as an ItemBuilder.
      */
     public static ItemBuilder convertString(@NotNull final String itemString, @NotNull final String placeHolder) {
-        ItemBuilder itemBuilder = ItemBuilder.from(ItemType.STONE);
+        ItemBuilder itemBuilder = new ItemBuilder(ItemType.STONE);
 
         try {
             for (String optionString : itemString.split(", ")) {
@@ -187,7 +187,7 @@ public class ItemUtils {
 
                 switch (option.toLowerCase()) {
                     case "item" -> itemBuilder.withCustomItem(value.toLowerCase());
-                    case "name" -> itemBuilder.setDisplayName(value);
+                    case "name" -> itemBuilder.withDisplayName(value);
                     case "amount" -> {
                         try {
                             itemBuilder.setAmount(Integer.parseInt(value));
@@ -207,15 +207,12 @@ public class ItemUtils {
                         try {
                             itemBuilder.asSkullBuilder().withName(value).build();
                         } catch (final Exception exception) {
-                            if (isLogging) {
-                                logger.warn("Could create skull builder because the item is not a player head.");
-                                logger.warn("This warning is safe to ignore, it's a restriction of the current system.");
-                            }
+                            fusion.log("warn", "Could create skull builder because the item is not a player head. You can ignore this, This is a restriction of the current system.");
                         }
                     }
                     case "skull" -> itemBuilder.withSkull(value);
-                    case "unbreakable-item" -> itemBuilder.setUnbreakable(StringUtils.tryParseBoolean(value).orElse(false));
-                    case "custom-model-data" -> itemBuilder.setCustomModelData(value);
+                    case "unbreakable-item" -> itemBuilder.setUnbreakable(utils.tryParseBoolean(value).orElse(false));
+                    case "custom-model-data" -> itemBuilder.asCustomBuilder().setCustomModelData(value);
                     case "hide-tool-tip" -> itemBuilder.hideToolTip();
                     case "trim" -> {
                         String[] split = value.split("!"); // trim:trim_pattern!trim_material
@@ -226,13 +223,13 @@ public class ItemUtils {
                         itemBuilder.setTrim(trim.toLowerCase(), material.toLowerCase());
                     }
 
-                    case "glowing" -> itemBuilder.setEnchantGlint(StringUtils.tryParseBoolean(value).orElse(false));
+                    case "glowing" -> itemBuilder.addEnchantGlint(utils.tryParseBoolean(value).orElse(false));
 
                     default -> {
                         final Enchantment enchantment = com.ryderbelserion.fusion.paper.utils.ItemUtils.getEnchantment(getEnchant(option));
 
                         if (enchantment != null) {
-                            final Optional<Number> level = StringUtils.tryParseInt(value);
+                            final Optional<Number> level = utils.tryParseInt(value);
 
                             itemBuilder.addEnchantment(getEnchant(option), level.map(Number::intValue).orElse(1));
                         }
@@ -246,7 +243,7 @@ public class ItemUtils {
                 }
             }
         } catch (final Exception exception) {
-            itemBuilder.withType(ItemType.RED_TERRACOTTA).setDisplayName("<red>ERROR").withDisplayLore(Arrays.asList("<red>There is an error", "<red>For : <red>" + placeHolder));
+            itemBuilder.withType(ItemType.RED_TERRACOTTA).withDisplayName("<red>ERROR").withDisplayLore(Arrays.asList("<red>There is an error", "<red>For : <red>" + placeHolder));
 
             exception.printStackTrace();
         }

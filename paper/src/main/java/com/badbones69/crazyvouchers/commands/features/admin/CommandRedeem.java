@@ -9,7 +9,7 @@ import com.badbones69.crazyvouchers.api.objects.VoucherCode;
 import com.badbones69.crazyvouchers.commands.BaseCommand;
 import com.badbones69.crazyvouchers.config.ConfigManager;
 import com.badbones69.crazyvouchers.config.types.ConfigKeys;
-import com.ryderbelserion.fusion.paper.api.builders.items.ItemBuilder;
+import com.ryderbelserion.fusion.paper.builders.ItemBuilder;
 import dev.triumphteam.cmd.core.annotations.ArgName;
 import dev.triumphteam.cmd.core.annotations.Command;
 import dev.triumphteam.cmd.bukkit.annotation.Permission;
@@ -76,7 +76,7 @@ public class CommandRedeem extends BaseCommand {
 
             if (code.useWhitelistWorlds()) {
                 if (code.getWhitelistWorlds().contains(player.getWorld().getName().toLowerCase())) {
-                    player.sendMessage(this.fusion.color(player, code.getWhitelistWorldMessage(), placeholders));
+                    player.sendMessage(this.fusion.parse(player, code.getWhitelistWorldMessage(), placeholders));
 
                     Methods.dispatch(player, code.getWhitelistWorldCommands(), placeholders, true);
 
@@ -89,7 +89,7 @@ public class CommandRedeem extends BaseCommand {
 
                 for (final String permission : code.getBlacklistPermissions()) {
                     if (player.hasPermission(permission.toLowerCase())) {
-                        player.sendMessage(this.fusion.color(player, code.getBlacklistMessage(), placeholders));
+                        player.sendMessage(this.fusion.parse(player, code.getBlacklistMessage(), placeholders));
 
                         Methods.dispatch(player, commands, placeholders, true);
 
@@ -158,7 +158,7 @@ public class CommandRedeem extends BaseCommand {
             final String message = code.getMessage();
 
             if (!message.isEmpty()) {
-                player.sendMessage(this.fusion.color(player, message, placeholders));
+                player.sendMessage(this.fusion.parse(player, message, placeholders));
             }
         }
     }

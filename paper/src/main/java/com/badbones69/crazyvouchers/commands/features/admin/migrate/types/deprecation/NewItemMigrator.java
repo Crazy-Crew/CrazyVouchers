@@ -7,9 +7,6 @@ import com.badbones69.crazyvouchers.api.enums.FileSystem;
 import com.badbones69.crazyvouchers.commands.features.admin.migrate.IVoucherMigrator;
 import com.badbones69.crazyvouchers.commands.features.admin.migrate.enums.MigrationType;
 import com.badbones69.crazyvouchers.config.types.ConfigKeys;
-import com.ryderbelserion.fusion.core.api.utils.FileUtils;
-import com.ryderbelserion.fusion.core.api.utils.StringUtils;
-import com.ryderbelserion.fusion.paper.files.FileManager;
 import com.ryderbelserion.fusion.paper.files.types.PaperCustomFile;
 import com.ryderbelserion.fusion.paper.utils.ItemUtils;
 import org.bukkit.block.banner.PatternType;
@@ -20,14 +17,9 @@ import org.bukkit.inventory.ItemFlag;
 import org.bukkit.potion.PotionEffectType;
 import org.jetbrains.annotations.NotNull;
 import java.nio.file.Path;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 public class NewItemMigrator extends IVoucherMigrator {
-
-    private final FileManager fileManager = this.plugin.getFileManager();
 
     public NewItemMigrator(final CommandSender sender) {
         super(sender, MigrationType.NEW_ITEM_FORMAT);
@@ -44,77 +36,75 @@ public class NewItemMigrator extends IVoucherMigrator {
             case SINGLE -> {
                 final YamlConfiguration codes = FileKeys.codes.getConfiguration();
 
-                if (codes != null) {
-                    final ConfigurationSection section = codes.getConfigurationSection("voucher-codes");
+                final ConfigurationSection codeSection = codes.getConfigurationSection("voucher-codes");
 
-                    if (section != null) {
-                        for (final String code : section.getKeys(false)) {
-                            final ConfigurationSection item = section.getConfigurationSection(code);
+                if (codeSection != null) {
+                    for (final String code : codeSection.getKeys(false)) {
+                        final ConfigurationSection item = codeSection.getConfigurationSection(code);
 
-                            if (item == null) {
-                                this.fusion.log("warn", "Failed to migrate code {}, because section is null.", code);
+                        if (item == null) {
+                            this.fusion.log("warn", "Failed to migrate code {}, because section is null.", code);
 
-                                continue;
-                            }
+                            continue;
+                        }
 
-                            final boolean isSave = process(item);
+                        final boolean isSave = process(item);
 
-                            if (isSave) {
-                                this.fusion.log("info", "Successfully migrated code {}, and saved to file!", code);
+                        if (isSave) {
+                            this.fusion.log("info", "Successfully migrated code {}, and saved to file!", code);
 
-                                FileKeys.codes.save();
-                            }
+                            FileKeys.codes.save();
                         }
                     }
                 }
 
                 final YamlConfiguration vouchers = FileKeys.vouchers.getConfiguration();
 
-                if (vouchers != null) {
-                    final ConfigurationSection section = vouchers.getConfigurationSection("vouchers");
+                final ConfigurationSection voucherSection = vouchers.getConfigurationSection("vouchers");
 
-                    if (section != null) {
-                        for (final String voucher : section.getKeys(false)) {
-                            final ConfigurationSection item = section.getConfigurationSection(voucher);
+                if (voucherSection != null) {
+                    for (final String voucher : voucherSection.getKeys(false)) {
+                        final ConfigurationSection item = voucherSection.getConfigurationSection(voucher);
 
-                            if (item == null) {
-                                this.fusion.log("warn", "Failed to migrate voucher {}, because section is null.", voucher);
+                        if (item == null) {
+                            this.fusion.log("warn", "Failed to migrate voucher {}, because section is null.", voucher);
 
-                                continue;
-                            }
+                            continue;
+                        }
 
-                            final boolean isSave = process(item);
+                        final boolean isSave = process(item);
 
-                            if (isSave) {
-                                this.fusion.log("info", "Successfully migrated voucher {}, and saved to file!", voucher);
+                        if (isSave) {
+                            this.fusion.log("info", "Successfully migrated voucher {}, and saved to file!", voucher);
 
-                                FileKeys.vouchers.save();
-                            }
+                            FileKeys.vouchers.save();
                         }
                     }
                 }
             }
 
             case MULTIPLE -> {
-                final List<Path> vouchers = FileUtils.getFiles(getVouchersDirectory(), ".yml");
+                final List<Path> vouchers = this.fusion.getFiles(getVouchersDirectory(), ".yml");
 
                 for (final Path voucher : vouchers) {
-                    final PaperCustomFile customFile = this.fileManager.getPaperCustomFile(voucher);
+                    final Optional<PaperCustomFile> optional = this.fileManager.getPaperFile(voucher);
 
-                    if (customFile == null) {
+                    if (optional.isEmpty()) {
                         this.fusion.log("warn", "Failed to migrate voucher {}, because file does not exist in the cache.", voucher);
 
                         continue;
                     }
 
-                    try {
-                        final YamlConfiguration configuration = customFile.getConfiguration();
+                    final PaperCustomFile customFile = optional.get();
 
-                        if (configuration == null) {
+                    try {
+                        if (!customFile.isLoaded()) {
                             this.fusion.log("warn", "Failed to migrate voucher {}, because section is null.", voucher);
 
                             continue;
                         }
+
+                        final YamlConfiguration configuration = customFile.getConfiguration();
 
                         final ConfigurationSection section = configuration.getConfigurationSection("voucher");
 
@@ -140,25 +130,27 @@ public class NewItemMigrator extends IVoucherMigrator {
                     }
                 }
 
-                final List<Path> codes = FileUtils.getFiles(getCodesDirectory(), ".yml");
+                final List<Path> codes = this.fusion.getFiles(getCodesDirectory(), ".yml");
 
                 for (final Path code : codes) {
-                    final PaperCustomFile customFile = this.fileManager.getPaperCustomFile(code);
+                    final Optional<PaperCustomFile> optional = this.fileManager.getPaperFile(code);
 
-                    if (customFile == null) {
+                    if (optional.isEmpty()) {
                         this.fusion.log("warn", "Failed to migrate code {}, because file does not exist in the cache.", code);
 
                         continue;
                     }
 
-                    try {
-                        final YamlConfiguration configuration = customFile.getConfiguration();
+                    final PaperCustomFile customFile = optional.get();
 
-                        if (configuration == null) {
+                    try {
+                        if (!customFile.isLoaded()) {
                             this.fusion.log("warn", "Failed to migrate code {}, because section is null.", code);
 
                             continue;
                         }
+
+                        final YamlConfiguration configuration = customFile.getConfiguration();
 
                         final ConfigurationSection section = configuration.getConfigurationSection("voucher-code");
 
@@ -191,8 +183,6 @@ public class NewItemMigrator extends IVoucherMigrator {
             addAll(failed);
             addAll(success);
         }}, convertedCrates, failedCrates);
-
-        this.fileManager.init(new ArrayList<>());
 
         // reload crates
         this.crazyManager.load(true);
@@ -331,7 +321,7 @@ public class NewItemMigrator extends IVoucherMigrator {
                                 } catch (Exception ignored) {}
 
                                 if (ItemUtils.getEnchantment(placeholder) != null) {
-                                    enchantments.put(option.toLowerCase(), StringUtils.tryParseInt(value).map(Number::intValue).orElse(1));
+                                    enchantments.put(option.toLowerCase(), this.utils.tryParseInt(value).map(Number::intValue).orElse(1));
 
                                     final ConfigurationSection enchantmentSection = prizeSection.createSection("items." + uuid + ".enchantments");
 

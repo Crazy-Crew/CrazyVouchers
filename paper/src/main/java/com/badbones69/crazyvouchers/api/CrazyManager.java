@@ -7,10 +7,8 @@ import com.badbones69.crazyvouchers.api.enums.FileSystem;
 import com.badbones69.crazyvouchers.api.enums.misc.PersistentKeys;
 import com.badbones69.crazyvouchers.api.objects.Voucher;
 import com.badbones69.crazyvouchers.api.objects.VoucherCode;
-import com.ryderbelserion.fusion.core.api.enums.FileAction;
-import com.ryderbelserion.fusion.core.api.utils.FileUtils;
 import com.ryderbelserion.fusion.paper.FusionPaper;
-import com.ryderbelserion.fusion.paper.files.FileManager;
+import com.ryderbelserion.fusion.paper.files.PaperFileManager;
 import com.ryderbelserion.fusion.paper.files.types.PaperCustomFile;
 import io.papermc.paper.persistence.PersistentDataContainerView;
 import net.kyori.adventure.text.logger.slf4j.ComponentLogger;
@@ -24,10 +22,13 @@ import com.badbones69.crazyvouchers.config.types.ConfigKeys;
 import org.bukkit.persistence.PersistentDataType;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+import java.io.IOException;
+import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.Optional;
 
 public class CrazyManager {
 
@@ -39,7 +40,7 @@ public class CrazyManager {
 
     private @NotNull final SettingsManager config = ConfigManager.getConfig();
 
-    private @NotNull final FileManager fileManager = this.plugin.getFileManager();
+    private @NotNull final PaperFileManager fileManager = this.plugin.getFileManager();
 
     private @NotNull final ComponentLogger logger = this.plugin.getComponentLogger();
 
@@ -105,15 +106,17 @@ public class CrazyManager {
 
             case MULTIPLE -> {
                 for (final Path code : getCodesList()) {
-                    final PaperCustomFile file = this.fileManager.getPaperCustomFile(code);
+                    final @NotNull Optional<PaperCustomFile> optional = this.fileManager.getPaperFile(code);
 
-                    if (file == null) {
+                    if (optional.isEmpty()) {
                         this.logger.warn("The code file named {} could not be found in the cache", code);
 
                         this.brokenVoucherCodes.add(code.getFileName().toString());
 
                         continue;
                     }
+
+                    final PaperCustomFile file = optional.get();
 
                     if (!file.isLoaded()) {
                         this.logger.warn("Could not load code configuration for {}", code);
@@ -123,7 +126,9 @@ public class CrazyManager {
                         continue;
                     }
 
-                    final ConfigurationSection section = file.getConfiguration().getConfigurationSection("voucher-code");
+                    final YamlConfiguration configuration = file.getConfiguration();
+
+                    final ConfigurationSection section = configuration.getConfigurationSection("voucher-code");
 
                     if (section == null) {
                         this.logger.warn("Could not find voucher code configuration section for {}", code);
@@ -133,7 +138,7 @@ public class CrazyManager {
                         continue;
                     }
 
-                    this.voucherCodes.add(new VoucherCode(file.getConfiguration(), file.getPrettyName()));
+                    this.voucherCodes.add(new VoucherCode(section, file.getPrettyName()));
                 }
             }
         }
@@ -186,15 +191,17 @@ public class CrazyManager {
 
             case MULTIPLE -> {
                 for (final Path voucher : getVouchersList()) {
-                    final PaperCustomFile file = this.fileManager.getPaperCustomFile(voucher);
+                    final Optional<PaperCustomFile> optional = this.fileManager.getPaperFile(voucher);
 
-                    if (file == null) {
+                    if (optional.isEmpty()) {
                         this.logger.warn("The voucher file named {} could not be found in the cache", voucher);
 
                         this.brokenVouchers.add(voucher.getFileName().toString());
 
                         continue;
                     }
+
+                    final PaperCustomFile file = optional.get();
 
                     if (!file.isLoaded()) {
                         this.logger.warn("Could not load voucher configuration for {}", voucher);
@@ -229,16 +236,15 @@ public class CrazyManager {
 
     public void loadExamples() {
         if (this.config.getProperty(ConfigKeys.update_examples_folder)) {
-            final List<FileAction> actions = new ArrayList<>();
+            try {
+                Files.deleteIfExists(this.dataPath.resolve("examples"));
+            } catch (final IOException exception) {
+                this.fusion.log("warn", "Failed to delete {}", this.dataPath.resolve("examples"));
+            }
 
-            actions.add(FileAction.DELETE_FILE);
-            actions.add(FileAction.EXTRACT_FOLDER);
-
-            FileUtils.extract("vouchers", this.dataPath.resolve("examples"), actions);
-            FileUtils.extract("codes", this.dataPath.resolve("examples"), actions);
-            FileUtils.extract("locale", this.dataPath.resolve("examples"), actions);
-
-            actions.remove(FileAction.EXTRACT_FOLDER);
+            this.fileManager.extractFolder("vouchers", this.dataPath.resolve("examples"));
+            this.fileManager.extractFolder("codes", this.dataPath.resolve("examples"));
+            this.fileManager.extractFolder("locale", this.dataPath.resolve("examples"));
 
             List.of(
                     "config.yml",
@@ -246,16 +252,16 @@ public class CrazyManager {
                     "data.yml",
                     "users.yml",
                     "vouchers.yml"
-            ).forEach(file -> FileUtils.extract(file, this.dataPath.resolve("examples"), actions));
+            ).forEach(file -> this.fileManager.extractFile(this.dataPath.resolve("examples").resolve(file)));
         }
     }
 
     public @NotNull final List<Path> getVouchersList() {
-        return FileUtils.getFiles(this.dataPath.resolve("vouchers"), ".yml");
+        return this.fusion.getFiles(this.dataPath.resolve("vouchers"), ".yml");
     }
 
     public @NotNull final List<Path> getCodesList() {
-        return FileUtils.getFiles(this.dataPath.resolve("codes"), ".yml");
+        return this.fusion.getFiles(this.dataPath.resolve("codes"), ".yml");
     }
     
     public @NotNull final List<Voucher> getVouchers() {

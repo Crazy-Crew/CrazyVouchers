@@ -1,7 +1,7 @@
 package com.badbones69.crazyvouchers.api.enums;
 
 import com.badbones69.crazyvouchers.CrazyVouchers;
-import com.ryderbelserion.fusion.paper.files.FileManager;
+import com.ryderbelserion.fusion.paper.files.PaperFileManager;
 import com.ryderbelserion.fusion.paper.files.types.PaperCustomFile;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.jetbrains.annotations.NotNull;
@@ -21,7 +21,7 @@ public enum FileKeys {
 
     private @NotNull final Path dataPath = this.plugin.getDataPath();
 
-    private @NotNull final FileManager fileManager = this.plugin.getFileManager();
+    private @NotNull final PaperFileManager fileManager = this.plugin.getFileManager();
 
     /**
      * A constructor to build a file
@@ -33,12 +33,12 @@ public enum FileKeys {
         this.name = fileName;
     }
 
-    public final YamlConfiguration getConfiguration() {
+    public @NotNull final YamlConfiguration getConfiguration() {
         return getCustomFile().getConfiguration();
     }
 
-    public final PaperCustomFile getCustomFile() {
-        return this.fileManager.getPaperCustomFile(this.path);
+    public @NotNull final PaperCustomFile getCustomFile() {
+        return this.fileManager.getPaperFile(this.path).orElseThrow();
     }
 
     public final String getName() {

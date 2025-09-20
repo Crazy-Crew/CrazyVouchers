@@ -5,9 +5,9 @@ import com.badbones69.crazyvouchers.api.enums.misc.PersistentKeys;
 import com.badbones69.crazyvouchers.config.ConfigManager;
 import com.badbones69.crazyvouchers.config.types.ConfigKeys;
 import com.badbones69.crazyvouchers.utils.ScheduleUtils;
-import com.ryderbelserion.fusion.core.api.utils.StringUtils;
+import com.ryderbelserion.fusion.core.utils.StringUtils;
 import com.ryderbelserion.fusion.paper.FusionPaper;
-import com.ryderbelserion.fusion.paper.api.scheduler.FoliaScheduler;
+import com.ryderbelserion.fusion.paper.scheduler.FoliaScheduler;
 import org.bukkit.Color;
 import org.bukkit.FireworkEffect;
 import org.bukkit.Location;
@@ -34,6 +34,8 @@ public class Methods {
     private static @NotNull final CrazyVouchers plugin = CrazyVouchers.get();
 
     private static @NotNull final FusionPaper fusion = plugin.getFusion();
+
+    private static @NotNull final StringUtils utils = fusion.getStringUtils();
 
     public static void removeItem(@NotNull final ItemStack item, @NotNull final Player player) {
         if (item.getAmount() <= 1) {
@@ -120,7 +122,7 @@ public class Methods {
             safeLine = safeLine.replace(placeholder, placeholders.get(placeholder)).replace(placeholder.toLowerCase(), placeholders.get(placeholder));
         }
 
-        return fusion.parsePlaceholders(sender, safeLine);
+        return fusion.papi(sender, safeLine);
     }
 
     public static void dispatch(@NotNull final Player player, @NotNull final List<String> values, @NotNull final Map<String, String> placeholders, final boolean isCommand) {
@@ -140,7 +142,7 @@ public class Methods {
         }
 
         for (final String value : values) {
-            player.sendMessage(fusion.color(player, value, placeholders));
+            player.sendMessage(fusion.parse(player, value, placeholders));
         }
     }
 
@@ -150,8 +152,8 @@ public class Methods {
         if (safeLine.contains("{random}")) {
             final Matcher matcher = randomNumberMatcher.matcher(safeLine);
 
-            final Optional<Number> minRange = StringUtils.tryParseInt(matcher.group(1));
-            final Optional<Number> maxRange = StringUtils.tryParseInt(matcher.group(2));
+            final Optional<Number> minRange = utils.tryParseInt(matcher.group(1));
+            final Optional<Number> maxRange = utils.tryParseInt(matcher.group(2));
 
             if (minRange.isPresent() && maxRange.isPresent()) {
                 final int minimum = minRange.get().intValue();
