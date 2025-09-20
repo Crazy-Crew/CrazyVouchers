@@ -86,9 +86,7 @@ public class CrazyVouchers extends JavaPlugin {
                 new VoucherMenu()
         ).forEach(event -> pluginManager.registerEvents(event, this));
 
-        if (getFusion().isVerbose()) {
-            getComponentLogger().info("Done ({})!", String.format(Locale.ROOT, "%.3fs", (double) (System.nanoTime() - this.startTime) / 1.0E9D));
-        }
+        this.fusion.log("info", "Done ({})", String.format(Locale.ROOT, "%.3fs", (double) (System.nanoTime() - this.startTime) / 1.0E9D));
     }
 
     public @NotNull final InventoryManager getInventoryManager() {
