@@ -28,6 +28,8 @@ voucher:
   - '<dark_gray>(<yellow>!<dark_gray>) <light_purple>Right click to redeem.'
   # If the item should glow or not.
   glowing: true
+  # Tells the plugin that this command requires an argument.
+  has-argument: true
   # The commands to send.
   commands:
     - 'lp user {player} parent group set {arg}'
