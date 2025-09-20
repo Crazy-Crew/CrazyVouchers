@@ -307,6 +307,8 @@ public class Voucher {
     public void dispatchCommands(@NotNull final Player player, @NotNull final Map<String, String> placeholders) {
         Methods.dispatch(player, this.commands, placeholders, true); // dispatch normal commands
 
+        if (this.randomCommands.isEmpty()) return;
+
         // dispatch commands without a weight option randomly
         final List<VoucherCommand> randomCommands = this.randomCommands.stream().filter(filter -> filter.getWeight() > 0.0D).toList();
 
