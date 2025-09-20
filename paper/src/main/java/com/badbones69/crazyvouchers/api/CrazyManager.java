@@ -353,15 +353,16 @@ public class CrazyManager {
     }
 
     public @NotNull String getArgument(@NotNull final ItemStack item, @NotNull final Voucher voucher) {
-        if (item.getType() == Material.AIR || !voucher.hasArguments()) return "";
+        if (item.getType() == Material.AIR || !voucher.hasArgument()) return "";
 
         final PersistentDataContainerView container = item.getPersistentDataContainer();
 
         if (container.has(PersistentKeys.voucher_item.getNamespacedKey()) && container.has(PersistentKeys.voucher_arg.getNamespacedKey())) {
             final String arg = container.getOrDefault(PersistentKeys.voucher_arg.getNamespacedKey(), PersistentDataType.STRING, "");
+
             final String voucherName = container.getOrDefault(PersistentKeys.voucher_item.getNamespacedKey(), PersistentDataType.STRING, "");
 
-            if (!voucherName.isEmpty() && voucherName.equalsIgnoreCase(voucher.getName())) {
+            if (!voucherName.isEmpty() && voucherName.equalsIgnoreCase(voucher.getStrippedName())) {
                 return arg;
             }
         }

@@ -33,7 +33,7 @@ public class Voucher {
     private final int cooldownInterval;
     private final boolean hasCooldown;
 
-    private final boolean hasArguments;
+    private final boolean hasArgument;
     private final String usedMessage;
 
     private final boolean whitelistPermissionToggle;
@@ -95,9 +95,13 @@ public class Voucher {
             model_data = split[1];
         }
 
+        final String displayName = section.getString("name", "");
+
+        final List<String> displayLore = section.isList("lore") ? section.getStringList("lore") : List.of(section.getString("lore", ""));
+
         this.itemBuilder = ItemBuilder.from(material)
-                .setDisplayName(section.getString("name", ""))
-                .withDisplayLore(section.isList("lore") ? section.getStringList("lore") : List.of(section.getString("lore", "")));
+                .setDisplayName(displayName)
+                .withDisplayLore(displayLore);
 
         if (!model_data.isEmpty()) {
             this.itemBuilder.setCustomModelData(model_data);
@@ -128,9 +132,9 @@ public class Voucher {
             this.itemBuilder.setEnchantGlint(section.getBoolean("glowing", false));
         }
 
-        this.hasArguments = this.itemBuilder.getPlainName().toLowerCase().contains("{arg}") || !this.itemBuilder.getPlainLore().stream().filter(line -> line.contains("{arg}")).toList().isEmpty();
-
         this.commands = section.isList("commands") ? section.getStringList("commands") : List.of(section.getString("commands", ""));
+
+        this.hasArgument = section.getBoolean("has-argument", false);
 
         if (this.config.getProperty(ConfigKeys.use_different_items_layout) && !section.isList("items")) {
             this.items = ItemUtils.convertConfigurationSection(section.getConfigurationSection("items"));
@@ -254,8 +258,8 @@ public class Voucher {
         return this.name;
     }
 
-    public boolean hasArguments() {
-        return this.hasArguments;
+    public boolean hasArgument() {
+        return this.hasArgument;
     }
     
     public ItemStack buildItem() {
