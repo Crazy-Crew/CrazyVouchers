@@ -49,16 +49,16 @@ public class VoucherClickListener implements Listener {
 
         if (itemStack.isEmpty()) return;
 
+        final Voucher voucher = this.crazyManager.getVoucherFromItem(itemStack);
+
+        if (voucher == null) return;
+        if (voucher.isEdible()) return;
+
         if (slot == EquipmentSlot.OFF_HAND && !this.config.getProperty(ConfigKeys.allow_off_hand_usage)) {
             Messages.no_permission_to_use_voucher_offhand.sendMessage(player);
 
             return;
         }
-
-        final Voucher voucher = this.crazyManager.getVoucherFromItem(itemStack);
-
-        if (voucher == null) return;
-        if (voucher.isEdible()) return;
 
         voucher.execute(player, itemStack, slot);
 
@@ -112,16 +112,16 @@ public class VoucherClickListener implements Listener {
 
         if (itemStack.isEmpty()) return;
 
+        final Voucher voucher = this.crazyManager.getVoucherFromItem(itemStack);
+
+        if (voucher == null) return;
+        if (!voucher.isEdible()) return;
+
         if (slot == EquipmentSlot.OFF_HAND && !this.config.getProperty(ConfigKeys.allow_off_hand_usage)) {
             Messages.no_permission_to_use_voucher_offhand.sendMessage(player);
 
             return;
         }
-
-        final Voucher voucher = this.crazyManager.getVoucherFromItem(itemStack);
-
-        if (voucher == null) return;
-        if (!voucher.isEdible()) return;
 
         final int amount = itemStack.getAmount();
 
