@@ -105,6 +105,9 @@ public class ConfigKeys implements SettingsHolder {
     @Comment("The line to add to the lore of an item. This message supports PlaceholderAPI")
     public static final Property<String> dupe_protection_warning = newProperty("settings.dupe-protection.warning.value", "<red>This item has been duplicated");
 
+    @Comment("If you set this to true, you will be allowing vouchers to be used in off hand.")
+    public static final Property<Boolean> allow_off_hand_usage = newProperty("settings.allow-off-hand-usage", false);
+
     @Comment("Pick which locale you want to use if your server is in another language.")
     public static final Property<String> locale_file = newProperty("settings.locale", "en-US");
 
