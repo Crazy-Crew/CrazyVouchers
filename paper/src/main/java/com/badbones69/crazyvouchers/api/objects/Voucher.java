@@ -3,30 +3,46 @@ package com.badbones69.crazyvouchers.api.objects;
 import ch.jalu.configme.SettingsManager;
 import com.badbones69.crazyvouchers.CrazyVouchers;
 import com.badbones69.crazyvouchers.Methods;
+import com.badbones69.crazyvouchers.api.CrazyManager;
+import com.badbones69.crazyvouchers.api.enums.FileKeys;
 import com.badbones69.crazyvouchers.api.enums.config.Messages;
+import com.badbones69.crazyvouchers.api.enums.misc.PermissionKeys;
 import com.badbones69.crazyvouchers.api.enums.misc.PersistentKeys;
+import com.badbones69.crazyvouchers.api.events.VoucherRedeemEvent;
 import com.badbones69.crazyvouchers.utils.ItemUtils;
+import com.ryderbelserion.fusion.core.api.support.ModSupport;
 import com.ryderbelserion.fusion.core.utils.StringUtils;
 import com.ryderbelserion.fusion.paper.FusionPaper;
 import com.ryderbelserion.fusion.paper.builders.ItemBuilder;
 import com.ryderbelserion.fusion.paper.builders.types.custom.CustomBuilder;
 import com.ryderbelserion.fusion.paper.utils.ColorUtils;
-import org.bukkit.Color;
-import org.bukkit.Sound;
+import io.papermc.paper.datacomponent.DataComponentTypes;
+import io.papermc.paper.datacomponent.item.ItemLore;
+import io.papermc.paper.persistence.PersistentDataContainerView;
+import me.clip.placeholderapi.PlaceholderAPI;
+import net.kyori.adventure.text.Component;
+import org.bukkit.*;
 import org.bukkit.configuration.ConfigurationSection;
+import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.entity.Player;
+import org.bukkit.inventory.EquipmentSlot;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.PlayerInventory;
 import org.bukkit.persistence.PersistentDataType;
 import com.badbones69.crazyvouchers.config.ConfigManager;
 import com.badbones69.crazyvouchers.config.types.ConfigKeys;
 import org.jetbrains.annotations.NotNull;
 import java.util.*;
+import java.util.concurrent.atomic.AtomicBoolean;
 
 public class Voucher {
 
     private final CrazyVouchers plugin = CrazyVouchers.get();
+    private final Server server = this.plugin.getServer();
     private final FusionPaper fusion = this.plugin.getFusion();
     private final StringUtils utils = this.fusion.getStringUtils();
+
+    private final CrazyManager crazyManager = this.plugin.getCrazyManager();
 
     private final ItemBuilder itemBuilder;
 
@@ -262,6 +278,266 @@ public class Voucher {
         }
 
         this.totalWeight = this.randomCommands.stream().filter(filter -> filter.getWeight() >= 0.0D).mapToDouble(VoucherCommand::getWeight).sum();
+    }
+
+    public @NotNull String getArgument(@NotNull final ItemStack item) {
+        if (item.getType() == Material.AIR || !hasArgument()) return "";
+
+        final PersistentDataContainerView container = item.getPersistentDataContainer();
+
+        if (container.has(PersistentKeys.voucher_item.getNamespacedKey()) && container.has(PersistentKeys.voucher_arg.getNamespacedKey())) {
+            final String arg = container.getOrDefault(PersistentKeys.voucher_arg.getNamespacedKey(), PersistentDataType.STRING, "");
+
+            final String voucherName = container.getOrDefault(PersistentKeys.voucher_item.getNamespacedKey(), PersistentDataType.STRING, "");
+
+            if (!voucherName.isEmpty() && voucherName.equalsIgnoreCase(getStrippedName())) {
+                return arg;
+            }
+        }
+
+        return "";
+    }
+
+    public void execute(@NotNull final Player player, @NotNull final ItemStack item, @NotNull final EquipmentSlot slot) {
+        if (player.getGameMode() == GameMode.CREATIVE && this.config.getProperty(ConfigKeys.must_be_in_survival)) {
+            Messages.survival_mode.sendMessage(player);
+
+            return;
+        }
+
+        final String argument = getArgument(item);
+
+        final Map<String, String> placeholders = new HashMap<>();
+
+        placeholders.put("{arg}", !argument.isEmpty() ? argument : "{arg}");
+
+        placeholders.put("{player}", player.getName());
+        placeholders.put("{world}", player.getWorld().getName());
+
+        final Location location = player.getLocation();
+
+        placeholders.put("{x}", String.valueOf(location.getBlockX()));
+        placeholders.put("{y}", String.valueOf(location.getBlockY()));
+        placeholders.put("{z}", String.valueOf(location.getBlockZ()));
+        placeholders.put("{prefix}", ConfigManager.getConfig().getProperty(ConfigKeys.command_prefix));
+
+        final FileConfiguration data = FileKeys.data.getConfiguration();
+
+        if (!this.isAntiDupeOverridden && this.config.getProperty(ConfigKeys.dupe_protection)) {
+            final PersistentDataContainerView view = item.getPersistentDataContainer();
+
+            if (view.has(PersistentKeys.dupe_protection.getNamespacedKey())) {
+                final String id = view.get(PersistentKeys.dupe_protection.getNamespacedKey(), PersistentDataType.STRING);
+
+                final List<String> vouchers = data.getStringList("Used-Vouchers");
+
+                if (vouchers.contains(id)) {
+                    Messages.dupe_protection.sendMessage(player);
+
+                    this.server.getOnlinePlayers().forEach(staff -> {
+                        if (PermissionKeys.crazyvouchers_notify.hasPermission(staff)) {
+                            Messages.notify_staff.sendMessage(staff, new HashMap<>() {{
+                                put("{player}", player.getName());
+                                put("{id}", id);
+                            }});
+                        }
+                    });
+
+                    if (this.config.getProperty(ConfigKeys.dupe_protection_toggle_warning)) {
+                        final ItemLore.Builder builder = ItemLore.lore();
+
+                        final String text = this.config.getProperty(ConfigKeys.dupe_protection_warning);
+
+                        final boolean hasWarning = item.getPersistentDataContainer().has(PersistentKeys.dupe_protection_warning.getNamespacedKey());
+
+                        if (hasWarning) return;
+
+                        final ItemLore lore = item.getData(DataComponentTypes.LORE);
+
+                        if (lore != null) {
+                            builder.addLines(lore.lines());
+                        }
+
+                        final Component warning_text = this.fusion.parse(player, text, placeholders);
+
+                        builder.addLine(warning_text);
+
+                        item.setData(DataComponentTypes.LORE, builder.build());
+
+                        item.editPersistentDataContainer(container -> container.set(PersistentKeys.dupe_protection_warning.getNamespacedKey(), PersistentDataType.STRING, text));
+                    }
+
+                    return;
+                }
+            }
+        }
+
+        if (!hasPassedChecks(player, argument, placeholders)) return;
+
+        final FileConfiguration user = FileKeys.users.getConfiguration();
+
+        final UUID uuid = player.getUniqueId();
+        final String asString = uuid.toString();
+
+        if (!PermissionKeys.crazyvouchers_bypass.hasPermission(player) && useLimiter() && user.contains("Players." + asString + ".Vouchers." + getName())) {
+            int amount = user.getInt("Players." + asString + ".Vouchers." + getName());
+
+            if (amount >= getLimiterLimit()) {
+                Messages.hit_voucher_limit.sendMessage(player);
+
+                return;
+            }
+
+            if (hasCooldown() && isCooldown(player)){
+                Messages.cooldown_active.sendMessage(player, "{time}", String.valueOf(getCooldown()));
+
+                return;
+            } else {
+                removeCooldown(player); // remove cooldown, to avoid the gc not cleaning it up just in case.
+            }
+        }
+
+        if (this.fusion.isModReady(ModSupport.placeholder_api)) {
+            final AtomicBoolean shouldCancel = new AtomicBoolean(false);
+
+            getRequiredPlaceholders().forEach((placeholder, value) -> {
+                final String newValue = PlaceholderAPI.setPlaceholders(player, placeholder);
+
+                if (!newValue.equals(value)) {
+                    player.sendMessage(this.fusion.parse(player, getRequiredPlaceholdersMessage(), placeholders));
+
+                    shouldCancel.set(true);
+                }
+            });
+
+            if (shouldCancel.get()) return;
+        }
+
+        if (!this.isEdible && this.twoStepAuthentication) {
+            if (!PermissionKeys.crazyvouchers_bypass_2fa.hasPermission(player)) {
+                if (this.crazyManager.isVoucherAuthActive(uuid)) {
+                    final String voucher_name = this.crazyManager.getActiveVoucherAuth(uuid);
+
+                    if (!voucher_name.equalsIgnoreCase(getName())) {
+                        Messages.two_step_authentication.sendMessage(player);
+
+                        this.crazyManager.addVoucherAuth(uuid, getName());
+
+                        return;
+                    }
+                } else {
+                    Messages.two_step_authentication.sendMessage(player);
+
+                    this.crazyManager.addVoucherAuth(uuid, getName());
+
+                    return;
+                }
+            }
+        }
+
+        this.crazyManager.removeVoucherAuth(uuid);
+
+        final VoucherRedeemEvent event = new VoucherRedeemEvent(player, this, argument);
+
+        this.server.getPluginManager().callEvent(event);
+
+        if (event.isCancelled()) return;
+
+        final PlayerInventory inventory = player.getInventory();
+
+        final int amount = item.getAmount();
+
+        if (amount > 1) {
+            item.setAmount(amount - 1);
+        } else {
+            inventory.setItem(slot, null);
+        }
+
+        if (hasCooldown()) {
+            addCooldown(player);
+        }
+
+        dispatchCommands(player, placeholders);
+
+        for (final ItemBuilder itemStack : getItems()) {
+            Methods.addItem(player, itemStack.asItemStack());
+        }
+
+        if (playSounds()) {
+            for (final Sound sound : getSounds()) {
+                player.playSound(player.getLocation(), sound, SoundCategory.PLAYERS, getVolume(), getPitch());
+            }
+        }
+
+        if (useFirework()) Methods.firework(player.getLocation(), getFireworkColors());
+
+        final String message = getVoucherUsedMessage();
+
+        if (!message.isEmpty()) {
+            player.sendMessage(this.fusion.parse(player, message, placeholders));
+        }
+
+        if (useLimiter()) {
+            FileConfiguration configuration = FileKeys.users.getConfiguration();
+
+            configuration.set("Players." + uuid + ".UserName", player.getName());
+            configuration.set("Players." + uuid + ".Vouchers." + getName(), configuration.getInt("Players." + uuid + ".Vouchers." + getName()) + 1);
+
+            FileKeys.users.save();
+        }
+
+        if (this.config.getProperty(ConfigKeys.dupe_protection)) {
+            final PersistentDataContainerView view = item.getPersistentDataContainer();
+
+            if (view.has(PersistentKeys.dupe_protection.getNamespacedKey())) {
+                final String id = view.get(PersistentKeys.dupe_protection.getNamespacedKey(), PersistentDataType.STRING);
+
+                FileConfiguration configuration = FileKeys.data.getConfiguration();
+
+                List<String> vouchers = new ArrayList<>(configuration.getStringList("Used-Vouchers"));
+
+                if (!vouchers.contains(id)) {
+                    vouchers.add(id);
+
+                    configuration.set("Used-Vouchers", vouchers);
+
+                    FileKeys.data.save();
+                } else {
+                    this.fusion.log("warn", "{} is already in the data.yml somehow.", id == null ? "N/A" : id);
+                }
+            }
+        }
+    }
+
+    private boolean hasPassedChecks(@NotNull final Player player, @NotNull final String argument, @NotNull final Map<String, String> placeholders) {
+        if (player.isOp()) {
+            return true;
+        }
+
+        final boolean blacklist = useBlackListPermissions();
+        final boolean whitelist = useWhiteListPermissions();
+
+        final List<String> permissions = blacklist ? getBlackListPermissions() : whitelist ? getWhitelistPermissions() : List.of();
+        final List<String> commands = blacklist ? getBlacklistCommands() : whitelist ? getWhitelistCommands() : List.of();
+        final String message = blacklist ? getBlackListMessage() : whitelist ? getWhitelistPermissionMessage() : "";
+
+        if (whitelist && !hasPermission(player, permissions, commands, placeholders, message, argument)) {
+            return false;
+        }
+
+        if (usesWhitelistWorlds() && !getWhitelistWorlds().contains(player.getWorld().getName().toLowerCase())) {
+            Methods.dispatch(player, List.of(getWhitelistWorldMessage()), placeholders, false);
+
+            Methods.dispatch(player, getWhitelistWorldCommands(), placeholders, true);
+
+            return false;
+        }
+
+        if (blacklist && hasPermission(player, permissions, commands, placeholders, message, argument)) {
+            return false;
+        }
+
+        return true;
     }
 
     public String getStrippedName() {

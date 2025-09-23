@@ -2,26 +2,12 @@ package com.badbones69.crazyvouchers.listeners;
 
 import ch.jalu.configme.SettingsManager;
 import com.badbones69.crazyvouchers.CrazyVouchers;
-import com.badbones69.crazyvouchers.Methods;
 import com.badbones69.crazyvouchers.api.CrazyManager;
-import com.badbones69.crazyvouchers.api.enums.FileKeys;
 import com.badbones69.crazyvouchers.api.enums.config.Messages;
-import com.badbones69.crazyvouchers.api.enums.misc.PersistentKeys;
-import com.badbones69.crazyvouchers.api.enums.misc.PermissionKeys;
-import com.badbones69.crazyvouchers.api.events.VoucherRedeemEvent;
 import com.badbones69.crazyvouchers.api.objects.Voucher;
 import com.badbones69.crazyvouchers.config.ConfigManager;
-import com.ryderbelserion.fusion.core.api.support.ModSupport;
-import com.ryderbelserion.fusion.paper.FusionPaper;
-import com.ryderbelserion.fusion.paper.builders.ItemBuilder;
-import io.papermc.paper.datacomponent.DataComponentTypes;
-import io.papermc.paper.datacomponent.item.ItemLore;
-import io.papermc.paper.persistence.PersistentDataContainerView;
-import me.clip.placeholderapi.PlaceholderAPI;
-import net.kyori.adventure.text.Component;
+import com.badbones69.crazyvouchers.config.types.ConfigKeys;
 import org.bukkit.*;
-import org.bukkit.block.Block;
-import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.ItemFrame;
 import org.bukkit.entity.Player;
@@ -33,14 +19,9 @@ import org.bukkit.event.player.PlayerInteractEntityEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.event.player.PlayerItemConsumeEvent;
 import org.bukkit.inventory.EquipmentSlot;
-import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.PlayerInventory;
-import org.bukkit.persistence.PersistentDataType;
-import com.badbones69.crazyvouchers.config.types.ConfigKeys;
-import org.jetbrains.annotations.NotNull;
 import java.util.*;
-import java.util.concurrent.atomic.AtomicBoolean;
 
 @SuppressWarnings("UnstableApiUsage")
 public class VoucherClickListener implements Listener {
@@ -49,15 +30,7 @@ public class VoucherClickListener implements Listener {
 
     private final CrazyManager crazyManager = this.plugin.getCrazyManager();
 
-    private final Server server = this.plugin.getServer();
-
-    private final FusionPaper fusion = this.plugin.getFusion();
-
     private final SettingsManager config = ConfigManager.getConfig();
-    
-    private final Map<UUID, String> twoAuth = new HashMap<>();
-
-    private final Map<String, String> placeholders = new HashMap<>();
 
     @EventHandler(priority = EventPriority.HIGHEST)
     public void onVoucherClick(PlayerInteractEvent event) {
@@ -184,249 +157,18 @@ public class VoucherClickListener implements Listener {
     
     @EventHandler(priority = EventPriority.LOW, ignoreCancelled = true)
     public void onArmorStandClick(PlayerInteractEntityEvent event) {
-        if (event.getHand() == EquipmentSlot.HAND && this.crazyManager.getVoucherFromItem(getItemInHand(event.getPlayer())) != null) event.setCancelled(true);
-    }
-    
-    private void useVoucher(@NotNull final Player player, @NotNull final Voucher voucher, @NotNull final ItemStack item) {
-        final FileConfiguration user = FileKeys.users.getConfiguration();
-        final FileConfiguration data = FileKeys.data.getConfiguration();
+        final EquipmentSlot slot = event.getHand();
 
-        final String argument = this.crazyManager.getArgument(item, voucher);
+        final Player player = event.getPlayer();
 
-        if (player.getGameMode() == GameMode.CREATIVE && this.config.getProperty(ConfigKeys.must_be_in_survival)) {
-            Messages.survival_mode.sendMessage(player);
+        final PlayerInventory inventory = player.getInventory();
 
-            return;
-        }
+        final ItemStack itemStack = inventory.getItem(slot);
 
-        if (!voucher.isAntiDupeOverridden() && this.config.getProperty(ConfigKeys.dupe_protection)) {
-            final PersistentDataContainerView view = item.getPersistentDataContainer();
+        if (itemStack.isEmpty()) return;
 
-            if (view.has(PersistentKeys.dupe_protection.getNamespacedKey())) {
-                final String id = view.get(PersistentKeys.dupe_protection.getNamespacedKey(), PersistentDataType.STRING);
+        final Voucher voucher = this.crazyManager.getVoucherFromItem(itemStack);
 
-                final List<String> vouchers = data.getStringList("Used-Vouchers");
-
-                if (vouchers.contains(id)) {
-                    Messages.dupe_protection.sendMessage(player);
-
-                    this.server.getOnlinePlayers().forEach(staff -> {
-                        if (PermissionKeys.crazyvouchers_notify.hasPermission(staff)) {
-                            Messages.notify_staff.sendMessage(staff, new HashMap<>() {{
-                                put("{player}", player.getName());
-                                put("{id}", id);
-                            }});
-                        }
-                    });
-
-                    if (this.config.getProperty(ConfigKeys.dupe_protection_toggle_warning)) {
-                        final ItemLore.Builder builder = ItemLore.lore();
-
-                        final String text = this.config.getProperty(ConfigKeys.dupe_protection_warning);
-
-                        final boolean hasWarning = item.getPersistentDataContainer().has(PersistentKeys.dupe_protection_warning.getNamespacedKey());
-
-                        if (hasWarning) return;
-
-                        final ItemLore lore = item.getData(DataComponentTypes.LORE);
-
-                        if (lore != null) {
-                            builder.addLines(lore.lines());
-                        }
-
-                        final Component warning_text = this.fusion.parse(player, text, this.placeholders);
-
-                        builder.addLine(warning_text);
-
-                        item.setData(DataComponentTypes.LORE, builder.build());
-
-                        item.editPersistentDataContainer(container -> container.set(PersistentKeys.dupe_protection_warning.getNamespacedKey(), PersistentDataType.STRING, text));
-                    }
-
-                    return;
-                }
-            }
-        }
-
-        if (passesPermissionChecks(player, voucher, argument)) {
-            final UUID uuid = player.getUniqueId();
-            final String asString = uuid.toString();
-
-            if (!PermissionKeys.crazyvouchers_bypass.hasPermission(player) && voucher.useLimiter() && user.contains("Players." + asString + ".Vouchers." + voucher.getName())) {
-                int amount = user.getInt("Players." + asString + ".Vouchers." + voucher.getName());
-
-                if (amount >= voucher.getLimiterLimit()) {
-                    Messages.hit_voucher_limit.sendMessage(player);
-
-                    return;
-                }
-
-                if (voucher.hasCooldown() && voucher.isCooldown(player)){
-                    Messages.cooldown_active.sendMessage(player, "{time}", String.valueOf(voucher.getCooldown()));
-
-                    return;
-                } else {
-                    voucher.removeCooldown(player); // remove cooldown, to avoid the gc not cleaning it up just in case.
-                }
-            }
-
-            if (this.fusion.isModReady(ModSupport.placeholder_api)) {
-                final AtomicBoolean shouldCancel = new AtomicBoolean(false);
-
-                voucher.getRequiredPlaceholders().forEach((placeholder, value) -> {
-                    final String newValue = PlaceholderAPI.setPlaceholders(player, placeholder);
-
-                    if (!newValue.equals(value)) {
-                        player.sendMessage(this.fusion.parse(player, voucher.getRequiredPlaceholdersMessage(), this.placeholders));
-
-                        shouldCancel.set(true);
-                    }
-                });
-
-                if (shouldCancel.get()) return;
-            }
-
-            if (!voucher.isEdible() && voucher.useTwoStepAuthentication()) {
-                if (!PermissionKeys.crazyvouchers_bypass_2fa.hasPermission(player)) {
-                    if (this.twoAuth.containsKey(uuid)) {
-                        if (!this.twoAuth.get(uuid).equalsIgnoreCase(voucher.getName())) {
-                            Messages.two_step_authentication.sendMessage(player);
-
-                            this.twoAuth.put(uuid, voucher.getName());
-
-                            return;
-                        }
-                    } else {
-                        Messages.two_step_authentication.sendMessage(player);
-
-                        this.twoAuth.put(uuid, voucher.getName());
-
-                        return;
-                    }
-                }
-            }
-
-            this.twoAuth.remove(uuid);
-
-            final VoucherRedeemEvent event = new VoucherRedeemEvent(player, voucher, argument);
-
-            this.server.getPluginManager().callEvent(event);
-
-            if (!event.isCancelled()) voucherClick(player, item, voucher, argument);
-        }
-    }
-
-    private ItemStack getItemInHand(@NotNull final Player player) {
-        return player.getInventory().getItemInMainHand();
-    }
-
-    private boolean passesPermissionChecks(@NotNull final Player player, @NotNull final Voucher voucher, @NotNull final String argument) {
-        populate(player, argument);
-
-        if (player.isOp()) {
-            return true;
-        }
-
-        final boolean blacklist = voucher.useBlackListPermissions();
-        final boolean whitelist = voucher.useWhiteListPermissions();
-
-        final List<String> permissions = blacklist ? voucher.getBlackListPermissions() : whitelist ? voucher.getWhitelistPermissions() : List.of();
-        final List<String> commands = blacklist ? voucher.getBlacklistCommands() : whitelist ? voucher.getWhitelistCommands() : List.of();
-        final String message = blacklist ? voucher.getBlackListMessage() : whitelist ? voucher.getWhitelistPermissionMessage() : "";
-
-        if (whitelist && !voucher.hasPermission(player, permissions, commands, this.placeholders, message, argument)) {
-            return false;
-        }
-
-        if (voucher.usesWhitelistWorlds() && !voucher.getWhitelistWorlds().contains(player.getWorld().getName().toLowerCase())) {
-            Methods.dispatch(player, List.of(voucher.getWhitelistWorldMessage()), this.placeholders, false);
-
-            Methods.dispatch(player, voucher.getWhitelistWorldCommands(), this.placeholders, true);
-
-            return false;
-        }
-
-        if (blacklist && voucher.hasPermission(player, permissions, commands, this.placeholders, message, argument)) {
-            return false;
-        }
-
-        return true;
-    }
-
-    private void populate(@NotNull final Player player, @NotNull final String argument) {
-        this.placeholders.put("{arg}", !argument.isEmpty() ? argument : "{arg}");
-
-        this.placeholders.put("{player}", player.getName());
-        this.placeholders.put("{world}", player.getWorld().getName());
-
-        final Location location = player.getLocation();
-
-        this.placeholders.put("{x}", String.valueOf(location.getBlockX()));
-        this.placeholders.put("{y}", String.valueOf(location.getBlockY()));
-        this.placeholders.put("{z}", String.valueOf(location.getBlockZ()));
-        this.placeholders.put("{prefix}", ConfigManager.getConfig().getProperty(ConfigKeys.command_prefix));
-    }
-
-    private void voucherClick(@NotNull final Player player, @NotNull final ItemStack item, @NotNull final Voucher voucher, @NotNull final String argument) {
-        Methods.removeItem(item, player);
-
-        if (voucher.hasCooldown()) {
-            voucher.addCooldown(player);
-        }
-
-        populate(player, argument);
-
-        voucher.dispatchCommands(player, this.placeholders);
-
-        for (final ItemBuilder itemStack : voucher.getItems()) {
-            Methods.addItem(player, itemStack.asItemStack());
-        }
-
-        if (voucher.playSounds()) {
-            for (final Sound sound : voucher.getSounds()) {
-                player.playSound(player.getLocation(), sound, SoundCategory.PLAYERS, voucher.getVolume(), voucher.getPitch());
-            }
-        }
-
-        if (voucher.useFirework()) Methods.firework(player.getLocation(), voucher.getFireworkColors());
-
-        final String message = voucher.getVoucherUsedMessage();
-
-        if (!message.isEmpty()) {
-            player.sendMessage(this.fusion.parse(player, message, this.placeholders));
-        }
-
-        if (voucher.useLimiter()) {
-            FileConfiguration configuration = FileKeys.users.getConfiguration();
-
-            final UUID uuid = player.getUniqueId();
-
-            configuration.set("Players." + uuid + ".UserName", player.getName());
-            configuration.set("Players." + uuid + ".Vouchers." + voucher.getName(), configuration.getInt("Players." + uuid + ".Vouchers." + voucher.getName()) + 1);
-
-            FileKeys.users.save();
-        }
-
-        if (this.config.getProperty(ConfigKeys.dupe_protection)) {
-            final PersistentDataContainerView view = item.getPersistentDataContainer();
-
-            if (view.has(PersistentKeys.dupe_protection.getNamespacedKey())) {
-                final String id = view.get(PersistentKeys.dupe_protection.getNamespacedKey(), PersistentDataType.STRING);
-
-                FileConfiguration configuration = FileKeys.data.getConfiguration();
-
-                List<String> vouchers = new ArrayList<>(configuration.getStringList("Used-Vouchers"));
-
-                if (!vouchers.contains(id)) {
-                    vouchers.add(id);
-
-                    configuration.set("Used-Vouchers", vouchers);
-
-                    FileKeys.data.save();
-                } else {
-                    this.plugin.getComponentLogger().warn("{} is already in the data.yml somehow.", id);
-                }
-            }
-        }
+        if (voucher != null) event.setCancelled(true);
     }
 }
