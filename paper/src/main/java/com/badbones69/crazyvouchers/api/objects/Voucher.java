@@ -53,6 +53,8 @@ public class Voucher {
     private List<String> blacklistCommands = new ArrayList<>();
     private List<String> blacklistPermissions = new ArrayList<>();
 
+    private final boolean isAntiDupeOverridden;
+
     private final boolean limiterToggle;
     private final int limiterLimit;
 
@@ -83,6 +85,8 @@ public class Voucher {
 
     public Voucher(@NotNull final ConfigurationSection section, @NotNull final String name) {
         this.name = name;
+
+        this.isAntiDupeOverridden = section.getBoolean("override-anti-dupe", false);
 
         this.hasCooldown = section.getBoolean("cooldown.toggle", false);
         this.cooldownInterval = section.getInt("cooldown.interval", 5);
@@ -289,7 +293,7 @@ public class Voucher {
     public List<ItemStack> buildItems(@NotNull final String argument, final int amount) {
         final List<ItemStack> itemStacks = new ArrayList<>();
 
-        if (this.config.getProperty(ConfigKeys.dupe_protection)) {
+        if (!this.isAntiDupeOverridden && this.config.getProperty(ConfigKeys.dupe_protection)) {
             while (itemStacks.size() < amount) {
                 itemStacks.add(buildItem(argument, 1));
             }
@@ -346,7 +350,7 @@ public class Voucher {
     }
 
     private void setUniqueId(@NotNull final ItemStack item) {
-        if (this.config.getProperty(ConfigKeys.dupe_protection)) {
+        if (!this.isAntiDupeOverridden && this.config.getProperty(ConfigKeys.dupe_protection)) {
             final String uuid = UUID.randomUUID().toString();
 
             item.editPersistentDataContainer(container -> container.set(PersistentKeys.dupe_protection.getNamespacedKey(), PersistentDataType.STRING, uuid));
@@ -396,7 +400,11 @@ public class Voucher {
     public boolean useBlackListPermissions() {
         return this.blacklistPermissionsToggle;
     }
-    
+
+    public boolean isAntiDupeOverridden() {
+        return this.isAntiDupeOverridden;
+    }
+
     public List<String> getBlackListPermissions() {
         return this.blacklistPermissions;
     }

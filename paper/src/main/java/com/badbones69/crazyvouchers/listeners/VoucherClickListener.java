@@ -163,7 +163,7 @@ public class VoucherClickListener implements Listener {
             return;
         }
 
-        if (this.config.getProperty(ConfigKeys.dupe_protection)) {
+        if (!voucher.isAntiDupeOverridden() && this.config.getProperty(ConfigKeys.dupe_protection)) {
             final PersistentDataContainerView view = item.getPersistentDataContainer();
 
             if (view.has(PersistentKeys.dupe_protection.getNamespacedKey())) {

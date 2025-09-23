@@ -30,6 +30,9 @@ voucher:
   glowing: true
   # An example of how to use custom model data
   custom-model-data: -1
+  # This is only useful if the config option in the config.yml for anti-dupe is set to true.
+  # Changing this from false to true will disable the anti dupe, setting it back to false will enable it again.
+  override-anti-dupe: false
   # The commands to send.
   commands:
     - 'msg {player} wow you claimed a voucher.'
