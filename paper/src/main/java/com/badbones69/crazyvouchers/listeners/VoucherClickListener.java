@@ -22,6 +22,8 @@ import net.kyori.adventure.text.Component;
 import org.bukkit.*;
 import org.bukkit.block.Block;
 import org.bukkit.configuration.file.FileConfiguration;
+import org.bukkit.entity.Entity;
+import org.bukkit.entity.ItemFrame;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
@@ -36,11 +38,7 @@ import org.bukkit.inventory.PlayerInventory;
 import org.bukkit.persistence.PersistentDataType;
 import com.badbones69.crazyvouchers.config.types.ConfigKeys;
 import org.jetbrains.annotations.NotNull;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.UUID;
+import java.util.*;
 import java.util.concurrent.atomic.AtomicBoolean;
 
 @SuppressWarnings("UnstableApiUsage")
@@ -95,24 +93,36 @@ public class VoucherClickListener implements Listener {
         if (voucher == null) return;
         if (voucher.isEdible()) return;
 
-        final Block block = event.getClickedBlock();
-
-        if (voucher.isItemFramePlacementToggled() && block != null && block.getType() == Material.ITEM_FRAME) {
-            this.fusion.log("warn", "The player {} placed their voucher in an item frame.", player.getName());
-
-            return;
-        }
-
         useVoucher(player, voucher, item);
 
         event.setCancelled(true);
+    }
+
+    @EventHandler
+    public void onVoucherEntity(PlayerInteractEntityEvent event) {
+        final Entity entity = event.getRightClicked();
+
+        if (!(entity instanceof ItemFrame itemFrame)) return;
+
+        final EquipmentSlot equipmentSlot = event.getHand();
+
+        final Player player = event.getPlayer();
+
+        final ItemStack itemStack = player.getInventory().getItem(equipmentSlot);
+
+        final Voucher voucher = this.crazyManager.getVoucherFromItem(itemStack);
+
+        if (voucher == null) return;
+        if (voucher.isEdible()) return;
+        if (!voucher.isItemFramePlacementToggled()) return;
+
+        itemFrame.setItem(itemStack, false);
     }
     
     @EventHandler(ignoreCancelled = true)
     public void onItemConsume(PlayerItemConsumeEvent event) {
         final EquipmentSlot slot = event.getHand();
 
-        if (slot == null) return;
         if (slot == EquipmentSlot.HAND) return;
 
         final Player player = event.getPlayer();
