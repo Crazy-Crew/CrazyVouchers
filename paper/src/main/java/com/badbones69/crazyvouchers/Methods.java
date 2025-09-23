@@ -116,6 +116,10 @@ public class Methods {
     }
 
     public static String placeholders(@NotNull final CommandSender sender, @NotNull final String message, @NotNull final Map<String, String> placeholders) {
+        if (placeholders.isEmpty()) { // return early, because yes.
+            return fusion.papi(sender, message);
+        }
+
         String safeLine = message;
 
         for (final String placeholder : placeholders.keySet()) {
