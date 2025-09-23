@@ -37,58 +37,49 @@ public class VoucherClickListener implements Listener {
         final Player player = event.getPlayer();
         final Action action = event.getAction();
 
+        if (!action.isRightClick()) return;
+
         final PlayerInventory inventory = player.getInventory();
 
         final EquipmentSlot slot = event.getHand();
 
         if (slot == null) return;
 
-        if (slot == EquipmentSlot.OFF_HAND) {
-            final Voucher voucher = this.crazyManager.getVoucherFromItem(inventory.getItemInOffHand());
+        final ItemStack itemStack = inventory.getItem(slot);
 
-            if (voucher == null) return;
-            if (voucher.isEdible()) return;
+        if (itemStack.isEmpty()) return;
 
+        if (slot == EquipmentSlot.OFF_HAND && !this.config.getProperty(ConfigKeys.allow_off_hand_usage)) {
             Messages.no_permission_to_use_voucher_offhand.sendMessage(player);
-
-            this.fusion.log("warn", "{} tried to use the voucher in off-hand.", player.getName());
-
-            event.setCancelled(true);
 
             return;
         }
 
-        if (slot != EquipmentSlot.HAND) return;
-        if (!action.isRightClick()) return;
-
-        final ItemStack item = inventory.getItemInMainHand();
-        final Voucher voucher = this.crazyManager.getVoucherFromItem(item);
+        final Voucher voucher = this.crazyManager.getVoucherFromItem(itemStack);
 
         if (voucher == null) return;
         if (voucher.isEdible()) return;
 
-        useVoucher(player, voucher, item);
+        voucher.execute(player, itemStack, slot);
 
         event.setCancelled(true);
     }
 
     @EventHandler
-    public void onVoucherEntity(PlayerInteractEntityEvent event) {
+    public void onVoucherItemFrame(PlayerInteractEntityEvent event) {
         final Entity entity = event.getRightClicked();
 
         if (!(entity instanceof ItemFrame itemFrame)) return;
 
         if (!itemFrame.getItem().isEmpty()) return;
 
-        final EquipmentSlot equipmentSlot = event.getHand();
+        final EquipmentSlot slot = event.getHand();
 
         final Player player = event.getPlayer();
 
-        if (!player.canUseEquipmentSlot(equipmentSlot)) return;
-
         final PlayerInventory inventory = player.getInventory();
 
-        final ItemStack itemStack = inventory.getItem(equipmentSlot);
+        final ItemStack itemStack = inventory.getItem(slot);
 
         final Voucher voucher = this.crazyManager.getVoucherFromItem(itemStack);
 
@@ -101,58 +92,48 @@ public class VoucherClickListener implements Listener {
         final int amount = itemStack.getAmount();
 
         if (amount >= 1) {
-            final ItemStack cloned = itemStack.clone();
-
-            cloned.setAmount(itemStack.getAmount() - 1);
-
-            inventory.setItem(equipmentSlot, cloned);
+            itemStack.setAmount(itemStack.getAmount() - 1);
 
             return;
         }
 
-        inventory.setItem(equipmentSlot, null);
+        inventory.setItem(slot, null);
     }
-    
+
     @EventHandler(ignoreCancelled = true)
     public void onItemConsume(PlayerItemConsumeEvent event) {
         final EquipmentSlot slot = event.getHand();
 
-        if (slot == EquipmentSlot.HAND) return;
-
         final Player player = event.getPlayer();
+
         final PlayerInventory inventory = player.getInventory();
 
-        if (slot == EquipmentSlot.OFF_HAND) {
-            final Voucher voucher = this.crazyManager.getVoucherFromItem(inventory.getItemInOffHand());
+        final ItemStack itemStack = inventory.getItem(slot);
 
-            if (voucher == null) return;
-            if (!voucher.isEdible()) return;
+        if (itemStack.isEmpty()) return;
 
+        if (slot == EquipmentSlot.OFF_HAND && !this.config.getProperty(ConfigKeys.allow_off_hand_usage)) {
             Messages.no_permission_to_use_voucher_offhand.sendMessage(player);
-
-            this.fusion.log("warn", "{} tried to use the voucher in off-hand like it's a piece of food.", player.getName());
-
-            event.setCancelled(true);
 
             return;
         }
 
-        final ItemStack item = event.getItem();
-
-        final Voucher voucher = this.crazyManager.getVoucherFromItem(item);
+        final Voucher voucher = this.crazyManager.getVoucherFromItem(itemStack);
 
         if (voucher == null) return;
         if (!voucher.isEdible()) return;
 
+        final int amount = itemStack.getAmount();
+
         event.setCancelled(true);
 
-        if (item.getAmount() > 1) {
+        if (amount > 1) {
             Messages.unstack_item.sendMessage(player);
 
             return;
         }
 
-        useVoucher(player, voucher, item);
+        voucher.execute(player, itemStack, slot);
     }
     
     @EventHandler(priority = EventPriority.LOW, ignoreCancelled = true)
