@@ -1,8 +1,9 @@
 ## Changes
 - Added a new configuration option `has-argument` to vouchers/codes which was a result of fixing {arg} not being replaced in commands.
 - Added a new permission `crazyvouchers.bypass.2fa` which lets you bypass 2fa when right-clicking.
-- Added a new configuration option to vouchers which lets you override the anti dupe option in the config.yml
+- Added a new configuration option `override-anti-dupe` to vouchers which lets you override the anti dupe option in the config.yml
   - It defaults to false, which is the default behavior out of the box.
+- Added a new configuration option `allow-vouchers-in-item-frames` to vouchers, which lets your players place vouchers in item frames if set to true.
 - You can manually add this to your existing configurations that do use the {arg} variable.
   - [Example Config](https://github.com/Crazy-Crew/CrazyVouchers/blob/6ff270683a140c0e1b3b6d84cbee5bfac5408f3f/paper/src/main/resources/vouchers/Example-Arg.yml#L32)
 - `chance-commands` and `random-commands` have been combined, They were not working properly anyway. We opted for a weight based system when picking random commands, The lower the number. The less likely the command(s) will be run.

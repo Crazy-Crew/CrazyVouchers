@@ -33,6 +33,8 @@ voucher:
   # This is only useful if the config option in the config.yml for anti-dupe is set to true.
   # Changing this from false to true will disable the anti dupe, setting it back to false will enable it again.
   override-anti-dupe: false
+  # This will allow players to place their vouchers in item frames if set to true.
+  allow-vouchers-in-item-frames: false
   # The commands to send.
   commands:
     - 'msg {player} wow you claimed a voucher.'

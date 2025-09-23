@@ -55,6 +55,8 @@ public class Voucher {
 
     private final boolean isAntiDupeOverridden;
 
+    private final boolean isItemFramePlacementToggled;
+
     private final boolean limiterToggle;
     private final int limiterLimit;
 
@@ -87,6 +89,8 @@ public class Voucher {
         this.name = name;
 
         this.isAntiDupeOverridden = section.getBoolean("override-anti-dupe", false);
+
+        this.isItemFramePlacementToggled = section.getBoolean("allow-vouchers-in-item-frames", false);
 
         this.hasCooldown = section.getBoolean("cooldown.toggle", false);
         this.cooldownInterval = section.getInt("cooldown.interval", 5);
@@ -403,6 +407,10 @@ public class Voucher {
 
     public boolean isAntiDupeOverridden() {
         return this.isAntiDupeOverridden;
+    }
+
+    public boolean isItemFramePlacementToggled() {
+        return this.isItemFramePlacementToggled;
     }
 
     public List<String> getBlackListPermissions() {

@@ -19,11 +19,8 @@ import io.papermc.paper.datacomponent.item.ItemLore;
 import io.papermc.paper.persistence.PersistentDataContainerView;
 import me.clip.placeholderapi.PlaceholderAPI;
 import net.kyori.adventure.text.Component;
-import org.bukkit.GameMode;
-import org.bukkit.Location;
-import org.bukkit.Server;
-import org.bukkit.Sound;
-import org.bukkit.SoundCategory;
+import org.bukkit.*;
+import org.bukkit.block.Block;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
@@ -97,6 +94,14 @@ public class VoucherClickListener implements Listener {
 
         if (voucher == null) return;
         if (voucher.isEdible()) return;
+
+        final Block block = event.getClickedBlock();
+
+        if (voucher.isItemFramePlacementToggled() && block != null && block.getType() == Material.ITEM_FRAME) {
+            this.fusion.log("warn", "The player {} placed their voucher in an item frame.", player.getName());
+
+            return;
+        }
 
         useVoucher(player, voucher, item);
 
