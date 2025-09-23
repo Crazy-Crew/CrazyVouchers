@@ -33,6 +33,7 @@ import org.bukkit.event.player.PlayerInteractEntityEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.event.player.PlayerItemConsumeEvent;
 import org.bukkit.inventory.EquipmentSlot;
+import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.PlayerInventory;
 import org.bukkit.persistence.PersistentDataType;
@@ -104,11 +105,17 @@ public class VoucherClickListener implements Listener {
 
         if (!(entity instanceof ItemFrame itemFrame)) return;
 
+        if (!itemFrame.getItem().isEmpty()) return;
+
         final EquipmentSlot equipmentSlot = event.getHand();
 
         final Player player = event.getPlayer();
 
-        final ItemStack itemStack = player.getInventory().getItem(equipmentSlot);
+        if (!player.canUseEquipmentSlot(equipmentSlot)) return;
+
+        final PlayerInventory inventory = player.getInventory();
+
+        final ItemStack itemStack = inventory.getItem(equipmentSlot);
 
         final Voucher voucher = this.crazyManager.getVoucherFromItem(itemStack);
 
@@ -117,6 +124,20 @@ public class VoucherClickListener implements Listener {
         if (!voucher.isItemFramePlacementToggled()) return;
 
         itemFrame.setItem(itemStack, false);
+
+        final int amount = itemStack.getAmount();
+
+        if (amount >= 1) {
+            final ItemStack cloned = itemStack.clone();
+
+            cloned.setAmount(itemStack.getAmount() - 1);
+
+            inventory.setItem(equipmentSlot, cloned);
+
+            return;
+        }
+
+        inventory.setItem(equipmentSlot, null);
     }
     
     @EventHandler(ignoreCancelled = true)
