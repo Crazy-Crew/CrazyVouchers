@@ -138,6 +138,8 @@ public class Methods {
         if (isCommand) {
             ScheduleUtils.dispatch(consumer -> {
                 for (final String value : values) {
+                    if (value.isEmpty()) continue;
+
                     server.dispatchCommand(sender, placeholders(player, getRandomNumber(value), placeholders));
                 }
             });
