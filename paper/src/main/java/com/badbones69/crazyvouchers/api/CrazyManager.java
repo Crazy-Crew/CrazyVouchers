@@ -25,10 +25,7 @@ import org.jetbrains.annotations.Nullable;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 
 public class CrazyManager {
 
@@ -49,6 +46,8 @@ public class CrazyManager {
 
     private @NotNull final List<String> brokenVouchers = new ArrayList<>();
     private @NotNull final List<String> brokenVoucherCodes = new ArrayList<>();
+
+    private @NotNull final Map<UUID, String> voucher_auth = new HashMap<>();
 
     public void load(final boolean isMigrator) {
         if (!isMigrator) {
@@ -346,21 +345,21 @@ public class CrazyManager {
         return voucher;
     }
 
-    public @NotNull String getArgument(@NotNull final ItemStack item, @NotNull final Voucher voucher) {
-        if (item.getType() == Material.AIR || !voucher.hasArgument()) return "";
+    public void addVoucherAuth(@NotNull final UUID uuid, @NotNull final String voucher) {
+        this.voucher_auth.put(uuid, voucher);
+    }
 
-        final PersistentDataContainerView container = item.getPersistentDataContainer();
+    public void removeVoucherAuth(@NotNull final UUID uuid) {
+        if (!isVoucherAuthActive(uuid)) return;
 
-        if (container.has(PersistentKeys.voucher_item.getNamespacedKey()) && container.has(PersistentKeys.voucher_arg.getNamespacedKey())) {
-            final String arg = container.getOrDefault(PersistentKeys.voucher_arg.getNamespacedKey(), PersistentDataType.STRING, "");
+        this.voucher_auth.remove(uuid);
+    }
 
-            final String voucherName = container.getOrDefault(PersistentKeys.voucher_item.getNamespacedKey(), PersistentDataType.STRING, "");
+    public boolean isVoucherAuthActive(@NotNull final UUID uuid) {
+        return this.voucher_auth.containsKey(uuid);
+    }
 
-            if (!voucherName.isEmpty() && voucherName.equalsIgnoreCase(voucher.getStrippedName())) {
-                return arg;
-            }
-        }
-
-        return "";
+    public String getActiveVoucherAuth(@NotNull final UUID uuid) {
+        return this.voucher_auth.getOrDefault(uuid, "");
     }
 }
