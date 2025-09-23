@@ -17,9 +17,9 @@ import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
-public class VouchersDeprecated extends IVoucherMigrator {
+public class VoucherDeprecated extends IVoucherMigrator {
 
-    public VouchersDeprecated(@NotNull final CommandSender sender) {
+    public VoucherDeprecated(@NotNull final CommandSender sender) {
         super(sender, MigrationType.VOUCHERS_DEPRECATED);
     }
 
