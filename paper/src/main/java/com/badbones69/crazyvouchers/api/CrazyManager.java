@@ -12,6 +12,7 @@ import com.ryderbelserion.fusion.paper.files.PaperFileManager;
 import com.ryderbelserion.fusion.paper.files.types.PaperCustomFile;
 import io.papermc.paper.persistence.PersistentDataContainerView;
 import net.kyori.adventure.text.logger.slf4j.ComponentLogger;
+import org.apache.commons.io.file.SimplePathVisitor;
 import org.bukkit.Material;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.file.FileConfiguration;
@@ -23,9 +24,12 @@ import org.bukkit.persistence.PersistentDataType;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import java.io.IOException;
+import java.nio.file.FileVisitResult;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.nio.file.attribute.BasicFileAttributes;
 import java.util.*;
+import java.util.stream.Stream;
 
 public class CrazyManager {
 
@@ -223,10 +227,18 @@ public class CrazyManager {
 
     public void loadExamples() {
         if (this.config.getProperty(ConfigKeys.update_examples_folder)) {
-            try {
-                Files.deleteIfExists(this.dataPath.resolve("examples"));
-            } catch (final IOException exception) {
-                this.fusion.log("warn", "Failed to delete {}", this.dataPath.resolve("examples"));
+            try (final Stream<Path> values = Files.walk(this.dataPath.resolve("examples"))) {
+                values.sorted(Comparator.reverseOrder()).forEach(path -> {
+                    try {
+                        this.fusion.log("info", "Successfully deleted path {}, re-generating the examples later.", path);
+
+                        Files.delete(path);
+                    } catch (final IOException exception) {
+                        this.fusion.log("warn", "Failed to delete {} in loop, Reason: {}", path, exception.getMessage());
+                    }
+                });
+            } catch (final Exception exception) {
+                this.fusion.log("warn", "Failed to delete {}, Reason: {}", this.dataPath.resolve("examples"), exception.getMessage());
             }
 
             this.fileManager.extractFolder("vouchers", this.dataPath.resolve("examples"));
