@@ -15,6 +15,8 @@ public enum PermissionKeys {
     crazyvouchers_migrate("migrate", "Gives access to /crazyvouchers migrate", PermissionDefault.OP),
     crazyvouchers_bypass("bypass", "Allows you to bypass restrictions", PermissionDefault.OP),
 
+    crazyvouchers_bypass_2fa("bypass.2fa", "Allows you to bypass 2fa when clicking a voucher", PermissionDefault.OP),
+
     crazyvouchers_give("give", "Access to /crazyvouchers give", PermissionDefault.OP),
     crazyvouchers_all("giveall", "Access to /crazyvouchers giveall", PermissionDefault.OP),
     crazyvoucherS_open("open", "Access to /crazyvouchers open", PermissionDefault.OP),

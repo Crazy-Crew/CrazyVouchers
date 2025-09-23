@@ -251,20 +251,22 @@ public class VoucherClickListener implements Listener {
             }
 
             if (!voucher.isEdible() && voucher.useTwoStepAuthentication()) {
-                if (this.twoAuth.containsKey(uuid)) {
-                    if (!this.twoAuth.get(uuid).equalsIgnoreCase(voucher.getName())) {
+                if (!PermissionKeys.crazyvouchers_bypass_2fa.hasPermission(player)) {
+                    if (this.twoAuth.containsKey(uuid)) {
+                        if (!this.twoAuth.get(uuid).equalsIgnoreCase(voucher.getName())) {
+                            Messages.two_step_authentication.sendMessage(player);
+
+                            this.twoAuth.put(uuid, voucher.getName());
+
+                            return;
+                        }
+                    } else {
                         Messages.two_step_authentication.sendMessage(player);
 
                         this.twoAuth.put(uuid, voucher.getName());
 
                         return;
                     }
-                } else {
-                    Messages.two_step_authentication.sendMessage(player);
-
-                    this.twoAuth.put(uuid, voucher.getName());
-
-                    return;
                 }
             }
 

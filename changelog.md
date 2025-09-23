@@ -1,5 +1,6 @@
 ## Changes
 - Added a new configuration option `has-argument` which was a result of fixing {arg} not being replaced in commands.
+- Added a new permission `crazyvouchers.bypass.2fa` which lets you bypass 2fa when right-clicking.
 - You can manually add this to your existing configurations that do use the {arg} variable.
   - [Example Config](https://github.com/Crazy-Crew/CrazyVouchers/blob/6ff270683a140c0e1b3b6d84cbee5bfac5408f3f/paper/src/main/resources/vouchers/Example-Arg.yml#L32)
 - `chance-commands` and `random-commands` have been combined, They were not working properly anyway. We opted for a weight based system when picking random commands, The lower the number. The less likely the command(s) will be run.
