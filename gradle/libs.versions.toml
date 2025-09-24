@@ -17,7 +17,7 @@ minecraft = "1.21.8" # https://minecraft.net
 nbtapi = "2.15.1"
 
 ## Plugin Version
-crazyvouchers = "5.0.4"
+crazyvouchers = "5.1.0"
 
 ## Plugin API
 headdatabaseapi = "1.3.1" # https://github.com/Arcaniax-Development/HeadDatabase-API
@@ -29,7 +29,7 @@ nexo = "1.6.0" # https://github.com/Nexo-MC
 ## Other
 triumph-cmds = "2.0.0-BETA-4" # https://github.com/TriumphTeam/triumph-cmds
 bStats = "3.1.0" # https://github.com/Bastian/bStats
-fusion = "2.9.4" # https://github.com/ryderbelserion/Fusion
+fusion = "2.9.7" # https://github.com/ryderbelserion/Fusion
 
 ## Gradle Plugins
 fix-javadoc = "1.19" # https://github.com/mfnalex/gradle-fix-javadoc-plugin
