@@ -5,7 +5,9 @@ version: '${version}'
 api-version: '${minecraft}'
 description: '${description}'
 
-authors: [ badbones69, ryderbelserion ]
+authors:
+  - ryderbelserion
+  - BadBones69
 
 folia-supported: true
 

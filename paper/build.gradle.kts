@@ -11,7 +11,7 @@ repositories {
 }
 
 dependencies {
-    implementation(project(path = ":crazyvouchers-api", configuration = "shadow"))
+    implementation(project(path = ":api", configuration = "shadow"))
 
     implementation(libs.fusion.paper)
 
@@ -31,10 +31,14 @@ tasks {
         ).forEach {
             relocate(it, "libs.$it")
         }
+
+        archiveBaseName.set("${rootProject.name}-${rootProject.version}")
+
+        destinationDirectory.set(rootProject.layout.buildDirectory.dir("libs"))
     }
 
     compileJava {
-        dependsOn(":crazyvouchers-api:jar")
+        dependsOn(":api:jar")
     }
 
     runPaper.folia.registerTask()

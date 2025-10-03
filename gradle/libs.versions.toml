@@ -3,17 +3,11 @@
 paperweight = "2.0.0-beta.19" # https://github.com/PaperMC/paperweight
 paper = "1.21.8-R0.1-SNAPSHOT" # https://github.com/PaperMC/Paper
 
-## JetBrains
-annotations = "24.1.0" # https://github.com/JetBrains/java-annotations
-
-## Kyori
-adventure = "4.24.0" # https://github.com/KyoriPowered/adventure
-
 ## Minecraft
-minecraft = "1.21.7" # https://minecraft.net
+minecraft = "1.21.8" # https://minecraft.net
 
 ## Deprecated API
-nbtapi = "2.15.1"
+nbtapi = "2.15.1" # https://github.com/tr7zw/Item-NBT-API
 
 ## CrazyVouchers
 crazyvouchers = "5.1.0" # Plugin Version
@@ -52,9 +46,6 @@ minotaur = { id = "com.modrinth.minotaur", version.ref = "minotaur" }
 # https://minecraft.net/
 minecraft = { group = "com.mojang", name = "minecraft", version.ref = "minecraft" }
 
-# https://github.com/JetBrains/java-annotations
-annotations = { module = "org.jetbrains:annotations", version.ref = "annotations" }
-
 # https://github.com/PaperMC/paperweight
 paperweight = { module = "io.papermc.paperweight.userdev:io.papermc.paperweight.userdev.gradle.plugin", version.ref = "paperweight" }
 
@@ -75,33 +66,19 @@ oraxen = { module = "io.th0rgal:oraxen", version.ref = "oraxen" }
 # https://github.com/Nexo-MC
 nexo = { module = "com.nexomc:nexo", version.ref = "nexo" }
 
-# https://github.com/KyoriPowered/adventure
-kyori-legacy = { module = "net.kyori:adventure-text-serializer-legacy", version.ref = "adventure" }
-kyori-logger = { module = "net.kyori:adventure-text-logger-slf4j", version.ref = "adventure" }
-kyori-text = { module = "net.kyori:adventure-text-minimessage", version.ref = "adventure" }
-kyori-api = { module = "net.kyori:adventure-api", version.ref = "adventure" }
-
 # https://github.com/TriumphTeam/triumph-cmds
 triumph-cmds = { module = "dev.triumphteam:triumph-cmd-bukkit", version.ref = "triumph-cmds" }
 
-# Deprecated API
+# https://github.com/tr7zw/Item-NBT-API
 nbt-api = { module = "de.tr7zw:item-nbt-api", version.ref = "nbtapi" }
 
 # https://github.com/ryderbelserion/Fusion
 fusion-paper = { module = "com.ryderbelserion.fusion:fusion-paper", version.ref = "fusion" }
-fusion-core = { module = "com.ryderbelserion.fusion:fusion-core", version.ref = "fusion" }
 
 # https://github.com/Bastian/bStats
 metrics = { module = "org.bstats:bstats-bukkit", version.ref = "bStats" }
 
 [bundles]
-adventure = [
-    "kyori-legacy",
-    #"kyori-logger",
-    "kyori-text",
-    "kyori-api"
-]
-
 shared = [
     "headdatabaseapi",
     "placeholderapi",
