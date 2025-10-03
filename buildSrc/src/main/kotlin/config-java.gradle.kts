@@ -1,6 +1,7 @@
 plugins {
     id("com.gradleup.shadow")
 
+    `maven-publish`
     `java-library`
 }
 
@@ -54,12 +55,12 @@ tasks {
             "description" to rootProject.description.toString(),
             "minecraft" to libs.findVersion("minecraft").get(),
             "website" to "https://github.com/Crazy-Crew/${rootProject.name}",
-            "id" to rootProject.name.lowercase(),
-            "group" to rootProject.group
+            "group" to project.group
         )
 
         with(copySpec {
-            include("*paper-plugin.yml", "fabric.mod.json")
+            include("*paper-plugin.yml")
+
             from("src/main/resources") {
                 expand(inputs.properties)
             }

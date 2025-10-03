@@ -1,11 +1,8 @@
-plugins {
-    id("org.gradle.toolchains.foojay-resolver-convention") version "0.9.0"
-}
-
 rootProject.name = "CrazyVouchers"
 
 listOf(
-    "paper" to "paper"
+    "paper" to "paper",
+    "api" to "api"
 ).forEach(::includeProject)
 
 fun includeProject(pair: Pair<String, String>): Unit = includeProject(pair.first, pair.second)
