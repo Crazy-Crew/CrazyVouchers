@@ -1,7 +1,4 @@
 plugins {
-    id("com.gradleup.shadow")
-
-    `maven-publish`
     `java-library`
 }
 
@@ -26,12 +23,6 @@ java {
 }
 
 tasks {
-    shadowJar {
-        archiveClassifier.set("")
-
-        exclude("META-INF/**")
-    }
-
     compileJava {
         options.encoding = Charsets.UTF_8.name()
         options.release.set(21)
@@ -48,7 +39,7 @@ tasks {
             "description" to rootProject.description.toString(),
             "minecraft" to libs.findVersion("minecraft").get(),
             "website" to "https://github.com/Crazy-Crew/${rootProject.name}",
-            "group" to project.group
+            "group" to rootProject.group
         )
 
         with(copySpec {

@@ -227,23 +227,27 @@ public class CrazyManager {
 
     public void loadExamples() {
         if (this.config.getProperty(ConfigKeys.update_examples_folder)) {
-            try (final Stream<Path> values = Files.walk(this.dataPath.resolve("examples"))) {
-                values.sorted(Comparator.reverseOrder()).forEach(path -> {
-                    try {
-                        this.fusion.log("info", "Successfully deleted path {}, re-generating the examples later.", path);
+            final Path examples = this.dataPath.resolve("examples");
 
-                        Files.delete(path);
-                    } catch (final IOException exception) {
-                        this.fusion.log("warn", "Failed to delete {} in loop, Reason: {}", path, exception.getMessage());
-                    }
-                });
-            } catch (final Exception exception) {
-                this.fusion.log("warn", "Failed to delete {}, Reason: {}", this.dataPath.resolve("examples"), exception.getMessage());
+            if (Files.exists(examples)) {
+                try (final Stream<Path> values = Files.walk(examples)) {
+                    values.sorted(Comparator.reverseOrder()).forEach(path -> {
+                        try {
+                            this.fusion.log("info", "Successfully deleted path {}, re-generating the examples later.", path);
+
+                            Files.delete(path);
+                        } catch (final IOException exception) {
+                            this.fusion.log("warn", "Failed to delete %s in loop.".formatted(path), exception);
+                        }
+                    });
+                } catch (final Exception exception) {
+                    this.fusion.log("warn", "Failed to delete %s.".formatted(examples), exception);
+                }
             }
 
-            this.fileManager.extractFolder("vouchers", this.dataPath.resolve("examples"));
-            this.fileManager.extractFolder("codes", this.dataPath.resolve("examples"));
-            this.fileManager.extractFolder("locale", this.dataPath.resolve("examples"));
+            this.fileManager.extractFolder("vouchers", examples);
+            this.fileManager.extractFolder("codes", examples);
+            this.fileManager.extractFolder("locale", examples);
 
             List.of(
                     "config.yml",
@@ -251,7 +255,7 @@ public class CrazyManager {
                     "data.yml",
                     "users.yml",
                     "vouchers.yml"
-            ).forEach(file -> this.fileManager.extractFile(this.dataPath.resolve("examples").resolve(file)));
+            ).forEach(file -> this.fileManager.extractFile(examples.resolve(file)));
         }
     }
 

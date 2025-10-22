@@ -11,7 +11,7 @@ repositories {
 }
 
 dependencies {
-    implementation(project(path = ":api", configuration = "shadow"))
+    implementation(project(":api"))
 
     implementation(libs.fusion.paper)
 
@@ -25,20 +25,16 @@ dependencies {
 }
 
 tasks {
+    build {
+        dependsOn(shadowJar)
+    }
+
     shadowJar {
         listOf(
             "org.bstats"
         ).forEach {
             relocate(it, "libs.$it")
         }
-
-        archiveBaseName.set("${rootProject.name}-${rootProject.version}")
-
-        destinationDirectory.set(rootProject.layout.buildDirectory.dir("libs"))
-    }
-
-    compileJava {
-        dependsOn(":api:jar")
     }
 
     runPaper.folia.registerTask()
