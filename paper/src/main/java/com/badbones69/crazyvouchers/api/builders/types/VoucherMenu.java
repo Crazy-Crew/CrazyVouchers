@@ -36,7 +36,7 @@ public class VoucherMenu extends InventoryBuilder {
 
         setDefaultItems(inventory);
 
-        final List<ItemStack> items = this.inventoryManager.getPreviewItems(getPage());
+        final List<ItemStack> items = this.inventoryManager.getPreviewItems(getPlayer(), getPage());
 
         for (ItemStack item : items) {
             final int nextSlot = inventory.firstEmpty();
@@ -89,7 +89,7 @@ public class VoucherMenu extends InventoryBuilder {
             if (voucher != null) {
                 player.playSound(player.getLocation(), Sound.UI_BUTTON_CLICK, SoundCategory.PLAYERS, 1F, 1F);
 
-                Methods.addItem(player, voucher.buildItem());
+                Methods.addItem(player, voucher.buildItem(player));
             }
         }
     }

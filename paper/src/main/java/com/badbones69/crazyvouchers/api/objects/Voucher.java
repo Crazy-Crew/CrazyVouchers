@@ -460,7 +460,7 @@ public class Voucher {
         dispatchCommands(player, placeholders);
 
         for (final ItemBuilder itemStack : getItems()) {
-            Methods.addItem(player, itemStack.asItemStack());
+            Methods.addItem(player, itemStack.asItemStack(player));
         }
 
         if (playSounds()) {
@@ -552,16 +552,16 @@ public class Voucher {
         return this.hasArgument;
     }
     
-    public ItemStack buildItem() {
-        return buildItem(1);
+    public ItemStack buildItem(@NotNull final Player player) {
+        return buildItem(player, 1);
     }
 
     private @NotNull final SettingsManager config = ConfigManager.getConfig();
     
-    public ItemStack buildItem(final int amount) {
+    public ItemStack buildItem(@NotNull final Player player, final int amount) {
         this.itemBuilder.setAmount(amount);
 
-        final ItemStack item = this.itemBuilder.build().asItemStack();
+        final ItemStack item = this.itemBuilder.build().asItemStack(player);
 
         setUniqueId(item);
 
@@ -570,22 +570,22 @@ public class Voucher {
         return item;
     }
 
-    public List<ItemStack> buildItems(@NotNull final String argument, final int amount) {
+    public List<ItemStack> buildItems(@NotNull final Player player, @NotNull final String argument, final int amount) {
         final List<ItemStack> itemStacks = new ArrayList<>();
 
         if (!this.isAntiDupeOverridden && this.config.getProperty(ConfigKeys.dupe_protection)) {
             while (itemStacks.size() < amount) {
-                itemStacks.add(buildItem(argument, 1));
+                itemStacks.add(buildItem(player, argument, 1));
             }
         } else {
-            itemStacks.add(buildItem(argument, amount));
+            itemStacks.add(buildItem(player, argument, amount));
         }
 
         return itemStacks;
     }
     
-    public ItemStack buildItem(@NotNull final String argument, final int amount) {
-        final ItemStack item = this.itemBuilder.setAmount(amount).addPlaceholder("{arg}", argument).asItemStack();
+    public ItemStack buildItem(@NotNull final Player player, @NotNull final String argument, final int amount) {
+        final ItemStack item = this.itemBuilder.setAmount(amount).addPlaceholder("{arg}", argument).asItemStack(player);
 
         setUniqueId(item);
 

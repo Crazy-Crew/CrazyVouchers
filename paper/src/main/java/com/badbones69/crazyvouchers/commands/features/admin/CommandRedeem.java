@@ -144,7 +144,7 @@ public class CommandRedeem extends BaseCommand {
             code.dispatchCommands(player, placeholders);
 
             for (final ItemBuilder itemBuilder : code.getItems()) {
-                Methods.addItem(player, itemBuilder.asItemStack());
+                Methods.addItem(player, itemBuilder.asItemStack(player));
             }
 
             if (code.useSounds()) {

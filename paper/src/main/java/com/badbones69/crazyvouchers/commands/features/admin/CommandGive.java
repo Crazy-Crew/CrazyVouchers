@@ -42,7 +42,7 @@ public class CommandGive extends BaseCommand {
             return;
         }
 
-        List<ItemStack> itemStacks = build(amount, argument, voucher);
+        List<ItemStack> itemStacks = build(player, amount, argument, voucher);
 
         itemStacks.forEach(itemStack -> Methods.addItem(player, itemStack));
 
@@ -66,9 +66,9 @@ public class CommandGive extends BaseCommand {
             return;
         }
 
-        List<ItemStack> itemStacks = build(amount, argument, voucher);
-
         for (final Player player : this.plugin.getServer().getOnlinePlayers()) {
+            final List<ItemStack> itemStacks = build(player, amount, argument, voucher);
+
             itemStacks.forEach(itemStack -> Methods.addItem(player, itemStack));
         }
 
@@ -79,7 +79,7 @@ public class CommandGive extends BaseCommand {
         Messages.sent_everyone_voucher.sendMessage(sender, placeholders);
     }
 
-    private List<ItemStack> build(final int amount, final String argument, final Voucher voucher) {
+    private List<ItemStack> build(final Player player, final int amount, final String argument, final Voucher voucher) {
         final int safety = Math.max(amount, 1);
 
         final String arg = argument != null ? argument.replace("%random%", "{random}") : "";
@@ -87,9 +87,9 @@ public class CommandGive extends BaseCommand {
         final List<ItemStack> itemStacks = new ArrayList<>();
 
         if (!arg.isEmpty()) {
-            itemStacks.addAll(voucher.buildItems(argument, safety));
+            itemStacks.addAll(voucher.buildItems(player, argument, safety));
         } else {
-            itemStacks.addAll(voucher.buildItems("", safety));
+            itemStacks.addAll(voucher.buildItems(player, "", safety));
         }
 
         return itemStacks;

@@ -35,15 +35,15 @@ public class InventoryManager {
         this.backButton = new ItemBuilder(ItemType.ARROW).withDisplayName("<gold><< Back");
     }
 
-    public final ItemStack getVoucher(@NotNull final Voucher voucher) {
-        final ItemStack itemStack = voucher.buildItem();
+    public final ItemStack getVoucher(@NotNull final Player player, @NotNull final Voucher voucher) {
+        final ItemStack itemStack = voucher.buildItem(player);
 
         itemStack.editPersistentDataContainer(container -> container.set(PersistentKeys.voucher_item_admin.getNamespacedKey(), PersistentDataType.STRING, voucher.getName()));
 
         return itemStack;
     }
 
-    public final List<ItemStack> getPreviewItems(int page) {
+    public final List<ItemStack> getPreviewItems(@NotNull final Player player, int page) {
         final List<ItemStack> items = new ArrayList<>();
 
         if (page <= 0) page = 1;
@@ -58,7 +58,7 @@ public class InventoryManager {
 
         for (;startIndex < endIndex; startIndex++) {
             if (startIndex < count) {
-                items.add(getVoucher(vouchers.get(startIndex)));
+                items.add(getVoucher(player, vouchers.get(startIndex)));
             }
         }
 
@@ -68,7 +68,7 @@ public class InventoryManager {
     public final ItemStack getBackButton(@NotNull final Player player) {
         int page = getPage(player) - 1;
 
-        ItemStack itemStack = this.backButton.addDisplayLore("<gray>Page: <blue>" + page).asItemStack();
+        ItemStack itemStack = this.backButton.addDisplayLore("<gray>Page: <blue>" + page).asItemStack(player);
 
         itemStack.editPersistentDataContainer(container -> container.set(PersistentKeys.back_button.getNamespacedKey(), PersistentDataType.INTEGER, page));
 
@@ -78,7 +78,7 @@ public class InventoryManager {
     public final ItemStack getNextButton(@NotNull final Player player) {
         int page = getPage(player) + 1;
 
-        ItemStack itemStack = this.nextButton.addDisplayLore("<gray>Page: <blue>" + page).asItemStack();
+        ItemStack itemStack = this.nextButton.addDisplayLore("<gray>Page: <blue>" + page).asItemStack(player);
 
         itemStack.editPersistentDataContainer(container -> container.set(PersistentKeys.next_button.getNamespacedKey(), PersistentDataType.INTEGER, page));
 
