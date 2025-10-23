@@ -606,15 +606,19 @@ public class Voucher {
         // dispatch commands without a weight option randomly
         final List<VoucherCommand> randomCommands = this.randomCommands.stream().filter(filter -> filter.getWeight() > 0.0D).toList();
 
-        final VoucherCommand randomCommand = randomCommands.get(Methods.getRandom(randomCommands.size()));
+        if (!randomCommands.isEmpty()) {
+            final VoucherCommand randomCommand = randomCommands.get(Methods.getRandom(randomCommands.size()));
 
-        Methods.dispatch(player, randomCommand.getCommands(), placeholders, true);
+            Methods.dispatch(player, randomCommand.getCommands(), placeholders, true);
+        }
 
         // dispatch commands while accounting for the weight on each one.
         // if a section has Weight, and a list of commands. all those commands will execute if the Weight is picked.
         final List<VoucherCommand> chanceCommands = this.randomCommands.stream().filter(filter -> filter.getWeight() <= 0.0D).toList();
 
-        Methods.dispatch(player, getCommand(chanceCommands).getCommands(), placeholders, true);
+        if (!chanceCommands.isEmpty()) {
+            Methods.dispatch(player, getCommand(chanceCommands).getCommands(), placeholders, true);
+        }
     }
 
     public VoucherCommand getCommand(@NotNull final List<VoucherCommand> commands) {
