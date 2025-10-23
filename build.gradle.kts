@@ -119,8 +119,6 @@ feather {
 
     val data = git.getGithubCommit("Crazy-Crew/${rootProject.name}")
 
-    val user = data.user
-
     discord {
         webhook {
             group(rootProject.name.lowercase())
@@ -130,9 +128,9 @@ feather {
                 post(System.getenv("CV_WEBHOOK"))
             }
 
-            username(user.getName())
+            username("Ryder Belserion")
 
-            avatar(user.avatar)
+            avatar("https://github.com/ryderbelserion.png")
 
             embeds {
                 embed {
@@ -172,9 +170,9 @@ feather {
                 post(System.getenv("BUILD_WEBHOOK"))
             }
 
-            username(user.getName())
+            username("Ryder Belserion")
 
-            avatar(user.avatar)
+            avatar("https://github.com/ryderbelserion.png")
 
             content("<@&1029922295210311681>")
 
