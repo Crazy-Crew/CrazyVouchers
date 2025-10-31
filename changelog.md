@@ -1,3 +1,2 @@
 ## Bugs Fixed 🐛
-- Fixed an issue with the `out of bounds` exception involving `random-commands`
-- Fixed an issue where PlaceholderAPI placeholders weren't being parsed.
+- Fixed issue random-commands, and weight calculations. The filter predicate was inverted for weighted and weightless options.

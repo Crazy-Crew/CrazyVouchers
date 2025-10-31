@@ -155,7 +155,8 @@ public class VoucherCode {
             }
         }
 
-        this.totalWeight = this.randomCommands.stream().filter(filter -> filter.getWeight() >= 0.0D).mapToDouble(VoucherCommand::getWeight).sum();
+        // if the prize weight is greater than 0.0, grab it.
+        this.totalWeight = this.randomCommands.stream().filter(filter -> filter.getWeight() > 0.0D).mapToDouble(VoucherCommand::getWeight).sum();
     }
 
     public void dispatchCommands(@NotNull final Player player, @NotNull final Map<String, String> placeholders) {
@@ -164,7 +165,8 @@ public class VoucherCode {
         if (this.randomCommands.isEmpty()) return;
 
         // dispatch commands without a weight option randomly
-        final List<VoucherCommand> randomCommands = this.randomCommands.stream().filter(filter -> filter.getWeight() > 0.0D).toList();
+        // if the prize weight is less than 0.0, grab it.
+        final List<VoucherCommand> randomCommands = this.randomCommands.stream().filter(filter -> filter.getWeight() < 0.0D).toList();
 
         if (!randomCommands.isEmpty()) {
             final VoucherCommand randomCommand = randomCommands.get(Methods.getRandom(randomCommands.size()));
@@ -173,8 +175,8 @@ public class VoucherCode {
         }
 
         // dispatch commands while accounting for the weight on each one.
-        // if a section has Weight, and a list of commands. all those commands will execute if the Weight is picked.
-        final List<VoucherCommand> chanceCommands = this.randomCommands.stream().filter(filter -> filter.getWeight() <= 0.0D).toList();
+        // if the prize weight is greater than 0.0, grab it.
+        final List<VoucherCommand> chanceCommands = this.randomCommands.stream().filter(filter -> filter.getWeight() > 0.0D).toList();
 
         if (!chanceCommands.isEmpty()) {
             Methods.dispatch(player, getCommand(chanceCommands).getCommands(), placeholders, true);
