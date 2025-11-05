@@ -8,10 +8,7 @@ import com.badbones69.crazyvouchers.utils.ScheduleUtils;
 import com.ryderbelserion.fusion.core.utils.StringUtils;
 import com.ryderbelserion.fusion.paper.FusionPaper;
 import com.ryderbelserion.fusion.paper.scheduler.FoliaScheduler;
-import org.bukkit.Color;
-import org.bukkit.FireworkEffect;
-import org.bukkit.Location;
-import org.bukkit.Server;
+import org.bukkit.*;
 import org.bukkit.command.CommandSender;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.entity.Firework;
@@ -22,20 +19,19 @@ import org.bukkit.inventory.meta.FireworkMeta;
 import org.bukkit.persistence.PersistentDataContainer;
 import org.bukkit.persistence.PersistentDataType;
 import org.jetbrains.annotations.NotNull;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import java.util.*;
 import java.util.concurrent.ThreadLocalRandom;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 public class Methods {
-
-    private static @NotNull final Pattern randomNumberMatcher = Pattern.compile("\\{random}:(\\d+)-(\\d+)");
 
     private static @NotNull final CrazyVouchers plugin = CrazyVouchers.get();
 
     private static @NotNull final FusionPaper fusion = plugin.getFusion();
 
     private static @NotNull final StringUtils utils = fusion.getStringUtils();
+    private static final Logger log = LoggerFactory.getLogger(Methods.class);
 
     public static void removeItem(@NotNull final ItemStack item, @NotNull final Player player) {
         if (item.getAmount() <= 1) {
@@ -156,20 +152,24 @@ public class Methods {
         String safeLine = value;
 
         if (safeLine.contains("{random}")) {
-            final Matcher matcher = randomNumberMatcher.matcher(safeLine);
+            final String number = safeLine.split(":")[1];
 
-            final Optional<Number> minRange = utils.tryParseInt(matcher.group(1));
-            final Optional<Number> maxRange = utils.tryParseInt(matcher.group(2));
+            if (number.contains("-")) {
+                final String[] splitter = number.split("-");
 
-            if (minRange.isPresent() && maxRange.isPresent()) {
-                final int minimum = minRange.get().intValue();
-                final int maximum = maxRange.get().intValue();
+                final Optional<Number> minRange = utils.tryParseInt(splitter[0]);
+                final Optional<Number> maxRange = utils.tryParseInt(splitter[1]);
 
-                final int amount = Methods.getRandom().nextInt(minimum, maximum);
+                if (minRange.isPresent() && maxRange.isPresent()) {
+                    final int minimum = minRange.get().intValue();
+                    final int maximum = maxRange.get().intValue();
 
-                safeLine = safeLine.replace("{random}:%s-%s".formatted(minimum, maximum), String.valueOf(amount));
-            } else {
-                fusion.log("warn", "The values supplied with {random} seem to not be integers. {}", value);
+                    final int amount = Methods.getRandom().nextInt(minimum, maximum);
+
+                    safeLine = safeLine.replace("{random}:%s-%s".formatted(minimum, maximum), String.valueOf(amount));
+                } else {
+                    fusion.log("warn", "The values supplied with {random} seem to not be integers. {}", value);
+                }
             }
         }
 

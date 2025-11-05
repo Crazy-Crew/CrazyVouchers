@@ -1,2 +1,2 @@
 ## Bugs Fixed 🐛
-- Fixed issue random-commands, and weight calculations. The filter predicate was inverted for weighted and weightless options.
+- Fixed issue with {random}:50000-2000000 not working.
