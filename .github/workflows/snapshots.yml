@@ -33,11 +33,11 @@ jobs:
           COMMIT_MESSAGE: ${{ join(github.event.commits.*.message, '<br>') }}
       - name: Notify Discord
         if: success()
-        run: ./gradlew dev-build --stacktrace
+        run: ./gradlew release-build --stacktrace
         env:
-          CV_WEBHOOK: ${{ secrets.CV_WEBHOOK }}
+          BUILD_WEBHOOK: ${{ secrets.CV_WEBHOOK }}
       - name: Build Failure
         if: failure()
         run: ./gradlew failed-build --stacktrace
         env:
-          CC_WEBHOOK: ${{ secrets.CV_WEBHOOK }}
+          BUILD_WEBHOOK: ${{ secrets.CV_WEBHOOK }}
