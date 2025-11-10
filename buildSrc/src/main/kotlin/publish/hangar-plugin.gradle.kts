@@ -31,18 +31,6 @@ hangarPublish {
                         required = false
                     }
 
-                    hangar("FancyHolograms") {
-                        required = false
-                    }
-
-                    url("CMI", "https://www.spigotmc.org/resources/cmi-300-commands-insane-kits-portals-essentials-economy-mysql-sqlite-much-more.3742/") {
-                        required = false
-                    }
-
-                    url("DecentHolograms", "https://modrinth.com/plugin/decentholograms") {
-                        required = false
-                    }
-
                     url("ItemsAdder", "https://polymart.org/product/1851/itemsadder") {
                         required = false
                     }
