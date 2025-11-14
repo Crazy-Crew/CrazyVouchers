@@ -190,7 +190,7 @@ public class VoucherDeprecated extends IVoucherMigrator {
 
                         final ConfigurationSection newSection = section.createSection("random-commands");
 
-                        newSection.set("%s.commands".formatted(UUID.randomUUID()), commands);
+                        commands.forEach(command -> newSection.set("%s.commands".formatted(UUID.randomUUID()), List.of(command)));
                     }
 
                     if (section.contains("chance-commands")) {
@@ -250,7 +250,7 @@ public class VoucherDeprecated extends IVoucherMigrator {
 
                         final ConfigurationSection newSection = section.createSection("random-commands");
 
-                        newSection.set("%s.commands".formatted(UUID.randomUUID()), commands);
+                        commands.forEach(command -> newSection.set("%s.commands".formatted(UUID.randomUUID()), List.of(command)));
                     }
 
                     if (section.contains("chance-commands")) {
