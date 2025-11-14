@@ -1,8 +1,6 @@
 package com.badbones69.crazyvouchers.commands.features.admin.migrate.types;
 
 import com.badbones69.crazyvouchers.api.enums.FileKeys;
-import com.badbones69.crazyvouchers.api.objects.Voucher;
-import com.badbones69.crazyvouchers.api.objects.VoucherCode;
 import com.badbones69.crazyvouchers.commands.features.admin.migrate.IVoucherMigrator;
 import com.badbones69.crazyvouchers.commands.features.admin.migrate.enums.MigrationType;
 import com.badbones69.crazyvouchers.config.types.ConfigKeys;
@@ -131,16 +129,17 @@ public class VoucherDeprecated extends IVoucherMigrator {
             case MULTIPLE -> {
                 final Path voucher_dir = this.dataPath.resolve("vouchers");
 
-                for (final Voucher voucher : this.crazyManager.getVouchers()) {
-                    final String name = voucher.getStrippedName();
-                    final String file = voucher.getName();
+                final List<Path> voucher_files = this.fusion.getFiles(voucher_dir, ".yml");
 
-                    final Optional<PaperCustomFile> optional = this.fileManager.getPaperFile(voucher_dir.resolve(file));
+                for (final Path path : voucher_files) {
+                    final Optional<PaperCustomFile> optional = this.fileManager.getPaperFile(path);
+
+                    final String fileName = path.getFileName().toString();
 
                     if (optional.isEmpty()) {
-                        this.fusion.log("warn", "<red>{}</red> does not exist in the file cache", name);
+                        this.fusion.log("warn", "<red>{}</red> does not exist in the file cache", fileName);
 
-                        failed.add("<red>⤷ " + file);
+                        failed.add("<red>⤷ " + fileName);
 
                         continue;
                     }
@@ -148,9 +147,9 @@ public class VoucherDeprecated extends IVoucherMigrator {
                     final PaperCustomFile customFile = optional.get();
 
                     if (!customFile.isLoaded()) {
-                        this.fusion.log("warn", "<red>{}</red> configuration is invalid, likely not loaded properly. Please check console :)", name);
+                        this.fusion.log("warn", "<red>{}</red> configuration is invalid, likely not loaded properly. Please check console :)", fileName);
 
-                        failed.add("<red>⤷ " + file);
+                        failed.add("<red>⤷ " + fileName);
 
                         continue;
                     }
@@ -160,9 +159,9 @@ public class VoucherDeprecated extends IVoucherMigrator {
                     final ConfigurationSection section = configuration.getConfigurationSection("voucher");
 
                     if (section == null) {
-                        this.fusion.log("warn", "Configuration section for <red>{}</red> was not found.", name);
+                        this.fusion.log("warn", "Configuration section for <red>{}</red> was not found.", fileName);
 
-                        failed.add("<red>⤷ " + file);
+                        failed.add("<red>⤷ " + fileName);
 
                         continue;
                     }
@@ -178,10 +177,10 @@ public class VoucherDeprecated extends IVoucherMigrator {
                             section.set("item", material);
                             section.set("custom-model-data", model_data);
                         } else {
-                            this.fusion.log("warn", "<red>{}</red> does not contain <red>voucher.item</red> path in the configuration section.", name);
+                            this.fusion.log("warn", "<red>{}</red> does not contain <red>voucher.item</red> path in the configuration section.", fileName);
                         }
                     } else {
-                        this.fusion.log("warn", "<red>vouchers.{}.item</red> does not exist.", file);
+                        this.fusion.log("warn", "<red>vouchers.{}.item</red> does not exist.", fileName);
                     }
 
                     if (section.contains("random-commands") && section.isList("random-commands")) {
@@ -200,23 +199,24 @@ public class VoucherDeprecated extends IVoucherMigrator {
                         convertCommands(section, commands);
                     }
 
-                    success.add("<green>⤷ " + file);
+                    success.add("<green>⤷ " + fileName);
 
                     customFile.save();
                 }
 
                 final Path code_dir = this.dataPath.resolve("codes");
 
-                for (final VoucherCode voucher : this.crazyManager.getVoucherCodes()) {
-                    final String name = voucher.getStrippedName();
-                    final String file = voucher.getName();
+                final List<Path> code_files = this.fusion.getFiles(code_dir, ".yml");
 
-                    final Optional<PaperCustomFile> optional = this.fileManager.getPaperFile(code_dir.resolve(file));
+                for (final Path path : code_files) {
+                    final Optional<PaperCustomFile> optional = this.fileManager.getPaperFile(path);
+
+                    final String fileName = path.getFileName().toString();
 
                     if (optional.isEmpty()) {
-                        this.fusion.log("warn", "<red>{}</red> does not exist in the file cache", name);
+                        this.fusion.log("warn", "<red>{}</red> does not exist in the file cache", fileName);
 
-                        failed.add("<red>⤷ " + file);
+                        failed.add("<red>⤷ " + fileName);
 
                         continue;
                     }
@@ -224,9 +224,9 @@ public class VoucherDeprecated extends IVoucherMigrator {
                     final PaperCustomFile customFile = optional.get();
 
                     if (!customFile.isLoaded()) {
-                        this.fusion.log("warn", "<red>{}</red> configuration is invalid, likely not loaded properly. Please check console :)", name);
+                        this.fusion.log("warn", "<red>{}</red> configuration is invalid, likely not loaded properly. Please check console :)", fileName);
 
-                        failed.add("<red>⤷ " + file);
+                        failed.add("<red>⤷ " + fileName);
 
                         continue;
                     }
@@ -236,9 +236,9 @@ public class VoucherDeprecated extends IVoucherMigrator {
                     final ConfigurationSection section = configuration.getConfigurationSection("voucher-code");
 
                     if (section == null) {
-                        this.fusion.log("warn", "Configuration section for <red>{}</red> was not found.", name);
+                        this.fusion.log("warn", "Configuration section for <red>{}</red> was not found.", fileName);
 
-                        failed.add("<red>⤷ " + file);
+                        failed.add("<red>⤷ " + fileName);
 
                         continue;
                     }
@@ -259,7 +259,7 @@ public class VoucherDeprecated extends IVoucherMigrator {
                         convertCommands(section, commands);
                     }
 
-                    success.add("<green>⤷ " + file);
+                    success.add("<green>⤷ " + fileName);
 
                     customFile.save();
                 }
