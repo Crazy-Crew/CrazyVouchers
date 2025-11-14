@@ -27,6 +27,7 @@ public class VoucherCode {
     private @NotNull final StringUtils utils = this.fusion.getStringUtils();
     private @NotNull final SettingsManager config = ConfigManager.getConfig();
 
+    private final String fileName;
     private final String name;
     private final String code;
 
@@ -69,6 +70,7 @@ public class VoucherCode {
     private final List<ItemBuilder> items;
 
     public VoucherCode(@NotNull final ConfigurationSection section, @NotNull final String name) {
+        this.fileName = name.replaceAll(".yml", "");
         this.name = name;
 
         this.enabled = section.getBoolean("options.enabled", false);
@@ -200,11 +202,11 @@ public class VoucherCode {
     }
 
     public String getStrippedName() {
-        return this.name.replaceAll(".yml", "");
-    }
-    
-    public String getName() {
         return this.name;
+    }
+
+    public String getFileName() {
+        return this.fileName;
     }
     
     public String getCode() {

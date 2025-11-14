@@ -2,8 +2,6 @@ package com.badbones69.crazyvouchers.commands.features.admin.migrate.types.depre
 
 import com.badbones69.crazyvouchers.api.enums.FileKeys;
 import com.badbones69.crazyvouchers.api.enums.config.Messages;
-import com.badbones69.crazyvouchers.api.objects.Voucher;
-import com.badbones69.crazyvouchers.api.objects.VoucherCode;
 import com.badbones69.crazyvouchers.commands.features.admin.migrate.IVoucherMigrator;
 import com.badbones69.crazyvouchers.commands.features.admin.migrate.enums.MigrationType;
 import com.badbones69.crazyvouchers.config.types.ConfigKeys;
@@ -95,97 +93,96 @@ public class LegacyColorMigrator extends IVoucherMigrator {
             }
 
             case MULTIPLE -> {
-                final List<VoucherCode> codes = this.crazyManager.getVoucherCodes();
-
                 final Path code_dir = this.dataPath.resolve("codes");
 
-                for (final VoucherCode code : codes) {
-                    final String file = code.getName();
+                final List<Path> code_files = this.fusion.getFiles(code_dir, ".yml");
 
-                    final @NotNull Optional<PaperCustomFile> customFile = this.fileManager.getPaperFile(code_dir.resolve(file));
+                for (final Path path : code_files) {
+                    final Optional<PaperCustomFile> optional = this.fileManager.getPaperFile(path);
 
-                    if (customFile.isEmpty()) {
-                        this.fusion.log("warn", "Failed to migrate code {}, because the file is not in the cache.", file);
+                    final String fileName = path.getFileName().toString();
 
-                        failed.add("<red>⤷ " + file);
+                    if (optional.isEmpty()) {
+                        this.fusion.log("warn", "<red>{}</red> does not exist in the file cache", fileName);
 
-                        continue;
-                    }
-
-                    final PaperCustomFile safeCustomFile = customFile.get();
-
-                    if (!safeCustomFile.isLoaded()) {
-                        this.fusion.log("warn", "Failed to migrate code {}, because the file configuration is null.", file);
-
-                        failed.add("<red>⤷ " + file);
+                        failed.add("<red>⤷ " + fileName);
 
                         continue;
                     }
 
-                    final YamlConfiguration configuration = safeCustomFile.getConfiguration();
+                    final PaperCustomFile customFile = optional.get();
+
+                    if (!customFile.isLoaded()) {
+                        this.fusion.log("warn", "<red>{}</red> configuration is invalid, likely not loaded properly. Please check console :)", fileName);
+
+                        failed.add("<red>⤷ " + fileName);
+
+                        continue;
+                    }
+
+                    final YamlConfiguration configuration = customFile.getConfiguration();
 
                     final ConfigurationSection section = configuration.getConfigurationSection("voucher-code");
 
                     if (section == null) {
-                        this.fusion.log("warn", "Failed to migrate code {}, because the configuration section is null.", file);
+                        this.fusion.log("warn", "Configuration section for <red>{}</red> was not found.", fileName);
 
-                        failed.add("<red>⤷ " + file);
+                        failed.add("<red>⤷ " + fileName);
 
                         continue;
                     }
 
                     process(section);
 
-                    success.add("<green>⤷ " + file);
+                    success.add("<green>⤷ " + fileName);
 
-                    safeCustomFile.save();
+                    customFile.save();
                 }
-
-                final List<Voucher> vouchers = this.crazyManager.getVouchers();
 
                 final Path voucher_dir = this.dataPath.resolve("vouchers");
 
-                for (final Voucher voucher : vouchers) {
-                    final String name = voucher.getStrippedName();
-                    final String file = voucher.getName();
+                final List<Path> voucher_files = this.fusion.getFiles(voucher_dir, ".yml");
 
-                    final @NotNull Optional<PaperCustomFile> customFile = this.fileManager.getPaperFile(voucher_dir.resolve(file));
+                for (final Path path : voucher_files) {
+                    final Optional<PaperCustomFile> optional = this.fileManager.getPaperFile(path);
 
-                    if (customFile.isEmpty()) {
-                        this.fusion.log("warn", "Failed to migrate code {}, because the file is not in the cache.", file);
+                    final String fileName = path.getFileName().toString();
 
-                        failed.add("<red>⤷ " + file);
+                    if (optional.isEmpty()) {
+                        this.fusion.log("warn", "<red>{}</red> does not exist in the file cache", fileName);
 
-                        continue;
-                    }
-
-                    final PaperCustomFile safeCustomFile = customFile.get();
-
-                    if (!safeCustomFile.isLoaded()) {
-                        this.fusion.log("warn", "Failed to migrate code {}, because the file configuration is null.", file);
-
-                        failed.add("<red>⤷ " + file);
+                        failed.add("<red>⤷ " + fileName);
 
                         continue;
                     }
 
-                    final YamlConfiguration configuration = safeCustomFile.getConfiguration();
+                    final PaperCustomFile customFile = optional.get();
+
+                    if (!customFile.isLoaded()) {
+                        this.fusion.log("warn", "<red>{}</red> configuration is invalid, likely not loaded properly. Please check console :)", fileName);
+
+                        failed.add("<red>⤷ " + fileName);
+
+                        continue;
+                    }
+
+                    final YamlConfiguration configuration = customFile.getConfiguration();
 
                     final ConfigurationSection section = configuration.getConfigurationSection("voucher");
 
                     if (section == null) {
-                        this.fusion.log("warn", "Failed to migrate code {}, because the configuration section is null.", file);
+                        this.fusion.log("warn", "Configuration section for <red>{}</red> was not found.", fileName);
 
-                        failed.add("<red>⤷ " + file);
+                        failed.add("<red>⤷ " + fileName);
 
                         continue;
                     }
 
-                    processItems(name, section);
+                    processItems(customFile.getPrettyName(), section);
 
-                    success.add("<green>⤷ " + file);
+                    success.add("<green>⤷ " + fileName);
 
-                    safeCustomFile.save();
+                   customFile.save();
                 }
             }
         }

@@ -38,7 +38,7 @@ public class CommandTypes extends BaseCommand {
 
         brokeVouchers.forEach(voucher -> coloredVouchers.add("<red>" + voucher + "</red>"));
         vouchers.forEach(voucher -> {
-            final String name = voucher.getName();
+            final String name = voucher.getStrippedName();
 
             if (coloredVouchers.contains(name)) return;
 
@@ -48,7 +48,7 @@ public class CommandTypes extends BaseCommand {
         final List<String> coloredCodes = new ArrayList<>();
         brokeCodes.forEach(code -> coloredCodes.add("<red>" + code + "</red>"));
         codes.forEach(code -> {
-            final String name = code.getName();
+            final String name = code.getStrippedName();
 
             if (coloredCodes.contains(name)) return;
 

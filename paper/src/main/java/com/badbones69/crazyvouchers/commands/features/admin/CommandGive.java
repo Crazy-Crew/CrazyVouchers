@@ -49,7 +49,7 @@ public class CommandGive extends BaseCommand {
         Map<String, String> placeholders = new HashMap<>();
 
         placeholders.put("{player}", player.getName());
-        placeholders.put("{voucher}", voucher.getName());
+        placeholders.put("{voucher}", voucher.getStrippedName());
 
         Messages.sent_voucher.sendMessage(sender, placeholders);
     }
@@ -74,7 +74,7 @@ public class CommandGive extends BaseCommand {
 
         Map<String, String> placeholders = new HashMap<>();
 
-        placeholders.put("{voucher}", voucher.getName());
+        placeholders.put("{voucher}", voucher.getStrippedName());
 
         Messages.sent_everyone_voucher.sendMessage(sender, placeholders);
     }

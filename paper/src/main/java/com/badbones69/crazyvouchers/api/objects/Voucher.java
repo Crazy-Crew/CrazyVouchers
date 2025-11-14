@@ -46,6 +46,7 @@ public class Voucher {
 
     private final ItemBuilder itemBuilder;
 
+    private final String cleanName;
     private final String name;
 
     private final int cooldownInterval;
@@ -102,6 +103,7 @@ public class Voucher {
     private final double totalWeight;
 
     public Voucher(@NotNull final ConfigurationSection section, @NotNull final String name) {
+        this.cleanName = name.replace(".yml", "");
         this.name = name;
 
         this.isAntiDupeOverridden = section.getBoolean("override-anti-dupe", false);
@@ -379,9 +381,10 @@ public class Voucher {
 
         final UUID uuid = player.getUniqueId();
         final String asString = uuid.toString();
+        final String cleanName = getStrippedName();
 
-        if (!PermissionKeys.crazyvouchers_bypass.hasPermission(player) && useLimiter() && user.contains("Players." + asString + ".Vouchers." + getName())) {
-            int amount = user.getInt("Players." + asString + ".Vouchers." + getName());
+        if (!PermissionKeys.crazyvouchers_bypass.hasPermission(player) && useLimiter() && user.contains("Players." + asString + ".Vouchers." + cleanName)) {
+            int amount = user.getInt("Players." + asString + ".Vouchers." + cleanName);
 
             if (amount >= getLimiterLimit()) {
                 Messages.hit_voucher_limit.sendMessage(player);
@@ -419,17 +422,17 @@ public class Voucher {
                 if (this.crazyManager.isVoucherAuthActive(uuid)) {
                     final String voucher_name = this.crazyManager.getActiveVoucherAuth(uuid);
 
-                    if (!voucher_name.equalsIgnoreCase(getName())) {
+                    if (!voucher_name.equalsIgnoreCase(cleanName)) {
                         Messages.two_step_authentication.sendMessage(player);
 
-                        this.crazyManager.addVoucherAuth(uuid, getName());
+                        this.crazyManager.addVoucherAuth(uuid, cleanName);
 
                         return;
                     }
                 } else {
                     Messages.two_step_authentication.sendMessage(player);
 
-                    this.crazyManager.addVoucherAuth(uuid, getName());
+                    this.crazyManager.addVoucherAuth(uuid, cleanName);
 
                     return;
                 }
@@ -482,7 +485,7 @@ public class Voucher {
             FileConfiguration configuration = FileKeys.users.getConfiguration();
 
             configuration.set("Players." + uuid + ".UserName", player.getName());
-            configuration.set("Players." + uuid + ".Vouchers." + getName(), configuration.getInt("Players." + uuid + ".Vouchers." + getName()) + 1);
+            configuration.set("Players." + uuid + ".Vouchers." + cleanName, configuration.getInt("Players." + uuid + ".Vouchers." + cleanName) + 1);
 
             FileKeys.users.save();
         }
@@ -542,10 +545,10 @@ public class Voucher {
     }
 
     public String getStrippedName() {
-        return this.name.replace(".yml", "");
+        return this.cleanName;
     }
 
-    public String getName() {
+    public String getFileName() {
         return this.name;
     }
 
@@ -566,7 +569,7 @@ public class Voucher {
 
         setUniqueId(item);
 
-        item.editPersistentDataContainer(container -> container.set(PersistentKeys.voucher_item.getNamespacedKey(), PersistentDataType.STRING, getName()));
+        item.editPersistentDataContainer(container -> container.set(PersistentKeys.voucher_item.getNamespacedKey(), PersistentDataType.STRING, getStrippedName()));
 
         return item;
     }

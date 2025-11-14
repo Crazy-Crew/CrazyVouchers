@@ -38,7 +38,7 @@ public class InventoryManager {
     public final ItemStack getVoucher(@NotNull final Player player, @NotNull final Voucher voucher) {
         final ItemStack itemStack = voucher.buildItem(player);
 
-        itemStack.editPersistentDataContainer(container -> container.set(PersistentKeys.voucher_item_admin.getNamespacedKey(), PersistentDataType.STRING, voucher.getName()));
+        itemStack.editPersistentDataContainer(container -> container.set(PersistentKeys.voucher_item_admin.getNamespacedKey(), PersistentDataType.STRING, voucher.getStrippedName()));
 
         return itemStack;
     }

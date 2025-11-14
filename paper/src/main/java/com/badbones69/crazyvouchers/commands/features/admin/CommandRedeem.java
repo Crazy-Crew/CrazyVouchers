@@ -104,9 +104,11 @@ public class CommandRedeem extends BaseCommand {
         final String uuid = player.getUniqueId().toString();
         // Checking if the player has used the code before.
 
+        final String cleanName = code.getStrippedName();
+
         if (data.contains("Players." + uuid)) {
-            if (data.contains("Players." + uuid + ".Codes." + code.getName())) {
-                if (data.getString("Players." + uuid + ".Codes." + code.getName(), "").equalsIgnoreCase("used")) {
+            if (data.contains("Players." + uuid + ".Codes." + cleanName)) {
+                if (data.getString("Players." + uuid + ".Codes." + cleanName, "").equalsIgnoreCase("used")) {
                     Messages.code_used.sendMessage(player, placeholders);
 
                     return;
@@ -116,16 +118,16 @@ public class CommandRedeem extends BaseCommand {
 
         //Checking the limit of the code.
         if (code.useLimiter()) {
-            if (data.contains("Voucher-Limit." + code.getName())) {
-                if (data.getInt("Voucher-Limit." + code.getName()) < 1) {
+            if (data.contains("Voucher-Limit." + cleanName)) {
+                if (data.getInt("Voucher-Limit." + cleanName) < 1) {
                     Messages.code_unavailable.sendMessage(player, placeholders);
 
                     return;
                 }
 
-                data.set("Voucher-Limit." + code.getName(), (data.getInt("Voucher-Limit." + code.getName()) - 1));
+                data.set("Voucher-Limit." + cleanName, (data.getInt("Voucher-Limit." + cleanName) - 1));
             } else {
-                data.set("Voucher-Limit." + code.getName(), (code.getLimit() - 1));
+                data.set("Voucher-Limit." + cleanName, (code.getLimit() - 1));
             }
 
             FileKeys.users.save();
@@ -137,7 +139,7 @@ public class CommandRedeem extends BaseCommand {
         server.getPluginManager().callEvent(event);
 
         if (!event.isCancelled()) {
-            data.set("Players." + uuid + ".Codes." + code.getName(), "used");
+            data.set("Players." + uuid + ".Codes." + cleanName, "used");
 
             FileKeys.users.save();
 

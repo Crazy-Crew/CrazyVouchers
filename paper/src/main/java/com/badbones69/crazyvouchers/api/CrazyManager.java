@@ -12,7 +12,6 @@ import com.ryderbelserion.fusion.paper.files.PaperFileManager;
 import com.ryderbelserion.fusion.paper.files.types.PaperCustomFile;
 import io.papermc.paper.persistence.PersistentDataContainerView;
 import net.kyori.adventure.text.logger.slf4j.ComponentLogger;
-import org.apache.commons.io.file.SimplePathVisitor;
 import org.bukkit.Material;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.file.FileConfiguration;
@@ -24,10 +23,8 @@ import org.bukkit.persistence.PersistentDataType;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import java.io.IOException;
-import java.nio.file.FileVisitResult;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.nio.file.attribute.BasicFileAttributes;
 import java.util.*;
 import java.util.stream.Stream;
 
@@ -135,7 +132,7 @@ public class CrazyManager {
                         continue;
                     }
 
-                    this.voucherCodes.add(new VoucherCode(section, file.getPrettyName()));
+                    this.voucherCodes.add(new VoucherCode(section, file.getFileName()));
                 }
             }
         }
@@ -212,7 +209,7 @@ public class CrazyManager {
                         continue;
                     }
 
-                    this.vouchers.add(new Voucher(section, file.getPrettyName()));
+                    this.vouchers.add(new Voucher(section, file.getFileName()));
                 }
             }
         }
