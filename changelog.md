@@ -1,2 +1,5 @@
 ## Bugs Fixed 🐛
-- Fixed issue with {random}:50000-2000000 not working.
+- Fixed another issue with `random-commands`
+- Fixed multiple issues with the migration types like `VouchersDeprecated`
+
+As always, Report 🐛 to https://github.com/Crazy-Crew/CrazyVouchers/issues
