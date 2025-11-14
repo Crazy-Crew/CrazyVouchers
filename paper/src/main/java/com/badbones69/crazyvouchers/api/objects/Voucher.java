@@ -608,8 +608,8 @@ public class Voucher {
         if (this.randomCommands.isEmpty()) return;
 
         // dispatch commands without a weight option randomly
-        // if the prize weight is less than 0.0, grab it.
-        final List<VoucherCommand> randomCommands = this.randomCommands.stream().filter(filter -> filter.getWeight() < 0.0D).toList();
+        // if the prize weight is greater than 0.0D, remove it.
+        final List<VoucherCommand> randomCommands = this.randomCommands.stream().filter(filter -> filter.getWeight() > 0.0D).toList();
 
         if (!randomCommands.isEmpty()) {
             final VoucherCommand randomCommand = randomCommands.get(Methods.getRandom(randomCommands.size()));
@@ -618,8 +618,8 @@ public class Voucher {
         }
 
         // dispatch commands while accounting for the weight on each one.
-        // if a prize has a weight greater than 0.0, grab it.
-        final List<VoucherCommand> chanceCommands = this.randomCommands.stream().filter(filter -> filter.getWeight() > 0.0D).toList();
+        // if a prize weight is less than or equal to, remove it.
+        final List<VoucherCommand> chanceCommands = this.randomCommands.stream().filter(filter -> filter.getWeight() <= 0.0D).toList();
 
         if (!chanceCommands.isEmpty()) {
             Methods.dispatch(player, getCommand(chanceCommands).getCommands(), placeholders, true);
