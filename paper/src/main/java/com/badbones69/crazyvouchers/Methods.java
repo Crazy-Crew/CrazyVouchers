@@ -19,8 +19,6 @@ import org.bukkit.inventory.meta.FireworkMeta;
 import org.bukkit.persistence.PersistentDataContainer;
 import org.bukkit.persistence.PersistentDataType;
 import org.jetbrains.annotations.NotNull;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import java.util.*;
 import java.util.concurrent.ThreadLocalRandom;
 
@@ -31,7 +29,6 @@ public class Methods {
     private static @NotNull final FusionPaper fusion = plugin.getFusion();
 
     private static @NotNull final StringUtils utils = fusion.getStringUtils();
-    private static final Logger log = LoggerFactory.getLogger(Methods.class);
 
     public static void removeItem(@NotNull final ItemStack item, @NotNull final Player player) {
         if (item.getAmount() <= 1) {

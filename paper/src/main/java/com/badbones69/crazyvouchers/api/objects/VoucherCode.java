@@ -151,14 +151,14 @@ public class VoucherCode {
 
                         if (command == null) continue;
 
-                        this.randomCommands.add(new VoucherCommand(command.getStringList("commands"), command.getDouble("weight", 0.0D)));
+                        this.randomCommands.add(new VoucherCommand(command.getStringList("commands"), command.getDouble("weight", -1)));
                     }
                 }
             }
         }
 
         // if the prize weight is greater than 0.0, grab it.
-        this.totalWeight = this.randomCommands.stream().filter(filter -> filter.getWeight() > 0.0D).mapToDouble(VoucherCommand::getWeight).sum();
+        this.totalWeight = this.randomCommands.stream().filter(filter -> filter.getWeight() != -1).mapToDouble(VoucherCommand::getWeight).sum();
     }
 
     public void dispatchCommands(@NotNull final Player player, @NotNull final Map<String, String> placeholders) {
@@ -168,7 +168,7 @@ public class VoucherCode {
 
         // dispatch commands without a weight option randomly
         // if the prize weight is greater than 0.0D, remove it.
-        final List<VoucherCommand> randomCommands = this.randomCommands.stream().filter(filter -> filter.getWeight() > 0.0D).toList();
+        final List<VoucherCommand> randomCommands = this.randomCommands.stream().filter(filter -> filter.getWeight() == -1).toList();
 
         if (!randomCommands.isEmpty()) {
             final VoucherCommand randomCommand = randomCommands.get(Methods.getRandom(randomCommands.size()));
@@ -178,7 +178,7 @@ public class VoucherCode {
 
         // dispatch commands while accounting for the weight on each one.
         // if a prize weight is less than or equal to, remove it.
-        final List<VoucherCommand> chanceCommands = this.randomCommands.stream().filter(filter -> filter.getWeight() <= 0.0D).toList();
+        final List<VoucherCommand> chanceCommands = this.randomCommands.stream().filter(filter -> filter.getWeight() != -1).toList();
 
         if (!chanceCommands.isEmpty()) {
             Methods.dispatch(player, getCommand(chanceCommands).getCommands(), placeholders, true);

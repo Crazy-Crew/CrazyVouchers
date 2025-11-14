@@ -279,9 +279,11 @@ public class VoucherDeprecated extends IVoucherMigrator {
 
     private void convertCommands(@NotNull final ConfigurationSection section, @NotNull final List<String> commands) {
         for (final String command : commands) {
-            final ConfigurationSection existingSection = section.getConfigurationSection("random-commands");
+            ConfigurationSection existingSection = section.getConfigurationSection("random-commands");
 
-            if (existingSection == null) continue;
+            if (existingSection == null) {
+                existingSection = section.createSection("random-commands");
+            }
 
             final ConfigurationSection commandSection = existingSection.createSection(UUID.randomUUID().toString());
 
