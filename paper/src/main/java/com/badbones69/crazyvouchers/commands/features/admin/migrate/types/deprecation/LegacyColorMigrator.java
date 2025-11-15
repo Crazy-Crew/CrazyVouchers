@@ -190,10 +190,12 @@ public class LegacyColorMigrator extends IVoucherMigrator {
         final int convertedCount = success.size();
         final int failedCount = failed.size();
 
-        sendMessage(new ArrayList<>(failedCount + convertedCount) {{
-            addAll(failed);
-            addAll(success);
-        }}, convertedCount, failedCount);
+        final List<String> files = new ArrayList<>(failedCount + convertedCount);
+
+        files.addAll(failed);
+        files.addAll(success);
+
+        sendMessage(files, convertedCount, failedCount);
 
         this.crazyManager.load(true);
     }

@@ -99,9 +99,9 @@ public enum Messages {
     }
 
     public Component getMessage(@NotNull final Audience sender, @NotNull final String placeholder, @NotNull final String replacement) {
-        Map<String, String> placeholders = new HashMap<>() {{
-            put(placeholder, replacement);
-        }};
+        final Map<String, String> placeholders = new HashMap<>();
+
+        placeholders.put(placeholder, replacement);
 
         return getMessage(sender, placeholders);
     }

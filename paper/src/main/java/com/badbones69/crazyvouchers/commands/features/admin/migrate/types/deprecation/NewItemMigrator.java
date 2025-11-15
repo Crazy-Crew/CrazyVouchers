@@ -179,10 +179,12 @@ public class NewItemMigrator extends IVoucherMigrator {
         final int convertedCrates = success.size();
         final int failedCrates = failed.size();
 
-        sendMessage(new ArrayList<>(failedCrates + convertedCrates) {{
-            addAll(failed);
-            addAll(success);
-        }}, convertedCrates, failedCrates);
+        final List<String> files = new ArrayList<>(failedCrates + convertedCrates);
+
+        files.addAll(failed);
+        files.addAll(success);
+
+        sendMessage(files, convertedCrates, failedCrates);
 
         // reload crates
         this.crazyManager.load(true);
@@ -202,9 +204,7 @@ public class NewItemMigrator extends IVoucherMigrator {
             if (prizeSection == null) continue;
 
             if (prizeSection.isList("items")) {
-                final List<String> items = new ArrayList<>() {{
-                    addAll(prizeSection.getStringList("items"));
-                }};
+                final List<String> items = prizeSection.getStringList("items");
 
                 prizeSection.set("items", null);
 

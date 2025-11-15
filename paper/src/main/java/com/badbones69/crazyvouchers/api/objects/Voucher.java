@@ -339,10 +339,12 @@ public class Voucher {
 
                     this.server.getOnlinePlayers().forEach(staff -> {
                         if (PermissionKeys.crazyvouchers_notify.hasPermission(staff)) {
-                            Messages.notify_staff.sendMessage(staff, new HashMap<>() {{
-                                put("{player}", player.getName());
-                                put("{id}", id);
-                            }});
+                            final Map<String, String> values = new HashMap<>();
+
+                            values.put("{player}", player.getName());
+                            values.put("{id}", id);
+
+                            Messages.notify_staff.sendMessage(staff, values);
                         }
                     });
 

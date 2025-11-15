@@ -34,15 +34,15 @@ public class CommandRedeem extends BaseCommand {
     public void redeem(final Player player, @ArgName("code") @Suggestion("codes") String name) {
         final Location location = player.getLocation();
 
-        final Map<String, String> placeholders = new HashMap<>() {{
-            put("{arg}", name);
-            put("{player}", player.getName());
-            put("{world}", location.getWorld().getName());
-            put("{x}", String.valueOf(location.x()));
-            put("{y}", String.valueOf(location.y()));
-            put("{z}", String.valueOf(location.z()));
-            put("{prefix}", ConfigManager.getConfig().getProperty(ConfigKeys.command_prefix));
-        }};
+        final Map<String, String> placeholders = new HashMap<>();
+
+        placeholders.put("{arg}", name);
+        placeholders.put("{player}", player.getName());
+        placeholders.put("{world}", location.getWorld().getName());
+        placeholders.put("{x}", String.valueOf(location.x()));
+        placeholders.put("{y}", String.valueOf(location.y()));
+        placeholders.put("{z}", String.valueOf(location.z()));
+        placeholders.put("{prefix}", ConfigManager.getConfig().getProperty(ConfigKeys.command_prefix));
 
         if (!this.crazyManager.isVoucherCode(name)) {
             Messages.code_unavailable.sendMessage(player, placeholders);

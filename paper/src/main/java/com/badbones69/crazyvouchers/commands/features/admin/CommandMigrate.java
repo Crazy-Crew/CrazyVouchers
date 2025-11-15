@@ -18,6 +18,7 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.bukkit.permissions.PermissionDefault;
 import java.util.HashMap;
+import java.util.Map;
 import java.util.Optional;
 
 public class CommandMigrate extends BaseCommand {
@@ -30,10 +31,12 @@ public class CommandMigrate extends BaseCommand {
         final boolean hasFlag = flags.hasFlag("mt");
 
         if (!hasFlag) {
-            Messages.lacking_flag.sendMessage(sender, new HashMap<>() {{
-                put("{flag}", "-mt");
-                put("{usage}", "/crazyvouchers migrate -mt [type]");
-            }});
+            final Map<String, String> placeholders = new HashMap<>();
+
+            placeholders.put("{flag}", "-mt");
+            placeholders.put("{usage}", "/crazyvouchers migrate -mt [type]");
+
+            Messages.lacking_flag.sendMessage(sender, placeholders);
 
             return;
         }
