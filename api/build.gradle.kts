@@ -5,8 +5,8 @@ plugins {
     `java-plugin`
 }
 
-project.group = "us.crazycrew.crazyvouchers"
 project.description = "The official API for CrazyVouchers!"
+project.group = "us.crazycrew.crazyvouchers"
 
 val projectVersion = rootProject.property("api_version").toString()
 
