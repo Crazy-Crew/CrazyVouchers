@@ -228,7 +228,7 @@ public class CrazyManager {
 
             if (Files.exists(examples)) {
                 try (final Stream<Path> values = Files.walk(examples)) {
-                    values.sorted(Comparator.reverseOrder()).forEach(path -> {
+                    values.sorted(Comparator.reverseOrder()).forEach(path -> { // sorted in reverse order, to ensure the directories are empty first.
                         try {
                             this.fusion.log("info", "Successfully deleted path {}, re-generating the examples later.", path);
 
