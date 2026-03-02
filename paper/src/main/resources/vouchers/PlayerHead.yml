@@ -32,6 +32,9 @@ voucher:
   # skull: '61151'
   # If the item should glow or not.
   glowing: true
+  settings:
+    color: ""
+    rgb: 122,33,57
   # Any generic component for the Item.
   components:
     # Hides the entire tooltip.

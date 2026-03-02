@@ -156,6 +156,12 @@ public class Voucher {
             this.itemBuilder.setTrim(trimPattern, trimMaterial);
         }
 
+        final String rgb = section.getString("settings.rgb", "");
+
+        final String color = section.getString("settings.color", "");
+
+        this.itemBuilder.setColor(!color.isEmpty() ? color : !rgb.isEmpty() ? rgb : "");
+
         this.itemBuilder.withSkull(section.getString("skull", ""));
 
         if (section.contains("glowing")) {
@@ -250,8 +256,8 @@ public class Voucher {
         this.fireworkToggle = section.getBoolean("options.firework.toggle", false);
 
         if (this.fireworkToggle) {
-            for (final String color : section.getString("options.firework.colors", "").split(", ")) {
-                this.fireworkColors.add(ColorUtils.getColor(color));
+            for (final String fireworkColor : section.getString("options.firework.colors", "").split(", ")) {
+                this.fireworkColors.add(ColorUtils.getColor(fireworkColor));
             }
         }
 
