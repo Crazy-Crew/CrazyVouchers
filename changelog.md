@@ -1,4 +1,4 @@
 ## Bugs Fixed 🐛
-- Fixed a potential memory leak caused by using double brace initializers.
+- Fixed an issue where rgb/color were not working when building a voucher.
 
 As always, Report 🐛 to https://github.com/Crazy-Crew/CrazyVouchers/issues
