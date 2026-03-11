@@ -114,9 +114,15 @@ public class ConfigKeys implements SettingsHolder {
     @Comment("Whether you should only be allowed to use vouchers in survival.")
     public static final Property<Boolean> must_be_in_survival = newProperty("settings.survival-only", true);
 
-    @Comment("Whether they should be allowed to use vouchers in recipes.")
+    @Comment({
+            "If you have this set to true, The voucher cannot be used in recipes.",
+            "If you have this set to false, The voucher can be used in recipes.",
+    })
     public static final Property<Boolean> prevent_using_vouchers_in_recipes_toggle = newProperty("settings.recipes.toggle", true);
 
-    @Comment("Whether an alert should be sent when trying to use vouchers in recipes.")
+    @Comment({
+            "If you have this set to true, The alert is sent to the player.",
+            "If you have this set to false, There is no alert.",
+    })
     public static final Property<Boolean> prevent_using_vouchers_in_recipes_alert = newProperty("settings.recipes.alert", false);
 }
