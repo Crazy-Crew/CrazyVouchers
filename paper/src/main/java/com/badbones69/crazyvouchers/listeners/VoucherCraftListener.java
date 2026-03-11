@@ -25,7 +25,7 @@ public class VoucherCraftListener implements Listener {
         final CraftingInventory inventory = event.getInventory();
 
         for (final ItemStack itemStack : inventory.getMatrix()) {
-            if (itemStack == null || itemStack.isEmpty()) return;
+            if (itemStack == null || itemStack.isEmpty()) continue;
 
             final PersistentDataContainerView container = itemStack.getPersistentDataContainer();
 
