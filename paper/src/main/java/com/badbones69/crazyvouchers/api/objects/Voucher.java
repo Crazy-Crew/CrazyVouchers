@@ -10,11 +10,12 @@ import com.badbones69.crazyvouchers.api.enums.misc.PermissionKeys;
 import com.badbones69.crazyvouchers.api.enums.misc.PersistentKeys;
 import com.badbones69.crazyvouchers.api.events.VoucherRedeemEvent;
 import com.badbones69.crazyvouchers.utils.ItemUtils;
-import com.ryderbelserion.fusion.core.api.support.ModSupport;
+import com.ryderbelserion.fusion.core.api.constants.ModSupport;
+import com.ryderbelserion.fusion.core.api.enums.Level;
 import com.ryderbelserion.fusion.core.utils.StringUtils;
 import com.ryderbelserion.fusion.paper.FusionPaper;
-import com.ryderbelserion.fusion.paper.builders.ItemBuilder;
-import com.ryderbelserion.fusion.paper.builders.types.custom.CustomBuilder;
+import com.ryderbelserion.fusion.paper.builders.items.ItemBuilder;
+import com.ryderbelserion.fusion.paper.builders.items.types.custom.CustomBuilder;
 import com.ryderbelserion.fusion.paper.utils.ColorUtils;
 import io.papermc.paper.datacomponent.DataComponentTypes;
 import io.papermc.paper.datacomponent.item.ItemLore;
@@ -40,7 +41,6 @@ public class Voucher {
     private final CrazyVouchers plugin = CrazyVouchers.get();
     private final Server server = this.plugin.getServer();
     private final FusionPaper fusion = this.plugin.getFusion();
-    private final StringUtils utils = this.fusion.getStringUtils();
 
     private final CrazyManager crazyManager = this.plugin.getCrazyManager();
 
@@ -264,12 +264,12 @@ public class Voucher {
         this.isEdible = section.getBoolean("options.is-edible", false) && this.itemBuilder.isEdible();
 
         if (section.contains("chance-commands")) {
-            this.fusion.log("warn", "We detected that you have the list version of chance-commands which is no longer used, Please run /crazyvouchers migrate -mt VouchersDeprecated");
+            this.fusion.log(Level.WARNING, "We detected that you have the list version of chance-commands which is no longer used, Please run /crazyvouchers migrate -mt VouchersDeprecated");
         }
 
         if (section.contains("random-commands")) {
             if (section.isList("random-commands")) {
-                this.fusion.log("warn", "We've detected that you have the list version of random-commands which is no longer used, Please run /crazyvouchers migrate -mt VouchersDeprecated");
+                this.fusion.log(Level.WARNING, "We've detected that you have the list version of random-commands which is no longer used, Please run /crazyvouchers migrate -mt VouchersDeprecated");
             } else {
                 final ConfigurationSection randomCommands = section.getConfigurationSection("random-commands");
 
@@ -369,7 +369,7 @@ public class Voucher {
                             builder.addLines(lore.lines());
                         }
 
-                        final Component warning_text = this.fusion.parse(player, text, placeholders);
+                        final Component warning_text = this.fusion.asComponent(player, text, placeholders);
 
                         builder.addLine(warning_text);
 
@@ -515,7 +515,7 @@ public class Voucher {
 
                     FileKeys.data.save();
                 } else {
-                    this.fusion.log("warn", "{} is already in the data.yml somehow.", id == null ? "N/A" : id);
+                    this.fusion.log(Level.WARNING, "%s is already in the data.yml somehow.", id == null ? "N/A" : id);
                 }
             }
         }
@@ -806,7 +806,7 @@ public class Voucher {
         String safeMessage;
         
         if (section.isList(path)) {
-            safeMessage = this.utils.toString(section.getStringList(path));
+            safeMessage = StringUtils.toString(section.getStringList(path));
         
             return safeMessage;
         }

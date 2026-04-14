@@ -7,11 +7,11 @@ import com.badbones69.crazyvouchers.api.enums.FileSystem;
 import com.badbones69.crazyvouchers.api.enums.misc.PersistentKeys;
 import com.badbones69.crazyvouchers.api.objects.Voucher;
 import com.badbones69.crazyvouchers.api.objects.VoucherCode;
+import com.ryderbelserion.fusion.core.api.enums.Level;
 import com.ryderbelserion.fusion.paper.FusionPaper;
 import com.ryderbelserion.fusion.paper.files.PaperFileManager;
 import com.ryderbelserion.fusion.paper.files.types.PaperCustomFile;
 import io.papermc.paper.persistence.PersistentDataContainerView;
-import net.kyori.adventure.text.logger.slf4j.ComponentLogger;
 import org.bukkit.Material;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.file.FileConfiguration;
@@ -40,8 +40,6 @@ public class CrazyManager {
 
     private @NotNull final PaperFileManager fileManager = this.plugin.getFileManager();
 
-    private @NotNull final ComponentLogger logger = this.plugin.getComponentLogger();
-
     private @NotNull final List<Voucher> vouchers = new ArrayList<>();
     private @NotNull final List<VoucherCode> voucherCodes = new ArrayList<>();
 
@@ -67,7 +65,7 @@ public class CrazyManager {
                 final PaperCustomFile config = FileKeys.codes.getCustomFile();
 
                 if (!config.isLoaded()) {
-                    this.logger.warn("The {} was not loaded into memory.", FileKeys.codes.getName());
+                    this.fusion.log(Level.WARNING, "The %s was not loaded into memory.", FileKeys.codes.getName());
 
                     return;
                 }
@@ -76,7 +74,7 @@ public class CrazyManager {
                 final ConfigurationSection section = configuration.getConfigurationSection("voucher-codes");
 
                 if (section == null) {
-                    this.logger.warn("The configuration section we need for {} could not be found.", FileKeys.codes.getName());
+                    this.fusion.log(Level.WARNING, "The configuration section we need for %s could not be found.", FileKeys.codes.getName());
 
                     return;
                 }
@@ -86,7 +84,7 @@ public class CrazyManager {
                         final ConfigurationSection codeSection = section.getConfigurationSection(code);
 
                         if (codeSection == null) {
-                            this.fusion.log("warn", "The section for {} could not be found in voucher-codes.yml", code);
+                            this.fusion.log(Level.WARNING, "The section for %s could not be found in voucher-codes.yml", code);
 
                             continue;
                         }
@@ -103,7 +101,7 @@ public class CrazyManager {
                     @NotNull final Optional<PaperCustomFile> optional = this.fileManager.getPaperFile(code);
 
                     if (optional.isEmpty()) {
-                        this.logger.warn("The code file named {} could not be found in the cache", code);
+                        this.fusion.log(Level.WARNING, "The code file named %s could not be found in the cache", code);
 
                         this.brokenVoucherCodes.add(code.getFileName().toString());
 
@@ -113,7 +111,7 @@ public class CrazyManager {
                     final PaperCustomFile file = optional.get();
 
                     if (!file.isLoaded()) {
-                        this.logger.warn("Could not load code configuration for {}", code);
+                        this.fusion.log(Level.WARNING, "Could not load code configuration for %s", code);
 
                         this.brokenVoucherCodes.add(file.getFileName());
 
@@ -125,7 +123,7 @@ public class CrazyManager {
                     final ConfigurationSection section = configuration.getConfigurationSection("voucher-code");
 
                     if (section == null) {
-                        this.logger.warn("Could not find voucher code configuration section for {}", code);
+                        this.fusion.log(Level.WARNING, "Could not find voucher code configuration section for %s", code);
 
                         this.brokenVoucherCodes.add(file.getFileName());
 
@@ -146,7 +144,7 @@ public class CrazyManager {
                 final PaperCustomFile config = FileKeys.vouchers.getCustomFile();
 
                 if (!config.isLoaded()) {
-                    this.logger.warn("The {} was not loaded into memory.", FileKeys.vouchers.getName());
+                    this.fusion.log(Level.WARNING, "The %s was not loaded into memory.", FileKeys.vouchers.getName());
 
                     return;
                 }
@@ -155,7 +153,7 @@ public class CrazyManager {
                 final ConfigurationSection section = configuration.getConfigurationSection("vouchers");
 
                 if (section == null) {
-                    this.logger.warn("The configuration section we need for {} could not be found.", FileKeys.vouchers.getName());
+                    this.fusion.log(Level.WARNING, "The configuration section we need for %s could not be found.", FileKeys.vouchers.getName());
 
                     return;
                 }
@@ -165,7 +163,7 @@ public class CrazyManager {
                         final ConfigurationSection voucherSection = section.getConfigurationSection(voucher);
 
                         if (voucherSection == null) {
-                            this.fusion.log("warn", "The section for {} could not be found in vouchers.yml", voucher);
+                            this.fusion.log(Level.WARNING, "The section for %s could not be found in vouchers.yml", voucher);
 
                             continue;
                         }
@@ -182,7 +180,7 @@ public class CrazyManager {
                     final Optional<PaperCustomFile> optional = this.fileManager.getPaperFile(voucher);
 
                     if (optional.isEmpty()) {
-                        this.logger.warn("The voucher file named {} could not be found in the cache", voucher);
+                        this.fusion.log(Level.WARNING, "The voucher file named %s could not be found in the cache", voucher);
 
                         this.brokenVouchers.add(voucher.getFileName().toString());
 
@@ -192,7 +190,7 @@ public class CrazyManager {
                     final PaperCustomFile file = optional.get();
 
                     if (!file.isLoaded()) {
-                        this.logger.warn("Could not load voucher configuration for {}", voucher);
+                        this.fusion.log(Level.WARNING, "Could not load voucher configuration for %s", voucher);
 
                         this.brokenVouchers.add(file.getFileName());
 
@@ -202,7 +200,7 @@ public class CrazyManager {
                     final ConfigurationSection section = file.getConfiguration().getConfigurationSection("voucher");
 
                     if (section == null) {
-                        this.logger.warn("Could not find voucher configuration section for {}", voucher);
+                        this.fusion.log(Level.WARNING, "Could not find voucher configuration section for %s", voucher);
 
                         this.brokenVouchers.add(file.getFileName());
 
@@ -230,15 +228,15 @@ public class CrazyManager {
                 try (final Stream<Path> values = Files.walk(examples)) {
                     values.sorted(Comparator.reverseOrder()).forEach(path -> { // sorted in reverse order, to ensure the directories are empty first.
                         try {
-                            this.fusion.log("info", "Successfully deleted path {}, re-generating the examples later.", path);
+                            this.fusion.log(Level.WARNING, "Successfully deleted path %s, re-generating the examples later.", path);
 
                             Files.delete(path);
                         } catch (final IOException exception) {
-                            this.fusion.log("warn", "Failed to delete %s in loop.".formatted(path), exception);
+                            this.fusion.log(Level.WARNING, "Failed to delete %s in loop.", exception, path);
                         }
                     });
                 } catch (final Exception exception) {
-                    this.fusion.log("warn", "Failed to delete %s.".formatted(examples), exception);
+                    this.fusion.log(Level.WARNING, "Failed to delete %s.", exception, exception);
                 }
             }
 
@@ -252,16 +250,16 @@ public class CrazyManager {
                     "data.yml",
                     "users.yml",
                     "vouchers.yml"
-            ).forEach(file -> this.fileManager.extractFile(examples.resolve(file)));
+            ).forEach(file -> this.fileManager.extractFile(file, examples.resolve(file)));
         }
     }
 
     public @NotNull final List<Path> getVouchersList() {
-        return this.fusion.getFiles(this.dataPath.resolve("vouchers"), ".yml");
+        return this.fusion.getFilesByPath(this.dataPath.resolve("vouchers"), ".yml");
     }
 
     public @NotNull final List<Path> getCodesList() {
-        return this.fusion.getFiles(this.dataPath.resolve("codes"), ".yml");
+        return this.fusion.getFilesByPath(this.dataPath.resolve("codes"), ".yml");
     }
     
     public @NotNull final List<Voucher> getVouchers() {

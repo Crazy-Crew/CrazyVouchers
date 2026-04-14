@@ -29,7 +29,7 @@ public abstract class InventoryBuilder implements InventoryHolder, Listener {
         this.player = player;
         this.size = size;
 
-        this.inventory = this.server.createInventory(this, this.size, this.fusion.parse(this.title));
+        this.inventory = this.server.createInventory(this, this.size, this.fusion.asComponent(player, this.title));
     }
 
     public InventoryBuilder(@NotNull final Player player, final int size, final int page, @NotNull final String title) {
@@ -38,7 +38,7 @@ public abstract class InventoryBuilder implements InventoryHolder, Listener {
         this.size = size;
         this.page = page;
 
-        this.inventory = this.server.createInventory(this, this.size, this.fusion.parse(this.title));
+        this.inventory = this.server.createInventory(this, this.size, this.fusion.asComponent(player, this.title));
     }
 
     public InventoryBuilder() {}

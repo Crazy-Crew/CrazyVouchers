@@ -6,6 +6,7 @@ import com.badbones69.crazyvouchers.commands.features.admin.migrate.IVoucherMigr
 import com.badbones69.crazyvouchers.commands.features.admin.migrate.enums.MigrationType;
 import com.badbones69.crazyvouchers.config.ConfigManager;
 import com.badbones69.crazyvouchers.config.types.ConfigKeys;
+import com.ryderbelserion.fusion.core.api.enums.Level;
 import de.tr7zw.changeme.nbtapi.NBT;
 import org.bukkit.Material;
 import org.bukkit.command.CommandSender;
@@ -60,7 +61,7 @@ public class VoucherNbtMigrator extends IVoucherMigrator {
             });
         }
 
-        this.fusion.log("warn", "Successfully migrated <green>{}</green> items that were using legacy api!", count);
+        this.fusion.log(Level.WARNING, "Successfully migrated <green>%s</green> items that were using legacy api!", count);
 
         Messages.migrated_old_vouchers.sendMessage(player);
     }

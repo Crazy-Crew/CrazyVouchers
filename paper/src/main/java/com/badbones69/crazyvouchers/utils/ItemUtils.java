@@ -1,15 +1,14 @@
 package com.badbones69.crazyvouchers.utils;
 
 import com.badbones69.crazyvouchers.CrazyVouchers;
+import com.ryderbelserion.fusion.core.api.enums.Level;
 import com.ryderbelserion.fusion.core.utils.StringUtils;
 import com.ryderbelserion.fusion.paper.FusionPaper;
-import com.ryderbelserion.fusion.paper.builders.ItemBuilder;
-import com.ryderbelserion.fusion.paper.builders.types.PatternBuilder;
-import com.ryderbelserion.fusion.paper.builders.types.PotionBuilder;
-import com.ryderbelserion.fusion.paper.builders.types.SkullBuilder;
-import com.ryderbelserion.fusion.paper.builders.types.SpawnerBuilder;
-import com.ryderbelserion.fusion.paper.builders.types.custom.CustomBuilder;
-import net.kyori.adventure.text.logger.slf4j.ComponentLogger;
+import com.ryderbelserion.fusion.paper.builders.items.ItemBuilder;
+import com.ryderbelserion.fusion.paper.builders.items.types.PatternBuilder;
+import com.ryderbelserion.fusion.paper.builders.items.types.PotionBuilder;
+import com.ryderbelserion.fusion.paper.builders.items.types.SkullBuilder;
+import com.ryderbelserion.fusion.paper.builders.items.types.custom.CustomBuilder;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.enchantments.Enchantment;
 import org.bukkit.inventory.ItemType;
@@ -26,11 +25,7 @@ public class ItemUtils {
 
     private static @NotNull final CrazyVouchers plugin = CrazyVouchers.get();
 
-    private static @NotNull final ComponentLogger logger = plugin.getComponentLogger();
-
     private static @NotNull final FusionPaper fusion = plugin.getFusion();
-
-    private static @NotNull final StringUtils utils = fusion.getStringUtils();
 
     /**
      * Converts a String to an ItemBuilder.
@@ -110,14 +105,6 @@ public class ItemUtils {
             final String color = item.getString("settings.color", "");
 
             itemBuilder.setColor(!color.isEmpty() ? color : !rgb.isEmpty() ? rgb : "");
-
-            final String mobType = item.getString("settings.mob.type", null);
-
-            if (mobType != null && !mobType.isEmpty()) {
-                final SpawnerBuilder spawnerBuilder = itemBuilder.asSpawnerBuilder();
-
-                spawnerBuilder.withEntityType(com.ryderbelserion.fusion.paper.utils.ItemUtils.getEntity(mobType)).build();
-            }
 
             itemBuilder.setTrim(item.getString("settings.trim.pattern", ""), item.getString("settings.trim.material", ""));
 
@@ -207,11 +194,11 @@ public class ItemUtils {
                         try {
                             itemBuilder.asSkullBuilder().withName(value).build();
                         } catch (final Exception exception) {
-                            fusion.log("warn", "Could create skull builder because the item is not a player head. You can ignore this, This is a restriction of the current system.");
+                            fusion.log(Level.WARNING, "Could create skull builder because the item is not a player head. You can ignore this, This is a restriction of the current system.");
                         }
                     }
                     case "skull" -> itemBuilder.withSkull(value);
-                    case "unbreakable-item" -> itemBuilder.setUnbreakable(utils.tryParseBoolean(value).orElse(false));
+                    case "unbreakable-item" -> itemBuilder.setUnbreakable(StringUtils.tryParseBoolean(value).orElse(false));
                     case "custom-model-data" -> itemBuilder.asCustomBuilder().setCustomModelData(value);
                     case "hide-tool-tip" -> itemBuilder.hideToolTip();
                     case "trim" -> {
@@ -229,7 +216,7 @@ public class ItemUtils {
                         final Enchantment enchantment = com.ryderbelserion.fusion.paper.utils.ItemUtils.getEnchantment(getEnchant(option));
 
                         if (enchantment != null) {
-                            final Optional<Number> level = utils.tryParseInt(value);
+                            final Optional<Number> level = StringUtils.tryParseInt(value);
 
                             itemBuilder.addEnchantment(getEnchant(option), level.map(Number::intValue).orElse(1));
                         }

@@ -5,9 +5,10 @@ import com.badbones69.crazyvouchers.api.enums.misc.PersistentKeys;
 import com.badbones69.crazyvouchers.config.ConfigManager;
 import com.badbones69.crazyvouchers.config.types.ConfigKeys;
 import com.badbones69.crazyvouchers.utils.ScheduleUtils;
+import com.ryderbelserion.fusion.core.api.enums.Level;
 import com.ryderbelserion.fusion.core.utils.StringUtils;
 import com.ryderbelserion.fusion.paper.FusionPaper;
-import com.ryderbelserion.fusion.paper.scheduler.FoliaScheduler;
+import com.ryderbelserion.fusion.paper.builders.folia.FoliaScheduler;
 import org.bukkit.*;
 import org.bukkit.command.CommandSender;
 import org.bukkit.configuration.file.FileConfiguration;
@@ -27,8 +28,6 @@ public class Methods {
     private static @NotNull final CrazyVouchers plugin = CrazyVouchers.get();
 
     private static @NotNull final FusionPaper fusion = plugin.getFusion();
-
-    private static @NotNull final StringUtils utils = fusion.getStringUtils();
 
     public static void removeItem(@NotNull final ItemStack item, @NotNull final Player player) {
         if (item.getAmount() <= 1) {
@@ -99,9 +98,12 @@ public class Methods {
     public static void addItem(@NotNull final Player player, @NotNull final ItemStack... items) {
         final PlayerInventory inventory = player.getInventory();
 
+        final World world = player.getWorld();
+        final Location location = player.getLocation();
+
         Arrays.asList(items).forEach(item -> {
             if (isInventoryFull(inventory)) {
-                player.getWorld().dropItem(player.getLocation(), item.clone());
+                world.dropItem(location, item.clone());
             } else {
                 inventory.addItem(item.clone());
             }
@@ -109,17 +111,7 @@ public class Methods {
     }
 
     public static String placeholders(@NotNull final CommandSender sender, @NotNull final String message, @NotNull final Map<String, String> placeholders) {
-        if (placeholders.isEmpty()) { // return early, because yes.
-            return fusion.papi(sender, message);
-        }
-
-        String safeLine = message;
-
-        for (final String placeholder : placeholders.keySet()) {
-            safeLine = safeLine.replace(placeholder, placeholders.get(placeholder)).replace(placeholder.toLowerCase(), placeholders.get(placeholder));
-        }
-
-        return fusion.papi(sender, safeLine);
+        return fusion.parse(sender, message, placeholders);
     }
 
     public static void dispatch(@NotNull final Player player, @NotNull final List<String> values, @NotNull final Map<String, String> placeholders, final boolean isCommand) {
@@ -154,8 +146,8 @@ public class Methods {
             if (number.contains("-")) {
                 final String[] splitter = number.split("-");
 
-                final Optional<Number> minRange = utils.tryParseInt(splitter[0]);
-                final Optional<Number> maxRange = utils.tryParseInt(splitter[1]);
+                final Optional<Number> minRange = StringUtils.tryParseInt(splitter[0]);
+                final Optional<Number> maxRange = StringUtils.tryParseInt(splitter[1]);
 
                 if (minRange.isPresent() && maxRange.isPresent()) {
                     final int minimum = minRange.get().intValue();
@@ -165,7 +157,7 @@ public class Methods {
 
                     safeLine = safeLine.replace("{random}:%s-%s".formatted(minimum, maximum), String.valueOf(amount));
                 } else {
-                    fusion.log("warn", "The values supplied with {random} seem to not be integers. {}", value);
+                    fusion.log(Level.WARNING, "The values supplied with {random} seem to not be integers. %s", value);
                 }
             }
         }

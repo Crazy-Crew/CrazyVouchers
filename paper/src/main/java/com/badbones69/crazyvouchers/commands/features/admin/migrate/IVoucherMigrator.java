@@ -24,8 +24,6 @@ public abstract class IVoucherMigrator {
 
     protected @NotNull final FusionPaper fusion = this.plugin.getFusion();
 
-    protected @NotNull final StringUtils utils = this.fusion.getStringUtils();
-
     protected @NotNull final CrazyManager crazyManager = this.plugin.getCrazyManager();
 
     protected @NotNull final SettingsManager config = ConfigManager.getConfig();
@@ -65,7 +63,7 @@ public abstract class IVoucherMigrator {
         final Map<String, String> placeholders = new HashMap<>();
 
         if (files.size() > 1) {
-            placeholders.put("{files}", utils.toString(files));
+            placeholders.put("{files}", StringUtils.toString(files));
         } else {
             placeholders.put("{files}", files.getFirst());
         }

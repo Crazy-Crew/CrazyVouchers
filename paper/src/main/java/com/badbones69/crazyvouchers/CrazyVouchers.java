@@ -11,6 +11,7 @@ import com.badbones69.crazyvouchers.listeners.VoucherClickListener;
 import com.badbones69.crazyvouchers.listeners.VoucherCraftListener;
 import com.badbones69.crazyvouchers.listeners.VoucherMiscListener;
 import com.badbones69.crazyvouchers.support.MetricsWrapper;
+import com.ryderbelserion.fusion.core.api.enums.Level;
 import com.ryderbelserion.fusion.paper.FusionPaper;
 import com.ryderbelserion.fusion.paper.files.PaperFileManager;
 import org.bukkit.plugin.PluginManager;
@@ -84,7 +85,7 @@ public class CrazyVouchers extends JavaPlugin {
                 new VoucherMenu()
         ).forEach(event -> pluginManager.registerEvents(event, this));
 
-        this.fusion.log("info", "Done ({})", String.format(Locale.ROOT, "%.3fs", (double) (System.nanoTime() - this.startTime) / 1.0E9D));
+        this.fusion.log(Level.INFO, "Done (%s)", String.format(Locale.ROOT, "%.3fs", (double) (System.nanoTime() - this.startTime) / 1.0E9D));
     }
 
     public @NotNull final InventoryManager getInventoryManager() {

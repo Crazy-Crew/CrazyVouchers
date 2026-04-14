@@ -5,9 +5,10 @@ import com.badbones69.crazyvouchers.CrazyVouchers;
 import com.badbones69.crazyvouchers.Methods;
 import com.badbones69.crazyvouchers.api.enums.config.Messages;
 import com.badbones69.crazyvouchers.utils.ItemUtils;
+import com.ryderbelserion.fusion.core.api.enums.Level;
 import com.ryderbelserion.fusion.core.utils.StringUtils;
 import com.ryderbelserion.fusion.paper.FusionPaper;
-import com.ryderbelserion.fusion.paper.builders.ItemBuilder;
+import com.ryderbelserion.fusion.paper.builders.items.ItemBuilder;
 import com.ryderbelserion.fusion.paper.utils.ColorUtils;
 import org.bukkit.Color;
 import org.bukkit.Sound;
@@ -24,7 +25,6 @@ public class VoucherCode {
 
     private @NotNull final CrazyVouchers plugin = CrazyVouchers.get();
     private @NotNull final FusionPaper fusion = this.plugin.getFusion();
-    private @NotNull final StringUtils utils = this.fusion.getStringUtils();
     private @NotNull final SettingsManager config = ConfigManager.getConfig();
 
     private final String fileName;
@@ -136,12 +136,12 @@ public class VoucherCode {
         }
 
         if (section.contains("chance-commands")) {
-            this.fusion.log("warn", "We detected that you have the list version of chance-commands which is no longer used, Please run /crazyvouchers migrate -mt VouchersDeprecated");
+            this.fusion.log(Level.WARNING, "We detected that you have the list version of chance-commands which is no longer used, Please run /crazyvouchers migrate -mt VouchersDeprecated");
         }
 
         if (section.contains("random-commands")) {
             if (section.isList("random-commands")) {
-                this.fusion.log("warn", "We've detected that you have the list version of random-commands which is no longer used, Please run /crazyvouchers migrate -mt VouchersDeprecated");
+                this.fusion.log(Level.WARNING, "We've detected that you have the list version of random-commands which is no longer used, Please run /crazyvouchers migrate -mt VouchersDeprecated");
             } else {
                 final ConfigurationSection randomCommands = section.getConfigurationSection("random-commands");
 
@@ -321,7 +321,7 @@ public class VoucherCode {
         String safeMessage;
 
         if (section.isList(path)) {
-            safeMessage = this.utils.toString(section.getStringList(path));
+            safeMessage = StringUtils.toString(section.getStringList(path));
 
             return safeMessage;
         }
