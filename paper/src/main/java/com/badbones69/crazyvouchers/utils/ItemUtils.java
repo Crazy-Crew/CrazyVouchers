@@ -85,7 +85,11 @@ public class ItemUtils {
 
             // settings
             if (item.contains("settings.glowing")) {
-                itemBuilder.addEnchantGlint(item.getBoolean("settings.glowing", false));
+                if (item.getBoolean("settings.glowing", false)) {
+                    itemBuilder.addEnchantGlint();
+                } else {
+                    itemBuilder.removeEnchantGlint();
+                }
             }
 
             final String player = item.getString("settings.player", null);
@@ -210,7 +214,15 @@ public class ItemUtils {
                         itemBuilder.setTrim(trim.toLowerCase(), material.toLowerCase());
                     }
 
-                    case "glowing" -> itemBuilder.addEnchantGlint(utils.tryParseBoolean(value).orElse(false));
+                    case "glowing" -> {
+                        final boolean isGlowing = StringUtils.tryParseBoolean(value).orElse(false);
+
+                        if (isGlowing) {
+                            itemBuilder.addEnchantGlint();
+                        } else {
+                            itemBuilder.removeEnchantGlint();
+                        }
+                    }
 
                     default -> {
                         final Enchantment enchantment = com.ryderbelserion.fusion.paper.utils.ItemUtils.getEnchantment(getEnchant(option));
