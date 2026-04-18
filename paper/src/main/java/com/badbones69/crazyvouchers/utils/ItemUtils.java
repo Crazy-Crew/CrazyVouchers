@@ -84,12 +84,10 @@ public class ItemUtils {
             itemBuilder.setUnbreakable(item.getBoolean("unbreakable-item", false));
 
             // settings
-            if (item.contains("settings.glowing")) {
-                if (item.getBoolean("settings.glowing", false)) {
-                    itemBuilder.addEnchantGlint();
-                } else {
-                    itemBuilder.removeEnchantGlint();
-                }
+            switch (item.getString("settings.glowing", "none").toLowerCase()) {
+                case "add_glow", "true" -> itemBuilder.addEnchantGlint();
+                case "remove_glow", "false" -> itemBuilder.removeEnchantGlint();
+                case "none" -> {}
             }
 
             final String player = item.getString("settings.player", null);

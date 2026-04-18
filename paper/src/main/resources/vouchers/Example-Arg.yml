@@ -26,8 +26,9 @@ voucher:
   lore:
   - '<gray>Use this voucher to rank up to <red>{arg}'
   - '<dark_gray>(<yellow>!<dark_gray>) <light_purple>Right click to redeem.'
-  # If the item should glow or not.
-  glowing: true
+  # Should the item glow?
+  # Available Types: add_glow, remove_glow, none
+  glowing: "none"
   # Tells the plugin that this command requires an argument.
   has-argument: true
   # The commands to send.

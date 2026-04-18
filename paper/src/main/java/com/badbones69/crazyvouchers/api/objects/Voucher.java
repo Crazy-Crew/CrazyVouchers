@@ -164,12 +164,10 @@ public class Voucher {
 
         this.itemBuilder.withSkull(section.getString("skull", ""));
 
-        if (section.contains("glowing")) {
-            if (section.getBoolean("glowing", false)) {
-                this.itemBuilder.addEnchantGlint();
-            } else {
-                this.itemBuilder.removeEnchantGlint();
-            }
+        switch (section.getString("glowing", "none").toLowerCase()) {
+            case "add_glow", "true" -> this.itemBuilder.addEnchantGlint();
+            case "remove_glow", "false" -> this.itemBuilder.removeEnchantGlint();
+            case "none" -> {}
         }
 
         this.commands = section.isList("commands") ? section.getStringList("commands") : List.of(section.getString("commands", ""));

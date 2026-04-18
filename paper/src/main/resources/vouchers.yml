@@ -28,8 +28,9 @@ vouchers: # Where you make your vouchers.
     lore:
       - '<gray>Use this voucher to get fancy trims.'
       - '<gray>(<gold>!<gray>) <gray>Right click to redeem.'
-    # If the item should glow or not.
-    glowing: true
+    # Should the item glow?
+    # Available Types: add_glow, remove_glow, none
+    glowing: "none"
     # An example of how to use custom model data
     custom-model-data: -1
     # The commands to send.
@@ -163,8 +164,9 @@ vouchers: # Where you make your vouchers.
     lore:
       - '<gray>Use this voucher to rank up to <red>{arg}'
       - '<dark_gray>(<yellow>!<dark_gray>) <light_purple>Right click to redeem.'
-    # If the item should glow or not.
-    glowing: true
+    # Should the item glow?
+    # Available Types: add_glow, remove_glow, none
+    glowing: "none"
     # The commands to send.
     commands:
       - 'lp user {player} parent group set {arg}'
@@ -201,8 +203,9 @@ vouchers: # Where you make your vouchers.
     # The name of the player.
     player: 'Rukkhadevata'
     #player: 'https://textures.minecraft.net/texture/1ee3126ff2c343da525eef2b93272b9fed36273d0ea08c2616b80009948ad57e'
-    # If the item should glow or not.
-    glowing: true
+    # Should the item glow?
+    # Available Types: add_glow, remove_glow, none
+    glowing: "none"
     # Any generic component for the Item.
     components:
       # Hides the entire tooltip.

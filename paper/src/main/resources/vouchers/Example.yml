@@ -26,8 +26,9 @@ voucher:
   lore:
   - '<gray>Use this voucher to get fancy trims.'
   - '<gray>(<gold>!<gray>) <gray>Right click to redeem.'
-  # If the item should glow or not.
-  glowing: true
+  # Should the item glow?
+  # Available Types: add_glow, remove_glow, none
+  glowing: "none"
   # An example of how to use custom model data
   custom-model-data: -1
   # This is only useful if the config option in the config.yml for anti-dupe is set to true.
