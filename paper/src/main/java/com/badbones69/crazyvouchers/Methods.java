@@ -103,7 +103,7 @@ public class Methods {
 
         Arrays.asList(items).forEach(item -> {
             if (isInventoryFull(inventory)) {
-                Bukkit.getRegionScheduler().execute(plugin, location, () -> world.dropItem(location, item.clone()));
+                world.dropItem(location, item.clone());
             } else {
                 inventory.addItem(item.clone());
             }
