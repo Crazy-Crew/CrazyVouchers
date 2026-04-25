@@ -9,6 +9,7 @@ import com.badbones69.crazyvouchers.api.enums.config.Messages;
 import com.badbones69.crazyvouchers.api.enums.misc.PermissionKeys;
 import com.badbones69.crazyvouchers.api.enums.misc.PersistentKeys;
 import com.badbones69.crazyvouchers.api.events.VoucherRedeemEvent;
+import com.badbones69.crazyvouchers.support.NexoSupport;
 import com.badbones69.crazyvouchers.utils.ItemUtils;
 import com.ryderbelserion.fusion.core.api.constants.ModSupport;
 import com.ryderbelserion.fusion.core.api.enums.Level;
@@ -45,6 +46,11 @@ public class Voucher {
     private final CrazyManager crazyManager = this.plugin.getCrazyManager();
 
     private final ItemBuilder itemBuilder;
+
+    private final String nexoItemId;
+    private final List<String> nexoOverrideLore;
+    private final String nexoOverrideGlowing;
+    private final int nexoOverrideCustomModelData;
 
     private final String cleanName;
     private final String name;
@@ -95,6 +101,7 @@ public class Voucher {
     private final Map<UUID, Long> cooldowns = new HashMap<>();
 
     private final List<ItemBuilder> items;
+    private List<ItemStack> nexoPrizeItems;
 
     private final String requiredPlaceholdersMessage;
 
@@ -112,6 +119,11 @@ public class Voucher {
 
         this.hasCooldown = section.getBoolean("cooldown.toggle", false);
         this.cooldownInterval = section.getInt("cooldown.interval", 5);
+
+        this.nexoItemId = section.getString("nexo-item", "");
+        this.nexoOverrideLore = section.isList("lore") ? section.getStringList("lore") : List.of();
+        this.nexoOverrideGlowing = section.getString("glowing", "none");
+        this.nexoOverrideCustomModelData = section.getInt("custom-model-data", -1);
 
         String material = section.getString("item", "stone").toLowerCase();
         String model_data = "";
@@ -176,8 +188,10 @@ public class Voucher {
 
         if (this.config.getProperty(ConfigKeys.use_different_items_layout) && !section.isList("items")) {
             this.items = ItemUtils.convertConfigurationSection(section.getConfigurationSection("items"));
+            this.nexoPrizeItems = ItemUtils.convertNexoItems(section.getConfigurationSection("items"));
         } else {
             this.items = ItemUtils.convertStringList(section.getStringList("items"));
+            this.nexoPrizeItems = List.of();
         }
 
         this.usedMessage = getMessage(section, "options.message", "");
@@ -477,6 +491,10 @@ public class Voucher {
             Methods.addItem(player, itemStack.asItemStack(player));
         }
 
+        for (final ItemStack nexoItem : this.nexoPrizeItems) {
+            Methods.addItem(player, nexoItem);
+        }
+
         if (playSounds()) {
             for (final Sound sound : getSounds()) {
                 player.playSound(player.getLocation(), sound, SoundCategory.PLAYERS, getVolume(), getPitch());
@@ -573,6 +591,22 @@ public class Voucher {
     private @NotNull final SettingsManager config = ConfigManager.getConfig();
     
     public ItemStack buildItem(@NotNull final Player player, final int amount) {
+        if (!this.nexoItemId.isEmpty() && NexoSupport.isAvailable()) {
+            final ItemStack nexoItem = NexoSupport.buildItem(
+                    this.nexoItemId,
+                    this.nexoOverrideLore,
+                    this.nexoOverrideGlowing,
+                    this.nexoOverrideCustomModelData,
+                    amount
+            );
+
+            if (nexoItem != null) {
+                setUniqueId(nexoItem);
+                nexoItem.editPersistentDataContainer(container -> container.set(PersistentKeys.voucher_item.getNamespacedKey(), PersistentDataType.STRING, getStrippedName()));
+                return nexoItem;
+            }
+        }
+
         this.itemBuilder.setAmount(amount);
 
         final ItemStack item = this.itemBuilder.build().asItemStack(player);
@@ -599,6 +633,25 @@ public class Voucher {
     }
     
     public ItemStack buildItem(@NotNull final Player player, @NotNull final String argument, final int amount) {
+        if (!this.nexoItemId.isEmpty() && NexoSupport.isAvailable()) {
+            final ItemStack nexoItem = NexoSupport.buildItem(
+                    this.nexoItemId,
+                    this.nexoOverrideLore,
+                    this.nexoOverrideGlowing,
+                    this.nexoOverrideCustomModelData,
+                    amount
+            );
+
+            if (nexoItem != null) {
+                setUniqueId(nexoItem);
+                nexoItem.editPersistentDataContainer(container -> {
+                    container.set(PersistentKeys.voucher_item.getNamespacedKey(), PersistentDataType.STRING, getStrippedName());
+                    if (!argument.isEmpty()) container.set(PersistentKeys.voucher_arg.getNamespacedKey(), PersistentDataType.STRING, argument);
+                });
+                return nexoItem;
+            }
+        }
+
         final ItemStack item = this.itemBuilder.setAmount(amount).addPlaceholder("{arg}", argument).asItemStack(player);
 
         setUniqueId(item);

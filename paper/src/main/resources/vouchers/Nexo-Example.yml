@@ -1,0 +1,47 @@
+voucher:
+  # The vanilla material used as fallback when Nexo is not installed.
+  item: 'paper'
+  # The Nexo item ID. When set, the voucher item is built directly from Nexo,
+  # inheriting its lore, tooltip, model and other attributes.
+  nexo-item: 'your_nexo_item_id'
+  # Leave lore empty to inherit the lore from Nexo.
+  # Add lines here to override Nexo's lore entirely.
+  lore: []
+  # "none" leaves Nexo's enchant glint untouched.
+  # "add_glow" / "remove_glow" override it.
+  glowing: "none"
+  # -1 leaves Nexo's custom-model-data untouched.
+  custom-model-data: -1
+  override-anti-dupe: false
+  allow-vouchers-in-item-frames: false
+  commands:
+    - 'msg {player} You claimed a Nexo voucher!'
+  # Items to give when redeeming the voucher.
+  # When use-different-items-layout is true in config.yml, you can also
+  # specify nexo-item here to give a Nexo item as a prize.
+  items: []
+  options:
+    message: '<gray>Congratulations, you claimed a Nexo item!'
+    whitelist-worlds:
+      toggle: false
+      worlds:
+        - 'world'
+    permission:
+      whitelist-permission:
+        toggle: false
+        permissions:
+          - 'your-permission'
+    limiter:
+      toggle: false
+      amount: 10
+    two-step-authentication: false
+    sound:
+      toggle: true
+      volume: 1.0
+      pitch: 1.0
+      sounds:
+        - 'block.cherry_wood_button.click_on'
+    firework:
+      toggle: true
+      colors: 'Green, Lime'
+    is-edible: false

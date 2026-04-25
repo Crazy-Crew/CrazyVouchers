@@ -12,3 +12,7 @@ run/
 
 ### Output
 jars/
+
+### Claude / AI
+.claude/
+CLAUDE.md

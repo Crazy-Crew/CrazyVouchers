@@ -1,6 +1,7 @@
 package com.badbones69.crazyvouchers.utils;
 
 import com.badbones69.crazyvouchers.CrazyVouchers;
+import com.badbones69.crazyvouchers.support.NexoSupport;
 import com.ryderbelserion.fusion.core.api.enums.Level;
 import com.ryderbelserion.fusion.core.utils.StringUtils;
 import com.ryderbelserion.fusion.paper.FusionPaper;
@@ -11,6 +12,7 @@ import com.ryderbelserion.fusion.paper.builders.items.types.SkullBuilder;
 import com.ryderbelserion.fusion.paper.builders.items.types.custom.CustomBuilder;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.enchantments.Enchantment;
+import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.ItemType;
 import org.bukkit.potion.PotionEffectType;
 import org.jetbrains.annotations.NotNull;
@@ -267,6 +269,39 @@ public class ItemUtils {
      */
     public static List<ItemBuilder> convertStringList(@NotNull final List<String> itemStrings, @NotNull final String placeholder) {
         return itemStrings.stream().map(itemString -> convertString(itemString, placeholder)).collect(Collectors.toList());
+    }
+
+    /**
+     * Extracts Nexo prize items from a YAML items section (use_different_items_layout mode).
+     * Only processes entries that have a "nexo-item" key defined.
+     */
+    public static List<ItemStack> convertNexoItems(@Nullable final ConfigurationSection section) {
+        final List<ItemStack> cache = new ArrayList<>();
+
+        if (section == null || !NexoSupport.isAvailable()) return cache;
+
+        for (final String key : section.getKeys(false)) {
+            final ConfigurationSection item = section.getConfigurationSection(key);
+
+            if (item == null) continue;
+
+            final String nexoId = item.getString("nexo-item", "");
+
+            if (nexoId.isEmpty()) continue;
+
+            final List<String> overrideLore = item.isList("lore") ? item.getStringList("lore") : List.of();
+            final int amount = item.getInt("amount", 1);
+
+            final ItemStack nexoItem = NexoSupport.buildItem(nexoId, overrideLore, "none", -1, amount);
+
+            if (nexoItem != null) {
+                cache.add(nexoItem);
+            } else {
+                fusion.log(Level.WARNING, "Nexo item '%s' not found, skipping prize item.", nexoId);
+            }
+        }
+
+        return cache;
     }
 
     public static String getEnchant(@NotNull final String enchant) {
