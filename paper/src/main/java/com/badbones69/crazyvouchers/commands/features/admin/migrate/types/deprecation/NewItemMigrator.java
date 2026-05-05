@@ -369,4 +369,14 @@ public class NewItemMigrator extends IVoucherMigrator {
 
         return isSave;
     }
+
+    @Override
+    public @NotNull final Path getVouchersDirectory() {
+        return this.dataPath.resolve("vouchers");
+    }
+
+    @Override
+    public @NotNull final Path getCodesDirectory() {
+        return this.dataPath.resolve("codes");
+    }
 }
