@@ -200,171 +200,172 @@ public class NewItemMigrator extends IVoucherMigrator {
     private boolean process(final ConfigurationSection section) {
         boolean isSave = false;
 
-        for (String value : section.getKeys(false)) {
-            final ConfigurationSection prizeSection = section.getConfigurationSection(value);
+        for (final String value : section.getKeys(false)) {
+            if (!section.isList("items")) continue;
 
-            if (prizeSection == null) continue;
+            final List<String> items = section.getStringList("items");
 
-            if (prizeSection.isList("items")) {
-                final List<String> items = prizeSection.getStringList("items");
+            section.set("items", null);
 
-                prizeSection.set("items", null);
+            final ConfigurationSection itemSection = section.createSection("items");
 
-                items.forEach(item -> {
-                    final Map<String, String> patterns = new HashMap<>();
-                    final Map<String, Integer> enchantments = new HashMap<>();
-                    final String uuid = Methods.randomUUID();
+            items.forEach(item -> {
+                final Map<String, String> patterns = new HashMap<>();
+                final Map<String, Integer> enchantments = new HashMap<>();
+                final String uuid = Methods.randomUUID();
 
-                    for (final String key : item.split(", ")) {
-                        final String option = key.split(":")[0];
-                        final String type = key.replace(option + ":", "").replace(option, "");
+                final ConfigurationSection uuidSection = itemSection.createSection(uuid);
 
-                        switch (option.toLowerCase()) {
-                            case "item" -> {
-                                prizeSection.set("items." + uuid + ".material", type);
-                                prizeSection.setComments("items." + uuid + ".Material", Comments.material.getComments());
-                            }
-                            case "data" -> {
-                                prizeSection.set("items." + uuid + ".data", type);
-                                prizeSection.setComments("items." + uuid + ".data", Comments.base64.getComments());
-                            }
-                            case "name" -> {
-                                prizeSection.set("items." + uuid + ".name", type);
-                                prizeSection.setComments("items." + uuid + ".name", Comments.name.getComments());
-                            }
-                            case "mob" -> {
-                                prizeSection.set("items." + uuid + ".settings.mob.type", type);
-                                prizeSection.setComments("items." + uuid + ".settings.mob.type", Comments.mob_type.getComments());
-                            }
-                            case "glowing" -> {
-                                prizeSection.set("items." + uuid + ".settings.glowing", type);
-                                prizeSection.setComments("items." + uuid + ".settings.glowing", Comments.glowing.getComments());
-                            }
-                            case "amount" -> {
-                                prizeSection.set("items." + uuid + ".amount", type);
-                                prizeSection.setComments("items." + uuid + ".amount", Comments.amount.getComments());
-                            }
-                            case "damage" -> {
-                                prizeSection.set("items." + uuid + ".settings.damage", type);
-                                prizeSection.setComments("items." + uuid + ".settings.damage", Comments.damage.getComments());
-                            }
-                            case "lore" -> {
-                                prizeSection.set("items." + uuid + ".lore", List.of(type.split(",")));
-                                prizeSection.setComments("items." + uuid + ".lore", Comments.lore.getComments());
-                            }
-                            case "player" -> {
-                                prizeSection.set("items." + uuid + ".settings.player", type);
-                                prizeSection.setComments("items." + uuid + ".settings.player", Comments.player.getComments());
-                            }
-                            case "skull" -> {
-                                prizeSection.set("items." + uuid + ".settings.skull", type);
-                                prizeSection.setComments("items." + uuid + ".settings.skull", Comments.skull.getComments());
-                            }
-                            case "custom-model-data" -> {
-                                prizeSection.set("items." + uuid + ".custom-model-data", type);
-                                prizeSection.setComments("items." + uuid + ".custom-model-data", Comments.custom_model_data.getComments());
-                            }
-                            case "unbreakable-item" -> {
-                                prizeSection.set("items." + uuid + ".unbreakable-item", type);
-                                prizeSection.setComments("items." + uuid + ".unbreakable-item", Comments.unbreakable.getComments());
-                            }
-                            case "hide-tool-tip" -> {
-                                prizeSection.set("items." + uuid + ".hide-tool-tip", type);
-                                prizeSection.setComments("items." + uuid + ".hide-tool-tip", Comments.hide_tool_tip.getComments());
-                            }
-                            case "trim-pattern" -> {
-                                prizeSection.set("items." + uuid + ".settings.trim.pattern", type);
-                                prizeSection.setComments("items." + uuid + ".trim.pattern", Comments.trim_pattern.getComments());
-                            }
-                            case "trim-material" -> {
-                                prizeSection.set("items." + uuid + ".settings.trim.material", type);
-                                prizeSection.setComments("items." + uuid + ".settings.trim.material", Comments.trim_material.getComments());
-                            }
-                            case "trim" -> {
-                                final String[] split = type.split("!");
+                for (final String key : item.split(", ")) {
+                    final String option = key.split(":")[0];
+                    final String type = key.replace(option + ":", "").replace(option, "");
 
-                                final String trim = split[0];
-                                final String material = split[1];
+                    switch (option.toLowerCase()) {
+                        case "item" -> {
+                            uuidSection.set("material", type);
+                            uuidSection.setComments("material", Comments.material.getComments());
+                        }
+                        case "data" -> {
+                            uuidSection.set("data", type);
+                            uuidSection.setComments("data", Comments.base64.getComments());
+                        }
+                        case "name" -> {
+                            uuidSection.set("name", type);
+                            uuidSection.setComments("name", Comments.name.getComments());
+                        }
+                        case "mob" -> {
+                            uuidSection.set("settings.mob.type", type);
+                            uuidSection.setComments("settings.mob.type", Comments.mob_type.getComments());
+                        }
+                        case "glowing" -> {
+                            uuidSection.set("settings.glowing", type);
+                            uuidSection.setComments("settings.glowing", Comments.glowing.getComments());
+                        }
+                        case "amount" -> {
+                            uuidSection.set("amount", type);
+                            uuidSection.setComments("amount", Comments.amount.getComments());
+                        }
+                        case "damage" -> {
+                            uuidSection.set("settings.damage", type);
+                            uuidSection.setComments("settings.damage", Comments.damage.getComments());
+                        }
+                        case "lore" -> {
+                            uuidSection.set("lore", List.of(type.split(",")));
+                            uuidSection.setComments("lore", Comments.lore.getComments());
+                        }
+                        case "player" -> {
+                            uuidSection.set("settings.player", type);
+                            uuidSection.setComments("settings.player", Comments.player.getComments());
+                        }
+                        case "skull" -> {
+                            uuidSection.set("settings.skull", type);
+                            uuidSection.setComments("settings.skull", Comments.skull.getComments());
+                        }
+                        case "custom-model-data" -> {
+                            uuidSection.set("custom-model-data", type);
+                            uuidSection.setComments("custom-model-data", Comments.custom_model_data.getComments());
+                        }
+                        case "unbreakable-item" -> {
+                            uuidSection.set("unbreakable-item", type);
+                            uuidSection.setComments("unbreakable-item", Comments.unbreakable.getComments());
+                        }
+                        case "hide-tool-tip" -> {
+                            uuidSection.set("hide-tool-tip", type);
+                            uuidSection.setComments("hide-tool-tip", Comments.hide_tool_tip.getComments());
+                        }
+                        case "trim-pattern" -> {
+                            uuidSection.set("settings.trim.pattern", type);
+                            uuidSection.setComments("trim.pattern", Comments.trim_pattern.getComments());
+                        }
+                        case "trim-material" -> {
+                            uuidSection.set("settings.trim.material", type);
+                            uuidSection.setComments("settings.trim.material", Comments.trim_material.getComments());
+                        }
+                        case "trim" -> {
+                            final String[] split = type.split("!");
 
-                                prizeSection.set("items." + uuid + ".settings.trim.pattern", trim);
-                                prizeSection.setComments("items." + uuid + ".trim.pattern", Comments.trim_pattern.getComments());
+                            final String trim = split[0];
+                            final String material = split[1];
 
-                                prizeSection.set("items." + uuid + ".settings.trim.material", material);
-                                prizeSection.setComments("items." + uuid + ".settings.trim.material", Comments.trim_material.getComments());
-                            }
-                            case "rgb" -> {
-                                prizeSection.set("items." + uuid + ".settings.rgb", type);
-                                prizeSection.setComments("items." + uuid + ".settings.rgb", Comments.rgb.getComments());
-                            }
-                            case "color" -> {
-                                prizeSection.set("items." + uuid + ".settings.color", type);
-                                prizeSection.setComments("items." + uuid + ".settings.color", Comments.color.getComments());
-                            }
-                            default -> {
-                                final String placeholder = option.toLowerCase();
+                            uuidSection.set("settings.trim.pattern", trim);
+                            uuidSection.setComments("trim.pattern", Comments.trim_pattern.getComments());
 
-                                try {
-                                    final PotionEffectType effect = ItemUtils.getPotionEffect(placeholder);
+                            uuidSection.set("settings.trim.material", material);
+                            uuidSection.setComments("settings.trim.material", Comments.trim_material.getComments());
+                        }
+                        case "rgb" -> {
+                            uuidSection.set("settings.rgb", type);
+                            uuidSection.setComments("settings.rgb", Comments.rgb.getComments());
+                        }
+                        case "color" -> {
+                            uuidSection.set("settings.color", type);
+                            uuidSection.setComments("settings.color", Comments.color.getComments());
+                        }
+                        default -> {
+                            final String placeholder = option.toLowerCase();
 
-                                    if (effect != null) {
-                                        final ConfigurationSection potionsSection = prizeSection.createSection("items." + uuid + ".settings.potions");
+                            try {
+                                final PotionEffectType effect = ItemUtils.getPotionEffect(placeholder);
 
-                                        final ConfigurationSection potionSection = potionsSection.createSection(placeholder);
+                                if (effect != null) {
+                                    final ConfigurationSection potionsSection = uuidSection.createSection("settings.potions");
 
-                                        potionSection.set("duration", 60);
-                                        potionSection.set("level", 1);
+                                    final ConfigurationSection potionSection = potionsSection.createSection(placeholder);
 
-                                        potionSection.set("style.icon", true);
-                                        potionSection.set("style.ambient", true);
-                                        potionSection.set("style.particles", true);
+                                    potionSection.set("duration", 60);
+                                    potionSection.set("level", 1);
 
-                                        prizeSection.set("items." + uuid + ".settings.potions", Comments.potions.getComments());
-                                    }
-                                } catch (Exception ignored) {}
+                                    potionSection.set("style.icon", true);
+                                    potionSection.set("style.ambient", true);
+                                    potionSection.set("style.particles", true);
 
-                                if (ItemUtils.getEnchantment(placeholder) != null) {
-                                    enchantments.put(option.toLowerCase(), StringUtils.tryParseInt(value).map(Number::intValue).orElse(1));
-
-                                    final ConfigurationSection enchantmentSection = prizeSection.createSection("items." + uuid + ".enchantments");
-
-                                    prizeSection.setComments("items." + uuid + ".enchantments", Comments.enchantments.getComments());
-
-                                    enchantments.forEach(enchantmentSection::set);
-
-                                    break;
+                                    uuidSection.set("settings.potions", Comments.potions.getComments());
                                 }
+                            } catch (Exception ignored) {
+                            }
 
-                                if (!prizeSection.contains("items." + uuid + ".hide-tool-tip")) {
-                                    for (ItemFlag itemFlag : ItemFlag.values()) {
-                                        if (itemFlag.name().equalsIgnoreCase(option)) {
-                                            prizeSection.set("items." + uuid + ".hide-tool-tip", true);
-                                            prizeSection.setComments("items." + uuid + ".hide-tool-tip", Comments.hide_tool_tip.getComments());
+                            if (ItemUtils.getEnchantment(placeholder) != null) {
+                                enchantments.put(option.toLowerCase(), StringUtils.tryParseInt(value).map(Number::intValue).orElse(1));
 
-                                            break;
-                                        }
+                                final ConfigurationSection enchantmentSection = uuidSection.createSection("enchantments");
+
+                                uuidSection.setComments("enchantments", Comments.enchantments.getComments());
+
+                                enchantments.forEach(enchantmentSection::set);
+
+                                break;
+                            }
+
+                            if (!uuidSection.contains("hide-tool-tip")) {
+                                for (ItemFlag itemFlag : ItemFlag.values()) {
+                                    if (itemFlag.name().equalsIgnoreCase(option)) {
+                                        uuidSection.set("hide-tool-tip", true);
+                                        uuidSection.setComments("hide-tool-tip", Comments.hide_tool_tip.getComments());
+
+                                        break;
                                     }
                                 }
-
-                                try {
-                                    final PatternType patternType = ItemUtils.getPatternType(placeholder);
-
-                                    if (patternType != null) {
-                                        patterns.put(placeholder, type);
-
-                                        final ConfigurationSection patternsSection = prizeSection.createSection("items." + uuid + ".settings.patterns");
-
-                                        prizeSection.setComments("items." + uuid + ".settings.patterns", Comments.patterns.getComments());
-
-                                        patterns.forEach(patternsSection::set);
-                                    }
-                                } catch (Exception ignored) {}
                             }
+
+                            try {
+                                final PatternType patternType = ItemUtils.getPatternType(placeholder);
+
+                                if (patternType != null) {
+                                    patterns.put(placeholder, type);
+
+                                    final ConfigurationSection patternsSection = uuidSection.createSection("settings.patterns");
+
+                                    uuidSection.setComments("settings.patterns", Comments.patterns.getComments());
+
+                                    patterns.forEach(patternsSection::set);
+                                }
+                            } catch (Exception ignored) {}
                         }
                     }
-                });
+                }
+            });
 
-                isSave = true;
-            }
+            isSave = true;
         }
 
         return isSave;
