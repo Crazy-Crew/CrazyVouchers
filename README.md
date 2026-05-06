@@ -13,8 +13,8 @@
 
 <big>**Quick Links**</big><br>
 [Request Features](https://github.com/Crazy-Crew/CrazyVouchers/discussions/categories/features)<br>
-[Documentation](https://docs.crazycrew.us/docs/category/crazyvouchers)<br>
-[Developer API](https://docs.crazycrew.us/docs/plugins/crazyvouchers/guides/api/intro)<br>
+[Documentation](https://docs.crazycrew.us/docs/mods/crazyvouchers)<br>
+[Developer API](https://docs.crazycrew.us/mods/crazyvouchers/dev/)<br>
 [Report Bugs](https://github.com/Crazy-Crew/CrazyVouchers/issues)<br>
 [Trello Board](https://trello.com/b/gWiGLBWI)
 
