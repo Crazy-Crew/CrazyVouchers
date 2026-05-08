@@ -12,6 +12,7 @@ import com.badbones69.crazyvouchers.listeners.VoucherCraftListener;
 import com.badbones69.crazyvouchers.listeners.VoucherMiscListener;
 import com.badbones69.crazyvouchers.support.MetricsWrapper;
 import com.ryderbelserion.fusion.core.api.enums.Level;
+import com.ryderbelserion.fusion.files.enums.FileType;
 import com.ryderbelserion.fusion.paper.FusionPaper;
 import com.ryderbelserion.fusion.paper.files.PaperFileManager;
 import org.bukkit.plugin.PluginManager;
@@ -55,7 +56,8 @@ public class CrazyVouchers extends JavaPlugin {
         final FileSystem system = ConfigManager.getConfig().getProperty(ConfigKeys.file_system);
 
         this.fileManager.addPaperFile(path.resolve("users.yml"))
-                .addPaperFile(path.resolve("data.yml"));
+                .addPaperFile(path.resolve("data.yml"))
+                .addFile(path.resolve("version.json"), FileType.JSON);
 
         switch (system) {
             case SINGLE -> this.fileManager.addPaperFile(path.resolve("codes.yml"))

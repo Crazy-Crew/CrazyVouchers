@@ -10,6 +10,7 @@ import com.badbones69.crazyvouchers.commands.features.admin.CommandMenu;
 import com.badbones69.crazyvouchers.commands.features.admin.CommandMigrate;
 import com.badbones69.crazyvouchers.commands.features.admin.CommandRedeem;
 import com.badbones69.crazyvouchers.commands.features.admin.CommandTypes;
+import com.badbones69.crazyvouchers.commands.features.admin.CommandVersion;
 import com.badbones69.crazyvouchers.commands.features.admin.migrate.enums.MigrationType;
 import com.badbones69.crazyvouchers.commands.features.base.CommandHelp;
 import com.badbones69.crazyvouchers.commands.features.base.CommandReload;
@@ -138,7 +139,8 @@ public class CommandHandler {
                 new CommandRedeem(),
                 new CommandTypes(),
                 new CommandHelp(),
-                new CommandReload()
+                new CommandReload(),
+                new CommandVersion()
         ).forEach(this.commandManager::registerCommand);
 
         for (final PermissionKeys key : PermissionKeys.values()) {

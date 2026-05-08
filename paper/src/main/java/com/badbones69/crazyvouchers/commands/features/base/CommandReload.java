@@ -6,6 +6,7 @@ import com.badbones69.crazyvouchers.api.enums.config.Messages;
 import com.badbones69.crazyvouchers.commands.BaseCommand;
 import com.badbones69.crazyvouchers.config.ConfigManager;
 import com.badbones69.crazyvouchers.config.types.ConfigKeys;
+import com.ryderbelserion.fusion.files.enums.FileType;
 import dev.triumphteam.cmd.core.annotations.Command;
 import dev.triumphteam.cmd.bukkit.annotation.Permission;
 import dev.triumphteam.cmd.core.annotations.Syntax;
@@ -27,7 +28,8 @@ public class CommandReload extends BaseCommand {
         this.fileManager.purge();
 
         this.fileManager.addPaperFile(this.dataPath.resolve("users.yml"))
-                .addPaperFile(this.dataPath.resolve("data.yml"));
+                .addPaperFile(this.dataPath.resolve("data.yml"))
+                .addFile(this.dataPath.resolve("version.json"), FileType.JSON);
 
         switch (system) {
             case MULTIPLE -> {

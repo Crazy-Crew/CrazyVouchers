@@ -62,7 +62,7 @@ public class CrazyManager {
 
         switch (type) {
             case SINGLE -> {
-                final PaperCustomFile config = FileKeys.codes.getCustomFile();
+                final PaperCustomFile config = FileKeys.codes.getPaperCustomFile();
 
                 if (!config.isLoaded()) {
                     this.fusion.log(Level.WARNING, "The %s was not loaded into memory.", FileKeys.codes.getName());
@@ -141,7 +141,7 @@ public class CrazyManager {
 
         switch (type) {
             case SINGLE -> {
-                final PaperCustomFile config = FileKeys.vouchers.getCustomFile();
+                final PaperCustomFile config = FileKeys.vouchers.getPaperCustomFile();
 
                 if (!config.isLoaded()) {
                     this.fusion.log(Level.WARNING, "The %s was not loaded into memory.", FileKeys.vouchers.getName());
