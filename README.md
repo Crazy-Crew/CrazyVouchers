@@ -21,6 +21,9 @@
 6) Reload the plugin, Use `crazyvouchers give` or `crazyvouchers redeem` to test your changes.
 7) View the documentation @ https://docs.crazycrew.us/docs/mods/crazyvouchers/
 
+## Quick Builds
+[![Build Status](https://ci.crazycrew.us/job/CrazyVouchers/badge/icon)](https://ci.crazycrew.us/job/CrazyVouchers/)
+
 ## Contributing
 - https://docs.crazycrew.us/mods/crazyvouchers/contributing/
 
