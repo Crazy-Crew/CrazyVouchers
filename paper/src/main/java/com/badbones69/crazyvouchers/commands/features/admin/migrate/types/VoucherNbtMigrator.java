@@ -32,7 +32,7 @@ public class VoucherNbtMigrator extends IVoucherMigrator {
 
         final ItemStack[] contents = inventory.getContents();
 
-        AtomicInteger count = new AtomicInteger();
+        final AtomicInteger count = new AtomicInteger();
 
         for (final ItemStack item : contents) {
             if (item == null || item.getType() == Material.AIR) continue;
