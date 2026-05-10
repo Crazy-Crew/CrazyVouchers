@@ -74,6 +74,8 @@ public class VoucherSwitchMigrator extends IVoucherMigrator {
 
                             processItems(entry, section);
                         }
+
+                        this.crazyManager.reloadVouchers();
                     } else {
                         this.fusion.log(Level.WARNING, "Failed to move vouchers.yml into vouchers, because the section is null.");
                     }
@@ -128,6 +130,8 @@ public class VoucherSwitchMigrator extends IVoucherMigrator {
 
                             process(entry, section);
                         }
+
+                        this.crazyManager.reloadCodes();
                     } else {
                         this.fusion.log(Level.WARNING, "Failed to move codes.yml into vouchers, because the section is null.");
                     }
@@ -159,7 +163,7 @@ public class VoucherSwitchMigrator extends IVoucherMigrator {
                         for (final Path voucher : vouchers) {
                             final String fileName = voucher.getFileName().toString();
 
-                            final PaperCustomFile customFile = new PaperCustomFile(this.fileManager, voucher, consumer -> {});
+                            final PaperCustomFile customFile = new PaperCustomFile(this.fileManager, voucher, _ -> {});
 
                             if (!customFile.isLoaded()) {
                                 this.fusion.log(Level.WARNING, "Failed to switch voucher %s, because configuration is null.", voucher);
@@ -192,6 +196,8 @@ public class VoucherSwitchMigrator extends IVoucherMigrator {
 
                         this.fileManager.addPaperFile(voucher_custom_file);
                         this.fileManager.removeFile(voucher_file);
+
+                        this.crazyManager.reloadVouchers();
 
                         this.fusion.log(Level.WARNING, "Added voucher %s to the cache, and removed the old voucher file named %s", voucher_custom_file.getPrettyName(), voucher_file);
                     } else {
@@ -257,6 +263,8 @@ public class VoucherSwitchMigrator extends IVoucherMigrator {
 
                         this.fileManager.addPaperFile(code_custom_file);
                         this.fileManager.removeFile(code_file);
+
+                        this.crazyManager.reloadCodes();
 
                         this.fusion.log(Level.WARNING, "Added code %s to the cache, and removed the old code file named %s", code_custom_file.getPrettyName(), code_file);
                     } else {

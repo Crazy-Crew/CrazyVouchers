@@ -48,13 +48,30 @@ public class CrazyManager {
 
     private @NotNull final Map<UUID, String> voucher_auth = new HashMap<>();
 
-    public void load(final boolean isMigrator) {
-        if (!isMigrator) {
-            loadExamples();
-        }
+    public void load() {
+        loadExamples();
 
         loadVouchers();
         loadCodes();
+    }
+
+    public void reload() {
+        loadExamples();
+
+        reloadVouchers();
+        reloadCodes();
+    }
+
+    public void reloadCodes() {
+        this.voucherCodes.clear();
+
+        loadCodes();
+    }
+
+    public void reloadVouchers() {
+        this.vouchers.clear();
+
+        loadVouchers();
     }
 
     public void loadCodes() {
@@ -211,13 +228,6 @@ public class CrazyManager {
                 }
             }
         }
-    }
-
-    public void reload() {
-        this.voucherCodes.clear();
-        this.vouchers.clear();
-
-        load(false);
     }
 
     public void loadExamples() {

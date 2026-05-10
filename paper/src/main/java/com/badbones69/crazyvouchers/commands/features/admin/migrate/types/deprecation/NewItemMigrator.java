@@ -188,8 +188,8 @@ public class NewItemMigrator extends IVoucherMigrator {
 
         sendMessage(files, convertedCrates, failedCrates);
 
-        // reload crates
-        this.crazyManager.load(true);
+        this.crazyManager.reloadVouchers();
+        this.crazyManager.reloadCodes();
     }
 
     @Override

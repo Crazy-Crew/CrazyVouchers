@@ -184,7 +184,7 @@ public class LegacyColorMigrator extends IVoucherMigrator {
 
                     success.add("<green>⤷ " + fileName);
 
-                   customFile.save();
+                    customFile.save();
                 }
             }
         }
@@ -199,7 +199,8 @@ public class LegacyColorMigrator extends IVoucherMigrator {
 
         sendMessage(files, convertedCount, failedCount);
 
-        this.crazyManager.load(true);
+        this.crazyManager.reloadVouchers();
+        this.crazyManager.reloadCodes();
     }
 
     private void processItems(@NotNull final String name, @NotNull final ConfigurationSection section) {

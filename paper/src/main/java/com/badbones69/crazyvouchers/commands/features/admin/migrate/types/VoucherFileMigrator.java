@@ -67,7 +67,8 @@ public class VoucherFileMigrator extends IVoucherMigrator {
 
                     this.fileManager.addPaperFile(newPath);
 
-                    this.crazyManager.loadCodes();
+                    this.crazyManager.reloadVouchers();
+                    this.crazyManager.reloadCodes();
                 }
             }
         }
