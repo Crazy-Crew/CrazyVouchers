@@ -418,7 +418,7 @@ public class Voucher {
                 final String newValue = PlaceholderAPI.setPlaceholders(player, placeholder);
 
                 if (!newValue.equals(value)) {
-                    player.sendMessage(this.fusion.parse(player, getRequiredPlaceholdersMessage(), placeholders));
+                    player.sendMessage(this.fusion.asComponent(player, getRequiredPlaceholdersMessage(), placeholders));
 
                     shouldCancel.set(true);
                 }
@@ -488,7 +488,7 @@ public class Voucher {
         final String message = getVoucherUsedMessage();
 
         if (!message.isEmpty()) {
-            player.sendMessage(this.fusion.parse(player, message, placeholders));
+            player.sendMessage(this.fusion.asComponent(player, message, placeholders));
         }
 
         if (useLimiter()) {

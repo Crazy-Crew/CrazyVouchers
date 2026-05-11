@@ -76,7 +76,7 @@ public class CommandRedeem extends BaseCommand {
 
             if (code.useWhitelistWorlds()) {
                 if (code.getWhitelistWorlds().contains(player.getWorld().getName().toLowerCase())) {
-                    player.sendMessage(this.fusion.parse(player, code.getWhitelistWorldMessage(), placeholders));
+                    player.sendMessage(this.fusion.asComponent(player, code.getWhitelistWorldMessage(), placeholders));
 
                     Methods.dispatch(player, code.getWhitelistWorldCommands(), placeholders, true);
 
@@ -89,7 +89,7 @@ public class CommandRedeem extends BaseCommand {
 
                 for (final String permission : code.getBlacklistPermissions()) {
                     if (player.hasPermission(permission.toLowerCase())) {
-                        player.sendMessage(this.fusion.parse(player, code.getBlacklistMessage(), placeholders));
+                        player.sendMessage(this.fusion.asComponent(player, code.getBlacklistMessage(), placeholders));
 
                         Methods.dispatch(player, commands, placeholders, true);
 
@@ -160,7 +160,7 @@ public class CommandRedeem extends BaseCommand {
             final String message = code.getMessage();
 
             if (!message.isEmpty()) {
-                player.sendMessage(this.fusion.parse(player, message, placeholders));
+                player.sendMessage(this.fusion.asComponent(player, message, placeholders));
             }
         }
     }
