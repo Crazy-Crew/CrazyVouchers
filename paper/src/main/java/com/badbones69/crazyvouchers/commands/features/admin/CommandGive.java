@@ -80,16 +80,16 @@ public class CommandGive extends BaseCommand {
     }
 
     private List<ItemStack> build(final Player player, final int amount, final String argument, final Voucher voucher) {
-        final int safety = Math.max(amount, 1);
+        final int clamp = Math.max(amount, 1);
 
         final String arg = argument != null ? argument.replace("%random%", "{random}") : "";
 
         final List<ItemStack> itemStacks = new ArrayList<>();
 
         if (!arg.isEmpty()) {
-            itemStacks.addAll(voucher.buildItems(player, argument, safety));
+            itemStacks.addAll(voucher.buildItems(player, argument, clamp));
         } else {
-            itemStacks.addAll(voucher.buildItems(player, "", safety));
+            itemStacks.addAll(voucher.buildItems(player, "", clamp));
         }
 
         return itemStacks;

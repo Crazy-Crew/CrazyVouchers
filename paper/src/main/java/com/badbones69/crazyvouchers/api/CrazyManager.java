@@ -8,6 +8,7 @@ import com.badbones69.crazyvouchers.api.enums.misc.PersistentKeys;
 import com.badbones69.crazyvouchers.api.objects.Voucher;
 import com.badbones69.crazyvouchers.api.objects.VoucherCode;
 import com.ryderbelserion.fusion.core.api.enums.Level;
+import com.ryderbelserion.fusion.files.enums.FileType;
 import com.ryderbelserion.fusion.paper.FusionPaper;
 import com.ryderbelserion.fusion.paper.files.PaperFileManager;
 import com.ryderbelserion.fusion.paper.files.types.PaperCustomFile;
@@ -250,9 +251,9 @@ public class CrazyManager {
                 }
             }
 
-            this.fileManager.extractFolder("vouchers", examples);
-            this.fileManager.extractFolder("codes", examples);
-            this.fileManager.extractFolder("locale", examples);
+            this.fileManager.extractFolder("vouchers", FileType.YAML, examples);
+            this.fileManager.extractFolder("codes", FileType.YAML, examples);
+            this.fileManager.extractFolder("locale", FileType.YAML, examples);
 
             List.of(
                     "config.yml",
