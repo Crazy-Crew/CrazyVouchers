@@ -158,7 +158,7 @@ public class VoucherCode {
         }
 
         // if the prize weight is greater than 0.0, grab it.
-        this.totalWeight = this.randomCommands.stream().filter(filter -> filter.getWeight() != -1).mapToDouble(VoucherCommand::getWeight).sum();
+        this.totalWeight = this.randomCommands.stream().filter(filter -> filter.getWeight() > 0.0).mapToDouble(VoucherCommand::getWeight).sum();
     }
 
     public void dispatchCommands(@NotNull final Player player, @NotNull final Map<String, String> placeholders) {
@@ -181,20 +181,8 @@ public class VoucherCode {
         final List<VoucherCommand> chanceCommands = this.randomCommands.stream().filter(filter -> filter.getWeight() != -1).toList();
 
         if (!chanceCommands.isEmpty()) {
-            Methods.dispatch(player, getCommand(chanceCommands).getCommands(), placeholders, true);
+            Methods.dispatch(player, Methods.getCommand(chanceCommands, this.totalWeight).getCommands(), placeholders, true);
         }
-    }
-
-    public VoucherCommand getCommand(@NotNull final List<VoucherCommand> commands) {
-        int index = 0;
-
-        for (double value = Methods.getRandom().nextDouble() * this.totalWeight; index < commands.size() - 1; ++index) {
-            value -= commands.get(index).getWeight();
-
-            if (value <= 0.0) break;
-        }
-
-        return commands.get(index);
     }
 
     public boolean hasPermission(@NotNull final Player player, @NotNull final List<String> permissions, @NotNull final List<String> commands, @NotNull final Map<String, String> placeholders, @NotNull final String message, @NotNull final String argument) {

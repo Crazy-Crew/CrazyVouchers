@@ -290,8 +290,8 @@ public class Voucher {
             }
         }
 
-        // if a prize has a weight greater than 0.0, include it with the total weight.
-        this.totalWeight = this.randomCommands.stream().filter(filter -> filter.getWeight() != -1).mapToDouble(VoucherCommand::getWeight).sum();
+        // if the prize weight is greater than 0.0, grab it.
+        this.totalWeight = this.randomCommands.stream().filter(filter -> filter.getWeight() > 0.0).mapToDouble(VoucherCommand::getWeight).sum();
     }
 
     public @NotNull String getArgument(@NotNull final ItemStack item) {
@@ -628,7 +628,7 @@ public class Voucher {
 
         // dispatch commands without a weight option randomly
         // if the prize weight is greater than 0.0D, remove it.
-        final List<VoucherCommand> randomCommands = this.randomCommands.stream().filter(filter -> filter.getWeight() == -1).toList();
+        final List<VoucherCommand> randomCommands = this.randomCommands.stream().filter(filter -> filter.getWeight() > 0.0).toList();
 
         if (!randomCommands.isEmpty()) {
             final VoucherCommand randomCommand = randomCommands.get(Methods.getRandom(randomCommands.size()));
@@ -638,23 +638,11 @@ public class Voucher {
 
         // dispatch commands while accounting for the weight on each one.
         // if a prize weight is less than or equal to, remove it.
-        final List<VoucherCommand> chanceCommands = this.randomCommands.stream().filter(filter -> filter.getWeight() != -1).toList();
+        final List<VoucherCommand> chanceCommands = this.randomCommands.stream().filter(filter -> filter.getWeight() > 0.0).toList();
 
         if (!chanceCommands.isEmpty()) {
-            Methods.dispatch(player, getCommand(chanceCommands).getCommands(), placeholders, true);
+            Methods.dispatch(player, Methods.getCommand(chanceCommands, this.totalWeight).getCommands(), placeholders, true);
         }
-    }
-
-    public VoucherCommand getCommand(@NotNull final List<VoucherCommand> commands) {
-        int index = 0;
-
-        for (double value = Methods.getRandom().nextDouble() * this.totalWeight; index < commands.size() - 1; ++index) {
-            value -= commands.get(index).getWeight();
-
-            if (value <= 0.0) break;
-        }
-
-        return commands.get(index);
     }
 
     private void setUniqueId(@NotNull final ItemStack item) {

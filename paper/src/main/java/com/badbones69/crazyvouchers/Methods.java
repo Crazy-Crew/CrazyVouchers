@@ -2,6 +2,7 @@ package com.badbones69.crazyvouchers;
 
 import com.badbones69.crazyvouchers.api.enums.FileKeys;
 import com.badbones69.crazyvouchers.api.enums.misc.PersistentKeys;
+import com.badbones69.crazyvouchers.api.objects.VoucherCommand;
 import com.badbones69.crazyvouchers.config.ConfigManager;
 import com.badbones69.crazyvouchers.config.types.ConfigKeys;
 import com.badbones69.crazyvouchers.utils.ScheduleUtils;
@@ -28,6 +29,22 @@ public class Methods {
     private static @NotNull final CrazyVouchers plugin = CrazyVouchers.get();
 
     private static @NotNull final FusionPaper fusion = plugin.getFusion();
+
+    public static VoucherCommand getCommand(@NotNull final List<VoucherCommand> origin, final double totalWeight) {
+        int index = 0;
+
+        final List<VoucherCommand> commands = origin.stream().filter(command -> command.getWeight() > 0.0).toList();
+
+        for (double value = Methods.getRandom().nextDouble() * totalWeight; index < commands.size() - 1; index++) {
+            final double weight = commands.get(index).getWeight();
+
+            value -= weight;
+
+            if (value <= 0.0) break;
+        }
+
+        return commands.get(index);
+    }
 
     public static void removeItem(@NotNull final ItemStack item, @NotNull final Player player) {
         if (item.getAmount() <= 1) {
