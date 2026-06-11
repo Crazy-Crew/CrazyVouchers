@@ -146,8 +146,13 @@ voucher:
       toggle: false
       # The max number of uses for the voucher.
       amount: 10
-    # If the player has to confirm claiming the voucher.
-    two-step-authentication: false
+    # Enables the ability to require a player to confirm claiming the voucher.
+    two-factor:
+      # If this should be enabled.
+      toggle: false
+      # The messages to send to confirm.
+      message:
+        - "{prefix}<gray>Right click again to confirm that you want to use this voucher."
     # The sound settings.
     sound:
       # If the sounds should be enabled.

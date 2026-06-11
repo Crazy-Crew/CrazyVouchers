@@ -9,6 +9,7 @@ import com.badbones69.crazyvouchers.api.enums.config.Messages;
 import com.badbones69.crazyvouchers.api.enums.misc.PermissionKeys;
 import com.badbones69.crazyvouchers.api.enums.misc.PersistentKeys;
 import com.badbones69.crazyvouchers.api.events.VoucherRedeemEvent;
+import com.badbones69.crazyvouchers.config.types.locale.MessageKeys;
 import com.badbones69.crazyvouchers.utils.ItemUtils;
 import com.ryderbelserion.fusion.core.api.constants.ModSupport;
 import com.ryderbelserion.fusion.core.api.enums.Level;
@@ -77,7 +78,8 @@ public class Voucher {
     private final boolean limiterToggle;
     private final int limiterLimit;
 
-    private final boolean twoStepAuthentication;
+    private final List<String> twoFactorAuthMessage;
+    private final boolean twoFactorAuthToggle;
 
     private final boolean soundToggle;
     private final float volume;
@@ -231,7 +233,8 @@ public class Voucher {
             }
         }
 
-        this.twoStepAuthentication = section.getBoolean("options.two-step-authentication", false);
+        this.twoFactorAuthToggle = section.contains("options.two-step-authentication") ? section.getBoolean("options.two-step-authentication", false) : section.getBoolean("two-factor.toggle", false);
+        this.twoFactorAuthMessage = section.contains("options.two-factor.message") ? section.getStringList("options.two-factor.message") : List.of(this.locale.getProperty(MessageKeys.two_step_authentication));
 
         this.soundToggle = section.getBoolean("options.sound.toggle", false);
         this.volume = (float) section.getDouble("options.sound.volume", 1.0);
@@ -427,20 +430,24 @@ public class Voucher {
             if (shouldCancel.get()) return;
         }
 
-        if (!this.isEdible && this.twoStepAuthentication) {
+        if (!this.isEdible && this.twoFactorAuthToggle) {
             if (!PermissionKeys.crazyvouchers_bypass_2fa.hasPermission(player)) {
                 if (this.crazyManager.isVoucherAuthActive(uuid)) {
                     final String voucher_name = this.crazyManager.getActiveVoucherAuth(uuid);
 
                     if (!voucher_name.equalsIgnoreCase(cleanName)) {
-                        Messages.two_step_authentication.sendMessage(player);
+                        player.sendMessage(this.fusion.asComponent(player, StringUtils.toString(this.twoFactorAuthMessage), Map.of(
+                                "{prefix}", this.config.getProperty(ConfigKeys.command_prefix)
+                        )));
 
                         this.crazyManager.addVoucherAuth(uuid, cleanName);
 
                         return;
                     }
                 } else {
-                    Messages.two_step_authentication.sendMessage(player);
+                    player.sendMessage(this.fusion.asComponent(player, StringUtils.toString(this.twoFactorAuthMessage), Map.of(
+                            "{prefix}", this.config.getProperty(ConfigKeys.command_prefix)
+                    )));
 
                     this.crazyManager.addVoucherAuth(uuid, cleanName);
 
@@ -571,7 +578,9 @@ public class Voucher {
     }
 
     private @NotNull final SettingsManager config = ConfigManager.getConfig();
-    
+
+    private @NotNull final SettingsManager locale = ConfigManager.getMessages();
+
     public ItemStack buildItem(@NotNull final Player player, final int amount) {
         this.itemBuilder.setAmount(amount);
 
@@ -729,7 +738,7 @@ public class Voucher {
     }
     
     public boolean useTwoStepAuthentication() {
-        return this.twoStepAuthentication;
+        return this.twoFactorAuthToggle;
     }
     
     public boolean playSounds() {
