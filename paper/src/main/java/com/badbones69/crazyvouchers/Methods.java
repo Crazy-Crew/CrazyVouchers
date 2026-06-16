@@ -23,6 +23,8 @@ import org.bukkit.persistence.PersistentDataType;
 import org.jetbrains.annotations.NotNull;
 import java.util.*;
 import java.util.concurrent.ThreadLocalRandom;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 public class Methods {
 
@@ -132,6 +134,8 @@ public class Methods {
     }
 
     public static String placeholders(@NotNull final CommandSender sender, @NotNull final String message, @NotNull final Map<String, String> placeholders) {
+        placeholders.putAll(getRandomNumber(message));
+
         return fusion.parse(sender, message, placeholders);
     }
 
@@ -142,11 +146,11 @@ public class Methods {
         final CommandSender sender = server.getConsoleSender();
 
         if (isCommand) {
-            ScheduleUtils.dispatch(consumer -> {
+            ScheduleUtils.dispatch(_ -> {
                 for (final String value : values) {
                     if (value.isEmpty()) continue;
 
-                    server.dispatchCommand(sender, placeholders(player, getRandomNumber(value), placeholders));
+                    server.dispatchCommand(sender, placeholders(player, value, placeholders));
                 }
             });
 
@@ -158,32 +162,36 @@ public class Methods {
         }
     }
 
-    public static String getRandomNumber(@NotNull final String value) {
-        String safeLine = value;
+    public static Map<String, String> getRandomNumber(@NotNull final String value) {
+        final Pattern text = Pattern.compile("\\{random}:(\\d+)-(\\d+)");
+        final Matcher matcher = text.matcher(value);
 
-        if (safeLine.contains("{random}")) {
-            final String number = safeLine.split(":")[1];
+        final Map<String, String> placeholders = new HashMap<>();
 
-            if (number.contains("-")) {
-                final String[] splitter = number.split("-");
+        while (matcher.find()) {
+            final int minimum = StringUtils.tryParseInt(matcher.group(1)).orElse(1).intValue();
+            final int maximum = StringUtils.tryParseInt(matcher.group(2)).orElse(10).intValue();
 
-                final Optional<Number> minRange = StringUtils.tryParseInt(splitter[0]);
-                final Optional<Number> maxRange = StringUtils.tryParseInt(splitter[1]);
+            if (minimum <= 0 || maximum <= 0) {
+                fusion.log(Level.ERROR, "The minimum/maximum value cannot be less than or equal to 0. (Min: %s, Max: %s)", minimum, maximum);
 
-                if (minRange.isPresent() && maxRange.isPresent()) {
-                    final int minimum = minRange.get().intValue();
-                    final int maximum = maxRange.get().intValue();
+                continue;
+            }
 
-                    final int amount = Methods.getRandom().nextInt(minimum, maximum);
+            if (minimum > maximum) {
+                fusion.log(Level.ERROR, "The minimum value cannot be larger than the maximum value! (Min: %s, Max: %s)", minimum, maximum);
 
-                    safeLine = safeLine.replace("{random}:%s-%s".formatted(minimum, maximum), String.valueOf(amount));
-                } else {
-                    fusion.log(Level.WARNING, "The values supplied with {random} seem to not be integers. %s", value);
-                }
+                continue;
+            }
+
+            try {
+                placeholders.putIfAbsent(matcher.group(), String.valueOf(getRandom().nextInt(minimum, maximum)));
+            } catch (final Exception exception) {
+                return placeholders;
             }
         }
 
-        return safeLine;
+        return placeholders;
     }
 
     public static boolean isInventoryFull(@NotNull final PlayerInventory inventory) {
