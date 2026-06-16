@@ -628,7 +628,7 @@ public class Voucher {
 
         // dispatch commands without a weight option randomly
         // if the prize weight is greater than 0.0D, remove it.
-        final List<VoucherCommand> randomCommands = this.randomCommands.stream().filter(filter -> filter.getWeight() > 0.0).toList();
+        final List<VoucherCommand> randomCommands = this.randomCommands.stream().filter(filter -> filter.getWeight() <= 0.0).toList();
 
         if (!randomCommands.isEmpty()) {
             final VoucherCommand randomCommand = randomCommands.get(Methods.getRandom(randomCommands.size()));
