@@ -14,36 +14,36 @@ voucher-code:
       weight: 45.0
       # The commands to run
       commands:
-        - "eco give {player} 100"
+        - "give {player} gold_ingot {random}:1-5"
     "2":
       # The chance for these to run
       weight: 25.0
       # The commands to run
       commands:
-        - "eco give {player} 1000"
+        - "give {player} iron_ingot {random}:5-10"
     "3":
       # The chance for these to run
       weight: 15.0
       # The commands to run
       commands:
-        - "eco give {player} 10000"
+        - "give {player} emerald {random}:16-32"
     "4":
       # The chance for these to run
       weight: 10.0
       # The commands to run
       commands:
-        - "eco give {player} 100000"
+        - "give {player} lapis_lazuli {random}:32-64"
     "5":
       # The chance for these to run
       weight: 5.0
       # The commands to run
       commands:
-        - "eco give {player} 1000000"
+        - "give {player} netherite_scrap {random}:64-128"
     # No chance is provided, thus we will pick random commands.
     "6":
       # The commands to run
       commands:
-        - "give {player} diamond 5"
+        - "give {player} diamond {random}:128-256"
   # All options when they right-click it.
   options:
     # If the option is case-sensitive or not.
