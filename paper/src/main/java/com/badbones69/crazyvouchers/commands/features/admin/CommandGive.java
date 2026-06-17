@@ -34,24 +34,18 @@ public class CommandGive extends BaseCommand {
             return;
         }
 
-        final Player player = target.getPlayer();
+        target.getPlayer().ifPresentOrElse(player -> {
+            List<ItemStack> itemStacks = build(player, amount, argument, voucher);
 
-        if (player == null) {
-            Messages.not_online.sendMessage(sender);
+            itemStacks.forEach(itemStack -> Methods.addItem(player, itemStack));
 
-            return;
-        }
+            Map<String, String> placeholders = new HashMap<>();
 
-        List<ItemStack> itemStacks = build(player, amount, argument, voucher);
+            placeholders.put("{player}", player.getName());
+            placeholders.put("{voucher}", voucher.getStrippedName());
 
-        itemStacks.forEach(itemStack -> Methods.addItem(player, itemStack));
-
-        Map<String, String> placeholders = new HashMap<>();
-
-        placeholders.put("{player}", player.getName());
-        placeholders.put("{voucher}", voucher.getStrippedName());
-
-        Messages.sent_voucher.sendMessage(sender, placeholders);
+            Messages.sent_voucher.sendMessage(sender, placeholders);
+        }, () -> Messages.not_online.sendMessage(sender));
     }
 
     @Command(value = "giveall")

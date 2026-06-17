@@ -26,7 +26,7 @@ hmcwraps = "1.8.2" # https://docs.hibiscusmc.com/hmcwraps/api/
 ## Other
 triumph-cmds = "2.0.0-BETA-4" # https://github.com/TriumphTeam/triumph-cmds
 bStats = "3.2.1" # https://github.com/Bastian/bStats
-fusion = "4.31.0" # https://github.com/ryderbelserion/Fusion
+fusion = "4.32.0" # https://github.com/ryderbelserion/Fusion
 
 ## Gradle Plugins
 fix-javadoc = "1.19" # https://github.com/mfnalex/gradle-fix-javadoc-plugin
