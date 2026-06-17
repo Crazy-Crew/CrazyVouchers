@@ -13,7 +13,14 @@ folia-supported: true
 
 dependencies:
   server:
+    # Placeholder plugins
     PlaceholderAPI:
+      load: BEFORE
+      required: false
+      join-classpath: true
+
+    # Custom item plugins
+    CraftEngine:
       load: BEFORE
       required: false
       join-classpath: true
@@ -29,7 +36,15 @@ dependencies:
       load: BEFORE
       required: false
       join-classpath: true
+
+    # Skull plugins
     HeadDatabase:
+      load: BEFORE
+      required: false
+      join-classpath: true
+
+    # Cosmetic plugins
+    HMCWraps:
       load: BEFORE
       required: false
       join-classpath: true

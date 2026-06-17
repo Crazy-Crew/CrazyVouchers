@@ -3,6 +3,19 @@
 - Added /crazyvouchers version which includes the git commit, previous git commit, and current version.
     - If any value is not found, it will return "N/A"
 
+### Plugin Support
+**Note: replace `<item_id>` with the correct identifier from the custom item plugins.**
+**Second Note: Any place you can input `diamond_axe` allows you to use this format.**
+**Third Note: You can still use `emerald_helmet` as in direct ids as well**
+
+- Added support for HMCWraps.
+  - `item: hmcwraps@<item_id>`
+- This introduces new formats for other plugins like Oraxen, Nexo, CraftEngine, and ItemsAdder
+  - `item: nexo@<item_id>`
+  - `item: oraxen@<item_id>`
+  - `item: itemsadder@<item_id>`
+  - `item: craftengine@<item_id>`
+
 ### Configuration Changes
 #### Glowing
 - Glowing no longer is true/false, however existing configurations using true/false will still work as we look for that internally as well.
