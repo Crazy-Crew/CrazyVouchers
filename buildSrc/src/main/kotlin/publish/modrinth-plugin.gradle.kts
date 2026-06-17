@@ -28,5 +28,6 @@ modrinth {
 
     dependencies {
         optional.project("PlaceholderAPI")
+        optional.project("CraftEngine")
     }
 }
