@@ -52,6 +52,8 @@ public class CrazyManager {
     public void load() {
         loadExamples();
 
+        update();
+
         loadVouchers();
         loadCodes();
     }
@@ -59,8 +61,20 @@ public class CrazyManager {
     public void reload() {
         loadExamples();
 
+        update();
+
         reloadVouchers();
         reloadCodes();
+    }
+
+    public void update() {
+        final Path version = this.dataPath.resolve("version.json");
+
+        try {
+            Files.deleteIfExists(version);
+        } catch (final IOException exception) {
+            this.fusion.log(Level.WARNING, "Failed to delete version.json!", exception);
+        }
     }
 
     public void reloadCodes() {
