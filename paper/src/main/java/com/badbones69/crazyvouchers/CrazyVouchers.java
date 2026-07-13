@@ -61,7 +61,7 @@ public class CrazyVouchers extends JavaPlugin {
 
         switch (system) {
             case SINGLE -> this.fileManager.addPaperFile(path.resolve("codes.yml"))
-                    .addPaperFile(path.resolve("vouchers.yml"));
+                .addPaperFile(path.resolve("vouchers.yml"));
             case MULTIPLE -> this.fileManager.addPaperFolder(path.resolve("codes"))
                     .addPaperFolder(path.resolve("vouchers"));
         }

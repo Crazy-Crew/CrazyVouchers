@@ -4,6 +4,8 @@ paperweight = "2.0.0-beta.21" # https://github.com/PaperMC/paperweight
 adventure = "5.0.0" # https://github.com/KyoriPowered/adventure
 paper = "26.1.2.build.+" # https://github.com/PaperMC/Paper
 
+jalu = "1.4.3" # https://github.com/AuthMe/ConfigMe
+
 ## Minecraft
 minecraft = "26.1.2" # https://minecraft.net
 
@@ -26,7 +28,7 @@ hmcwraps = "1.8.2" # https://docs.hibiscusmc.com/hmcwraps/api/
 ## Other
 triumph-cmds = "2.0.0-BETA-4" # https://github.com/TriumphTeam/triumph-cmds
 bStats = "3.2.1" # https://github.com/Bastian/bStats
-fusion = "4.33.2" # https://github.com/ryderbelserion/Fusion
+fusion = "4.40.0" # https://github.com/ryderbelserion/Fusion
 
 ## Gradle Plugins
 fix-javadoc = "1.19" # https://github.com/mfnalex/gradle-fix-javadoc-plugin
@@ -88,6 +90,9 @@ nbt-api = { module = "de.tr7zw:item-nbt-api", version.ref = "nbtapi" }
 
 # https://github.com/Bastian/bStats
 metrics = { module = "org.bstats:bstats-bukkit", version.ref = "bStats" }
+
+# https://github.com/AuthMe/ConfigMe
+jalu = { module = "ch.jalu:configme", version.ref = "jalu" }
 
 [bundles]
 shared = [
