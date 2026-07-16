@@ -217,13 +217,13 @@ public class LegacyColorMigrator extends IVoucherMigrator {
         final String optionsBlacklistMessage = section.getString("options.permission.blacklist-permission.message",
                 "{prefix}You already have the permission <red>{permission} <gray>so you can''t use this voucher.");
 
-        section.set("name", AdvUtils.convert(itemName));
+        section.set("name", AdvUtils.convert(itemName, true));
 
-        section.set("options.message", AdvUtils.convert(optionsMessage));
-        section.set("options.whitelist-worlds.message", AdvUtils.convert(optionsWorldMessage));
+        section.set("options.message", AdvUtils.convert(optionsMessage, true));
+        section.set("options.whitelist-worlds.message", AdvUtils.convert(optionsWorldMessage, true));
 
-        section.set("options.permission.whitelist-permission.message", AdvUtils.convert(optionsWhitelistMessage));
-        section.set("options.permission.blacklist-permission.message", AdvUtils.convert(optionsBlacklistMessage));
+        section.set("options.permission.whitelist-permission.message", AdvUtils.convert(optionsWhitelistMessage, true));
+        section.set("options.permission.blacklist-permission.message", AdvUtils.convert(optionsBlacklistMessage, true));
     }
 
     private void process(@NotNull final ConfigurationSection section) {
@@ -237,11 +237,11 @@ public class LegacyColorMigrator extends IVoucherMigrator {
         final String optionsBlacklistMessage = section.getString("options.permission.blacklist-permission.message",
                 "{prefix}<red>You can not use that voucher here as you are not in a whitelisted world for this voucher.");
 
-        section.set("options.message", AdvUtils.convert(optionsMessage));
-        section.set("options.whitelist-worlds.message", AdvUtils.convert(optionsWorldMessage));
+        section.set("options.message", AdvUtils.convert(optionsMessage, true));
+        section.set("options.whitelist-worlds.message", AdvUtils.convert(optionsWorldMessage, true));
 
-        section.set("options.permission.whitelist-permission.message", AdvUtils.convert(optionsWhitelistMessage));
-        section.set("options.permission.blacklist-permission.message", AdvUtils.convert(optionsBlacklistMessage));
+        section.set("options.permission.whitelist-permission.message", AdvUtils.convert(optionsWhitelistMessage, true));
+        section.set("options.permission.blacklist-permission.message", AdvUtils.convert(optionsBlacklistMessage, true));
     }
 
     @Override
