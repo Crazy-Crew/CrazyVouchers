@@ -6,6 +6,7 @@ import com.badbones69.crazyvouchers.commands.features.admin.migrate.IVoucherMigr
 import com.badbones69.crazyvouchers.commands.features.admin.migrate.enums.MigrationType;
 import com.badbones69.crazyvouchers.config.types.ConfigKeys;
 import com.ryderbelserion.fusion.core.api.enums.Level;
+import com.ryderbelserion.fusion.core.utils.StringUtils;
 import com.ryderbelserion.fusion.kyori.utils.AdvUtils;
 import com.ryderbelserion.fusion.paper.files.types.PaperCustomFile;
 import org.bukkit.command.CommandSender;
@@ -204,44 +205,31 @@ public class LegacyColorMigrator extends IVoucherMigrator {
     }
 
     private void processItems(@NotNull final String name, @NotNull final ConfigurationSection section) {
-        final String itemName = section.getString("name", name);
-        final List<String> itemLore = section.getStringList("lore");
+        section.set("lore", AdvUtils.convert(section.getStringList("lore"), true));
 
-        section.set("lore", AdvUtils.convert(itemLore, true));
+        section.set("name", AdvUtils.convert(section.getString("name", name), true));
 
-        final String optionsMessage = section.getString("options.message", "");
-        final String optionsWorldMessage = section.getString("options.whitelist-worlds.message",
+        setMessage(section, "options.message", "");
+        setMessage(section, "options.whitelist-worlds.message",
                 "{prefix}You are not in any of the whitelisted worlds.");
-        final String optionsWhitelistMessage = section.getString("options.permission.whitelist-permission.message",
+
+        setMessage(section, "options.permission.whitelist-permission.message",
                 "{prefix}You do not have the permission <red>{permission} <gray>to use this voucher.");
-        final String optionsBlacklistMessage = section.getString("options.permission.blacklist-permission.message",
+
+        setMessage(section, "options.permission.blacklist-permission.message",
                 "{prefix}You already have the permission <red>{permission} <gray>so you can''t use this voucher.");
-
-        section.set("name", AdvUtils.convert(itemName, true));
-
-        section.set("options.message", AdvUtils.convert(optionsMessage, true));
-        section.set("options.whitelist-worlds.message", AdvUtils.convert(optionsWorldMessage, true));
-
-        section.set("options.permission.whitelist-permission.message", AdvUtils.convert(optionsWhitelistMessage, true));
-        section.set("options.permission.blacklist-permission.message", AdvUtils.convert(optionsBlacklistMessage, true));
     }
 
     private void process(@NotNull final ConfigurationSection section) {
-        final String optionsMessage = section.getString("options.message", "");
-        final String optionsWorldMessage = section.getString("options.whitelist-worlds.message",
+        setMessage(section, "options.message", "");
+        setMessage(section, "options.whitelist-worlds.message",
                 "{prefix}<red>You can not use that voucher here as you are not in a whitelisted world for this voucher.");
 
-        final String optionsWhitelistMessage = section.getString("options.permission.whitelist-permission.message",
+        setMessage(section, "options.permission.whitelist-permission.message",
                 "{prefix}<red>You can not use that voucher here as you are not in a whitelisted world for this voucher.");
 
-        final String optionsBlacklistMessage = section.getString("options.permission.blacklist-permission.message",
+        setMessage(section, "options.permission.blacklist-permission.message",
                 "{prefix}<red>You can not use that voucher here as you are not in a whitelisted world for this voucher.");
-
-        section.set("options.message", AdvUtils.convert(optionsMessage, true));
-        section.set("options.whitelist-worlds.message", AdvUtils.convert(optionsWorldMessage, true));
-
-        section.set("options.permission.whitelist-permission.message", AdvUtils.convert(optionsWhitelistMessage, true));
-        section.set("options.permission.blacklist-permission.message", AdvUtils.convert(optionsBlacklistMessage, true));
     }
 
     @Override
@@ -257,5 +245,9 @@ public class LegacyColorMigrator extends IVoucherMigrator {
     @Override
     public @NotNull final Path getCodesDirectory() {
         return this.dataPath.resolve("codes");
+    }
+
+    private void setMessage(@NotNull final ConfigurationSection section, @NotNull final String path, @NotNull final String defaultValue) {
+        section.set(path, section.isList(path) ? AdvUtils.convert(section.getStringList(path), true) : AdvUtils.convert(section.getString(path, defaultValue), true));
     }
 }
