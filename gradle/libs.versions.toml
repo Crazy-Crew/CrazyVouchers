@@ -1,34 +1,44 @@
 [versions]
-## Paper
+## Paper API
 paperweight = "2.0.0-beta.21" # https://github.com/PaperMC/paperweight
 adventure = "5.2.0" # https://github.com/KyoriPowered/adventure
 paper = "26.1.2.build.+" # https://github.com/PaperMC/Paper
 
-jalu = "1.4.3" # https://github.com/AuthMe/ConfigMe
-
-## Minecraft
+## Minecraft API
 minecraft = "26.1.2" # https://minecraft.net
-
-## Deprecated API
-nbtapi = "2.15.7" # https://github.com/tr7zw/Item-NBT-API
 
 ## Plugin API
 headdatabaseapi = "1.3.2" # https://github.com/Arcaniax-Development/HeadDatabase-API
 placeholderapi = "2.12.2" # https://github.com/placeholderapi
-
-### Custom Item API
+## Economy API
+vault = "1.7.1" # https://github.com/MilkBowl/Vault
+## Custom Item API
 craftengine = "26.6" # https://github.com/Xiao-MoMi/craft-engine
 itemsadder = "4.0.10" # https://github.com/ItemsAdder
+hmcwraps = "1.8.2" # https://docs.hibiscusmc.com/hmcwraps/api
 oraxen = "1.211.0" # https://github.com/oraxen
 nexo = "1.21.0" # https://github.com/Nexo-MC
+## Deprecated API
+nbtapi = "2.15.7" # https://github.com/tr7zw/Item-NBT-API
+## Protection API
+worldguard = "7.0.13" # https://github.com/EngineHub/WorldGuard
 
-#### Other API
-hmcwraps = "1.8.2" # https://docs.hibiscusmc.com/hmcwraps/api/
+## Hologram API
+decentholograms = "2.9.9" # https://modrinth.com/plugin/decentholograms
+fancyholograms = "2.9.1" # https://modrinth.com/plugin/fancyholograms
+cmi-api = "9.8.6.4" # https://github.com/Zrips/CMI-API
+cmi-lib = "1.5.9.3" # https://www.spigotmc.org/resources/cmilib.87610
 
-## Other
+## Triumph API
 triumph-cmds = "2.0.0-BETA-4" # https://github.com/TriumphTeam/triumph-cmds
+## Metrics API
 bStats = "3.2.1" # https://github.com/Bastian/bStats
+## Fusion API
 fusion = "4.44.0" # https://github.com/ryderbelserion/Fusion
+## Database API
+hikari = "7.0.2" # https://github.com/brettwooldridge/HikariCP
+## Config API
+jalu = "1.4.3" # https://github.com/AuthMe/ConfigMe
 
 ## Gradle Plugins
 fix-javadoc = "1.19" # https://github.com/mfnalex/gradle-fix-javadoc-plugin
@@ -65,19 +75,34 @@ run-paper = { module = "xyz.jpenilla:run-task", version.ref = "run-paper" }
 headdatabaseapi = { module = "com.arcaniax:HeadDatabase-API", version.ref = "headdatabaseapi" }
 # https://github.com/placeholderapi
 placeholderapi = { module = "me.clip:placeholderapi", version.ref = "placeholderapi" }
+# https://github.com/EngineHub/WorldGuard
+worldguard = { module = "com.sk89q.worldguard:worldguard-bukkit", version.ref = "worldguard" }
 
 # https://github.com/Xiao-MoMi/craft-engine
 craftengine-bukkit = { module = "net.momirealms:craft-engine-bukkit", version.ref = "craftengine" }
 craftengine-core = { module = "net.momirealms:craft-engine-core", version.ref = "craftengine" }
 # https://github.com/ItemsAdder
 itemsadder = { module = "dev.lone:api-itemsadder", version.ref = "itemsadder" }
+# https://docs.hibiscusmc.com/hmcwraps/api
+hmcwraps = { module = "de.skyslycer.hmcwraps:api", version.ref = "hmcwraps" }
 # https://github.com/oraxen
 oraxen = { module = "io.th0rgal:oraxen", version.ref = "oraxen" }
 # https://github.com/Nexo-MC
 nexo = { module = "com.nexomc:nexo", version.ref = "nexo" }
 
-# https://docs.hibiscusmc.com/hmcwraps/api/
-hmcwraps = { module = "de.skyslycer.hmcwraps:api", version.ref = "hmcwraps" }
+# https://modrinth.com/plugin/decentholograms
+decent-holograms = { module = "com.github.decentsoftware-eu:decentholograms", version.ref = "decentholograms" }
+# https://modrinth.com/plugin/fancyholograms
+fancy-holograms = { module = "de.oliver:FancyHolograms", version.ref = "fancyholograms" }
+# https://github.com/Zrips/CMI-API
+cmi-api = { module = "com.Zrips.CMI:CMI-API", version.ref = "cmi-api" }
+# https://www.spigotmc.org/resources/cmilib.87610/
+cmi-lib = { module = "net.Zrips.CMILib:CMI-Lib", version.ref = "cmi-lib" }
+
+# https://github.com/KyoriPowered/adventure
+kyori-logger = { module = "net.kyori:adventure-text-logger-slf4j", version.ref = "adventure" }
+kyori-text = { module = "net.kyori:adventure-text-minimessage", version.ref = "adventure" }
+kyori-api = { module = "net.kyori:adventure-api", version.ref = "adventure" }
 
 # https://github.com/TriumphTeam/triumph-cmds
 triumph-cmds = { module = "dev.triumphteam:triumph-cmd-bukkit", version.ref = "triumph-cmds" }
@@ -86,16 +111,28 @@ triumph-cmds = { module = "dev.triumphteam:triumph-cmd-bukkit", version.ref = "t
 fusion-paper = { module = "com.ryderbelserion.fusion:fusion-paper", version.ref = "fusion" }
 fusion-kyori = { module = "com.ryderbelserion.fusion:fusion-kyori", version.ref = "fusion" }
 
+# https://github.com/Bastian/bStats
+metrics = { module = "org.bstats:bstats-bukkit", version.ref = "bStats" }
+
 # https://github.com/tr7zw/Item-NBT-API
 nbt-api = { module = "de.tr7zw:item-nbt-api", version.ref = "nbtapi" }
 
-# https://github.com/Bastian/bStats
-metrics = { module = "org.bstats:bstats-bukkit", version.ref = "bStats" }
+# https://github.com/MilkBowl/Vault
+vault = { module = "com.github.MilkBowl:VaultAPI", version.ref = "vault" }
+
+# https://github.com/brettwooldridge/HikariCP
+hikari-cp = { module = "com.zaxxer:HikariCP", version.ref = "hikari" }
 
 # https://github.com/AuthMe/ConfigMe
 jalu = { module = "ch.jalu:configme", version.ref = "jalu" }
 
 [bundles]
+adventure = [
+    "kyori-logger",
+    "kyori-text",
+    "kyori-api"
+]
+
 shared = [
     "headdatabaseapi",
     "placeholderapi",
@@ -104,10 +141,19 @@ shared = [
     "craftengine-core",
 
     "itemsadder",
+    "hmcwraps",
     "oraxen",
-    "nexo",
+    "nexo"
+]
 
-    "hmcwraps"
+holograms = [
+    "decent-holograms",
+    "fancy-holograms"
+]
+
+cmi = [
+    "cmi-api",
+    "cmi-lib"
 ]
 
 build = [

@@ -41,12 +41,13 @@ tasks {
             "com.ryderbelserion.fusion",
             "io.leangen.geantyref",
             "dev.triumphteam.cmd",
+            "de.tr7zw.changeme",
             "org.spongepowered",
             "com.google.gson",
             "org.jspecify",
             "org.bstats",
             "org.yaml",
-            "ch.jalu",
+            "ch.jalu"
         ).forEach {
             relocate(it, "libs.$it")
         }
