@@ -1,4 +1,4 @@
-## Changes 🔨
+## Changes
 ### New Commands
 - Added /crazyvouchers version which includes the git commit, previous git commit, and current version.
     - If any value is not found, it will return "N/A"
@@ -37,7 +37,7 @@
         - "{prefix}<gray>Right click again to confirm that you want to use this voucher." 
 ```
 
-## Bugs Fixed 🐛
+## Fixes
 - Vouchers could be used in recipes due to using return instead of continue.
 - world#dropItem was not wrapped in Folia Scheduler which led to incompatibility on Folia.
 - Vouchers/Codes not refreshing when running the migrators.
@@ -46,5 +46,3 @@
 - Weighted random commands were not working properly to invalid filters.
 - Commands with no weights were not running due to an invalid filter.
 - {random}:minimum-maximum placeholder now works properly, and allows for multiple replacements in a command.
-
-As always, Report 🐛 to https://github.com/Crazy-Crew/CrazyVouchers/issues
