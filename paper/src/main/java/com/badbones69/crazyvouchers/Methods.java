@@ -158,7 +158,7 @@ public class Methods {
         }
 
         for (final String value : values) {
-            player.sendMessage(fusion.parse(player, value, placeholders));
+            player.sendMessage(fusion.asComponent(player, value, placeholders));
         }
     }
 
