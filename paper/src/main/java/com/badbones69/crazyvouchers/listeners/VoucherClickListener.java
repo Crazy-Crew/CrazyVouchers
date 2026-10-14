@@ -23,7 +23,6 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.PlayerInventory;
 import java.util.*;
 
-@SuppressWarnings("UnstableApiUsage")
 public class VoucherClickListener implements Listener {
 
     private final CrazyVouchers plugin = CrazyVouchers.get();
