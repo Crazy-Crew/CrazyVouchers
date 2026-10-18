@@ -19,7 +19,7 @@ public class CommandReload extends BaseCommand {
     @Permission(value = "crazyvouchers.reload", def = PermissionDefault.OP)
     @Syntax("/crazyvouchers reload")
     public void reload(final CommandSender sender) {
-        this.plugin.getFusion().reload();
+        this.fusion.reload();
 
         ConfigManager.refresh();
 

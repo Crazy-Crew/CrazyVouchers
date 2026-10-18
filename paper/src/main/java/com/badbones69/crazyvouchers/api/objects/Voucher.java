@@ -233,7 +233,7 @@ public class Voucher {
             }
         }
 
-        this.twoFactorAuthToggle = section.contains("options.two-step-authentication") ? section.getBoolean("options.two-step-authentication", false) : section.getBoolean("two-factor.toggle", false);
+        this.twoFactorAuthToggle = section.contains("options.two-step-authentication") ? section.getBoolean("options.two-step-authentication", false) : section.getBoolean("options.two-factor.toggle", false);
         this.twoFactorAuthMessage = section.contains("options.two-factor.message") ? section.getStringList("options.two-factor.message") : List.of(this.locale.getProperty(MessageKeys.two_step_authentication));
 
         this.soundToggle = section.getBoolean("options.sound.toggle", false);
