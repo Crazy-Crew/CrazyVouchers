@@ -7,11 +7,11 @@ import com.badbones69.crazyvouchers.api.enums.FileSystem;
 import com.badbones69.crazyvouchers.api.enums.misc.PersistentKeys;
 import com.badbones69.crazyvouchers.api.objects.Voucher;
 import com.badbones69.crazyvouchers.api.objects.VoucherCode;
-import com.ryderbelserion.fusion.core.api.enums.Level;
+import com.ryderbelserion.fusion.api.enums.Level;
+import com.ryderbelserion.fusion.files.FileManager;
 import com.ryderbelserion.fusion.files.enums.FileType;
+import com.ryderbelserion.fusion.files.types.configurate.YamlCustomFile;
 import com.ryderbelserion.fusion.paper.FusionPaper;
-import com.ryderbelserion.fusion.paper.files.PaperFileManager;
-import com.ryderbelserion.fusion.paper.files.types.PaperCustomFile;
 import io.papermc.paper.persistence.PersistentDataContainerView;
 import org.bukkit.Material;
 import org.bukkit.configuration.ConfigurationSection;
@@ -21,8 +21,10 @@ import org.bukkit.inventory.ItemStack;
 import com.badbones69.crazyvouchers.config.ConfigManager;
 import com.badbones69.crazyvouchers.config.types.ConfigKeys;
 import org.bukkit.persistence.PersistentDataType;
-import org.jetbrains.annotations.NotNull;
+import org.jspecify.annotations.NonNull;
 import org.jetbrains.annotations.Nullable;
+import org.spongepowered.configurate.CommentedConfigurationNode;
+
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -31,23 +33,23 @@ import java.util.stream.Stream;
 
 public class CrazyManager {
 
-    private @NotNull final CrazyVouchers plugin = CrazyVouchers.get();
+    private @NonNull final CrazyVouchers plugin = CrazyVouchers.get();
 
-    private @NotNull final FusionPaper fusion = this.plugin.getFusion();
+    private @NonNull final FusionPaper fusion = this.plugin.getFusion();
 
-    private @NotNull final Path dataPath = this.plugin.getDataPath();
+    private @NonNull final Path dataPath = this.plugin.getDataPath();
 
-    private @NotNull final SettingsManager config = ConfigManager.getConfig();
+    private @NonNull final SettingsManager config = ConfigManager.getConfig();
 
-    private @NotNull final PaperFileManager fileManager = this.plugin.getFileManager();
+    private @NonNull final FileManager fileManager = this.plugin.getFileManager();
 
-    private @NotNull final List<Voucher> vouchers = new ArrayList<>();
-    private @NotNull final List<VoucherCode> voucherCodes = new ArrayList<>();
+    private @NonNull final List<Voucher> vouchers = new ArrayList<>();
+    private @NonNull final List<VoucherCode> voucherCodes = new ArrayList<>();
 
-    private @NotNull final List<String> brokenVouchers = new ArrayList<>();
-    private @NotNull final List<String> brokenVoucherCodes = new ArrayList<>();
+    private @NonNull final List<String> brokenVouchers = new ArrayList<>();
+    private @NonNull final List<String> brokenVoucherCodes = new ArrayList<>();
 
-    private @NotNull final Map<UUID, String> voucher_auth = new HashMap<>();
+    private @NonNull final Map<UUID, String> voucher_auth = new HashMap<>();
 
     public void load() {
         loadExamples();
@@ -73,7 +75,7 @@ public class CrazyManager {
         try {
             Files.deleteIfExists(version);
         } catch (final IOException exception) {
-            this.fusion.log(Level.WARNING, "Failed to delete version.json!", exception);
+            this.fusion.log(Level.warn, "Failed to delete version.json!", exception);
         }
     }
 
@@ -94,75 +96,66 @@ public class CrazyManager {
 
         switch (type) {
             case SINGLE -> {
-                final PaperCustomFile config = FileKeys.codes.getPaperCustomFile();
+                final YamlCustomFile config = FileKeys.codes.getPaperCustomFile();
 
                 if (!config.isLoaded()) {
-                    this.fusion.log(Level.WARNING, "The %s was not loaded into memory.", FileKeys.codes.getName());
+                    this.fusion.log(Level.warn, "The %s was not loaded into memory.", FileKeys.codes.getName());
 
                     return;
                 }
 
-                final FileConfiguration configuration = config.getConfiguration();
-                final ConfigurationSection section = configuration.getConfigurationSection("voucher-codes");
+                final CommentedConfigurationNode configuration = config.getConfiguration();
 
-                if (section == null) {
-                    this.fusion.log(Level.WARNING, "The configuration section we need for %s could not be found.", FileKeys.codes.getName());
+                if (!configuration.hasChild("voucher-codes")) {
+                    this.fusion.log(Level.warn, "The configuration section we need for %s could not be found.", FileKeys.codes.getName());
 
                     return;
                 }
 
-                for (final String code : section.getKeys(false)) {
+                final CommentedConfigurationNode section = configuration.node("voucher-codes");
+
+                section.childrenMap().forEach((id, node) -> {
                     try {
-                        final ConfigurationSection codeSection = section.getConfigurationSection(code);
-
-                        if (codeSection == null) {
-                            this.fusion.log(Level.WARNING, "The section for %s could not be found in voucher-codes.yml", code);
-
-                            continue;
-                        }
-
-                        this.voucherCodes.add(new VoucherCode(codeSection, code));
+                        this.voucherCodes.add(new VoucherCode(node, id.toString()));
                     } catch (final Exception exception) {
-                        this.brokenVoucherCodes.add(code);
+                        this.brokenVoucherCodes.add(id.toString());
                     }
-                }
+                });
             }
 
             case MULTIPLE -> {
                 for (final Path code : getCodesList()) {
-                    @NotNull final Optional<PaperCustomFile> optional = this.fileManager.getPaperFile(code);
+                    final Optional<YamlCustomFile> optional = this.fileManager.getYamlFile(code);
 
                     if (optional.isEmpty()) {
-                        this.fusion.log(Level.WARNING, "The code file named %s could not be found in the cache", code);
+                        this.fusion.log(Level.warn, "The code file named %s could not be found in the cache", code);
 
                         this.brokenVoucherCodes.add(code.getFileName().toString());
 
                         continue;
                     }
 
-                    final PaperCustomFile file = optional.get();
+                    final YamlCustomFile file = optional.get();
 
                     if (!file.isLoaded()) {
-                        this.fusion.log(Level.WARNING, "Could not load code configuration for %s", code);
+                        this.fusion.log(Level.warn, "Could not load code configuration for %s", code);
 
                         this.brokenVoucherCodes.add(file.getFileName());
 
                         continue;
                     }
 
-                    final YamlConfiguration configuration = file.getConfiguration();
+                    final CommentedConfigurationNode configuration = file.getConfiguration();
 
-                    final ConfigurationSection section = configuration.getConfigurationSection("voucher-code");
-
-                    if (section == null) {
-                        this.fusion.log(Level.WARNING, "Could not find voucher code configuration section for %s", code);
+                    if (!configuration.hasChild("voucher-code")) {
+                        this.fusion.log(Level.warn, "Could not find voucher code configuration section for %s", code);
 
                         this.brokenVoucherCodes.add(file.getFileName());
 
                         continue;
                     }
 
-                    this.voucherCodes.add(new VoucherCode(section, file.getFileName()));
+                    this.voucherCodes.add(new VoucherCode(configuration.node("voucher-code"), file.getFileName()));
                 }
             }
         }
@@ -173,73 +166,64 @@ public class CrazyManager {
 
         switch (type) {
             case SINGLE -> {
-                final PaperCustomFile config = FileKeys.vouchers.getPaperCustomFile();
+                final YamlCustomFile config = FileKeys.vouchers.getPaperCustomFile();
 
                 if (!config.isLoaded()) {
-                    this.fusion.log(Level.WARNING, "The %s was not loaded into memory.", FileKeys.vouchers.getName());
+                    this.fusion.log(Level.warn, "The %s was not loaded into memory.", FileKeys.vouchers.getName());
 
                     return;
                 }
 
-                final YamlConfiguration configuration = config.getConfiguration();
-                final ConfigurationSection section = configuration.getConfigurationSection("vouchers");
+                final CommentedConfigurationNode configuration = config.getConfiguration();
 
-                if (section == null) {
-                    this.fusion.log(Level.WARNING, "The configuration section we need for %s could not be found.", FileKeys.vouchers.getName());
+                if (configuration.hasChild("vouchers")) {
+                    this.fusion.log(Level.warn, "The configuration section we need for %s could not be found.", FileKeys.vouchers.getName());
 
                     return;
                 }
 
-                for (final String voucher : section.getKeys(false)) {
+                configuration.node("vouchers").childrenMap().forEach((id, node) -> {
                     try {
-                        final ConfigurationSection voucherSection = section.getConfigurationSection(voucher);
-
-                        if (voucherSection == null) {
-                            this.fusion.log(Level.WARNING, "The section for %s could not be found in vouchers.yml", voucher);
-
-                            continue;
-                        }
-
-                        this.vouchers.add(new Voucher(voucherSection, voucher));
+                        this.vouchers.add(new Voucher(node, id.toString()));
                     } catch (final Exception exception) {
-                        this.brokenVouchers.add(voucher);
+                        this.brokenVoucherCodes.add(id.toString());
                     }
-                }
+                });
             }
 
             case MULTIPLE -> {
                 for (final Path voucher : getVouchersList()) {
-                    final Optional<PaperCustomFile> optional = this.fileManager.getPaperFile(voucher);
+                    final Optional<YamlCustomFile> optional = this.fileManager.getYamlFile(voucher);
 
                     if (optional.isEmpty()) {
-                        this.fusion.log(Level.WARNING, "The voucher file named %s could not be found in the cache", voucher);
+                        this.fusion.log(Level.warn, "The voucher file named %s could not be found in the cache", voucher);
 
                         this.brokenVouchers.add(voucher.getFileName().toString());
 
                         continue;
                     }
 
-                    final PaperCustomFile file = optional.get();
+                    final YamlCustomFile file = optional.get();
 
                     if (!file.isLoaded()) {
-                        this.fusion.log(Level.WARNING, "Could not load voucher configuration for %s", voucher);
+                        this.fusion.log(Level.warn, "Could not load voucher configuration for %s", voucher);
 
                         this.brokenVouchers.add(file.getFileName());
 
                         continue;
                     }
 
-                    final ConfigurationSection section = file.getConfiguration().getConfigurationSection("voucher");
+                    final CommentedConfigurationNode configuration = file.getConfiguration();
 
-                    if (section == null) {
-                        this.fusion.log(Level.WARNING, "Could not find voucher configuration section for %s", voucher);
+                    if (configuration.hasChild("voucher")) {
+                        this.fusion.log(Level.warn, "Could not find voucher configuration section for %s", voucher);
 
                         this.brokenVouchers.add(file.getFileName());
 
                         continue;
                     }
 
-                    this.vouchers.add(new Voucher(section, file.getFileName()));
+                    this.vouchers.add(new Voucher(configuration.node("voucher"), file.getFileName()));
                 }
             }
         }
@@ -253,15 +237,15 @@ public class CrazyManager {
                 try (final Stream<Path> values = Files.walk(examples)) {
                     values.sorted(Comparator.reverseOrder()).forEach(path -> { // sorted in reverse order, to ensure the directories are empty first.
                         try {
-                            this.fusion.log(Level.WARNING, "Successfully deleted path %s, re-generating the examples later.", path);
+                            this.fusion.log(Level.warn, "Successfully deleted path %s, re-generating the examples later.", path);
 
                             Files.delete(path);
                         } catch (final IOException exception) {
-                            this.fusion.log(Level.WARNING, "Failed to delete %s in loop.", exception, path);
+                            this.fusion.log(Level.warn, "Failed to delete %s in loop.", exception, path);
                         }
                     });
                 } catch (final Exception exception) {
-                    this.fusion.log(Level.WARNING, "Failed to delete %s.", exception, exception);
+                    this.fusion.log(Level.warn, "Failed to delete %s.", exception, exception);
                 }
             }
 
@@ -279,31 +263,31 @@ public class CrazyManager {
         }
     }
 
-    public @NotNull final List<Path> getVouchersList() {
+    public @NonNull final List<Path> getVouchersList() {
         return this.fusion.getFilesByPath(this.dataPath.resolve("vouchers"), ".yml");
     }
 
-    public @NotNull final List<Path> getCodesList() {
+    public @NonNull final List<Path> getCodesList() {
         return this.fusion.getFilesByPath(this.dataPath.resolve("codes"), ".yml");
     }
     
-    public @NotNull final List<Voucher> getVouchers() {
+    public @NonNull final List<Voucher> getVouchers() {
         return Collections.unmodifiableList(this.vouchers);
     }
 
-    public @NotNull final List<String> getBrokenVouchers() {
+    public @NonNull final List<String> getBrokenVouchers() {
         return Collections.unmodifiableList(this.brokenVouchers);
     }
 
-    public @NotNull final List<VoucherCode> getVoucherCodes() {
+    public @NonNull final List<VoucherCode> getVoucherCodes() {
         return Collections.unmodifiableList(this.voucherCodes);
     }
 
-    public @NotNull final List<String> getBrokenVoucherCodes() {
+    public @NonNull final List<String> getBrokenVoucherCodes() {
         return Collections.unmodifiableList(this.brokenVoucherCodes);
     }
 
-    public @Nullable VoucherCode getVoucherCode(@NotNull final String voucherName) {
+    public @Nullable VoucherCode getVoucherCode(@NonNull final String voucherName) {
         VoucherCode voucherCode = null;
 
         if (voucherName.isEmpty()) return voucherCode;
@@ -319,7 +303,7 @@ public class CrazyManager {
         return voucherCode;
     }
 
-    public boolean isVoucherCode(@NotNull final String voucherCode) {
+    public boolean isVoucherCode(@NonNull final String voucherCode) {
         if (voucherCode.isEmpty()) return false;
 
         boolean isVoucherCode = false;
@@ -347,7 +331,7 @@ public class CrazyManager {
         return isVoucherCode;
     }
 
-    public @Nullable Voucher getVoucher(@NotNull final String voucherName) {
+    public @Nullable Voucher getVoucher(@NonNull final String voucherName) {
         Voucher safeVoucher = null;
 
         if (voucherName.isEmpty()) return safeVoucher;
@@ -363,7 +347,7 @@ public class CrazyManager {
         return safeVoucher;
     }
 
-    public @Nullable Voucher getVoucherFromItem(@NotNull final ItemStack item) {
+    public @Nullable Voucher getVoucherFromItem(@NonNull final ItemStack item) {
         if (item.getType() == Material.AIR) return null;
 
         final PersistentDataContainerView container = item.getPersistentDataContainer();
@@ -381,21 +365,21 @@ public class CrazyManager {
         return voucher;
     }
 
-    public void addVoucherAuth(@NotNull final UUID uuid, @NotNull final String voucher) {
+    public void addVoucherAuth(@NonNull final UUID uuid, @NonNull final String voucher) {
         this.voucher_auth.put(uuid, voucher);
     }
 
-    public void removeVoucherAuth(@NotNull final UUID uuid) {
+    public void removeVoucherAuth(@NonNull final UUID uuid) {
         if (!isVoucherAuthActive(uuid)) return;
 
         this.voucher_auth.remove(uuid);
     }
 
-    public boolean isVoucherAuthActive(@NotNull final UUID uuid) {
+    public boolean isVoucherAuthActive(@NonNull final UUID uuid) {
         return this.voucher_auth.containsKey(uuid);
     }
 
-    public String getActiveVoucherAuth(@NotNull final UUID uuid) {
+    public String getActiveVoucherAuth(@NonNull final UUID uuid) {
         return this.voucher_auth.getOrDefault(uuid, "");
     }
 }

@@ -7,11 +7,11 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.inventory.InventoryCloseEvent;
-import org.jetbrains.annotations.NotNull;
+import org.jspecify.annotations.NonNull;
 
 public class VoucherMiscListener implements Listener {
 
-    private @NotNull final InventoryManager inventoryManager = CrazyVouchers.get().getInventoryManager();
+    private @NonNull final InventoryManager inventoryManager = CrazyVouchers.get().getInventoryManager();
 
     @EventHandler
     public void onInventoryClose(InventoryCloseEvent event) {

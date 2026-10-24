@@ -11,12 +11,12 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.inventory.*;
 import org.bukkit.inventory.CraftingInventory;
 import org.bukkit.inventory.ItemStack;
-import org.jetbrains.annotations.NotNull;
+import org.jspecify.annotations.NonNull;
 import com.badbones69.crazyvouchers.config.types.ConfigKeys;
 
 public class VoucherCraftListener implements Listener {
 
-    private @NotNull final SettingsManager config = ConfigManager.getConfig();
+    private @NonNull final SettingsManager config = ConfigManager.getConfig();
 
     @EventHandler(priority = EventPriority.NORMAL, ignoreCancelled = true)
     public void prepareItemCraft(PrepareItemCraftEvent event) {

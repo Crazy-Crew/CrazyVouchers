@@ -2,7 +2,7 @@ package com.badbones69.crazyvouchers.api.enums.misc;
 
 import org.bukkit.entity.Player;
 import org.bukkit.permissions.PermissionDefault;
-import org.jetbrains.annotations.NotNull;
+import org.jspecify.annotations.NonNull;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
@@ -30,7 +30,7 @@ public enum PermissionKeys {
     private final PermissionDefault isDefault;
     private final Map<String, Boolean> children;
 
-    PermissionKeys(@NotNull final String node, @NotNull final String description, @NotNull final PermissionDefault isDefault, @NotNull final HashMap<String, Boolean> children) {
+    PermissionKeys(@NonNull final String node, @NonNull final String description, @NonNull final PermissionDefault isDefault, @NonNull final HashMap<String, Boolean> children) {
         this.node = node;
         this.description = description;
 
@@ -39,7 +39,7 @@ public enum PermissionKeys {
         this.children = children;
     }
 
-    PermissionKeys(@NotNull final String node, @NotNull final String description, @NotNull final PermissionDefault isDefault) {
+    PermissionKeys(@NonNull final String node, @NonNull final String description, @NonNull final PermissionDefault isDefault) {
         this.node = node;
         this.description = description;
 
@@ -47,23 +47,23 @@ public enum PermissionKeys {
         this.children = new HashMap<>();
     }
 
-    public @NotNull final String getPermission() {
+    public @NonNull final String getPermission() {
         return "crazyvouchers." + this.node;
     }
 
-    public @NotNull final String getDescription() {
+    public @NonNull final String getDescription() {
         return this.description;
     }
 
-    public @NotNull final PermissionDefault isDefault() {
+    public @NonNull final PermissionDefault isDefault() {
         return this.isDefault;
     }
 
-    public @NotNull final Map<String, Boolean> getChildren() {
+    public @NonNull final Map<String, Boolean> getChildren() {
         return Collections.unmodifiableMap(this.children);
     }
 
-    public final boolean hasPermission(@NotNull final Player player) {
+    public final boolean hasPermission(@NonNull final Player player) {
         return player.hasPermission(getPermission());
     }
 }

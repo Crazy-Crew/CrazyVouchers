@@ -3,13 +3,13 @@ package com.badbones69.crazyvouchers.config.migrate;
 import ch.jalu.configme.configurationdata.ConfigurationData;
 import ch.jalu.configme.migration.PlainMigrationService;
 import ch.jalu.configme.resource.PropertyReader;
-import org.jetbrains.annotations.NotNull;
+import org.jspecify.annotations.NonNull;
 import com.badbones69.crazyvouchers.api.enums.config.Properties;
 
 public class LocaleMigration extends PlainMigrationService {
 
     @Override
-    protected boolean performMigrations(@NotNull PropertyReader reader, @NotNull ConfigurationData configurationData) {
+    protected boolean performMigrations(@NonNull PropertyReader reader, @NonNull ConfigurationData configurationData) {
         return Properties.survival_mode.moveString(reader, configurationData)
                 | Properties.no_permission.moveString(reader, configurationData)
                 | Properties.no_permission_to_use_voucher_in_offhand.moveString(reader, configurationData)

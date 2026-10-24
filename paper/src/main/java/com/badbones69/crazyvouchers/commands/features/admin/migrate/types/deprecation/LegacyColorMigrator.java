@@ -5,14 +5,14 @@ import com.badbones69.crazyvouchers.api.enums.config.Messages;
 import com.badbones69.crazyvouchers.commands.features.admin.migrate.IVoucherMigrator;
 import com.badbones69.crazyvouchers.commands.features.admin.migrate.enums.MigrationType;
 import com.badbones69.crazyvouchers.config.types.ConfigKeys;
-import com.ryderbelserion.fusion.core.api.enums.Level;
-import com.ryderbelserion.fusion.core.utils.StringUtils;
+import com.ryderbelserion.fusion.api.enums.Level;
+import com.ryderbelserion.fusion.files.types.configurate.YamlCustomFile;
 import com.ryderbelserion.fusion.kyori.utils.AdvUtils;
-import com.ryderbelserion.fusion.paper.files.types.PaperCustomFile;
 import org.bukkit.command.CommandSender;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.file.YamlConfiguration;
-import org.jetbrains.annotations.NotNull;
+import org.jspecify.annotations.NonNull;
+import org.spongepowered.configurate.CommentedConfigurationNode;
 import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.List;
@@ -20,7 +20,7 @@ import java.util.Optional;
 
 public class LegacyColorMigrator extends IVoucherMigrator {
 
-    public LegacyColorMigrator(@NotNull final CommandSender sender) {
+    public LegacyColorMigrator(@NonNull final CommandSender sender) {
         super(sender, MigrationType.VOUCHERS_COLOR);
     }
 
@@ -73,7 +73,7 @@ public class LegacyColorMigrator extends IVoucherMigrator {
 
                     FileKeys.vouchers.save();
                 } else {
-                    this.fusion.log(Level.WARNING, "Failed to migrate vouchers.yml due to the configuration section being null.");
+                    this.fusion.log(Level.warn, "Failed to migrate vouchers.yml due to the configuration section being null.");
 
                     failed.add("<red>⤷ vouchers.yml");
                 }
@@ -89,7 +89,7 @@ public class LegacyColorMigrator extends IVoucherMigrator {
 
                     FileKeys.codes.save();
                 } else {
-                    this.fusion.log(Level.WARNING, "Failed to migrate codes.yml due to the configuration section being null.");
+                    this.fusion.log(Level.warn, "Failed to migrate codes.yml due to the configuration section being null.");
 
                     failed.add("<red>⤷ codes.yml");
                 }
@@ -101,41 +101,41 @@ public class LegacyColorMigrator extends IVoucherMigrator {
                 final List<Path> code_files = this.fusion.getFilesByPath(code_dir, ".yml");
 
                 for (final Path path : code_files) {
-                    final Optional<PaperCustomFile> optional = this.fileManager.getPaperFile(path);
+                    final Optional<YamlCustomFile> optional = this.fileManager.getYamlFile(path);
 
                     final String fileName = path.getFileName().toString();
 
                     if (optional.isEmpty()) {
-                        this.fusion.log(Level.WARNING, "<red>%s</red> does not exist in the file cache", fileName);
+                        this.fusion.log(Level.warn, "<red>%s</red> does not exist in the file cache", fileName);
 
                         failed.add("<red>⤷ " + fileName);
 
                         continue;
                     }
 
-                    final PaperCustomFile customFile = optional.get();
+                    final YamlCustomFile customFile = optional.get();
 
                     if (!customFile.isLoaded()) {
-                        this.fusion.log(Level.WARNING, "<red>%s</red> configuration is invalid, likely not loaded properly. Please check console :)", fileName);
+                        this.fusion.log(Level.warn, "<red>%s</red> configuration is invalid, likely not loaded properly. Please check console :)", fileName);
 
                         failed.add("<red>⤷ " + fileName);
 
                         continue;
                     }
 
-                    final YamlConfiguration configuration = customFile.getConfiguration();
+                    final CommentedConfigurationNode configuration = customFile.getConfiguration();
 
-                    final ConfigurationSection section = configuration.getConfigurationSection("voucher-code");
+                    //final ConfigurationSection section = configuration.getConfigurationSection("voucher-code");
 
-                    if (section == null) {
-                        this.fusion.log(Level.WARNING, "Configuration section for <red>%s</red> was not found.", fileName);
+                    //if (section == null) {
+                    //    this.fusion.log(Level.warn, "Configuration section for <red>%s</red> was not found.", fileName);
 
-                        failed.add("<red>⤷ " + fileName);
+                    //    failed.add("<red>⤷ " + fileName);
 
-                        continue;
-                    }
+                    //    continue;
+                    //}
 
-                    process(section);
+                    //process(section);
 
                     success.add("<green>⤷ " + fileName);
 
@@ -147,41 +147,41 @@ public class LegacyColorMigrator extends IVoucherMigrator {
                 final List<Path> voucher_files = this.fusion.getFilesByPath(voucher_dir, ".yml");
 
                 for (final Path path : voucher_files) {
-                    final Optional<PaperCustomFile> optional = this.fileManager.getPaperFile(path);
+                    final Optional<YamlCustomFile> optional = this.fileManager.getYamlFile(path);
 
                     final String fileName = path.getFileName().toString();
 
                     if (optional.isEmpty()) {
-                        this.fusion.log(Level.WARNING, "<red>%s</red> does not exist in the file cache", fileName);
+                        this.fusion.log(Level.warn, "<red>%s</red> does not exist in the file cache", fileName);
 
                         failed.add("<red>⤷ " + fileName);
 
                         continue;
                     }
 
-                    final PaperCustomFile customFile = optional.get();
+                    final YamlCustomFile customFile = optional.get();
 
                     if (!customFile.isLoaded()) {
-                        this.fusion.log(Level.WARNING, "<red>%s</red> configuration is invalid, likely not loaded properly. Please check console :)", fileName);
+                        this.fusion.log(Level.warn, "<red>%s</red> configuration is invalid, likely not loaded properly. Please check console :)", fileName);
 
                         failed.add("<red>⤷ " + fileName);
 
                         continue;
                     }
 
-                    final YamlConfiguration configuration = customFile.getConfiguration();
+                    /*final YamlConfiguration configuration = customFile.getConfiguration();
 
                     final ConfigurationSection section = configuration.getConfigurationSection("voucher");
 
                     if (section == null) {
-                        this.fusion.log(Level.WARNING, "Configuration section for <red>%s</red> was not found.", fileName);
+                        this.fusion.log(Level.warn, "Configuration section for <red>%s</red> was not found.", fileName);
 
                         failed.add("<red>⤷ " + fileName);
 
                         continue;
-                    }
+                    }*/
 
-                    processItems(customFile.getPrettyName(), section);
+                    //processItems(customFile.getPrettyName(), section);
 
                     success.add("<green>⤷ " + fileName);
 
@@ -204,7 +204,7 @@ public class LegacyColorMigrator extends IVoucherMigrator {
         this.crazyManager.reloadCodes();
     }
 
-    private void processItems(@NotNull final String name, @NotNull final ConfigurationSection section) {
+    private void processItems(@NonNull final String name, @NonNull final ConfigurationSection section) {
         section.set("lore", AdvUtils.convert(section.getStringList("lore"), true));
 
         section.set("name", AdvUtils.convert(section.getString("name", name), true));
@@ -220,7 +220,7 @@ public class LegacyColorMigrator extends IVoucherMigrator {
                 "{prefix}You already have the permission <red>{permission} <gray>so you can''t use this voucher.");
     }
 
-    private void process(@NotNull final ConfigurationSection section) {
+    private void process(@NonNull final ConfigurationSection section) {
         setMessage(section, "options.message", "");
         setMessage(section, "options.whitelist-worlds.message",
                 "{prefix}<red>You can not use that voucher here as you are not in a whitelisted world for this voucher.");
@@ -233,21 +233,21 @@ public class LegacyColorMigrator extends IVoucherMigrator {
     }
 
     @Override
-    public <T> void set(@NotNull final ConfigurationSection section, @NotNull final String path, @NotNull final T value) {
+    public <T> void set(@NonNull final ConfigurationSection section, @NonNull final String path, @NonNull final T value) {
         section.set(path, value);
     }
 
     @Override
-    public @NotNull final Path getVouchersDirectory() {
+    public @NonNull final Path getVouchersDirectory() {
         return this.dataPath.resolve("vouchers");
     }
 
     @Override
-    public @NotNull final Path getCodesDirectory() {
+    public @NonNull final Path getCodesDirectory() {
         return this.dataPath.resolve("codes");
     }
 
-    private void setMessage(@NotNull final ConfigurationSection section, @NotNull final String path, @NotNull final String defaultValue) {
+    private void setMessage(@NonNull final ConfigurationSection section, @NonNull final String path, @NonNull final String defaultValue) {
         section.set(path, section.isList(path) ? AdvUtils.convert(section.getStringList(path), true) : AdvUtils.convert(section.getString(path, defaultValue), true));
     }
 }

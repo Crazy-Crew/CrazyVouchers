@@ -1,7 +1,7 @@
 package com.badbones69.crazyvouchers.utils;
 
 import com.badbones69.crazyvouchers.CrazyVouchers;
-import com.ryderbelserion.fusion.core.api.enums.Level;
+import com.ryderbelserion.fusion.api.enums.Level;
 import com.ryderbelserion.fusion.core.utils.StringUtils;
 import com.ryderbelserion.fusion.paper.FusionPaper;
 import com.ryderbelserion.fusion.paper.builders.items.ItemBuilder;
@@ -9,88 +9,73 @@ import com.ryderbelserion.fusion.paper.builders.items.types.PatternBuilder;
 import com.ryderbelserion.fusion.paper.builders.items.types.PotionBuilder;
 import com.ryderbelserion.fusion.paper.builders.items.types.SkullBuilder;
 import com.ryderbelserion.fusion.paper.builders.items.types.custom.CustomBuilder;
-import org.bukkit.configuration.ConfigurationSection;
-import org.bukkit.enchantments.Enchantment;
 import org.bukkit.inventory.ItemType;
-import org.bukkit.potion.PotionEffectType;
-import org.jetbrains.annotations.NotNull;
+import org.jspecify.annotations.NonNull;
 import org.jetbrains.annotations.Nullable;
+import org.spongepowered.configurate.CommentedConfigurationNode;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
 public class ItemUtils {
 
-    private static @NotNull final CrazyVouchers plugin = CrazyVouchers.get();
+    private static @NonNull final CrazyVouchers plugin = CrazyVouchers.get();
 
-    private static @NotNull final FusionPaper fusion = plugin.getFusion();
+    private static @NonNull final FusionPaper fusion = plugin.getFusion();
 
-    /**
-     * Converts a String to an ItemBuilder.
-     *
-     * @param itemString the string you wish to convert.
-     * @return the string as an ItemBuilder.
-     */
-    public static ItemBuilder convertString(@NotNull final String itemString) {
-        return convertString(itemString, "");
-    }
-
-    public static List<ItemBuilder> convertConfigurationSection(@Nullable final ConfigurationSection section) {
+    public static List<ItemBuilder> convertConfigurationSection(@Nullable final CommentedConfigurationNode section) {
         final List<ItemBuilder> cache = new ArrayList<>();
 
         if (section == null) return cache;
 
-        for (final String key : section.getKeys(false)) {
-            final ConfigurationSection item = section.getConfigurationSection(key);
+        for (final Map.Entry<Object, CommentedConfigurationNode> key : section.childrenMap().entrySet()) {
+            final CommentedConfigurationNode item = key.getValue();
 
-            if (item == null) continue;
+            final ItemBuilder itemBuilder = new ItemBuilder(item.node("material").getString("stone"));
 
-            final ItemBuilder itemBuilder = new ItemBuilder(item.getString("material", "stone"));
+            itemBuilder.withBase64(item.node("data").getString(""));
 
-            itemBuilder.withBase64(item.getString("data", ""));
+            itemBuilder.withDisplayName(item.node("name").getString(""));
 
-            itemBuilder.withDisplayName(item.getString("name", ""));
+            itemBuilder.withDisplayLore(StringUtils.getStringList(item.node("lore")));
 
-            itemBuilder.withDisplayLore(item.getStringList("lore"));
+            itemBuilder.setAmount(item.node("amount").getInt(1));
 
-            itemBuilder.setAmount(item.getInt("amount", 1));
+            item.node("enchantments").childrenMap().forEach((id, node) -> {
+                final int level = node.node(id).getInt(1);
 
-            final ConfigurationSection enchantments = item.getConfigurationSection("enchantments");
-
-            if (enchantments != null) {
-                for (final String enchantment : enchantments.getKeys(false)) {
-                    final int level = enchantments.getInt(enchantment);
-
-                    itemBuilder.addEnchantment(enchantment, level);
-                }
-            }
+                itemBuilder.addEnchantment(id.toString(), level);
+            });
 
             final CustomBuilder customBuilder = itemBuilder.asCustomBuilder();
 
-            customBuilder.setCustomModelData(item.getString("custom-model-data", ""));
+            customBuilder.setCustomModelData(item.node("custom-model-data").getString(""));
 
-            if (item.getBoolean("hide-tool-tip", false)) {
+            if (item.node("hide-tool-tip").getBoolean(false)) {
                 itemBuilder.hideToolTip();
             }
 
-            if (item.contains("hide-tooltip-advanced") && item.isList("hide-tooltip-advanced")) {
-                itemBuilder.hideComponents(item.getStringList("hide-tooltip-advanced"));
+            if (item.hasChild("hide-tooltip-advanced") && item.node("hide-tooltip-advanced").isList()) {
+                itemBuilder.hideComponents(StringUtils.getStringList(item.node("hide-tooltip-advanced")));
             }
 
-            customBuilder.setItemModel(item.getString("item-model.namespace", ""), item.getString("item-model.key", ""));
+            if (item.hasChild("item-model")) {
+                customBuilder.setItemModel(item.node("item-model", "namespace").getString(""), item.node("item-model", "key").getString(""));
+            }
 
-            itemBuilder.setUnbreakable(item.getBoolean("unbreakable-item", false));
+            itemBuilder.setUnbreakable(item.node("unbreakable-item").getBoolean(false));
 
             // settings
-            switch (item.getString("settings.glowing", "none").toLowerCase()) {
+            switch (item.node("settings", "glowing").getString("none").toLowerCase()) {
                 case "add_glow", "true" -> itemBuilder.addEnchantGlint();
                 case "remove_glow", "false" -> itemBuilder.removeEnchantGlint();
                 case "none" -> {}
             }
 
-            final String player = item.getString("settings.player", null);
+            final String player = item.node("settings", "player").getString(null);
 
             if (player != null && !player.isEmpty()) {
                 final SkullBuilder skullBuilder = itemBuilder.asSkullBuilder();
@@ -98,57 +83,57 @@ public class ItemUtils {
                 skullBuilder.withName(player).build();
             }
 
-            itemBuilder.setItemDamage(item.getInt("settings.damage", 0));
+            itemBuilder.setItemDamage(item.node("settings", "damage").getInt(0));
 
-            itemBuilder.withSkull(item.getString("settings.skull", ""));
+            itemBuilder.withSkull(item.node("settings", "skull").getString(""));
 
-            final String rgb = item.getString("settings.rgb", "");
+            final String rgb = item.node("settings", "rgb").getString("");
 
-            final String color = item.getString("settings.color", "");
+            final String color = item.node("settings", "color").getString("");
 
             itemBuilder.setColor(!color.isEmpty() ? color : !rgb.isEmpty() ? rgb : "");
 
-            itemBuilder.setTrim(item.getString("settings.trim.pattern", ""), item.getString("settings.trim.material", ""));
+            itemBuilder.setTrim(item.node("settings", "trim", "pattern").getString(""), item.node("settings", "trim", "material").getString(""));
 
-            final ConfigurationSection potions = item.getConfigurationSection("settings.potions");
-
-            if (potions != null) {
+            if (item.hasChild("settings", "potions")) {
                 final PotionBuilder potionBuilder = itemBuilder.asPotionBuilder();
 
-                for (final String potion : potions.getKeys(false)) {
-                    final PotionEffectType type = com.ryderbelserion.fusion.paper.utils.ItemUtils.getPotionEffect(potion);
+                final CommentedConfigurationNode potions = item.node("settings", "potions");
 
-                    if (type != null) {
-                        final ConfigurationSection data = potions.getConfigurationSection(potion);
+                potions.childrenMap().keySet().stream().map(Object::toString).forEach(id -> {
+                    com.ryderbelserion.fusion.paper.utils.ItemUtils.getPotionEffect(id).ifPresent(type -> {
+                        final CommentedConfigurationNode potion = potions.node(id);
 
-                        if (data != null) {
-                            final int duration = data.getInt("duration", 10) * 20;
-                            final int level = data.getInt("level", 1);
+                        final int duration = potion.node("duration").getInt(10) * 20;
+                        final int level = potion.node("level").getInt(1);
 
-                            final boolean icon = data.getBoolean("style.icon", false);
-                            final boolean ambient = data.getBoolean("style.ambient", false);
-                            final boolean particles = data.getBoolean("style.particles", false);
+                        final boolean hasIcon = potion.node("style", "icon").getBoolean(false);
+                        final boolean isAmbient = potion.node("style", "ambient").getBoolean(false);
+                        final boolean hasParticles = potion.node("style", "particles").getBoolean(false);
 
-                            potionBuilder.withPotionEffect(type, duration, level, ambient, particles, icon);
-                        }
-                    }
-                }
+                        potionBuilder.withPotionEffect(type, duration, level, isAmbient, hasParticles, hasIcon);
+                    });
+                });
 
                 potionBuilder.build();
             }
 
-            final ConfigurationSection patterns = item.getConfigurationSection("settings.patterns");
-
-            if (patterns != null) {
-                for (final String pattern : patterns.getKeys(false)) {
-                    final String patternColor = patterns.getString(pattern, "white");
-
-                    final PatternBuilder patternBuilder = itemBuilder.asPatternBuilder();
-
-                    patternBuilder.addPattern(pattern, patternColor);
-
-                    patternBuilder.build();
+            if (item.hasChild("settings", "patterns")) {
+                for (final Map.Entry<Object, CommentedConfigurationNode> entry : item.node("settings", "patterns").childrenMap().entrySet()) {
+                    final CommentedConfigurationNode config = entry.getValue();
                 }
+
+                final CommentedConfigurationNode patterns = item.node("settings", "patterns");
+
+                final PatternBuilder patternBuilder = itemBuilder.asPatternBuilder();
+
+                item.node("settings", "patterns").childrenMap().keySet().stream().map(Object::toString).forEach(id -> {
+                    final CommentedConfigurationNode pattern = patterns.node(id);
+
+                    patternBuilder.addPattern(id, pattern.getString("white"));
+                });
+
+                patternBuilder.build();
             }
 
             customBuilder.build();
@@ -166,7 +151,7 @@ public class ItemUtils {
      * @param placeHolder the placeholder to use if there is an error.
      * @return the string as an ItemBuilder.
      */
-    public static ItemBuilder convertString(@NotNull final String itemString, @NotNull final String placeHolder) {
+    public static ItemBuilder convertString(@NonNull final String itemString, @NonNull final String placeHolder) {
         ItemBuilder itemBuilder = new ItemBuilder(ItemType.STONE);
 
         try {
@@ -196,7 +181,7 @@ public class ItemUtils {
                         try {
                             itemBuilder.asSkullBuilder().withName(value).build();
                         } catch (final Exception exception) {
-                            fusion.log(Level.WARNING, "Could create skull builder because the item is not a player head. You can ignore this, This is a restriction of the current system.");
+                            fusion.log(Level.warn, "Could create skull builder because the item is not a player head. You can ignore this, This is a restriction of the current system.");
                         }
                     }
                     case "skull" -> itemBuilder.withSkull(value);
@@ -223,13 +208,11 @@ public class ItemUtils {
                     }
 
                     default -> {
-                        final Enchantment enchantment = com.ryderbelserion.fusion.paper.utils.ItemUtils.getEnchantment(getEnchant(option));
-
-                        if (enchantment != null) {
+                        com.ryderbelserion.fusion.paper.utils.ItemUtils.getEnchantment(getEnchant(option)).ifPresent(enchantment -> {
                             final Optional<Number> level = StringUtils.tryParseInt(value);
 
                             itemBuilder.addEnchantment(getEnchant(option), level.map(Number::intValue).orElse(1));
-                        }
+                        });
 
                         if (itemBuilder.isBanner() || itemBuilder.isShield()) {
                             final PatternBuilder builder = itemBuilder.asPatternBuilder();
@@ -254,7 +237,7 @@ public class ItemUtils {
      * @param itemStrings the list of Strings.
      * @return the list of ItemBuilders.
      */
-    public static List<ItemBuilder> convertStringList(@NotNull final List<String> itemStrings) {
+    public static List<ItemBuilder> convertStringList(@NonNull final List<String> itemStrings) {
         return convertStringList(itemStrings, "");
     }
 
@@ -265,11 +248,11 @@ public class ItemUtils {
      * @param placeholder the placeholder for errors.
      * @return the list of ItemBuilders.
      */
-    public static List<ItemBuilder> convertStringList(@NotNull final List<String> itemStrings, @NotNull final String placeholder) {
+    public static List<ItemBuilder> convertStringList(@NonNull final List<String> itemStrings, @NonNull final String placeholder) {
         return itemStrings.stream().map(itemString -> convertString(itemString, placeholder)).collect(Collectors.toList());
     }
 
-    public static String getEnchant(@NotNull final String enchant) {
+    public static String getEnchant(@NonNull final String enchant) {
         if (enchant.isEmpty()) return "";
 
         switch (enchant) {

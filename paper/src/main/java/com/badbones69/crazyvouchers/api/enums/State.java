@@ -1,6 +1,6 @@
 package com.badbones69.crazyvouchers.api.enums;
 
-import org.jetbrains.annotations.NotNull;
+import org.jspecify.annotations.NonNull;
 
 public enum State {
 
@@ -9,11 +9,11 @@ public enum State {
 
     private final String name;
 
-    State(@NotNull final String name) {
+    State(@NonNull final String name) {
         this.name = name;
     }
 
-    public @NotNull final String getName() {
+    public @NonNull final String getName() {
         return this.name;
     }
 }

@@ -23,18 +23,18 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.bukkit.permissions.Permission;
 import org.bukkit.plugin.PluginManager;
-import org.jetbrains.annotations.NotNull;
+import org.jspecify.annotations.NonNull;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
 public class CommandHandler {
 
-    private @NotNull final CrazyVouchers plugin = CrazyVouchers.get();
+    private @NonNull final CrazyVouchers plugin = CrazyVouchers.get();
 
-    private @NotNull final CrazyManager crazyManager = this.plugin.getCrazyManager();
+    private @NonNull final CrazyManager crazyManager = this.plugin.getCrazyManager();
 
-    private @NotNull final BukkitCommandManager<CommandSender> commandManager = BukkitCommandManager.create(this.plugin);
+    private @NonNull final BukkitCommandManager<CommandSender> commandManager = BukkitCommandManager.create(this.plugin);
 
     public CommandHandler() {
         load();
@@ -78,7 +78,7 @@ public class CommandHandler {
 
             final List<String> suggestions = new ArrayList<>();
 
-            if (sender.getSender() instanceof Player player) {
+            if (sender.sender() instanceof Player player) {
                 if (PermissionKeys.crazyvouchers_admin.hasPermission(player)) { // if they have this permission, they get all the codes.
                     suggestions.addAll(codes.stream().map(VoucherCode::getCode).toList());
 
@@ -107,7 +107,7 @@ public class CommandHandler {
 
             final List<String> suggestions = new ArrayList<>();
 
-            if (sender.getSender() instanceof Player player) {
+            if (sender.sender() instanceof Player player) {
                 if (PermissionKeys.crazyvouchers_admin.hasPermission(player)) { // if they have this permission, they get all the codes.
                     suggestions.addAll(codes.stream().map(Voucher::getStrippedName).toList());
 
@@ -161,7 +161,7 @@ public class CommandHandler {
         }
     }
 
-    public @NotNull final BukkitCommandManager<CommandSender> getCommandManager() {
+    public @NonNull final BukkitCommandManager<CommandSender> getCommandManager() {
         return this.commandManager;
     }
 }

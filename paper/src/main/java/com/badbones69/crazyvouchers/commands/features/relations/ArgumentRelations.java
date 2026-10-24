@@ -5,13 +5,13 @@ import dev.triumphteam.cmd.bukkit.BukkitCommandManager;
 import dev.triumphteam.cmd.bukkit.message.BukkitMessageKey;
 import dev.triumphteam.cmd.core.message.MessageKey;
 import org.bukkit.command.CommandSender;
-import org.jetbrains.annotations.NotNull;
+import org.jspecify.annotations.NonNull;
 
 public class ArgumentRelations {
 
-    private @NotNull final BukkitCommandManager<CommandSender> commandManager;
+    private @NonNull final BukkitCommandManager<CommandSender> commandManager;
 
-    public ArgumentRelations(@NotNull final BukkitCommandManager<CommandSender> commandManager) {
+    public ArgumentRelations(@NonNull final BukkitCommandManager<CommandSender> commandManager) {
         this.commandManager = commandManager;
     }
 

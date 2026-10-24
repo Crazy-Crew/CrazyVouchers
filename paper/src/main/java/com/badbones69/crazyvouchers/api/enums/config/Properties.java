@@ -6,7 +6,7 @@ import ch.jalu.configme.resource.PropertyReader;
 import com.badbones69.crazyvouchers.api.enums.FileSystem;
 import com.badbones69.crazyvouchers.config.types.ConfigKeys;
 import com.badbones69.crazyvouchers.config.types.locale.MessageKeys;
-import org.jetbrains.annotations.NotNull;
+import org.jspecify.annotations.NonNull;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -52,7 +52,7 @@ public enum Properties {
      * @param newString the new property
      * @param oldString the old property
      */
-    Properties(@NotNull final Property<String> newString, @NotNull final Property<String> oldString) {
+    Properties(@NonNull final Property<String> newString, @NonNull final Property<String> oldString) {
         this.newString = newString;
         this.oldString = oldString;
     }
@@ -64,7 +64,7 @@ public enum Properties {
      * @param configuration the configuration data
      * @return true or false
      */
-    public boolean moveString(@NotNull final PropertyReader reader, @NotNull final ConfigurationData configuration) {
+    public boolean moveString(@NonNull final PropertyReader reader, @NonNull final ConfigurationData configuration) {
         final String key = reader.getString(this.oldString.getPath());
 
         if (key == null) return false;
@@ -76,12 +76,12 @@ public enum Properties {
 
     private Property<FileSystem> newValue;
 
-    Properties(@NotNull final Property<FileSystem> newValue, @NotNull final Property<String> oldString, @NotNull final String dummy) {
+    Properties(@NonNull final Property<FileSystem> newValue, @NonNull final Property<String> oldString, @NonNull final String dummy) {
         this.newValue = newValue;
         this.oldString = oldString;
     }
 
-    public boolean moveBooleanToString(@NotNull final PropertyReader reader, @NotNull final ConfigurationData configuration) {
+    public boolean moveBooleanToString(@NonNull final PropertyReader reader, @NonNull final ConfigurationData configuration) {
         final String key = reader.getString(this.oldString.getPath());
 
         if (key == null) return false;
@@ -105,7 +105,7 @@ public enum Properties {
      * @param oldBoolean the old property
      * @param dummy only to differentiate from previous constructors
      */
-    Properties(@NotNull final Property<Boolean> newBoolean, @NotNull final Property<Boolean> oldBoolean, boolean dummy) {
+    Properties(@NonNull final Property<Boolean> newBoolean, @NonNull final Property<Boolean> oldBoolean, boolean dummy) {
         this.newBoolean = newBoolean;
         this.oldBoolean = oldBoolean;
     }
@@ -117,7 +117,7 @@ public enum Properties {
      * @param configuration the configuration data
      * @return true or false
      */
-    public boolean moveBoolean(@NotNull final PropertyReader reader, @NotNull final ConfigurationData configuration) {
+    public boolean moveBoolean(@NonNull final PropertyReader reader, @NonNull final ConfigurationData configuration) {
         final Boolean key = reader.getBoolean(this.oldBoolean.getPath());
 
         if (key == null) return false;
@@ -137,7 +137,7 @@ public enum Properties {
      * @param oldInteger the old property
      * @param dummy only to differentiate from previous constructors
      */
-    Properties(@NotNull final Property<Integer> newInteger, @NotNull final Property<Integer> oldInteger, int dummy) {
+    Properties(@NonNull final Property<Integer> newInteger, @NonNull final Property<Integer> oldInteger, int dummy) {
         this.newInteger = newInteger;
         this.oldInteger = oldInteger;
     }
@@ -149,7 +149,7 @@ public enum Properties {
      * @param configuration the configuration data
      * @return true or false
      */
-    public boolean moveInteger(@NotNull final PropertyReader reader, @NotNull final ConfigurationData configuration) {
+    public boolean moveInteger(@NonNull final PropertyReader reader, @NonNull final ConfigurationData configuration) {
         final Integer key = reader.getInt(this.oldInteger.getPath());
 
         if (key == null) return false;
@@ -169,7 +169,7 @@ public enum Properties {
      * @param oldList the old property
      * @param dummy only to differentiate from previous constructors
      */
-    Properties(@NotNull final Property<List<String>> newList, @NotNull final Property<List<String>> oldList, @NotNull final List<String> dummy) {
+    Properties(@NonNull final Property<List<String>> newList, @NonNull final Property<List<String>> oldList, @NonNull final List<String> dummy) {
         this.newList = newList;
         this.oldList = oldList;
     }
@@ -181,7 +181,7 @@ public enum Properties {
      * @param configuration the configuration data
      * @return true or false
      */
-    public boolean moveList(@NotNull final PropertyReader reader, @NotNull final ConfigurationData configuration) {
+    public boolean moveList(@NonNull final PropertyReader reader, @NonNull final ConfigurationData configuration) {
         final List<?> key = reader.getList(this.oldList.getPath());
 
         if (key == null) return false;
@@ -201,7 +201,7 @@ public enum Properties {
      * @param message the message to check
      * @return the finalized message to set
      */
-    private @NotNull String replace(@NotNull final String message) {
+    private @NonNull String replace(@NonNull final String message) {
         return message.replaceAll("%Arg%", "{arg}")
                 .replaceAll("%arg%", "{arg}")
                 .replaceAll("%Player%", "{player}")

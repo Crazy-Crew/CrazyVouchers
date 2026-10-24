@@ -2,7 +2,7 @@ package com.badbones69.crazyvouchers.api.enums.misc;
 
 import com.badbones69.crazyvouchers.CrazyVouchers;
 import org.bukkit.NamespacedKey;
-import org.jetbrains.annotations.NotNull;
+import org.jspecify.annotations.NonNull;
 
 public enum PersistentKeys {
 
@@ -16,15 +16,15 @@ public enum PersistentKeys {
     voucher_item("voucher_item"),
     voucher_arg("voucher_arg");
 
-    private @NotNull final CrazyVouchers plugin = CrazyVouchers.get();
+    private @NonNull final CrazyVouchers plugin = CrazyVouchers.get();
 
     private final String NamespacedKey;
 
-    PersistentKeys(@NotNull final String NamespacedKey) {
+    PersistentKeys(@NonNull final String NamespacedKey) {
         this.NamespacedKey = NamespacedKey;
     }
 
-    public @NotNull final NamespacedKey getNamespacedKey() {
+    public @NonNull final NamespacedKey getNamespacedKey() {
         return new NamespacedKey(this.plugin, this.plugin.getName().toLowerCase() + "_" + this.NamespacedKey);
     }
 }

@@ -9,7 +9,7 @@ import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.ItemType;
 import org.bukkit.persistence.PersistentDataType;
-import org.jetbrains.annotations.NotNull;
+import org.jspecify.annotations.NonNull;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -18,9 +18,9 @@ import java.util.UUID;
 
 public class InventoryManager {
 
-    private @NotNull final CrazyVouchers plugin = CrazyVouchers.get();
+    private @NonNull final CrazyVouchers plugin = CrazyVouchers.get();
 
-    private @NotNull final CrazyManager crazyManager = this.plugin.getCrazyManager();
+    private @NonNull final CrazyManager crazyManager = this.plugin.getCrazyManager();
 
     private final Map<UUID, Integer> pages = new HashMap<>();
 
@@ -35,7 +35,7 @@ public class InventoryManager {
         this.backButton = ItemBuilder.from(ItemType.ARROW).withDisplayName("<gold><< Back");
     }
 
-    public final ItemStack getVoucher(@NotNull final Player player, @NotNull final Voucher voucher) {
+    public final ItemStack getVoucher(@NonNull final Player player, @NonNull final Voucher voucher) {
         final ItemStack itemStack = voucher.buildItem(player);
 
         itemStack.editPersistentDataContainer(container -> container.set(PersistentKeys.voucher_item_admin.getNamespacedKey(), PersistentDataType.STRING, voucher.getStrippedName()));
@@ -43,7 +43,7 @@ public class InventoryManager {
         return itemStack;
     }
 
-    public final List<ItemStack> getPreviewItems(@NotNull final Player player, int page) {
+    public final List<ItemStack> getPreviewItems(@NonNull final Player player, int page) {
         final List<ItemStack> items = new ArrayList<>();
 
         if (page <= 0) page = 1;
@@ -65,7 +65,7 @@ public class InventoryManager {
         return items;
     }
 
-    public final ItemStack getBackButton(@NotNull final Player player) {
+    public final ItemStack getBackButton(@NonNull final Player player) {
         int page = getPage(player) - 1;
 
         ItemStack itemStack = this.backButton.addDisplayLore("<gray>Page: <blue>" + page).asItemStack(player);
@@ -75,7 +75,7 @@ public class InventoryManager {
         return itemStack;
     }
 
-    public final ItemStack getNextButton(@NotNull final Player player) {
+    public final ItemStack getNextButton(@NonNull final Player player) {
         int page = getPage(player) + 1;
 
         ItemStack itemStack = this.nextButton.addDisplayLore("<gray>Page: <blue>" + page).asItemStack(player);
@@ -85,33 +85,33 @@ public class InventoryManager {
         return itemStack;
     }
 
-    public void remove(@NotNull final Player player) {
+    public void remove(@NonNull final Player player) {
         this.pages.remove(player.getUniqueId());
     }
 
-    public void nextPage(@NotNull final Player player, final int page) {
+    public void nextPage(@NonNull final Player player, final int page) {
         setPage(player, page);
 
         buildInventory(player, 0);
     }
 
-    public void backPage(@NotNull final Player player, final int page) {
+    public void backPage(@NonNull final Player player, final int page) {
         setPage(player, page);
 
         buildInventory(player, 0);
     }
 
-    public void buildInventory(@NotNull final Player player, final int page) {
+    public void buildInventory(@NonNull final Player player, final int page) {
         final VoucherMenu menu = new VoucherMenu(player, 54, page <= 0 ? getPage(player) : page, "<red>CrazyVouchers");
 
         player.openInventory(menu.build().getInventory());
     }
 
-    public int getPage(@NotNull final Player player) {
+    public int getPage(@NonNull final Player player) {
         return this.pages.getOrDefault(player.getUniqueId(), 1);
     }
 
-    public void setPage(@NotNull final Player player, int page) {
+    public void setPage(@NonNull final Player player, int page) {
         int max = getMaxPages();
 
         if (page > max) {

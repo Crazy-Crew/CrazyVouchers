@@ -16,15 +16,15 @@ import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.ItemType;
 import org.bukkit.persistence.PersistentDataType;
-import org.jetbrains.annotations.NotNull;
+import org.jspecify.annotations.NonNull;
 import java.util.Arrays;
 import java.util.List;
 
 public class VoucherMenu extends InventoryBuilder {
 
-    private @NotNull final InventoryManager inventoryManager = this.plugin.getInventoryManager();
+    private @NonNull final InventoryManager inventoryManager = this.plugin.getInventoryManager();
 
-    public VoucherMenu(@NotNull final Player player, final int size, final int page, @NotNull final String title) {
+    public VoucherMenu(@NonNull final Player player, final int size, final int page, @NonNull final String title) {
         super(player, size, page, title);
     }
 
@@ -94,7 +94,7 @@ public class VoucherMenu extends InventoryBuilder {
         }
     }
 
-    private void setDefaultItems(@NotNull final Inventory inventory) {
+    private void setDefaultItems(@NonNull final Inventory inventory) {
         final Player player = getPlayer();
 
         final List<Integer> numbers = Arrays.asList(0, 1, 2, 3, 4, 5, 6, 7, 8, 45, 46, 47, 48, 49, 50, 51, 52, 53);

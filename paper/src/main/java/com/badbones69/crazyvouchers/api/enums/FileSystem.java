@@ -1,6 +1,6 @@
 package com.badbones69.crazyvouchers.api.enums;
 
-import org.jetbrains.annotations.NotNull;
+import org.jspecify.annotations.NonNull;
 
 public enum FileSystem {
 
@@ -9,11 +9,11 @@ public enum FileSystem {
 
     private final String name;
 
-    FileSystem(@NotNull final String name) {
+    FileSystem(@NonNull final String name) {
         this.name = name;
     }
 
-    public @NotNull final String getName() {
+    public @NonNull final String getName() {
         return this.name;
     }
 }

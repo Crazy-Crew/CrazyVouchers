@@ -6,7 +6,7 @@ import com.badbones69.crazyvouchers.commands.features.admin.migrate.IVoucherMigr
 import com.badbones69.crazyvouchers.commands.features.admin.migrate.enums.MigrationType;
 import com.badbones69.crazyvouchers.config.ConfigManager;
 import com.badbones69.crazyvouchers.config.types.ConfigKeys;
-import com.ryderbelserion.fusion.core.api.enums.Level;
+import com.ryderbelserion.fusion.api.enums.Level;
 import de.tr7zw.changeme.nbtapi.NBT;
 import org.bukkit.Material;
 import org.bukkit.command.CommandSender;
@@ -14,13 +14,13 @@ import org.bukkit.entity.Player;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.persistence.PersistentDataType;
-import org.jetbrains.annotations.NotNull;
+import org.jspecify.annotations.NonNull;
 import java.util.UUID;
 import java.util.concurrent.atomic.AtomicInteger;
 
 public class VoucherNbtMigrator extends IVoucherMigrator {
 
-    public VoucherNbtMigrator(@NotNull final CommandSender sender) {
+    public VoucherNbtMigrator(@NonNull final CommandSender sender) {
         super(sender, MigrationType.VOUCHERS_NBT_API);
     }
 
@@ -61,7 +61,7 @@ public class VoucherNbtMigrator extends IVoucherMigrator {
             });
         }
 
-        this.fusion.log(Level.WARNING, "Successfully migrated <green>%s</green> items that were using legacy api!", count);
+        this.fusion.log(Level.warn, "Successfully migrated <green>%s</green> items that were using legacy api!", count);
 
         Messages.migrated_old_vouchers.sendMessage(player);
     }

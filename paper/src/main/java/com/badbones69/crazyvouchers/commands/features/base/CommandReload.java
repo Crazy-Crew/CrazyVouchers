@@ -27,8 +27,8 @@ public class CommandReload extends BaseCommand {
 
         this.fileManager.purge();
 
-        this.fileManager.addPaperFile(this.dataPath.resolve("users.yml"))
-                .addPaperFile(this.dataPath.resolve("data.yml"))
+        this.fileManager.addFile(this.dataPath.resolve("users.yml"), FileType.YAML)
+                .addFile(this.dataPath.resolve("data.yml"), FileType.YAML)
                 .addFile(this.dataPath.resolve("version.json"), FileType.JSON);
 
         switch (system) {
@@ -36,12 +36,12 @@ public class CommandReload extends BaseCommand {
                 this.fileManager.removeFile(this.dataPath.resolve("codes.yml"))
                         .removeFile(this.dataPath.resolve("vouchers.yml"));
 
-                this.fileManager.addPaperFolder(this.dataPath.resolve("codes"))
-                        .addPaperFolder(this.dataPath.resolve("vouchers"));
+                this.fileManager.addFolder(this.dataPath.resolve("codes"), FileType.YAML)
+                        .addFolder(this.dataPath.resolve("vouchers"), FileType.YAML);
             }
 
-            case SINGLE -> this.fileManager.addPaperFile(this.dataPath.resolve("codes.yml"))
-                    .addPaperFile(this.dataPath.resolve("vouchers.yml"));
+            case SINGLE -> this.fileManager.addFile(this.dataPath.resolve("codes.yml"), FileType.YAML)
+                    .addFile(this.dataPath.resolve("vouchers.yml"), FileType.YAML);
         }
 
         Methods.janitor();

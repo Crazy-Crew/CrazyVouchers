@@ -9,14 +9,14 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.InventoryHolder;
-import org.jetbrains.annotations.NotNull;
+import org.jspecify.annotations.NonNull;
 
 @SuppressWarnings("ALL")
 public abstract class InventoryBuilder implements InventoryHolder, Listener {
 
-    protected @NotNull final CrazyVouchers plugin = CrazyVouchers.get();
-    protected @NotNull final Server server = this.plugin.getServer();
-    protected @NotNull final FusionPaper fusion = this.plugin.getFusion();
+    protected @NonNull final CrazyVouchers plugin = CrazyVouchers.get();
+    protected @NonNull final Server server = this.plugin.getServer();
+    protected @NonNull final FusionPaper fusion = this.plugin.getFusion();
 
     private Inventory inventory;
     private Player player;
@@ -24,7 +24,7 @@ public abstract class InventoryBuilder implements InventoryHolder, Listener {
     private int size;
     private int page;
 
-    public InventoryBuilder(@NotNull final Player player, final int size, @NotNull final String title) {
+    public InventoryBuilder(@NonNull final Player player, final int size, @NonNull final String title) {
         this.title = title;
         this.player = player;
         this.size = size;
@@ -32,7 +32,7 @@ public abstract class InventoryBuilder implements InventoryHolder, Listener {
         this.inventory = this.server.createInventory(this, this.size, this.fusion.asComponent(player, this.title));
     }
 
-    public InventoryBuilder(@NotNull final Player player, final int size, final int page, @NotNull final String title) {
+    public InventoryBuilder(@NonNull final Player player, final int size, final int page, @NonNull final String title) {
         this.title = title;
         this.player = player;
         this.size = size;
@@ -68,20 +68,20 @@ public abstract class InventoryBuilder implements InventoryHolder, Listener {
         return this.page;
     }
 
-    public void title(@NotNull final String title) {
+    public void title(@NonNull final String title) {
         this.title = title;
     }
 
-    public boolean contains(@NotNull final String message) {
+    public boolean contains(@NonNull final String message) {
         return this.title.contains(message);
     }
 
-    public @NotNull final Player getPlayer() {
+    public @NonNull final Player getPlayer() {
         return this.player;
     }
 
     @Override
-    public @NotNull Inventory getInventory() {
+    public @NonNull Inventory getInventory() {
         return this.inventory;
     }
 }

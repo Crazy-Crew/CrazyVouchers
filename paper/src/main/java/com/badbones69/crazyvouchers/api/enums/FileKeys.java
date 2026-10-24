@@ -1,24 +1,23 @@
 package com.badbones69.crazyvouchers.api.enums;
 
 import com.badbones69.crazyvouchers.CrazyVouchers;
-import com.ryderbelserion.fusion.core.api.exceptions.FusionException;
+import com.ryderbelserion.fusion.api.exceptions.FusionException;
+import com.ryderbelserion.fusion.files.FileManager;
 import com.ryderbelserion.fusion.files.enums.FileType;
 import com.ryderbelserion.fusion.files.types.configurate.JsonCustomFile;
-import com.ryderbelserion.fusion.paper.files.PaperFileManager;
-import com.ryderbelserion.fusion.paper.files.types.PaperCustomFile;
-import org.bukkit.configuration.file.YamlConfiguration;
-import org.jetbrains.annotations.NotNull;
+import com.ryderbelserion.fusion.files.types.configurate.YamlCustomFile;
+import org.jspecify.annotations.NonNull;
 import org.spongepowered.configurate.BasicConfigurationNode;
-
+import org.spongepowered.configurate.CommentedConfigurationNode;
 import java.nio.file.Path;
 import java.util.Optional;
 
 public enum FileKeys {
 
-    vouchers(FileType.PAPER_YAML, "vouchers.yml"),
-    codes(FileType.PAPER_YAML, "codes.yml"),
-    users(FileType.PAPER_YAML, "users.yml"),
-    data(FileType.PAPER_YAML, "data.yml"),
+    vouchers(FileType.YAML, "vouchers.yml"),
+    codes(FileType.YAML, "codes.yml"),
+    users(FileType.YAML, "users.yml"),
+    data(FileType.YAML, "data.yml"),
 
     version(FileType.JSON, "versions.json");
 
@@ -26,26 +25,26 @@ public enum FileKeys {
     private final String name;
     private final Path path;
 
-    private @NotNull final CrazyVouchers plugin = CrazyVouchers.get();
+    private @NonNull final CrazyVouchers plugin = CrazyVouchers.get();
 
-    private @NotNull final PaperFileManager fileManager = this.plugin.getFileManager();
+    private @NonNull final FileManager fileManager = this.plugin.getFileManager();
 
     /**
      * A constructor to build a file
      *
      * @param fileName the name of the file
      */
-    FileKeys(@NotNull final FileType fileType, @NotNull final String fileName) {
+    FileKeys(@NonNull final FileType fileType, @NonNull final String fileName) {
         this.path = this.plugin.getDataPath().resolve(fileName);
         this.fileType = fileType;
         this.name = fileName;
     }
 
-    public @NotNull final BasicConfigurationNode getConfigurationNode() {
+    public @NonNull final BasicConfigurationNode getConfigurationNode() {
         return getJsonCustomFile().getConfiguration();
     }
 
-    public @NotNull final JsonCustomFile getJsonCustomFile() {
+    public @NonNull final JsonCustomFile getJsonCustomFile() {
         final Optional<JsonCustomFile> customFile = this.fileManager.getJsonFile(this.path);
 
         if (customFile.isEmpty()) {
@@ -55,12 +54,12 @@ public enum FileKeys {
         return customFile.get();
     }
 
-    public @NotNull final YamlConfiguration getConfiguration() {
+    public @NonNull final CommentedConfigurationNode getConfiguration() {
         return getPaperCustomFile().getConfiguration();
     }
 
-    public @NotNull final PaperCustomFile getPaperCustomFile() {
-        final Optional<PaperCustomFile> customFile = this.fileManager.getPaperFile(this.path);
+    public @NonNull final YamlCustomFile getPaperCustomFile() {
+        final Optional<YamlCustomFile> customFile = this.fileManager.getYamlFile(this.path);
 
         if (customFile.isEmpty()) {
             throw new FusionException("Could not find custom file for " + this.path);
@@ -69,11 +68,11 @@ public enum FileKeys {
         return customFile.get();
     }
 
-    public @NotNull final FileType getFileType() {
+    public @NonNull final FileType getFileType() {
         return this.fileType;
     }
 
-    public @NotNull final Path getPath() {
+    public @NonNull final Path getPath() {
         return this.path;
     }
 

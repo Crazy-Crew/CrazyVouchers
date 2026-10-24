@@ -5,7 +5,7 @@ import com.badbones69.crazyvouchers.CrazyVouchers;
 import com.badbones69.crazyvouchers.Methods;
 import com.badbones69.crazyvouchers.api.enums.config.Messages;
 import com.badbones69.crazyvouchers.utils.ItemUtils;
-import com.ryderbelserion.fusion.core.api.enums.Level;
+import com.ryderbelserion.fusion.api.enums.Level;
 import com.ryderbelserion.fusion.core.utils.StringUtils;
 import com.ryderbelserion.fusion.paper.FusionPaper;
 import com.ryderbelserion.fusion.paper.builders.items.ItemBuilder;
@@ -16,16 +16,18 @@ import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.entity.Player;
 import com.badbones69.crazyvouchers.config.ConfigManager;
 import com.badbones69.crazyvouchers.config.types.ConfigKeys;
-import org.jetbrains.annotations.NotNull;
+import org.jspecify.annotations.NonNull;
+import org.spongepowered.configurate.CommentedConfigurationNode;
+
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
 public class VoucherCode {
 
-    private @NotNull final CrazyVouchers plugin = CrazyVouchers.get();
-    private @NotNull final FusionPaper fusion = this.plugin.getFusion();
-    private @NotNull final SettingsManager config = ConfigManager.getConfig();
+    private @NonNull final CrazyVouchers plugin = CrazyVouchers.get();
+    private @NonNull final FusionPaper fusion = this.plugin.getFusion();
+    private @NonNull final SettingsManager config = ConfigManager.getConfig();
 
     private final String fileName;
     private final String name;
@@ -69,23 +71,23 @@ public class VoucherCode {
 
     private final List<ItemBuilder> items;
 
-    public VoucherCode(@NotNull final ConfigurationSection section, @NotNull final String name) {
+    public VoucherCode(@NonNull final CommentedConfigurationNode section, @NonNull final String name) {
         this.fileName = name.replaceAll(".yml", "");
         this.name = name;
 
-        this.enabled = section.getBoolean("options.enabled", false);
-        this.code = section.getString("code", "");
-        this.commands = section.getStringList("commands");
+        this.enabled = section.node("options", "enabled").getBoolean(false);
+        this.code = section.node("code").getString("");
+        this.commands = StringUtils.getStringList(section.node("commands"));
 
-        if (this.config.getProperty(ConfigKeys.use_different_items_layout) && !section.isList("items")) {
-            this.items = ItemUtils.convertConfigurationSection(section.getConfigurationSection("items"));
+        if (this.config.getProperty(ConfigKeys.use_different_items_layout) && !section.node("items").isList()) {
+            this.items = ItemUtils.convertConfigurationSection(section.node("items"));
         } else {
-            this.items = ItemUtils.convertStringList(section.getStringList("items"));
+            this.items = ItemUtils.convertStringList(StringUtils.getStringList(section.node("items")));
         }
 
-        this.caseSensitive = section.getBoolean("options.case-sensitive", false);
+        this.caseSensitive = section.node("options", "case-sensitive").getBoolean(false);
 
-        this.message = getMessage(section, "options.message", "");
+        this.message = getMessage(section, "options", "message");
 
         this.whitelistPermissionToggle = section.getBoolean("options.permission.whitelist-permission.toggle", false);
         this.whitelistCommands = section.isList("options.permission.whitelist-permission.commands") ? section.getStringList("options.permission.whitelist-permission.commands")
@@ -103,12 +105,12 @@ public class VoucherCode {
         this.whitelistWorldsToggle = section.getBoolean("options.whitelist-worlds.toggle", false);
         this.whitelistWorldCommands.addAll(section.isList("options.whitelist-worlds.commands") ? section.getStringList("options.whitelist-worlds.commands")
                 : List.of(section.getString("options.whitelist-worlds.commands", "")));
-        this.whitelistWorldMessage = getMessage(section, "options.whitelist-worlds.message", Messages.not_in_whitelisted_world.getString());
+        this.whitelistWorldMessage = getMessage(section, Messages.not_in_whitelisted_world.getString(), "options", "whitelist-worlds", "message");
 
         this.whitelistWorlds.addAll(section.getStringList("options.whitelist-worlds.worlds").stream().map(String::toLowerCase).toList());
 
         this.blacklistPermissionsToggle = section.getBoolean("options.permission.blacklist-permission.toggle", false);
-        this.blacklistPermissionMessage = getMessage(section, "options.permission.blacklist-permission.message", Messages.has_blacklist_permission.getString());
+        this.blacklistPermissionMessage = getMessage(section, Messages.has_blacklist_permission.getString(), "options", "permission", "blacklist-permission", "message");
         this.blacklistPermissions.addAll(section.isList("options.permission.blacklist-permission.permissions") ? section.getStringList("options.permission.blacklist-permission.permissions")
                 : List.of(section.getString("options.permission.blacklist-permission.permissions", "")));
         this.blacklistCommands.addAll(section.isList("options.permission.blacklist-permission.commands") ? section.getStringList("options.permission.blacklist-permission.commands")
@@ -135,13 +137,13 @@ public class VoucherCode {
             }
         }
 
-        if (section.contains("chance-commands")) {
-            this.fusion.log(Level.WARNING, "We detected that you have the list version of chance-commands which is no longer used, Please run /crazyvouchers migrate -mt VouchersDeprecated");
+        if (section.hasChild("chance-commands")) {
+            this.fusion.log(Level.warn, "We detected that you have the list version of chance-commands which is no longer used, Please run /crazyvouchers migrate -mt VouchersDeprecated");
         }
 
-        if (section.contains("random-commands")) {
-            if (section.isList("random-commands")) {
-                this.fusion.log(Level.WARNING, "We've detected that you have the list version of random-commands which is no longer used, Please run /crazyvouchers migrate -mt VouchersDeprecated");
+        if (section.hasChild("random-commands")) {
+            if (section.node("random-commands").isList()) {
+                this.fusion.log(Level.warn, "We've detected that you have the list version of random-commands which is no longer used, Please run /crazyvouchers migrate -mt VouchersDeprecated");
             } else {
                 final ConfigurationSection randomCommands = section.getConfigurationSection("random-commands");
 
@@ -161,7 +163,7 @@ public class VoucherCode {
         this.totalWeight = this.randomCommands.stream().filter(filter -> filter.getWeight() > 0.0).mapToDouble(VoucherCommand::getWeight).sum();
     }
 
-    public void dispatchCommands(@NotNull final Player player, @NotNull final Map<String, String> placeholders) {
+    public void dispatchCommands(@NonNull final Player player, @NonNull final Map<String, String> placeholders) {
         Methods.dispatch(player, this.commands, placeholders, true); // dispatch normal commands
 
         if (this.randomCommands.isEmpty()) return;
@@ -185,7 +187,7 @@ public class VoucherCode {
         }
     }
 
-    public boolean hasPermission(@NotNull final Player player, @NotNull final List<String> permissions, @NotNull final List<String> commands, @NotNull final Map<String, String> placeholders, @NotNull final String message, @NotNull final String argument) {
+    public boolean hasPermission(@NonNull final Player player, @NonNull final List<String> permissions, @NonNull final List<String> commands, @NonNull final Map<String, String> placeholders, @NonNull final String message, @NonNull final String argument) {
         return Methods.hasPermission(false, player, permissions, commands, placeholders, message, argument);
     }
 
@@ -305,17 +307,9 @@ public class VoucherCode {
         return this.items;
     }
 
-    private String getMessage(@NotNull final ConfigurationSection section, @NotNull final String path, @NotNull final String defaultValue) {
-        String safeMessage;
+    private String getMessage(@NonNull final CommentedConfigurationNode section, @NonNull final String defaultValue, @NonNull final Object... path) {
+        final CommentedConfigurationNode node = section.node(path);
 
-        if (section.isList(path)) {
-            safeMessage = StringUtils.toString(section.getStringList(path));
-
-            return safeMessage;
-        }
-
-        safeMessage = section.getString(path, defaultValue);
-
-        return safeMessage;
+        return node.isList() ? StringUtils.toString(StringUtils.getStringList(node, defaultValue)) : node.getString(defaultValue);
     }
 }

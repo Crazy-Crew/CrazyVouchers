@@ -6,7 +6,7 @@ import com.badbones69.crazyvouchers.api.objects.VoucherCommand;
 import com.badbones69.crazyvouchers.config.ConfigManager;
 import com.badbones69.crazyvouchers.config.types.ConfigKeys;
 import com.badbones69.crazyvouchers.utils.ScheduleUtils;
-import com.ryderbelserion.fusion.core.api.enums.Level;
+import com.ryderbelserion.fusion.api.enums.Level;
 import com.ryderbelserion.fusion.core.utils.StringUtils;
 import com.ryderbelserion.fusion.paper.FusionPaper;
 import com.ryderbelserion.fusion.paper.builders.folia.FoliaScheduler;
@@ -20,7 +20,7 @@ import org.bukkit.inventory.PlayerInventory;
 import org.bukkit.inventory.meta.FireworkMeta;
 import org.bukkit.persistence.PersistentDataContainer;
 import org.bukkit.persistence.PersistentDataType;
-import org.jetbrains.annotations.NotNull;
+import org.jspecify.annotations.NonNull;
 import java.util.*;
 import java.util.concurrent.ThreadLocalRandom;
 import java.util.regex.Matcher;
@@ -28,11 +28,11 @@ import java.util.regex.Pattern;
 
 public class Methods {
 
-    private static @NotNull final CrazyVouchers plugin = CrazyVouchers.get();
+    private static @NonNull final CrazyVouchers plugin = CrazyVouchers.get();
 
-    private static @NotNull final FusionPaper fusion = plugin.getFusion();
+    private static @NonNull final FusionPaper fusion = plugin.getFusion();
 
-    public static VoucherCommand getCommand(@NotNull final List<VoucherCommand> origin, final double totalWeight) {
+    public static VoucherCommand getCommand(@NonNull final List<VoucherCommand> origin, final double totalWeight) {
         int index = 0;
 
         final List<VoucherCommand> commands = origin.stream().filter(command -> command.getWeight() > 0.0).toList();
@@ -48,7 +48,7 @@ public class Methods {
         return commands.get(index);
     }
 
-    public static void removeItem(@NotNull final ItemStack item, @NotNull final Player player) {
+    public static void removeItem(@NonNull final ItemStack item, @NonNull final Player player) {
         if (item.getAmount() <= 1) {
             player.getInventory().setItemInMainHand(null); // it's always the main hand, we don't allow off-hand usage
         } else if (item.getAmount() > 1) {
@@ -90,7 +90,7 @@ public class Methods {
         return UUID.randomUUID().toString().replace("-", "").substring(0, 8);
     }
 
-    public static boolean hasPermission(final boolean execute, @NotNull final Player player, @NotNull final List<String> permissions, @NotNull final List<String> commands, @NotNull final Map<String, String> placeholders, @NotNull final String message, @NotNull final String argument) {
+    public static boolean hasPermission(final boolean execute, @NonNull final Player player, @NonNull final List<String> permissions, @NonNull final List<String> commands, @NonNull final Map<String, String> placeholders, @NonNull final String message, @NonNull final String argument) {
         boolean hasPermission = false;
 
         for (final String permission : permissions) {
@@ -114,7 +114,7 @@ public class Methods {
         return hasPermission;
     }
 
-    public static void addItem(@NotNull final Player player, @NotNull final ItemStack... items) {
+    public static void addItem(@NonNull final Player player, @NonNull final ItemStack... items) {
         final PlayerInventory inventory = player.getInventory();
 
         final World world = player.getWorld();
@@ -133,13 +133,13 @@ public class Methods {
         });
     }
 
-    public static String placeholders(@NotNull final CommandSender sender, @NotNull final String message, @NotNull final Map<String, String> placeholders) {
+    public static String placeholders(@NonNull final CommandSender sender, @NonNull final String message, @NonNull final Map<String, String> placeholders) {
         placeholders.putAll(getRandomNumber(message));
 
         return fusion.parse(sender, message, placeholders);
     }
 
-    public static void dispatch(@NotNull final Player player, @NotNull final List<String> values, @NotNull final Map<String, String> placeholders, final boolean isCommand) {
+    public static void dispatch(@NonNull final Player player, @NonNull final List<String> values, @NonNull final Map<String, String> placeholders, final boolean isCommand) {
         if (values.isEmpty()) return;
 
         final Server server = player.getServer();
@@ -162,7 +162,7 @@ public class Methods {
         }
     }
 
-    public static Map<String, String> getRandomNumber(@NotNull final String value) {
+    public static Map<String, String> getRandomNumber(@NonNull final String value) {
         final Pattern text = Pattern.compile("\\{random}:(\\d+)-(\\d+)");
         final Matcher matcher = text.matcher(value);
 
@@ -173,13 +173,13 @@ public class Methods {
             final int maximum = StringUtils.tryParseInt(matcher.group(2)).orElse(10).intValue();
 
             if (minimum <= 0 || maximum <= 0) {
-                fusion.log(Level.ERROR, "The minimum/maximum value cannot be less than or equal to 0. (Min: %s, Max: %s)", minimum, maximum);
+                fusion.log(Level.error, "The minimum/maximum value cannot be less than or equal to 0. (Min: %s, Max: %s)", minimum, maximum);
 
                 continue;
             }
 
             if (minimum > maximum) {
-                fusion.log(Level.ERROR, "The minimum value cannot be larger than the maximum value! (Min: %s, Max: %s)", minimum, maximum);
+                fusion.log(Level.error, "The minimum value cannot be larger than the maximum value! (Min: %s, Max: %s)", minimum, maximum);
 
                 continue;
             }
@@ -194,11 +194,11 @@ public class Methods {
         return placeholders;
     }
 
-    public static boolean isInventoryFull(@NotNull final PlayerInventory inventory) {
+    public static boolean isInventoryFull(@NonNull final PlayerInventory inventory) {
         return inventory.firstEmpty() == -1;
     }
 
-    public static void firework(@NotNull final Location location, @NotNull final List<Color> list) {
+    public static void firework(@NonNull final Location location, @NonNull final List<Color> list) {
         if (location.getWorld() == null) return;
 
         final Firework firework = location.getWorld().spawn(location, Firework.class);
