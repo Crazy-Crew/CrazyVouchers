@@ -3,7 +3,7 @@ package com.badbones69.crazyvouchers;
 import com.badbones69.crazyvouchers.api.CrazyManager;
 import com.badbones69.crazyvouchers.api.InventoryManager;
 import com.badbones69.crazyvouchers.api.builders.types.VoucherMenu;
-import com.badbones69.crazyvouchers.api.enums.FileSystem;
+import us.crazycrew.crazyvouchers.api.enums.FileSystem;
 import com.badbones69.crazyvouchers.commands.features.CommandHandler;
 import com.badbones69.crazyvouchers.config.ConfigManager;
 import com.badbones69.crazyvouchers.listeners.FireworkDamageListener;
@@ -18,7 +18,7 @@ import com.ryderbelserion.fusion.paper.FusionPaper;
 import org.bukkit.plugin.PluginManager;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.jspecify.annotations.NonNull;
-import com.badbones69.crazyvouchers.config.types.ConfigKeys;
+
 import java.nio.file.Path;
 import java.util.List;
 import java.util.Locale;

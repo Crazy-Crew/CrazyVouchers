@@ -5,6 +5,7 @@ import com.badbones69.crazyvouchers.CrazyVouchers;
 import com.badbones69.crazyvouchers.Methods;
 import com.badbones69.crazyvouchers.api.enums.config.Messages;
 import com.badbones69.crazyvouchers.utils.ItemUtils;
+import com.ryderbelserion.crazyvouchers.utils.ConfigUtils;
 import com.ryderbelserion.fusion.api.enums.Level;
 import com.ryderbelserion.fusion.core.utils.StringUtils;
 import com.ryderbelserion.fusion.paper.FusionPaper;
@@ -12,13 +13,10 @@ import com.ryderbelserion.fusion.paper.builders.items.ItemBuilder;
 import com.ryderbelserion.fusion.paper.utils.ColorUtils;
 import org.bukkit.Color;
 import org.bukkit.Sound;
-import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.entity.Player;
 import com.badbones69.crazyvouchers.config.ConfigManager;
-import com.badbones69.crazyvouchers.config.types.ConfigKeys;
 import org.jspecify.annotations.NonNull;
 import org.spongepowered.configurate.CommentedConfigurationNode;
-
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -89,50 +87,46 @@ public class VoucherCode {
 
         this.message = getMessage(section, "options", "message");
 
-        this.whitelistPermissionToggle = section.getBoolean("options.permission.whitelist-permission.toggle", false);
-        this.whitelistCommands = section.isList("options.permission.whitelist-permission.commands") ? section.getStringList("options.permission.whitelist-permission.commands")
-                : List.of(section.getString("options.permission.whitelist-permission.commands", ""));
+        this.whitelistPermissionToggle = section.node("options", "permission", "whitelist-permission", "toggle").getBoolean(false);
+        this.whitelistCommands = ConfigUtils.getStringList(section, List.of(), "options", "permission", "whitelist-permission", "commands");
         this.whitelistPermissionMessage = getMessage(section, "options.permission.whitelist-permission.message", Messages.no_permission_to_use_voucher.getString());
 
-        this.whitelistPermissions.addAll(section.getStringList("options.permission.whitelist-permission.permissions").stream().map(String::toLowerCase).toList());
+        this.whitelistPermissions.addAll(StringUtils.getStringList(section.node("options", "permission", "whitelist-permission", "permissions")).stream().map(String::toLowerCase).toList());
 
-        final String permission = section.getString("options.permission.whitelist-permission.node", "").toLowerCase();
+        final String permission = section.node("options", "permission", "whitelist-permission", "node").getString("").toLowerCase();
 
         if (!permission.isEmpty()) {
             this.whitelistPermissions.add(permission);
         }
 
-        this.whitelistWorldsToggle = section.getBoolean("options.whitelist-worlds.toggle", false);
-        this.whitelistWorldCommands.addAll(section.isList("options.whitelist-worlds.commands") ? section.getStringList("options.whitelist-worlds.commands")
-                : List.of(section.getString("options.whitelist-worlds.commands", "")));
+        this.whitelistWorldsToggle = section.node("options", "whitelist-worlds", "toggle").getBoolean(false);
+        this.whitelistWorldCommands.addAll(ConfigUtils.getStringList(section, List.of(), "options", "whitelist-worlds", "commands"));
         this.whitelistWorldMessage = getMessage(section, Messages.not_in_whitelisted_world.getString(), "options", "whitelist-worlds", "message");
 
-        this.whitelistWorlds.addAll(section.getStringList("options.whitelist-worlds.worlds").stream().map(String::toLowerCase).toList());
+        this.whitelistWorlds.addAll(StringUtils.getStringList(section.node("options", "whitelist-worlds", "worlds")).stream().map(String::toLowerCase).toList());
 
-        this.blacklistPermissionsToggle = section.getBoolean("options.permission.blacklist-permission.toggle", false);
+        this.blacklistPermissionsToggle = section.node("options", "permission", "blacklist-permission", "toggle").getBoolean(false);
         this.blacklistPermissionMessage = getMessage(section, Messages.has_blacklist_permission.getString(), "options", "permission", "blacklist-permission", "message");
-        this.blacklistPermissions.addAll(section.isList("options.permission.blacklist-permission.permissions") ? section.getStringList("options.permission.blacklist-permission.permissions")
-                : List.of(section.getString("options.permission.blacklist-permission.permissions", "")));
-        this.blacklistCommands.addAll(section.isList("options.permission.blacklist-permission.commands") ? section.getStringList("options.permission.blacklist-permission.commands")
-                : List.of(section.getString("options.permission.blacklist-permission.commands", "")));
+        this.blacklistPermissions.addAll(ConfigUtils.getStringList(section, List.of(), "options", "permission", "blacklist-permission", "permissions"));
+        this.blacklistCommands.addAll(ConfigUtils.getStringList(section, List.of(), "options", "permission", "blacklist-permission", "commands"));
 
-        this.limiterToggle = section.getBoolean("options.limiter.toggle", false);
-        this.limiterLimit = section.getInt("options.limiter.limit", 0);
+        this.limiterToggle = section.node("options", "limiter", "toggle").getBoolean(false);
+        this.limiterLimit = section.node("options", "limiter", "limit").getInt(0);
 
-        this.soundToggle = section.getBoolean("options.sound.toggle", false);
-        this.volume = (float) section.getDouble("options.sound.volume", 1.0);
-        this.pitch = (float) section.getDouble("options.sound.pitch", 1.0);
+        this.soundToggle = section.node("options", "sound", "toggle").getBoolean(false);
+        this.volume = (float) section.node("options", "sound", "volume").getDouble(1.0);
+        this.pitch = (float) section.node("options", "sound", "pitch").getDouble(1.0);
 
         if (this.soundToggle) {
-            for (final String sound : section.getStringList("options.sound.sounds")) {
-                this.sounds.add(com.ryderbelserion.fusion.paper.utils.ItemUtils.getSound(sound));
+            for (final String sound : StringUtils.getStringList(section.node("options", "sound", "sounds"))) {
+                com.ryderbelserion.fusion.paper.utils.ItemUtils.getSound(sound).ifPresent(this.sounds::add);
             }
         }
 
-        this.fireworkToggle = section.getBoolean("options.firework.toggle", false);
+        this.fireworkToggle = section.node("options", "firework", "toggle").getBoolean(false);
 
         if (this.fireworkToggle) {
-            for (final String color : section.getString("options.firework.colors", "").split(", ")) {
+            for (final String color : section.node("options", "firework", "colors").getString("").split(", ")) {
                 this.fireworkColors.add(ColorUtils.getColor(color));
             }
         }
@@ -142,20 +136,15 @@ public class VoucherCode {
         }
 
         if (section.hasChild("random-commands")) {
-            if (section.node("random-commands").isList()) {
+            final CommentedConfigurationNode node = section.node("random-commands");
+
+            if (node.isList()) {
                 this.fusion.log(Level.warn, "We've detected that you have the list version of random-commands which is no longer used, Please run /crazyvouchers migrate -mt VouchersDeprecated");
             } else {
-                final ConfigurationSection randomCommands = section.getConfigurationSection("random-commands");
-
-                if (randomCommands != null) {
-                    for (final String key : randomCommands.getKeys(false)) {
-                        final ConfigurationSection command = randomCommands.getConfigurationSection(key);
-
-                        if (command == null) continue;
-
-                        this.randomCommands.add(new VoucherCommand(command.getStringList("commands"), command.getDouble("weight", -1)));
-                    }
-                }
+                node.childrenMap().forEach((id, key) -> this.randomCommands.add(new VoucherCommand(
+                        StringUtils.getStringList(key.node("commands")),
+                        key.node("weight").getDouble(-1)
+                )));
             }
         }
 

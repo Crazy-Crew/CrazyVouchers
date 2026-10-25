@@ -4,7 +4,6 @@ import ch.jalu.configme.SettingsManager;
 import ch.jalu.configme.properties.Property;
 import com.badbones69.crazyvouchers.CrazyVouchers;
 import com.badbones69.crazyvouchers.api.enums.State;
-import com.badbones69.crazyvouchers.config.types.ConfigKeys;
 import com.badbones69.crazyvouchers.config.types.locale.CommandKeys;
 import com.badbones69.crazyvouchers.config.types.locale.MessageKeys;
 import com.badbones69.crazyvouchers.config.types.locale.MiscKeys;

@@ -19,7 +19,7 @@ public enum PermissionKeys {
 
     crazyvouchers_give("give", "Access to /crazyvouchers give", PermissionDefault.OP),
     crazyvouchers_all("giveall", "Access to /crazyvouchers giveall", PermissionDefault.OP),
-    crazyvoucherS_open("open", "Access to /crazyvouchers open", PermissionDefault.OP),
+    crazyvouchers_open("open", "Access to /crazyvouchers open", PermissionDefault.OP),
     crazyvouchers_types("types", "Access to /crazyvouchers types", PermissionDefault.OP),
     crazyvouchers_access("access", "Access to /crazyvouchers", PermissionDefault.OP),
     crazyvouchers_help("help", "Access to /crazyvouchers help", PermissionDefault.OP),

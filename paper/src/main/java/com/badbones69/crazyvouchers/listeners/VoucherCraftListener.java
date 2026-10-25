@@ -12,7 +12,6 @@ import org.bukkit.event.inventory.*;
 import org.bukkit.inventory.CraftingInventory;
 import org.bukkit.inventory.ItemStack;
 import org.jspecify.annotations.NonNull;
-import com.badbones69.crazyvouchers.config.types.ConfigKeys;
 
 public class VoucherCraftListener implements Listener {
 

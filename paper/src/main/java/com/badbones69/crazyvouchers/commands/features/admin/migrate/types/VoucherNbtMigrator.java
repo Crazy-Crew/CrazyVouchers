@@ -5,7 +5,6 @@ import com.badbones69.crazyvouchers.api.enums.misc.PersistentKeys;
 import com.badbones69.crazyvouchers.commands.features.admin.migrate.IVoucherMigrator;
 import com.badbones69.crazyvouchers.commands.features.admin.migrate.enums.MigrationType;
 import com.badbones69.crazyvouchers.config.ConfigManager;
-import com.badbones69.crazyvouchers.config.types.ConfigKeys;
 import com.ryderbelserion.fusion.api.enums.Level;
 import de.tr7zw.changeme.nbtapi.NBT;
 import org.bukkit.Material;

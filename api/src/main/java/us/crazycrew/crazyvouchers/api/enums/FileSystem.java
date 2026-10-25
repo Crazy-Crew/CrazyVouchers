@@ -1,4 +1,4 @@
-package com.badbones69.crazyvouchers.api.enums;
+package us.crazycrew.crazyvouchers.api.enums;
 
 import org.jspecify.annotations.NonNull;
 

@@ -37,8 +37,6 @@ bStats = "3.2.1" # https://github.com/Bastian/bStats
 fusion = "4.54.0" # https://github.com/ryderbelserion/Fusion
 ## Database API
 hikari = "7.0.2" # https://github.com/brettwooldridge/HikariCP
-## Config API
-jalu = "1.4.3" # https://github.com/AuthMe/ConfigMe
 
 ## Gradle Plugins
 fix-javadoc = "1.19" # https://github.com/mfnalex/gradle-fix-javadoc-plugin
@@ -122,9 +120,6 @@ vault = { module = "com.github.MilkBowl:VaultAPI", version.ref = "vault" }
 
 # https://github.com/brettwooldridge/HikariCP
 hikari-cp = { module = "com.zaxxer:HikariCP", version.ref = "hikari" }
-
-# https://github.com/AuthMe/ConfigMe
-jalu = { module = "ch.jalu:configme", version.ref = "jalu" }
 
 [bundles]
 adventure = [

@@ -17,7 +17,7 @@ repositories {
 }
 
 dependencies {
-    implementation(project(":api"))
+    implementation(project(":common"))
 
     implementation(libs.fusion.paper)
 
@@ -26,7 +26,6 @@ dependencies {
     implementation(libs.nbt.api)
 
     implementation(libs.metrics)
-    implementation(libs.jalu)
 
     compileOnly(libs.bundles.shared)
 }
@@ -46,8 +45,7 @@ tasks {
             "com.google.gson",
             "org.jspecify",
             "org.bstats",
-            "org.yaml",
-            "ch.jalu"
+            "org.yaml"
         ).forEach {
             relocate(it, "libs.$it")
         }

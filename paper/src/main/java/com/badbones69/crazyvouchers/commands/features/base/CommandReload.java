@@ -1,11 +1,10 @@
 package com.badbones69.crazyvouchers.commands.features.base;
 
 import com.badbones69.crazyvouchers.Methods;
-import com.badbones69.crazyvouchers.api.enums.FileSystem;
+import us.crazycrew.crazyvouchers.api.enums.FileSystem;
 import com.badbones69.crazyvouchers.api.enums.config.Messages;
 import com.badbones69.crazyvouchers.commands.BaseCommand;
 import com.badbones69.crazyvouchers.config.ConfigManager;
-import com.badbones69.crazyvouchers.config.types.ConfigKeys;
 import com.ryderbelserion.fusion.files.enums.FileType;
 import dev.triumphteam.cmd.core.annotations.Command;
 import dev.triumphteam.cmd.bukkit.annotation.Permission;
