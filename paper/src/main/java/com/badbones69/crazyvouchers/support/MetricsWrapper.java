@@ -2,7 +2,7 @@ package com.badbones69.crazyvouchers.support;
 
 import ch.jalu.configme.SettingsManager;
 import com.badbones69.crazyvouchers.CrazyVouchers;
-import us.crazycrew.crazyvouchers.api.enums.FileSystem;
+import us.crazycrew.crazyvouchers.api.enums.other.FileSystem;
 import com.badbones69.crazyvouchers.config.ConfigManager;
 import org.bstats.bukkit.Metrics;
 import org.bstats.charts.SimplePie;

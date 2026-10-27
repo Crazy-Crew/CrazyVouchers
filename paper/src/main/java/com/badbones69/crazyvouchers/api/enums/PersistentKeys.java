@@ -1,4 +1,4 @@
-package com.badbones69.crazyvouchers.api.enums.misc;
+package com.badbones69.crazyvouchers.api.enums;
 
 import com.badbones69.crazyvouchers.CrazyVouchers;
 import org.bukkit.NamespacedKey;

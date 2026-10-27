@@ -1,9 +1,8 @@
 package com.badbones69.crazyvouchers.commands.features.admin.migrate.types.deprecation;
 
 import com.badbones69.crazyvouchers.Methods;
-import com.badbones69.crazyvouchers.api.enums.Comments;
-import com.badbones69.crazyvouchers.api.enums.FileKeys;
-import us.crazycrew.crazyvouchers.api.enums.FileSystem;
+import us.crazycrew.crazyvouchers.api.enums.Comments;
+import us.crazycrew.crazyvouchers.api.enums.other.FileSystem;
 import com.badbones69.crazyvouchers.commands.features.admin.migrate.IVoucherMigrator;
 import com.badbones69.crazyvouchers.commands.features.admin.migrate.enums.MigrationType;
 import com.ryderbelserion.fusion.api.enums.Level;

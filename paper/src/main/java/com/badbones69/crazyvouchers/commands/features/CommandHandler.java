@@ -2,7 +2,7 @@ package com.badbones69.crazyvouchers.commands.features;
 
 import com.badbones69.crazyvouchers.CrazyVouchers;
 import com.badbones69.crazyvouchers.api.CrazyManager;
-import com.badbones69.crazyvouchers.api.enums.misc.PermissionKeys;
+import com.badbones69.crazyvouchers.api.enums.PermissionKeys;
 import com.badbones69.crazyvouchers.api.objects.Voucher;
 import com.badbones69.crazyvouchers.api.objects.VoucherCode;
 import com.badbones69.crazyvouchers.commands.features.admin.CommandGive;
@@ -47,9 +47,9 @@ public class CommandHandler {
 
         new ArgumentRelations(this.commandManager).build();
 
-        this.commandManager.registerSuggestion(SuggestionKey.of("players"), sender -> server.getOnlinePlayers().stream().map(Player::getName).toList());
+        this.commandManager.registerSuggestion(SuggestionKey.of("players"), _ -> server.getOnlinePlayers().stream().map(Player::getName).toList());
 
-        this.commandManager.registerSuggestion(SuggestionKey.of("numbers"), sender -> {
+        this.commandManager.registerSuggestion(SuggestionKey.of("numbers"), _ -> {
             final List<String> numbers = new ArrayList<>();
 
             for (int i = 1; i <= 100; i++) numbers.add(String.valueOf(i));
@@ -57,7 +57,7 @@ public class CommandHandler {
             return numbers;
         });
 
-        this.commandManager.registerSuggestion(SuggestionKey.of("doubles"), sender -> {
+        this.commandManager.registerSuggestion(SuggestionKey.of("doubles"), _ -> {
             final List<String> numbers = new ArrayList<>();
 
             int count = 0;

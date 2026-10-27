@@ -1,15 +1,15 @@
-package com.badbones69.crazyvouchers.api.enums;
+package us.crazycrew.crazyvouchers.api.enums.other;
 
 import org.jspecify.annotations.NonNull;
 
-public enum State {
+public enum FileSystem {
 
-    send_message("send_message"),
-    send_actionbar("send_actionbar");
+    SINGLE("single"),
+    MULTIPLE("multiple");
 
     private final String name;
 
-    State(@NonNull final String name) {
+    FileSystem(@NonNull final String name) {
         this.name = name;
     }
 

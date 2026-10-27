@@ -5,8 +5,7 @@ import com.ryderbelserion.fusion.core.api.config.properties.builders.CommentsBui
 import com.ryderbelserion.fusion.core.api.config.properties.interfaces.IPropertyHolder;
 import com.ryderbelserion.fusion.core.api.config.properties.objects.interfaces.Property;
 import org.jspecify.annotations.NonNull;
-import us.crazycrew.crazyvouchers.api.enums.FileSystem;
-import us.crazycrew.crazyvouchers.api.enums.messages.State;
+import us.crazycrew.crazyvouchers.api.enums.other.FileSystem;
 
 import java.util.List;
 import static com.ryderbelserion.fusion.core.api.config.properties.PropertyBuilder.newBeanProperty;

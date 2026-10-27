@@ -4,12 +4,11 @@ import ch.jalu.configme.SettingsManager;
 import com.badbones69.crazyvouchers.CrazyVouchers;
 import com.badbones69.crazyvouchers.Methods;
 import com.badbones69.crazyvouchers.api.CrazyManager;
-import com.badbones69.crazyvouchers.api.enums.FileKeys;
-import com.badbones69.crazyvouchers.api.enums.config.Messages;
-import com.badbones69.crazyvouchers.api.enums.misc.PermissionKeys;
-import com.badbones69.crazyvouchers.api.enums.misc.PersistentKeys;
+import us.crazycrew.crazyvouchers.api.enums.messages.Message;
+import com.badbones69.crazyvouchers.api.enums.PermissionKeys;
+import com.badbones69.crazyvouchers.api.enums.PersistentKeys;
 import com.badbones69.crazyvouchers.api.events.VoucherRedeemEvent;
-import com.badbones69.crazyvouchers.config.types.locale.MessageKeys;
+import us.crazycrew.crazyvouchers.api.config.types.locale.MessageKeys;
 import com.badbones69.crazyvouchers.utils.ItemUtils;
 import com.ryderbelserion.fusion.api.enums.constants.ModSupport;
 import com.ryderbelserion.fusion.api.enums.Level;
@@ -187,7 +186,7 @@ public class Voucher {
         this.whitelistPermissionToggle = section.node("options", "permission", "whitelist-permission", "toggle").getBoolean(false);
         this.whitelistCommands = section.node("options", "permission", "whitelist-permission", "commands").isList() ? StringUtils.getStringList(section.node("options", "permission", "whitelist-permission", "commands")) :
                 List.of(section.node("options", "permission", "whitelist-permission", "commands").getString(""));
-        this.whitelistPermissionMessage = getMessage(section, "options.permission.whitelist-permission.message", Messages.no_permission_to_use_voucher.getString());
+        this.whitelistPermissionMessage = getMessage(section, "options.permission.whitelist-permission.message", Message.no_permission_to_use_voucher.getString());
 
         this.whitelistPermissions.addAll(StringUtils.getStringList(section.node("options", "permission", "whitelist-permission", "permissions")).stream().map(String::toLowerCase).toList());
 
@@ -199,12 +198,12 @@ public class Voucher {
 
         this.whitelistWorldsToggle = section.node("options", "whitelist-worlds", "toggle").getBoolean(false);
         this.whitelistWorldCommands = section.node("options", "whitelist-worlds", "commands").isList() ? StringUtils.getStringList(section.node("options", "whitelist-worlds", "commands")) : List.of(section.node("options", "whitelist-worlds", "commands").getString(""));
-        this.whitelistWorldMessage = getMessage(section, "options.whitelist-worlds.message", Messages.not_in_whitelisted_world.getString());
+        this.whitelistWorldMessage = getMessage(section, "options.whitelist-worlds.message", Message.not_in_whitelisted_world.getString());
 
         this.whitelistWorlds.addAll(StringUtils.getStringList(section.node("options", "whitelist-worlds", "worlds")).stream().map(String::toLowerCase).toList());
 
         this.blacklistPermissionsToggle = section.node("options", "permission", "blacklist-permission", "toggle").getBoolean(false);
-        this.blacklistPermissionMessage = getMessage(section, "options.permission.blacklist-permission.message", Messages.has_blacklist_permission.getString());
+        this.blacklistPermissionMessage = getMessage(section, "options.permission.blacklist-permission.message", Message.has_blacklist_permission.getString());
         this.blacklistPermissions = section.node("options", "permission", "blacklist-permission", "permissions").isList() ? StringUtils.getStringList(section.node("options", "permission", "blacklist-permission", "permissions"))
                 : List.of(section.node("options", "permission", "blacklist-permission", "permissions").getString(""));
         this.blacklistCommands = section.node("options", "permission", "blacklist-permission", "commands").isList() ? StringUtils.getStringList(section.node("options", "permission", "blacklist-permission", "commands"))
@@ -307,7 +306,7 @@ public class Voucher {
 
     public void execute(@NonNull final Player player, @NonNull final ItemStack item, @NonNull final EquipmentSlot slot) {
         if (player.getGameMode() == GameMode.CREATIVE && this.config.getProperty(ConfigKeys.must_be_in_survival)) {
-            Messages.survival_mode.sendMessage(player);
+            Message.survival_mode.sendMessage(player);
 
             return;
         }
@@ -339,7 +338,7 @@ public class Voucher {
                 final List<String> vouchers = StringUtils.getStringList(data.node("Used-Vouchers"));
 
                 if (vouchers.contains(id)) {
-                    Messages.dupe_protection.sendMessage(player);
+                    Message.dupe_protection.sendMessage(player);
 
                     this.server.getOnlinePlayers().forEach(staff -> {
                         if (PermissionKeys.crazyvouchers_notify.hasPermission(staff)) {
@@ -348,7 +347,7 @@ public class Voucher {
                             values.put("{player}", player.getName());
                             values.put("{id}", id);
 
-                            Messages.notify_staff.sendMessage(staff, values);
+                            Message.notify_staff.sendMessage(staff, values);
                         }
                     });
 
@@ -393,13 +392,13 @@ public class Voucher {
             int amount = section.node(asString, "Vouchers", cleanName).getInt();
 
             if (amount >= getLimiterLimit()) {
-                Messages.hit_voucher_limit.sendMessage(player);
+                Message.hit_voucher_limit.sendMessage(player);
 
                 return;
             }
 
             if (hasCooldown() && isCooldown(player)){
-                Messages.cooldown_active.sendMessage(player, "{time}", String.valueOf(getCooldown()));
+                Message.cooldown_active.sendMessage(player, "{time}", String.valueOf(getCooldown()));
 
                 return;
             } else {

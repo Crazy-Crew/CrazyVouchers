@@ -1,8 +1,8 @@
 package com.badbones69.crazyvouchers.commands.features.base;
 
 import com.badbones69.crazyvouchers.Methods;
-import us.crazycrew.crazyvouchers.api.enums.FileSystem;
-import com.badbones69.crazyvouchers.api.enums.config.Messages;
+import us.crazycrew.crazyvouchers.api.enums.other.FileSystem;
+import us.crazycrew.crazyvouchers.api.enums.messages.Message;
 import com.badbones69.crazyvouchers.commands.BaseCommand;
 import com.badbones69.crazyvouchers.config.ConfigManager;
 import com.ryderbelserion.fusion.files.enums.FileType;

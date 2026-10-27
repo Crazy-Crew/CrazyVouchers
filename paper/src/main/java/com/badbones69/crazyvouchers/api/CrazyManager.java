@@ -2,9 +2,8 @@ package com.badbones69.crazyvouchers.api;
 
 import ch.jalu.configme.SettingsManager;
 import com.badbones69.crazyvouchers.CrazyVouchers;
-import com.badbones69.crazyvouchers.api.enums.FileKeys;
-import us.crazycrew.crazyvouchers.api.enums.FileSystem;
-import com.badbones69.crazyvouchers.api.enums.misc.PersistentKeys;
+import us.crazycrew.crazyvouchers.api.enums.other.FileSystem;
+import com.badbones69.crazyvouchers.api.enums.PersistentKeys;
 import com.badbones69.crazyvouchers.api.objects.Voucher;
 import com.badbones69.crazyvouchers.api.objects.VoucherCode;
 import com.ryderbelserion.fusion.api.enums.Level;

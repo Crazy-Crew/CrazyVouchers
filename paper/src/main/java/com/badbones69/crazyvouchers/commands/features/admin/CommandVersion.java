@@ -1,6 +1,5 @@
 package com.badbones69.crazyvouchers.commands.features.admin;
 
-import com.badbones69.crazyvouchers.api.enums.FileKeys;
 import com.badbones69.crazyvouchers.commands.BaseCommand;
 import com.ryderbelserion.fusion.core.utils.StringUtils;
 import dev.triumphteam.cmd.bukkit.annotation.Permission;

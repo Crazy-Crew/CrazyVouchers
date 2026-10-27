@@ -1,8 +1,8 @@
 package com.badbones69.crazyvouchers.listeners;
 
 import ch.jalu.configme.SettingsManager;
-import com.badbones69.crazyvouchers.api.enums.config.Messages;
-import com.badbones69.crazyvouchers.api.enums.misc.PersistentKeys;
+import us.crazycrew.crazyvouchers.api.enums.messages.Message;
+import com.badbones69.crazyvouchers.api.enums.PersistentKeys;
 import com.badbones69.crazyvouchers.config.ConfigManager;
 import io.papermc.paper.persistence.PersistentDataContainerView;
 import org.bukkit.event.EventHandler;

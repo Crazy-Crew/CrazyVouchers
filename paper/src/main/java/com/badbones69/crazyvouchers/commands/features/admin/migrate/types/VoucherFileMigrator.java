@@ -1,6 +1,6 @@
 package com.badbones69.crazyvouchers.commands.features.admin.migrate.types;
 
-import us.crazycrew.crazyvouchers.api.enums.FileSystem;
+import us.crazycrew.crazyvouchers.api.enums.other.FileSystem;
 import com.badbones69.crazyvouchers.commands.features.admin.migrate.IVoucherMigrator;
 import com.badbones69.crazyvouchers.commands.features.admin.migrate.enums.MigrationType;
 import com.ryderbelserion.fusion.api.enums.Level;

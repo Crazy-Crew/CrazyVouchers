@@ -3,7 +3,7 @@ package com.badbones69.crazyvouchers.api.objects;
 import ch.jalu.configme.SettingsManager;
 import com.badbones69.crazyvouchers.CrazyVouchers;
 import com.badbones69.crazyvouchers.Methods;
-import com.badbones69.crazyvouchers.api.enums.config.Messages;
+import us.crazycrew.crazyvouchers.api.enums.messages.Message;
 import com.badbones69.crazyvouchers.utils.ItemUtils;
 import com.ryderbelserion.crazyvouchers.utils.ConfigUtils;
 import com.ryderbelserion.fusion.api.enums.Level;
@@ -89,7 +89,7 @@ public class VoucherCode {
 
         this.whitelistPermissionToggle = section.node("options", "permission", "whitelist-permission", "toggle").getBoolean(false);
         this.whitelistCommands = ConfigUtils.getStringList(section, List.of(), "options", "permission", "whitelist-permission", "commands");
-        this.whitelistPermissionMessage = getMessage(section, "options.permission.whitelist-permission.message", Messages.no_permission_to_use_voucher.getString());
+        this.whitelistPermissionMessage = getMessage(section, "options.permission.whitelist-permission.message", Message.no_permission_to_use_voucher.getString());
 
         this.whitelistPermissions.addAll(StringUtils.getStringList(section.node("options", "permission", "whitelist-permission", "permissions")).stream().map(String::toLowerCase).toList());
 
@@ -101,12 +101,12 @@ public class VoucherCode {
 
         this.whitelistWorldsToggle = section.node("options", "whitelist-worlds", "toggle").getBoolean(false);
         this.whitelistWorldCommands.addAll(ConfigUtils.getStringList(section, List.of(), "options", "whitelist-worlds", "commands"));
-        this.whitelistWorldMessage = getMessage(section, Messages.not_in_whitelisted_world.getString(), "options", "whitelist-worlds", "message");
+        this.whitelistWorldMessage = getMessage(section, Message.not_in_whitelisted_world.getString(), "options", "whitelist-worlds", "message");
 
         this.whitelistWorlds.addAll(StringUtils.getStringList(section.node("options", "whitelist-worlds", "worlds")).stream().map(String::toLowerCase).toList());
 
         this.blacklistPermissionsToggle = section.node("options", "permission", "blacklist-permission", "toggle").getBoolean(false);
-        this.blacklistPermissionMessage = getMessage(section, Messages.has_blacklist_permission.getString(), "options", "permission", "blacklist-permission", "message");
+        this.blacklistPermissionMessage = getMessage(section, Message.has_blacklist_permission.getString(), "options", "permission", "blacklist-permission", "message");
         this.blacklistPermissions.addAll(ConfigUtils.getStringList(section, List.of(), "options", "permission", "blacklist-permission", "permissions"));
         this.blacklistCommands.addAll(ConfigUtils.getStringList(section, List.of(), "options", "permission", "blacklist-permission", "commands"));
 
