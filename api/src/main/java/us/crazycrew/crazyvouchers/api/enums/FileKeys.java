@@ -44,7 +44,7 @@ public enum FileKeys {
         return customFile.get();
     }
 
-    public final BasicConfigurationNode getJsonConfiguration() {
+    public final BasicConfigurationNode getBasicConfiguration() {
         return getJsonCustomFile().getConfiguration();
     }
 

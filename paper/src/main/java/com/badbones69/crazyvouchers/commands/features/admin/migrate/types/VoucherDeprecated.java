@@ -2,16 +2,13 @@ package com.badbones69.crazyvouchers.commands.features.admin.migrate.types;
 
 import com.badbones69.crazyvouchers.commands.features.admin.migrate.IVoucherMigrator;
 import com.badbones69.crazyvouchers.commands.features.admin.migrate.enums.MigrationType;
-import com.ryderbelserion.fusion.api.enums.Level;
-import com.ryderbelserion.fusion.paper.files.types.PaperCustomFile;
 import org.bukkit.command.CommandSender;
 import org.bukkit.configuration.ConfigurationSection;
-import org.bukkit.configuration.file.YamlConfiguration;
 import org.jspecify.annotations.NonNull;
-import java.nio.file.Path;
+import org.spongepowered.configurate.CommentedConfigurationNode;
+import us.crazycrew.crazyvouchers.api.config.types.RootKeys;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
 import java.util.UUID;
 
 public class VoucherDeprecated extends IVoucherMigrator {
@@ -25,108 +22,114 @@ public class VoucherDeprecated extends IVoucherMigrator {
         final List<String> failed = new ArrayList<>();
         final List<String> success = new ArrayList<>();
 
-        switch (this.config.getProperty(ConfigKeys.file_system)) {
+        switch (this.config.getProperty(RootKeys.file_system)) {
             case SINGLE -> {
-                final YamlConfiguration vouchers = FileKeys.vouchers.getConfiguration();
+                this.fileManager.getYamlFile(this.dataPath.resolve("vouchers.yml")).ifPresentOrElse(customFile -> {
+                    final CommentedConfigurationNode configuration = customFile.getConfiguration();
 
-                try {
-                    final ConfigurationSection section = vouchers.getConfigurationSection("vouchers");
+                    try {
+                        /*final ConfigurationSection section = vouchers.getConfigurationSection("vouchers");
 
-                    if (section != null) {
-                        for (final String key : section.getKeys(false)) {
-                            final ConfigurationSection voucher = section.getConfigurationSection(key);
+                        if (section != null) {
+                            for (final String key : section.getKeys(false)) {
+                                final ConfigurationSection voucher = section.getConfigurationSection(key);
 
-                            if (voucher == null) {
-                                this.fusion.log(Level.warn, "<red>%s</red> is not a valid configuration section.", key);
+                                if (voucher == null) {
+                                    this.fusion.log(Level.warn, "<red>%s</red> is not a valid configuration section.", key);
 
-                                continue;
-                            }
-
-                            if (voucher.contains("item")) {
-                                final String displayItem = voucher.getString("item", "");
-
-                                if (displayItem.contains("#")) {
-                                    final String[] split = displayItem.split("#");
-                                    final String material = split[0];
-                                    final String model_data = split[1];
-
-                                    section.set("item", material);
-                                    section.set("custom-model-data", model_data);
-                                } else {
-                                    this.fusion.log(Level.warn, "<red>vouchers.%s.item</red> does not contain <red>custom model data</red>, We cannot migrate.", key);
+                                    continue;
                                 }
-                            } else {
-                                this.fusion.log(Level.warn, "<red>vouchers.%s.item</red> does not exist.", key);
+
+                                if (voucher.contains("item")) {
+                                    final String displayItem = voucher.getString("item", "");
+
+                                    if (displayItem.contains("#")) {
+                                        final String[] split = displayItem.split("#");
+                                        final String material = split[0];
+                                        final String model_data = split[1];
+
+                                        section.set("item", material);
+                                        section.set("custom-model-data", model_data);
+                                    } else {
+                                        this.fusion.log(Level.warn, "<red>vouchers.%s.item</red> does not contain <red>custom model data</red>, We cannot migrate.", key);
+                                    }
+                                } else {
+                                    this.fusion.log(Level.warn, "<red>vouchers.%s.item</red> does not exist.", key);
+                                }
+
+                                if (voucher.contains("random-commands") && voucher.isList("random-commands")) {
+                                    final List<String> commands = voucher.getStringList("random-commands");
+
+                                    voucher.set("random-commands", null);
+
+                                    final ConfigurationSection newSection = voucher.createSection("random-commands");
+
+                                    newSection.set("%s.commands".formatted(UUID.randomUUID()), commands);
+                                }
+
+                                if (voucher.contains("chance-commands")) {
+                                    final List<String> commands = voucher.getStringList("chance-commands");
+
+                                    convertCommands(voucher, commands);
+                                }
                             }
 
-                            if (voucher.contains("random-commands") && voucher.isList("random-commands")) {
-                                final List<String> commands = voucher.getStringList("random-commands");
+                            customFile.save();
+                        }*/
 
-                                voucher.set("random-commands", null);
-
-                                final ConfigurationSection newSection = voucher.createSection("random-commands");
-
-                                newSection.set("%s.commands".formatted(UUID.randomUUID()), commands);
-                            }
-
-                            if (voucher.contains("chance-commands")) {
-                                final List<String> commands = voucher.getStringList("chance-commands");
-
-                                convertCommands(voucher, commands);
-                            }
-                        }
-
-                        FileKeys.vouchers.save();
+                        success.add("<green>⤷ vouchers.yml");
+                    } catch (final Exception exception) {
+                        failed.add("<red>⤷ vouchers.yml");
                     }
-
-                    success.add("<green>⤷ vouchers.yml");
-                } catch (final Exception exception) {
+                }, () -> {
                     failed.add("<red>⤷ vouchers.yml");
-                }
+                });
 
-                final YamlConfiguration codes = FileKeys.codes.getConfiguration();
+                this.fileManager.getYamlFile(this.dataPath.resolve("codes.yml")).ifPresentOrElse(customFile -> {
+                    try {
+                        /*final ConfigurationSection section = codes.getConfigurationSection("voucher-codes");
 
-                try {
-                    final ConfigurationSection section = codes.getConfigurationSection("voucher-codes");
+                        if (section != null) {
+                            for (final String key : section.getKeys(false)) {
+                                final ConfigurationSection voucher = section.getConfigurationSection(key);
 
-                    if (section != null) {
-                        for (final String key : section.getKeys(false)) {
-                            final ConfigurationSection voucher = section.getConfigurationSection(key);
+                                if (voucher == null) {
+                                    this.fusion.log(Level.warn, "<red>%s</red> is not a valid configuration section.", key);
 
-                            if (voucher == null) {
-                                this.fusion.log(Level.warn, "<red>%s</red> is not a valid configuration section.", key);
+                                    continue;
+                                }
 
-                                continue;
+                                if (voucher.contains("random-commands") && voucher.isList("random-commands")) {
+                                    final List<String> commands = voucher.getStringList("random-commands");
+
+                                    voucher.set("random-commands", null);
+
+                                    final ConfigurationSection newSection = voucher.createSection("random-commands");
+
+                                    newSection.set("%s.commands".formatted(UUID.randomUUID()), commands);
+                                }
+
+                                if (voucher.contains("chance-commands")) {
+                                    final List<String> commands = voucher.getStringList("chance-commands");
+
+                                    convertCommands(voucher, commands);
+                                }
                             }
 
-                            if (voucher.contains("random-commands") && voucher.isList("random-commands")) {
-                                final List<String> commands = voucher.getStringList("random-commands");
+                            customFile.save();
+                        }*/
 
-                                voucher.set("random-commands", null);
-
-                                final ConfigurationSection newSection = voucher.createSection("random-commands");
-
-                                newSection.set("%s.commands".formatted(UUID.randomUUID()), commands);
-                            }
-
-                            if (voucher.contains("chance-commands")) {
-                                final List<String> commands = voucher.getStringList("chance-commands");
-
-                                convertCommands(voucher, commands);
-                            }
-                        }
-
-                        FileKeys.codes.save();
+                        success.add("<green>⤷ codes.yml");
+                    } catch (final Exception exception) {
+                        failed.add("<red>⤷ codes.yml");
                     }
-
-                    success.add("<green>⤷ codes.yml");
-                } catch (final Exception exception) {
+                }, () -> {
                     failed.add("<red>⤷ codes.yml");
-                }
+                });
             }
 
             case MULTIPLE -> {
-                final Path voucher_dir = this.dataPath.resolve("vouchers");
+                /*final Path voucher_dir = this.dataPath.resolve("vouchers");
 
                 final List<Path> voucher_files = this.fusion.getFilesByPath(voucher_dir, ".yml");
 
@@ -261,7 +264,7 @@ public class VoucherDeprecated extends IVoucherMigrator {
                     success.add("<green>⤷ " + fileName);
 
                     customFile.save();
-                }
+                }*/
             }
         }
 

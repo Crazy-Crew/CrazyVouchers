@@ -29,7 +29,7 @@ public class CommandGive extends BaseCommand {
         final Voucher voucher = this.crazyManager.getVoucher(name);
 
         if (voucher == null) {
-            Messages.not_a_voucher.sendMessage(sender);
+            Message.not_a_voucher.sendMessage(sender);
 
             return;
         }
@@ -44,8 +44,8 @@ public class CommandGive extends BaseCommand {
             placeholders.put("{player}", player.getName());
             placeholders.put("{voucher}", voucher.getStrippedName());
 
-            Messages.sent_voucher.sendMessage(sender, placeholders);
-        }, () -> Messages.not_online.sendMessage(sender));
+            Message.sent_voucher.sendMessage(sender, placeholders);
+        }, () -> Message.not_online.sendMessage(sender));
     }
 
     @Command(value = "giveall")
@@ -55,7 +55,7 @@ public class CommandGive extends BaseCommand {
         final Voucher voucher = this.crazyManager.getVoucher(name);
 
         if (voucher == null) {
-            Messages.not_a_voucher.sendMessage(sender);
+            Message.not_a_voucher.sendMessage(sender);
 
             return;
         }
@@ -70,7 +70,7 @@ public class CommandGive extends BaseCommand {
 
         placeholders.put("{voucher}", voucher.getStrippedName());
 
-        Messages.sent_everyone_voucher.sendMessage(sender, placeholders);
+        Message.sent_everyone_voucher.sendMessage(sender, placeholders);
     }
 
     private List<ItemStack> build(final Player player, final int amount, final String argument, final Voucher voucher) {

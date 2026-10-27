@@ -8,6 +8,7 @@ import dev.triumphteam.cmd.core.annotations.Syntax;
 import org.bukkit.command.CommandSender;
 import org.bukkit.permissions.PermissionDefault;
 import org.spongepowered.configurate.BasicConfigurationNode;
+import us.crazycrew.crazyvouchers.api.enums.FileKeys;
 import java.util.List;
 import java.util.Map;
 
@@ -17,7 +18,7 @@ public class CommandVersion extends BaseCommand {
     @Permission(value = "crazyvouchers.version", def = PermissionDefault.OP)
     @Syntax("/crazyvouchers version")
     public void version(final CommandSender sender) {
-        final BasicConfigurationNode configuration = FileKeys.version.getConfigurationNode();
+        final BasicConfigurationNode configuration = FileKeys.version.getBasicConfiguration();
 
         final String currentCommit = configuration.node("git", "current").getString("N/A");
         final String previousCommit = configuration.node("git", "previous").getString("");

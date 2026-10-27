@@ -70,6 +70,6 @@ public class CommandTypes extends BaseCommand {
         placeholders.put("{vouchers}", String.valueOf(coloredVouchers));
         placeholders.put("{codes}", String.valueOf(coloredCodes));
 
-        Messages.vouchers_list.sendMessage(sender, placeholders);
+        Message.vouchers_list.sendMessage(sender, placeholders);
     }
 }

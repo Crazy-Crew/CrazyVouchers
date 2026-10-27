@@ -1,6 +1,7 @@
 package com.badbones69.crazyvouchers.commands.features.admin.migrate.types.deprecation;
 
 import com.badbones69.crazyvouchers.Methods;
+import us.crazycrew.crazyvouchers.api.config.types.RootKeys;
 import us.crazycrew.crazyvouchers.api.enums.Comments;
 import us.crazycrew.crazyvouchers.api.enums.other.FileSystem;
 import com.badbones69.crazyvouchers.commands.features.admin.migrate.IVoucherMigrator;
@@ -28,11 +29,11 @@ public class NewItemMigrator extends IVoucherMigrator {
         final List<String> failed = new ArrayList<>();
         final List<String> success = new ArrayList<>();
 
-        final FileSystem system = this.config.getProperty(ConfigKeys.file_system);
+        final FileSystem system = this.config.getProperty(RootKeys.file_system);
 
         switch (system) {
             case SINGLE -> {
-                final YamlConfiguration codes = FileKeys.codes.getConfiguration();
+                /*final YamlConfiguration codes = FileKeys.codes.getConfiguration();
 
                 final ConfigurationSection codeSection = codes.getConfigurationSection("voucher-codes");
 
@@ -54,9 +55,9 @@ public class NewItemMigrator extends IVoucherMigrator {
                             FileKeys.codes.save();
                         }
                     }
-                }
+                }*/
 
-                final YamlConfiguration vouchers = FileKeys.vouchers.getConfiguration();
+                /*final YamlConfiguration vouchers = FileKeys.vouchers.getConfiguration();
 
                 final ConfigurationSection voucherSection = vouchers.getConfigurationSection("vouchers");
 
@@ -75,10 +76,10 @@ public class NewItemMigrator extends IVoucherMigrator {
                         if (isSave) {
                             this.fusion.log(Level.info, "Successfully migrated voucher %s, and saved to file!", voucher);
 
-                            FileKeys.vouchers.save();
+                            //FileKeys.vouchers.save();
                         }
                     }
-                }
+                }*/
             }
 
             case MULTIPLE -> {

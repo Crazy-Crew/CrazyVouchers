@@ -1,5 +1,7 @@
 package com.badbones69.crazyvouchers.commands.features.admin.migrate.types;
 
+import com.ryderbelserion.fusion.files.enums.FileType;
+import us.crazycrew.crazyvouchers.api.config.types.RootKeys;
 import us.crazycrew.crazyvouchers.api.enums.other.FileSystem;
 import com.badbones69.crazyvouchers.commands.features.admin.migrate.IVoucherMigrator;
 import com.badbones69.crazyvouchers.commands.features.admin.migrate.enums.MigrationType;
@@ -61,10 +63,10 @@ public class VoucherFileMigrator extends IVoucherMigrator {
                     exception.printStackTrace();
                 }
 
-                if (this.config.getProperty(ConfigKeys.file_system) == FileSystem.SINGLE) {
+                if (this.config.getProperty(RootKeys.file_system) == FileSystem.SINGLE) {
                     this.fileManager.removeFile(oldPath);
 
-                    this.fileManager.addPaperFile(newPath);
+                    this.fileManager.addFile(newPath, FileType.YAML);
 
                     this.crazyManager.reloadVouchers();
                     this.crazyManager.reloadCodes();

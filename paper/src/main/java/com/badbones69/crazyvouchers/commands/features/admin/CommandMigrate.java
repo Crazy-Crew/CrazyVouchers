@@ -36,7 +36,7 @@ public class CommandMigrate extends BaseCommand {
             placeholders.put("{flag}", "-mt");
             placeholders.put("{usage}", "/crazyvouchers migrate -mt [type]");
 
-            Messages.lacking_flag.sendMessage(sender, placeholders);
+            Message.lacking_flag.sendMessage(sender, placeholders);
 
             return;
         }
@@ -44,7 +44,7 @@ public class CommandMigrate extends BaseCommand {
         final Optional<String> key = flags.getFlagValue("mt");
 
         if (key.isEmpty()) {
-            Messages.migration_not_available.sendMessage(sender);
+            Message.migration_not_available.sendMessage(sender);
 
             return;
         }
@@ -52,7 +52,7 @@ public class CommandMigrate extends BaseCommand {
         final MigrationType type = MigrationType.fromName(key.get());
 
         if (type == null) {
-            Messages.migration_not_available.sendMessage(sender);
+            Message.migration_not_available.sendMessage(sender);
 
             return;
         }
@@ -61,13 +61,13 @@ public class CommandMigrate extends BaseCommand {
             case VOUCHERS_SWITCH -> new VoucherSwitchMigrator(sender).run();
 
             case VOUCHERS_NBT_API -> {
-                if (!(sender instanceof Player)) {
-                    Messages.player_only.sendMessage(sender);
+                if (!(sender instanceof Player player)) {
+                    Message.player_only.sendMessage(sender);
 
                     return;
                 }
 
-                new VoucherNbtMigrator(sender).run();
+                new VoucherNbtMigrator(player).run();
             }
 
             case NEW_ITEM_FORMAT -> new NewItemMigrator(sender).run();

@@ -28,8 +28,8 @@ public class LegacyColorMigrator extends IVoucherMigrator {
         final List<String> success = new ArrayList<>();
 
         try {
-            this.config.setProperty(ConfigKeys.command_prefix, AdvUtils.convert(this.config.getProperty(ConfigKeys.command_prefix), true));
-            this.config.setProperty(ConfigKeys.dupe_protection_warning, AdvUtils.convert(this.config.getProperty(ConfigKeys.dupe_protection_warning), true));
+            //this.config.setProperty(ConfigKeys.command_prefix, AdvUtils.convert(this.config.getProperty(ConfigKeys.command_prefix), true));
+            //this.config.setProperty(ConfigKeys.dupe_protection_warning, AdvUtils.convert(this.config.getProperty(ConfigKeys.dupe_protection_warning), true));
 
             success.add("<green>⤷ config.yml");
 
@@ -40,19 +40,19 @@ public class LegacyColorMigrator extends IVoucherMigrator {
         }
 
         try {
-            for (final Messages message : Messages.values()) {
-                message.migrate();
-            }
+            //for (final Messages message : Messages.values()) {
+            //    message.migrate();
+            //}
 
             success.add("<green>⤷ messages.yml");
 
-            this.messages.save();
-            this.messages.reload();
+            //this.messages.save();
+            //this.messages.reload();
         } catch (Exception exception) {
             failed.add("<red>⤷ messages.yml");
         }
 
-        switch (this.config.getProperty(ConfigKeys.file_system)) {
+        /*switch (this.config.getProperty(ConfigKeys.file_system)) {
             case SINGLE -> {
                 final YamlConfiguration vouchers = FileKeys.vouchers.getConfiguration();
 
@@ -177,7 +177,7 @@ public class LegacyColorMigrator extends IVoucherMigrator {
                         failed.add("<red>⤷ " + fileName);
 
                         continue;
-                    }*/
+                    }
 
                     //processItems(customFile.getPrettyName(), section);
 
@@ -186,7 +186,7 @@ public class LegacyColorMigrator extends IVoucherMigrator {
                     customFile.save();
                 }
             }
-        }
+        }*/
 
         final int convertedCount = success.size();
         final int failedCount = failed.size();

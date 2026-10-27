@@ -47,6 +47,6 @@ public class CommandReload extends BaseCommand {
 
         this.crazyManager.reload();
 
-        Messages.config_reload.sendMessage(sender);
+        Message.config_reload.sendMessage(sender);
     }
 }

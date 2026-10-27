@@ -8,6 +8,8 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.jspecify.annotations.NonNull;
+import us.crazycrew.crazyvouchers.api.config.types.RootKeys;
+
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -21,7 +23,7 @@ public class VoucherSwitchMigrator extends IVoucherMigrator {
 
     @Override
     public void run() {
-        switch (this.config.getProperty(ConfigKeys.file_system)) {
+        switch (this.config.getProperty(RootKeys.file_system)) {
             case SINGLE -> {
                 final Path voucher_directory = getVouchersDirectory();
                 final Path code_directory = getCodesDirectory();

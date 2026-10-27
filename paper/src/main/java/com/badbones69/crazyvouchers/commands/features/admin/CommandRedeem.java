@@ -1,12 +1,13 @@
 package com.badbones69.crazyvouchers.commands.features.admin;
 
 import com.badbones69.crazyvouchers.Methods;
+import org.spongepowered.configurate.CommentedConfigurationNode;
+import us.crazycrew.crazyvouchers.api.enums.FileKeys;
 import us.crazycrew.crazyvouchers.api.enums.messages.Message;
 import com.badbones69.crazyvouchers.api.enums.PermissionKeys;
 import com.badbones69.crazyvouchers.api.events.VoucherRedeemCodeEvent;
 import com.badbones69.crazyvouchers.api.objects.VoucherCode;
 import com.badbones69.crazyvouchers.commands.BaseCommand;
-import com.badbones69.crazyvouchers.config.ConfigManager;
 import com.ryderbelserion.fusion.paper.builders.items.ItemBuilder;
 import dev.triumphteam.cmd.core.annotations.ArgName;
 import dev.triumphteam.cmd.core.annotations.Command;
@@ -17,7 +18,6 @@ import org.bukkit.Location;
 import org.bukkit.Server;
 import org.bukkit.Sound;
 import org.bukkit.SoundCategory;
-import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.entity.Player;
 import org.bukkit.permissions.PermissionDefault;
 import java.util.HashMap;
@@ -40,10 +40,10 @@ public class CommandRedeem extends BaseCommand {
         placeholders.put("{x}", String.valueOf(location.x()));
         placeholders.put("{y}", String.valueOf(location.y()));
         placeholders.put("{z}", String.valueOf(location.z()));
-        placeholders.put("{prefix}", ConfigManager.getConfig().getProperty(ConfigKeys.command_prefix));
+        //placeholders.put("{prefix}", ConfigManager.getConfig().getProperty(ConfigKeys.command_prefix));
 
         if (!this.crazyManager.isVoucherCode(name)) {
-            Messages.code_unavailable.sendMessage(player, placeholders);
+            Message.code_unavailable.sendMessage(player, placeholders);
 
             return;
         }
@@ -63,7 +63,7 @@ public class CommandRedeem extends BaseCommand {
 
                 for (final String permission : code.getWhitelistPermissions()) {
                     if (!player.hasPermission(permission)) {
-                        Messages.no_permission_to_use_voucher.sendMessage(player, placeholders);
+                        Message.no_permission_to_use_voucher.sendMessage(player, placeholders);
 
                         Methods.dispatch(player, commands, placeholders, true);
 
@@ -98,13 +98,13 @@ public class CommandRedeem extends BaseCommand {
         }
 
         // Has permission to continue.
-        final FileConfiguration data = FileKeys.users.getConfiguration();
+        final CommentedConfigurationNode data = FileKeys.users.getConfiguration();
         final String uuid = player.getUniqueId().toString();
         // Checking if the player has used the code before.
 
         final String cleanName = code.getStrippedName();
 
-        if (data.contains("Players." + uuid)) {
+        /*if (data.contains("Players." + uuid)) {
             if (data.contains("Players." + uuid + ".Codes." + cleanName)) {
                 if (data.getString("Players." + uuid + ".Codes." + cleanName, "").equalsIgnoreCase("used")) {
                     Messages.code_used.sendMessage(player, placeholders);
@@ -129,7 +129,7 @@ public class CommandRedeem extends BaseCommand {
             }
 
             FileKeys.users.save();
-        }
+        }*/
 
         // Gives the reward to the player.
         final VoucherRedeemCodeEvent event = new VoucherRedeemCodeEvent(player, code);
@@ -137,9 +137,9 @@ public class CommandRedeem extends BaseCommand {
         server.getPluginManager().callEvent(event);
 
         if (!event.isCancelled()) {
-            data.set("Players." + uuid + ".Codes." + cleanName, "used");
+            //data.set("Players." + uuid + ".Codes." + cleanName, "used");
 
-            FileKeys.users.save();
+            //FileKeys.users.save();
 
             code.dispatchCommands(player, placeholders);
 
