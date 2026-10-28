@@ -2,8 +2,10 @@ package com.badbones69.crazyvouchers.commands.features.admin;
 
 import com.badbones69.crazyvouchers.Methods;
 import com.badbones69.crazyvouchers.api.enums.config.Messages;
+import com.badbones69.crazyvouchers.api.enums.misc.PersistentKeys;
 import com.badbones69.crazyvouchers.api.objects.Voucher;
 import com.badbones69.crazyvouchers.commands.BaseCommand;
+import com.ryderbelserion.fusion.core.api.enums.Level;
 import com.ryderbelserion.fusion.paper.builders.items.PlayerBuilder;
 import dev.triumphteam.cmd.bukkit.annotation.Permission;
 import dev.triumphteam.cmd.core.annotations.ArgName;
@@ -15,7 +17,7 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.permissions.PermissionDefault;
-import java.util.ArrayList;
+import org.bukkit.persistence.PersistentDataType;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -35,11 +37,13 @@ public class CommandGive extends BaseCommand {
         }
 
         target.getPlayer().ifPresentOrElse(player -> {
-            List<ItemStack> itemStacks = build(player, amount, argument, voucher);
+            build(player, amount, argument, voucher).forEach(item -> {
+                this.fusion.log(Level.ERROR, "<red>Id: %s", item.getPersistentDataContainer().getOrDefault(PersistentKeys.dupe_protection.getNamespacedKey(), PersistentDataType.STRING, "N/A"));
 
-            itemStacks.forEach(itemStack -> Methods.addItem(player, itemStack));
+                Methods.addItem(player, item);
+            });
 
-            Map<String, String> placeholders = new HashMap<>();
+            final Map<String, String> placeholders = new HashMap<>();
 
             placeholders.put("{player}", player.getName());
             placeholders.put("{voucher}", voucher.getStrippedName());
@@ -60,10 +64,10 @@ public class CommandGive extends BaseCommand {
             return;
         }
 
-        for (final Player player : this.plugin.getServer().getOnlinePlayers()) {
-            final List<ItemStack> itemStacks = build(player, amount, argument, voucher);
-
-            itemStacks.forEach(itemStack -> Methods.addItem(player, itemStack));
+        for (final Player player : server.getOnlinePlayers()) {
+            for (final ItemStack item : build(player, amount, argument, voucher)) {
+                Methods.addItem(player, item);
+            }
         }
 
         Map<String, String> placeholders = new HashMap<>();
@@ -74,18 +78,6 @@ public class CommandGive extends BaseCommand {
     }
 
     private List<ItemStack> build(final Player player, final int amount, final String argument, final Voucher voucher) {
-        final int clamp = Math.max(amount, 1);
-
-        final String arg = argument != null ? argument.replace("%random%", "{random}") : "";
-
-        final List<ItemStack> itemStacks = new ArrayList<>();
-
-        if (!arg.isEmpty()) {
-            itemStacks.addAll(voucher.buildItems(player, argument, clamp));
-        } else {
-            itemStacks.addAll(voucher.buildItems(player, "", clamp));
-        }
-
-        return itemStacks;
+        return voucher.buildItems(player, argument != null ? argument.replace("%random%", "{random}") : "", Math.max(amount, 1));
     }
 }

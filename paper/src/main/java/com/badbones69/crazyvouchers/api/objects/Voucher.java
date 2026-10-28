@@ -104,6 +104,10 @@ public class Voucher {
 
     private final double totalWeight;
 
+    private final List<String> displayLore;
+    private final String displayName;
+
+
     public Voucher(@NotNull final ConfigurationSection section, @NotNull final String name) {
         this.cleanName = name.replace(".yml", "");
         this.name = name;
@@ -130,8 +134,8 @@ public class Voucher {
         final List<String> displayLore = section.isList("lore") ? section.getStringList("lore") : List.of(section.getString("lore", ""));
 
         this.itemBuilder = new ItemBuilder(material)
-                .withDisplayName(displayName)
-                .withDisplayLore(displayLore);
+                .withDisplayName(this.displayName = displayName)
+                .withDisplayLore(this.displayLore = displayLore);
 
         final CustomBuilder customBuilder = this.itemBuilder.asCustomBuilder();
 
@@ -333,7 +337,7 @@ public class Voucher {
         placeholders.put("{x}", String.valueOf(location.getBlockX()));
         placeholders.put("{y}", String.valueOf(location.getBlockY()));
         placeholders.put("{z}", String.valueOf(location.getBlockZ()));
-        placeholders.put("{prefix}", ConfigManager.getConfig().getProperty(ConfigKeys.command_prefix));
+        placeholders.put("{prefix}", this.config.getProperty(ConfigKeys.command_prefix));
 
         final FileConfiguration data = FileKeys.data.getConfiguration();
 
@@ -582,33 +586,33 @@ public class Voucher {
     private @NotNull final SettingsManager locale = ConfigManager.getMessages();
 
     public ItemStack buildItem(@NotNull final Player player, final int amount) {
-        this.itemBuilder.setAmount(amount);
-
-        final ItemStack item = this.itemBuilder.build().asItemStack(player);
+        final ItemStack item = this.itemBuilder.setAmount(amount).asItemStack(player);
 
         setUniqueId(item);
 
         item.editPersistentDataContainer(container -> container.set(PersistentKeys.voucher_item.getNamespacedKey(), PersistentDataType.STRING, getStrippedName()));
 
-        return item;
+        return new ItemStack(item);
     }
 
     public List<ItemStack> buildItems(@NotNull final Player player, @NotNull final String argument, final int amount) {
-        final List<ItemStack> itemStacks = new ArrayList<>();
+        final List<ItemStack> items = new ArrayList<>();
 
         if (!this.isAntiDupeOverridden && this.config.getProperty(ConfigKeys.dupe_protection)) {
-            while (itemStacks.size() < amount) {
-                itemStacks.add(buildItem(player, argument, 1));
+            while (items.size() < amount) {
+                items.add(buildItem(player, argument, 1));
             }
-        } else {
-            itemStacks.add(buildItem(player, argument, amount));
+
+            return items;
         }
 
-        return itemStacks;
+        items.add(buildItem(player, argument, amount));
+
+        return items;
     }
     
     public ItemStack buildItem(@NotNull final Player player, @NotNull final String argument, final int amount) {
-        final ItemStack item = this.itemBuilder.setAmount(amount).addPlaceholder("{arg}", argument).asItemStack(player);
+        final ItemStack item = this.itemBuilder.addPlaceholder("{arg}", argument).setAmount(amount).asItemStack(player);
 
         setUniqueId(item);
 
@@ -618,7 +622,7 @@ public class Voucher {
             if (!argument.isEmpty()) container.set(PersistentKeys.voucher_arg.getNamespacedKey(), PersistentDataType.STRING, argument);
         });
 
-        return item;
+        return new ItemStack(item);
     }
 
     public void dispatchCommands(@NotNull final Player player, @NotNull final Map<String, String> placeholders) {
@@ -647,9 +651,9 @@ public class Voucher {
 
     private void setUniqueId(@NotNull final ItemStack item) {
         if (!this.isAntiDupeOverridden && this.config.getProperty(ConfigKeys.dupe_protection)) {
-            final String uuid = UUID.randomUUID().toString();
+            final UUID uuid = UUID.randomUUID();
 
-            item.editPersistentDataContainer(container -> container.set(PersistentKeys.dupe_protection.getNamespacedKey(), PersistentDataType.STRING, uuid));
+            item.editPersistentDataContainer(container -> container.set(PersistentKeys.dupe_protection.getNamespacedKey(), PersistentDataType.STRING, uuid.toString()));
         }
     }
 

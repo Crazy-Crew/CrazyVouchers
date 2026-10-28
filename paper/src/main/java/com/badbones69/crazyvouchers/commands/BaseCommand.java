@@ -8,6 +8,7 @@ import com.badbones69.crazyvouchers.config.ConfigManager;
 import com.ryderbelserion.fusion.paper.FusionPaper;
 import com.ryderbelserion.fusion.paper.files.PaperFileManager;
 import dev.triumphteam.cmd.core.annotations.Command;
+import org.bukkit.Server;
 import org.jetbrains.annotations.NotNull;
 import java.nio.file.Path;
 
@@ -15,6 +16,8 @@ import java.nio.file.Path;
 public abstract class BaseCommand {
 
     protected @NotNull final CrazyVouchers plugin = CrazyVouchers.get();
+
+    protected @NotNull final Server server = this.plugin.getServer();
 
     protected @NotNull final Path dataPath = this.plugin.getDataPath();
 
