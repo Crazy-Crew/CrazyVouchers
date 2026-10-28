@@ -1,7 +1,6 @@
 package com.badbones69.crazyvouchers.listeners;
 
 import com.badbones69.crazyvouchers.CrazyVouchers;
-import com.badbones69.crazyvouchers.api.CrazyManager;
 import com.badbones69.crazyvouchers.api.CrazyPlatform;
 import com.badbones69.crazyvouchers.api.objects.Voucher;
 import com.ryderbelserion.fusion.core.api.config.properties.PropertyManager;
@@ -26,8 +25,6 @@ public class VoucherClickListener implements Listener {
 
     private final CrazyVouchers plugin = CrazyVouchers.get();
 
-    private final CrazyManager crazyManager = this.plugin.getCrazyManager();
-
     private final CrazyPlatform platform = this.plugin.getPlatform();
 
     private final ConfigManager configManager = this.platform.getConfigManager();
@@ -51,7 +48,7 @@ public class VoucherClickListener implements Listener {
 
         if (itemStack.isEmpty()) return;
 
-        final Voucher voucher = this.crazyManager.getVoucherFromItem(itemStack);
+        final Voucher voucher = this.platform.getVoucherFromItem(itemStack);
 
         if (voucher == null) return;
         if (voucher.isEdible()) return;
@@ -83,7 +80,7 @@ public class VoucherClickListener implements Listener {
 
         final ItemStack itemStack = inventory.getItem(slot);
 
-        final Voucher voucher = this.crazyManager.getVoucherFromItem(itemStack);
+        final Voucher voucher = this.platform.getVoucherFromItem(itemStack);
 
         if (voucher == null) return;
         if (voucher.isEdible()) return;
@@ -114,7 +111,7 @@ public class VoucherClickListener implements Listener {
 
         if (itemStack.isEmpty()) return;
 
-        final Voucher voucher = this.crazyManager.getVoucherFromItem(itemStack);
+        final Voucher voucher = this.platform.getVoucherFromItem(itemStack);
 
         if (voucher == null) return;
         if (!voucher.isEdible()) return;
@@ -150,7 +147,7 @@ public class VoucherClickListener implements Listener {
 
         if (itemStack.isEmpty()) return;
 
-        final Voucher voucher = this.crazyManager.getVoucherFromItem(itemStack);
+        final Voucher voucher = this.platform.getVoucherFromItem(itemStack);
 
         if (voucher != null) event.setCancelled(true);
     }

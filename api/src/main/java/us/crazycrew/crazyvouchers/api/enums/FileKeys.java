@@ -17,7 +17,6 @@ import java.util.Optional;
 @NullMarked
 public enum FileKeys {
 
-    config("config.yml", FileType.YAML),
     users("users.yml", FileType.YAML),
     data("data.yml", FileType.YAML),
     version("version.json", FileType.JSON);

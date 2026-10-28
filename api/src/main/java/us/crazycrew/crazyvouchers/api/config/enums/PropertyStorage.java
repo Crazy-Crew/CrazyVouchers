@@ -113,8 +113,8 @@ public enum PropertyStorage {
         placeholders.put("%arg%", "{arg}");
         placeholders.put("%Player%", "{player}");
         placeholders.put("%player%", "{player}");
-        placeholders.put("%Prefix%", "");
-        placeholders.put("%prefix%", "");
+        placeholders.put("%Prefix%", "{prefix}");
+        placeholders.put("%prefix%", "{prefix}");
         placeholders.put("%Random%", "{random}");
         placeholders.put("%random%", "{random}");
         placeholders.put("%World%", "{world}");

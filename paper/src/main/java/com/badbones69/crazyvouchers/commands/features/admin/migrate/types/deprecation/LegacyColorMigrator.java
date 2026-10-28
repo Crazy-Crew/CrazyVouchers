@@ -173,8 +173,8 @@ public class LegacyColorMigrator extends IVoucherMigrator {
 
         sendMessage(files, convertedCount, failedCount);
 
-        this.crazyManager.reloadVouchers();
-        this.crazyManager.reloadCodes();
+        this.platform.updateVouchers();
+        this.platform.updateCodes();
     }
 
     private void processItems(@NonNull final String name, @NonNull final CommentedConfigurationNode section) {

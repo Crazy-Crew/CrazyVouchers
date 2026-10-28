@@ -20,14 +20,14 @@ public class CommandTypes extends BaseCommand {
     @Permission(value = "crazyvouchers.types", def = PermissionDefault.OP)
     @Syntax("/crazyvouchers types")
     public void types(final CommandSender sender) {
-        final List<Voucher> vouchers = this.crazyManager.getVouchers();
-        final List<VoucherCode> codes = this.crazyManager.getVoucherCodes();
+        final List<Voucher> vouchers = this.platform.getVouchers();
+        final List<VoucherCode> codes = this.platform.getVoucherCodes();
 
         final int voucherCount = vouchers.size();
         final int codeCount = codes.size();
 
-        final List<String> brokeVouchers = this.crazyManager.getBrokenVouchers();
-        final List<String> brokeCodes = this.crazyManager.getBrokenVoucherCodes();
+        final List<String> brokeVouchers = this.platform.getBrokenVouchers();
+        final List<String> brokeCodes = this.platform.getBrokenVoucherCodes();
 
         final int inactiveVouchers = brokeVouchers.size();
         final int inactiveCodes = brokeCodes.size();

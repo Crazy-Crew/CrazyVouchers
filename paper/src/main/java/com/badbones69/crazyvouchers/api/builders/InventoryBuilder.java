@@ -1,6 +1,7 @@
 package com.badbones69.crazyvouchers.api.builders;
 
 import com.badbones69.crazyvouchers.CrazyVouchers;
+import com.badbones69.crazyvouchers.api.CrazyPlatform;
 import com.ryderbelserion.fusion.paper.FusionPaper;
 import org.bukkit.Server;
 import org.bukkit.entity.Player;
@@ -15,6 +16,7 @@ import org.jspecify.annotations.NonNull;
 public abstract class InventoryBuilder implements InventoryHolder, Listener {
 
     protected @NonNull final CrazyVouchers plugin = CrazyVouchers.get();
+    protected @NonNull final CrazyPlatform platform = this.plugin.getPlatform();
     protected @NonNull final Server server = this.plugin.getServer();
     protected @NonNull final FusionPaper fusion = this.plugin.getFusion();
 

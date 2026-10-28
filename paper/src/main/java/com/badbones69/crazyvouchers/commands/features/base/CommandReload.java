@@ -19,8 +19,6 @@ public class CommandReload extends BaseCommand {
 
         Methods.janitor();
 
-        this.crazyManager.reload();
-
         Message.config_reload.sendMessage(sender);
     }
 }

@@ -1,7 +1,6 @@
 package com.badbones69.crazyvouchers.commands.features.admin.migrate;
 
 import com.badbones69.crazyvouchers.CrazyVouchers;
-import com.badbones69.crazyvouchers.api.CrazyManager;
 import com.badbones69.crazyvouchers.api.CrazyPlatform;
 import com.badbones69.crazyvouchers.commands.features.admin.migrate.enums.MigrationType;
 import com.ryderbelserion.fusion.core.api.config.properties.PropertyManager;
@@ -9,14 +8,12 @@ import com.ryderbelserion.fusion.core.utils.StringUtils;
 import com.ryderbelserion.fusion.files.FileManager;
 import com.ryderbelserion.fusion.paper.FusionPaper;
 import org.bukkit.command.CommandSender;
-import org.bukkit.configuration.ConfigurationSection;
 import org.jspecify.annotations.NonNull;
 import org.jspecify.annotations.Nullable;
 import org.spongepowered.configurate.CommentedConfigurationNode;
 import org.spongepowered.configurate.serialize.SerializationException;
 import us.crazycrew.crazyvouchers.api.config.ConfigManager;
 import us.crazycrew.crazyvouchers.api.enums.messages.Message;
-
 import java.lang.reflect.Type;
 import java.nio.file.Path;
 import java.util.HashMap;
@@ -33,8 +30,6 @@ public abstract class IVoucherMigrator {
     protected @NonNull final ConfigManager configManager = this.platform.getConfigManager();
 
     protected @NonNull final FusionPaper fusion = this.plugin.getFusion();
-
-    protected @NonNull final CrazyManager crazyManager = this.plugin.getCrazyManager();
 
     protected @NonNull final PropertyManager config = this.configManager.getConfig();
 

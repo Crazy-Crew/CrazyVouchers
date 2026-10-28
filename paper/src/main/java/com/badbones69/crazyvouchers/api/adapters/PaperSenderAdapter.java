@@ -2,6 +2,7 @@ package com.badbones69.crazyvouchers.api.adapters;
 
 import com.badbones69.crazyvouchers.CrazyVouchers;
 import com.badbones69.crazyvouchers.api.CrazyPlatform;
+import com.ryderbelserion.crazyvouchers.utils.ConfigUtils;
 import com.ryderbelserion.fusion.api.objects.FusionKey;
 import com.ryderbelserion.fusion.core.api.registry.message.MessageRegistry;
 import com.ryderbelserion.fusion.paper.FusionPaper;
@@ -94,13 +95,13 @@ public class PaperSenderAdapter extends ISenderAdapter<Component, Audience> {
 
         final Map<String, String> map = new HashMap<>(placeholders);
 
-        /*final String prefix = ConfigUtils.getPrefix();
+        final String prefix = ConfigUtils.getPrefix();
 
         if (!prefix.isEmpty()) {
             map.putIfAbsent("{prefix}", prefix);
             map.putIfAbsent("%prefix%", prefix);
             map.putIfAbsent("%Prefix%", prefix);
-        }*/
+        }
 
         return this.fusion.asComponent(sender, value, map);
     }
@@ -123,13 +124,13 @@ public class PaperSenderAdapter extends ISenderAdapter<Component, Audience> {
 
         final Map<String, String> map = new HashMap<>(placeholders);
 
-        /*final String prefix = ConfigUtils.getPrefix();
+        final String prefix = ConfigUtils.getPrefix();
 
         if (!prefix.isEmpty()) {
             map.putIfAbsent("{prefix}", prefix);
             map.putIfAbsent("%prefix%", prefix);
             map.putIfAbsent("%Prefix%", prefix);
-        }*/
+        }
 
         return this.fusion.replacePlaceholders(this.fusion.papi(sender, value), map);
     }

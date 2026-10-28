@@ -1,6 +1,5 @@
 package com.badbones69.crazyvouchers;
 
-import com.badbones69.crazyvouchers.api.CrazyManager;
 import com.badbones69.crazyvouchers.api.CrazyPlatform;
 import com.badbones69.crazyvouchers.api.InventoryManager;
 import com.badbones69.crazyvouchers.api.builders.types.VoucherMenu;
@@ -14,7 +13,6 @@ import com.ryderbelserion.fusion.paper.FusionPaper;
 import org.bukkit.plugin.PluginManager;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.jspecify.annotations.NonNull;
-import java.nio.file.Path;
 import java.util.List;
 import java.util.Locale;
 
@@ -31,7 +29,6 @@ public class CrazyVouchers extends JavaPlugin {
     }
 
     private InventoryManager inventoryManager;
-    private CrazyManager crazyManager;
     private CrazyPlatform platform;
     private FusionPaper fusion;
 
@@ -40,23 +37,14 @@ public class CrazyVouchers extends JavaPlugin {
         this.fusion = new FusionPaper(this);
         this.fusion.init();
 
-        final Path path = getDataPath();
-
-        this.platform = new CrazyPlatform(
-                this.fusion,
-                path
-        );
-
+        this.platform = new CrazyPlatform(this.fusion, getDataPath());
         this.platform.init();
-
-        this.crazyManager = new CrazyManager();
-        this.crazyManager.load();
 
         this.inventoryManager = new InventoryManager();
 
         Methods.janitor();
 
-        PluginManager pluginManager = getServer().getPluginManager();
+        final PluginManager pluginManager = getServer().getPluginManager();
 
         new CommandHandler();
 
@@ -73,10 +61,6 @@ public class CrazyVouchers extends JavaPlugin {
 
     public @NonNull final InventoryManager getInventoryManager() {
         return this.inventoryManager;
-    }
-
-    public @NonNull final CrazyManager getCrazyManager() {
-        return this.crazyManager;
     }
 
     public @NonNull final CrazyPlatform getPlatform() {

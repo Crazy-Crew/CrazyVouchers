@@ -2,6 +2,7 @@ package com.ryderbelserion.crazyvouchers;
 
 import com.ryderbelserion.fusion.core.api.config.properties.PropertyManager;
 import com.ryderbelserion.fusion.files.enums.FileType;
+import org.jspecify.annotations.NonNull;
 import us.crazycrew.crazyvouchers.api.config.ConfigManager;
 import us.crazycrew.crazyvouchers.api.config.types.RootKeys;
 import us.crazycrew.crazyvouchers.api.enums.FileKeys;
@@ -11,7 +12,6 @@ import com.ryderbelserion.fusion.api.objects.FusionKey;
 import com.ryderbelserion.fusion.files.FileManager;
 import com.ryderbelserion.fusion.kyori.FusionKyori;
 import net.kyori.adventure.text.Component;
-import org.jspecify.annotations.NullMarked;
 import org.spongepowered.configurate.CommentedConfigurationNode;
 import us.crazycrew.crazyvouchers.api.CrazyVouchers;
 import us.crazycrew.crazyvouchers.api.enums.other.FileSystem;
@@ -23,23 +23,28 @@ import java.util.Comparator;
 import java.util.List;
 import java.util.stream.Stream;
 
-@NullMarked
 public abstract class CrazyVouchersPlugin<S, F extends FusionKyori<S>> extends CrazyVouchers<Component, S> {
 
-    private final ConfigManager configManager;
-    private final FileManager fileManager;
-    private final F fusion;
+    protected final ConfigManager configManager;
+    protected final FileManager fileManager;
+    protected final F fusion;
 
-    public CrazyVouchersPlugin(final F fusion, final Path path) {
+    public CrazyVouchersPlugin(@NonNull final F fusion, @NonNull final Path path) {
         super(path);
 
-        this.configManager = new ConfigManager();
+        this.configManager = new ConfigManager(path);
         this.fileManager = fusion.getFileManager();
         this.fusion = fusion;
     }
 
+    protected PropertyManager config;
+
     @Override
     public void init() {
+        this.configManager.init();
+
+        this.config = this.configManager.getConfig();
+
         final Path version = this.path.resolve("version.json");
 
         try {
@@ -179,16 +184,26 @@ public abstract class CrazyVouchersPlugin<S, F extends FusionKyori<S>> extends C
     }
 
     @Override
-    public ConfigManager getConfigManager() {
+    public @NonNull List<Path> getVoucherFiles() {
+        return this.config.getProperty(RootKeys.file_system) == FileSystem.MULTIPLE ? this.fileManager.getFilesByPath(this.path.resolve("vouchers"), ".yml") : List.of(this.path.resolve("vouchers.yml"));
+    }
+
+    @Override
+    public @NonNull List<Path> getCodeFiles() {
+        return this.config.getProperty(RootKeys.file_system) == FileSystem.MULTIPLE ? this.fileManager.getFilesByPath(this.path.resolve("codes"), ".yml") : List.of(this.path.resolve("codes.yml"));
+    }
+
+    @Override
+    public @NonNull ConfigManager getConfigManager() {
         return this.configManager;
     }
 
     @Override
-    public F getFusion() {
+    public @NonNull F getFusion() {
         return this.fusion;
     }
 
-    public void move(final Path input, final Path output) {
+    public void move(@NonNull final Path input, @NonNull final Path output) {
         if (Files.exists(input)) {
             try {
                 Files.move(input, output, StandardCopyOption.REPLACE_EXISTING);

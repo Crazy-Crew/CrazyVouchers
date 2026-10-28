@@ -84,7 +84,7 @@ public class VoucherMenu extends InventoryBuilder {
         }
 
         if (container.has(PersistentKeys.voucher_item_admin.getNamespacedKey())) {
-            final Voucher voucher = this.plugin.getCrazyManager().getVoucherFromItem(item);
+            final Voucher voucher = this.platform.getVoucherFromItem(item);
 
             if (voucher != null) {
                 player.playSound(player.getLocation(), Sound.UI_BUTTON_CLICK, SoundCategory.PLAYERS, 1F, 1F);

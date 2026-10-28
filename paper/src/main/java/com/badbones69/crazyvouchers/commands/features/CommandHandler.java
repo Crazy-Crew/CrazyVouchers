@@ -1,7 +1,7 @@
 package com.badbones69.crazyvouchers.commands.features;
 
 import com.badbones69.crazyvouchers.CrazyVouchers;
-import com.badbones69.crazyvouchers.api.CrazyManager;
+import com.badbones69.crazyvouchers.api.CrazyPlatform;
 import com.badbones69.crazyvouchers.api.enums.PermissionKeys;
 import com.badbones69.crazyvouchers.api.objects.Voucher;
 import com.badbones69.crazyvouchers.api.objects.VoucherCode;
@@ -32,7 +32,7 @@ public class CommandHandler {
 
     private @NonNull final CrazyVouchers plugin = CrazyVouchers.get();
 
-    private @NonNull final CrazyManager crazyManager = this.plugin.getCrazyManager();
+    private @NonNull final CrazyPlatform platform = this.plugin.getPlatform();
 
     private @NonNull final BukkitCommandManager<CommandSender> commandManager = BukkitCommandManager.create(this.plugin);
 
@@ -74,7 +74,7 @@ public class CommandHandler {
         });
 
         this.commandManager.registerSuggestion(SuggestionKey.of("codes"), sender -> {
-            final List<VoucherCode> codes = this.crazyManager.getVoucherCodes();
+            final List<VoucherCode> codes = this.platform.getVoucherCodes();
 
             final List<String> suggestions = new ArrayList<>();
 
@@ -103,7 +103,7 @@ public class CommandHandler {
         });
 
         this.commandManager.registerSuggestion(SuggestionKey.of("vouchers"), sender -> {
-            final List<Voucher> codes = this.crazyManager.getVouchers();
+            final List<Voucher> codes = this.platform.getVouchers();
 
             final List<String> suggestions = new ArrayList<>();
 

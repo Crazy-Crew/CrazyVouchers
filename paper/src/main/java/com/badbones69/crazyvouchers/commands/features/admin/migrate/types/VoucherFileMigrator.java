@@ -68,8 +68,8 @@ public class VoucherFileMigrator extends IVoucherMigrator {
 
                     this.fileManager.addFile(newPath, FileType.YAML);
 
-                    this.crazyManager.reloadVouchers();
-                    this.crazyManager.reloadCodes();
+                    this.platform.updateVouchers();
+                    this.platform.updateCodes();
                 }
             }
         }

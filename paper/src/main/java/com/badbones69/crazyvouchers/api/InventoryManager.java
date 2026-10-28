@@ -20,7 +20,7 @@ public class InventoryManager {
 
     private @NonNull final CrazyVouchers plugin = CrazyVouchers.get();
 
-    private @NonNull final CrazyManager crazyManager = this.plugin.getCrazyManager();
+    private @NonNull final CrazyPlatform platform = this.plugin.getPlatform();
 
     private final Map<UUID, Integer> pages = new HashMap<>();
 
@@ -48,7 +48,7 @@ public class InventoryManager {
 
         if (page <= 0) page = 1;
 
-        final List<Voucher> vouchers = this.crazyManager.getVouchers();
+        final List<Voucher> vouchers = this.platform.getVouchers();
         final int count = vouchers.size();
 
         final int max = this.amount;
@@ -122,7 +122,7 @@ public class InventoryManager {
     }
 
     public int getMaxPages() {
-        int size = this.crazyManager.getVouchers().size();
+        int size = this.platform.getVouchers().size();
 
         return Math.max(1, size % this.amount > 0 ? (size / this.amount) + 1 : size / this.amount);
     }

@@ -160,7 +160,7 @@ public class VoucherSwitchMigrator extends IVoucherMigrator {
                     this.fileManager.removeFile(vouchers);
                     this.fileManager.addFile(vouchers, voucher_custom_file);
 
-                    this.crazyManager.reloadVouchers();
+                    this.platform.updateVouchers();
 
                     this.fusion.log(Level.warn, "Added voucher %s to the cache, and removed the old voucher file named %s", voucher_custom_file.getPrettyName(), vouchers.getFileName().toString());
                 } else {
@@ -219,7 +219,7 @@ public class VoucherSwitchMigrator extends IVoucherMigrator {
                     this.fileManager.removeFile(vouchers);
                     this.fileManager.addFile(vouchers, voucher_custom_file);
 
-                    this.crazyManager.reloadVouchers();
+                    this.platform.updateCodes();
 
                     this.fusion.log(Level.warn, "Added voucher code %s to the cache, and removed the old voucher code file named %s", code_custom_file.getPrettyName(), code_file.getFileName().toString());
                 } else {

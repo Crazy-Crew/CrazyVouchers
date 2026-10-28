@@ -167,8 +167,8 @@ public class NewItemMigrator extends IVoucherMigrator {
 
         sendMessage(files, convertedCrates, failedCrates);
 
-        this.crazyManager.reloadVouchers();
-        this.crazyManager.reloadCodes();
+        this.platform.updateVouchers();
+        this.platform.updateCodes();
     }
 
     private boolean process(final CommentedConfigurationNode section) {

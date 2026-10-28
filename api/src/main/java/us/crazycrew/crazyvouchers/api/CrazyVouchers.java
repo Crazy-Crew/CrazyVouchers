@@ -6,6 +6,7 @@ import org.jspecify.annotations.NullMarked;
 import us.crazycrew.crazyvouchers.api.adapters.sender.ISenderAdapter;
 import us.crazycrew.crazyvouchers.api.config.ConfigManager;
 import java.nio.file.Path;
+import java.util.List;
 import java.util.UUID;
 
 @NullMarked
@@ -20,6 +21,10 @@ public abstract class CrazyVouchers<C, S> {
     public CrazyVouchers(final Path path) {
         this.path = path;
     }
+
+    public abstract List<Path> getVoucherFiles();
+
+    public abstract List<Path> getCodeFiles();
 
     @ApiStatus.Internal
     public abstract ISenderAdapter<C, S> getSenderAdapter();
@@ -39,6 +44,14 @@ public abstract class CrazyVouchers<C, S> {
 
     @ApiStatus.Internal
     public abstract void loadExamples();
+
+    public abstract void updateVouchers();
+
+    public abstract void loadVouchers();
+
+    public abstract void updateCodes();
+
+    public abstract void loadCodes();
 
     public abstract void disable();
 

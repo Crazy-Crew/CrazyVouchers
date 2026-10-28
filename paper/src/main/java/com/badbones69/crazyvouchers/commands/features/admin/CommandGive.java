@@ -26,7 +26,7 @@ public class CommandGive extends BaseCommand {
     @Permission(value = "crazyvouchers.give", def = PermissionDefault.OP)
     @Syntax("/crazyvouchers give [voucher] [amount] [player] [argument]")
     public void give(final CommandSender sender, @ArgName("voucher") @Suggestion("vouchers") String name, @ArgName("amount") @Suggestion("numbers") int amount, @ArgName("player") @Suggestion("players") PlayerBuilder target, @Optional String argument) {
-        final Voucher voucher = this.crazyManager.getVoucher(name);
+        final Voucher voucher = this.platform.getVoucher(name);
 
         if (voucher == null) {
             Message.not_a_voucher.sendMessage(sender);
@@ -52,7 +52,7 @@ public class CommandGive extends BaseCommand {
     @Permission(value = "crazyvouchers.giveall", def = PermissionDefault.OP)
     @Syntax("/crazyvouchers giveall [voucher] [amount] [argument]")
     public void all(final CommandSender sender, @ArgName("voucher") @Suggestion("vouchers") String name, @ArgName("amount") @Suggestion("numbers") int amount, @Optional String argument) {
-        final Voucher voucher = this.crazyManager.getVoucher(name);
+        final Voucher voucher = this.platform.getVoucher(name);
 
         if (voucher == null) {
             Message.not_a_voucher.sendMessage(sender);

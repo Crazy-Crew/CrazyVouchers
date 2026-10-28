@@ -275,8 +275,8 @@ public class VoucherDeprecated extends IVoucherMigrator {
 
         sendMessage(files, convertedCount, failedCount);
 
-        this.crazyManager.reloadVouchers();
-        this.crazyManager.reloadCodes();
+        this.platform.updateVouchers();
+        this.platform.updateCodes();
     }
 
     private void convertCommands(@NonNull final CommentedConfigurationNode section, @NonNull final List<String> commands) {

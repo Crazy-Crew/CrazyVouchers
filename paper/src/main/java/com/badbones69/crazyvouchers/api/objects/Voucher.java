@@ -2,10 +2,9 @@ package com.badbones69.crazyvouchers.api.objects;
 
 import com.badbones69.crazyvouchers.CrazyVouchers;
 import com.badbones69.crazyvouchers.Methods;
-import com.badbones69.crazyvouchers.api.CrazyManager;
 import com.badbones69.crazyvouchers.api.CrazyPlatform;
+import com.ryderbelserion.crazyvouchers.utils.ConfigUtils;
 import com.ryderbelserion.fusion.core.api.config.properties.PropertyManager;
-import net.kyori.adventure.audience.Audience;
 import us.crazycrew.crazyvouchers.api.config.ConfigManager;
 import us.crazycrew.crazyvouchers.api.config.types.RootKeys;
 import us.crazycrew.crazyvouchers.api.enums.FileKeys;
@@ -48,8 +47,6 @@ public class Voucher {
 
     private final Server server = this.plugin.getServer();
     private final FusionPaper fusion = this.plugin.getFusion();
-
-    private final CrazyManager crazyManager = this.plugin.getCrazyManager();
 
     private final ItemBuilder itemBuilder;
 
@@ -332,7 +329,7 @@ public class Voucher {
         placeholders.put("{x}", String.valueOf(location.getBlockX()));
         placeholders.put("{y}", String.valueOf(location.getBlockY()));
         placeholders.put("{z}", String.valueOf(location.getBlockZ()));
-        placeholders.put("{prefix}", this.config.getProperty(RootKeys.command_prefix));
+        placeholders.put("{prefix}", ConfigUtils.getPrefix());
 
         final CommentedConfigurationNode data = FileKeys.data.getConfiguration();
 
@@ -431,31 +428,27 @@ public class Voucher {
 
         if (!this.isEdible && this.twoFactorAuthToggle) {
             if (!PermissionKeys.crazyvouchers_bypass_2fa.hasPermission(player)) {
-                if (this.crazyManager.isVoucherAuthActive(uuid)) {
-                    final String voucher_name = this.crazyManager.getActiveVoucherAuth(uuid);
+                if (this.platform.isVoucherAuthActive(uuid)) {
+                    final String voucher_name = this.platform.getActiveVoucherAuth(uuid);
 
                     if (!voucher_name.equalsIgnoreCase(cleanName)) {
-                        player.sendMessage(this.fusion.asComponent(player, StringUtils.toString(this.twoFactorAuthMessage), Map.of(
-                                "{prefix}", this.config.getProperty(RootKeys.command_prefix)
-                        )));
+                        player.sendMessage(this.fusion.asComponent(player, StringUtils.toString(this.twoFactorAuthMessage), Map.of("{prefix}", ConfigUtils.getPrefix())));
 
-                        this.crazyManager.addVoucherAuth(uuid, cleanName);
+                        this.platform.addVoucherAuth(uuid, cleanName);
 
                         return;
                     }
                 } else {
-                    player.sendMessage(this.fusion.asComponent(player, StringUtils.toString(this.twoFactorAuthMessage), Map.of(
-                            "{prefix}", this.config.getProperty(RootKeys.command_prefix)
-                    )));
+                    player.sendMessage(this.fusion.asComponent(player, StringUtils.toString(this.twoFactorAuthMessage), Map.of("{prefix}", ConfigUtils.getPrefix())));
 
-                    this.crazyManager.addVoucherAuth(uuid, cleanName);
+                    this.platform.addVoucherAuth(uuid, cleanName);
 
                     return;
                 }
             }
         }
 
-        this.crazyManager.removeVoucherAuth(uuid);
+        this.platform.removeVoucherAuth(uuid);
 
         final VoucherRedeemEvent event = new VoucherRedeemEvent(player, this, argument);
 

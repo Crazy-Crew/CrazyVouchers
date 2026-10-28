@@ -1,6 +1,7 @@
 package com.badbones69.crazyvouchers.commands.features.admin;
 
 import com.badbones69.crazyvouchers.Methods;
+import com.ryderbelserion.crazyvouchers.utils.ConfigUtils;
 import org.spongepowered.configurate.CommentedConfigurationNode;
 import us.crazycrew.crazyvouchers.api.enums.FileKeys;
 import us.crazycrew.crazyvouchers.api.enums.messages.Message;
@@ -40,15 +41,15 @@ public class CommandRedeem extends BaseCommand {
         placeholders.put("{x}", String.valueOf(location.x()));
         placeholders.put("{y}", String.valueOf(location.y()));
         placeholders.put("{z}", String.valueOf(location.z()));
-        //placeholders.put("{prefix}", ConfigManager.getConfig().getProperty(ConfigKeys.command_prefix));
+        placeholders.put("{prefix}", ConfigUtils.getPrefix());
 
-        if (!this.crazyManager.isVoucherCode(name)) {
+        if (!this.platform.isVoucherCode(name)) {
             Message.code_unavailable.sendMessage(player, placeholders);
 
             return;
         }
 
-        final VoucherCode code = this.crazyManager.getVoucherCode(name);
+        final VoucherCode code = this.platform.getVoucherCode(name);
 
         if (code == null) {
             return;
