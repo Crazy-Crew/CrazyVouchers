@@ -38,8 +38,6 @@ public class CommandGive extends BaseCommand {
 
         target.getPlayer().ifPresentOrElse(player -> {
             build(player, amount, argument, voucher).forEach(item -> {
-                this.fusion.log(Level.ERROR, "<red>Id: %s", item.getPersistentDataContainer().getOrDefault(PersistentKeys.dupe_protection.getNamespacedKey(), PersistentDataType.STRING, "N/A"));
-
                 Methods.addItem(player, item);
             });
 
