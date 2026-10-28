@@ -2,13 +2,16 @@ package com.badbones69.crazyvouchers.commands.features.admin.migrate.types;
 
 import com.badbones69.crazyvouchers.commands.features.admin.migrate.IVoucherMigrator;
 import com.badbones69.crazyvouchers.commands.features.admin.migrate.enums.MigrationType;
+import com.ryderbelserion.fusion.api.enums.Level;
+import com.ryderbelserion.fusion.core.utils.StringUtils;
 import org.bukkit.command.CommandSender;
-import org.bukkit.configuration.ConfigurationSection;
 import org.jspecify.annotations.NonNull;
 import org.spongepowered.configurate.CommentedConfigurationNode;
 import us.crazycrew.crazyvouchers.api.config.types.RootKeys;
+import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import java.util.UUID;
 
 public class VoucherDeprecated extends IVoucherMigrator {
@@ -28,243 +31,237 @@ public class VoucherDeprecated extends IVoucherMigrator {
                     final CommentedConfigurationNode configuration = customFile.getConfiguration();
 
                     try {
-                        /*final ConfigurationSection section = vouchers.getConfigurationSection("vouchers");
+                        final CommentedConfigurationNode section = configuration.node("vouchers");
 
-                        if (section != null) {
-                            for (final String key : section.getKeys(false)) {
-                                final ConfigurationSection voucher = section.getConfigurationSection(key);
+                        for (final Map.Entry<Object, CommentedConfigurationNode> entries : section.childrenMap().entrySet()) {
+                            final String id = entries.getKey().toString();
+                            final CommentedConfigurationNode entry = entries.getValue();
 
-                                if (voucher == null) {
-                                    this.fusion.log(Level.warn, "<red>%s</red> is not a valid configuration section.", key);
+                            if (entry.hasChild("item")) {
+                                final String item = entry.node("item").getString("");
 
-                                    continue;
-                                }
+                                if (!item.isBlank() && item.contains("#")) {
+                                    final String[] split = item.split("#");
+                                    final String material = split[0];
+                                    final String model_data = split[1];
 
-                                if (voucher.contains("item")) {
-                                    final String displayItem = voucher.getString("item", "");
-
-                                    if (displayItem.contains("#")) {
-                                        final String[] split = displayItem.split("#");
-                                        final String material = split[0];
-                                        final String model_data = split[1];
-
-                                        section.set("item", material);
-                                        section.set("custom-model-data", model_data);
-                                    } else {
-                                        this.fusion.log(Level.warn, "<red>vouchers.%s.item</red> does not contain <red>custom model data</red>, We cannot migrate.", key);
-                                    }
+                                    set(entry.node("item"), material, String.class);
+                                    set(entry.node("custom-model-data"), model_data, String.class, model_data);
                                 } else {
-                                    this.fusion.log(Level.warn, "<red>vouchers.%s.item</red> does not exist.", key);
+                                    this.fusion.log(Level.warn, "<red>vouchers.%s.item</red> does not contain <red>custom model data</red>, We cannot migrate.", id);
                                 }
+                            } else {
+                                this.fusion.log(Level.warn, "<red>vouchers.%s.item</red> does not exist.", id);
+                            }
 
-                                if (voucher.contains("random-commands") && voucher.isList("random-commands")) {
-                                    final List<String> commands = voucher.getStringList("random-commands");
+                            if (entry.hasChild("random-commands")) {
+                                final CommentedConfigurationNode index = entry.node("random-commands");
 
-                                    voucher.set("random-commands", null);
+                                if (index.isList()) {
+                                    final List<String> commands = StringUtils.getStringList(index);
 
-                                    final ConfigurationSection newSection = voucher.createSection("random-commands");
+                                    set(index, null, List.class);
 
-                                    newSection.set("%s.commands".formatted(UUID.randomUUID()), commands);
-                                }
-
-                                if (voucher.contains("chance-commands")) {
-                                    final List<String> commands = voucher.getStringList("chance-commands");
-
-                                    convertCommands(voucher, commands);
+                                    set(index.node(UUID.randomUUID().toString()), commands, List.class);
                                 }
                             }
 
-                            customFile.save();
-                        }*/
+                            if (entry.hasChild("chance-commands")) {
+                                convertCommands(entry, StringUtils.getStringList(entry.node("chance-commands")));
+                            }
+                        }
+
+                        customFile.save();
 
                         success.add("<green>⤷ vouchers.yml");
                     } catch (final Exception exception) {
                         failed.add("<red>⤷ vouchers.yml");
                     }
-                }, () -> {
-                    failed.add("<red>⤷ vouchers.yml");
-                });
+                }, () -> failed.add("<red>⤷ vouchers.yml"));
 
                 this.fileManager.getYamlFile(this.dataPath.resolve("codes.yml")).ifPresentOrElse(customFile -> {
+                    final CommentedConfigurationNode configuration = customFile.getConfiguration();
+
                     try {
-                        /*final ConfigurationSection section = codes.getConfigurationSection("voucher-codes");
+                        final CommentedConfigurationNode section = configuration.node("voucher-codes");
 
-                        if (section != null) {
-                            for (final String key : section.getKeys(false)) {
-                                final ConfigurationSection voucher = section.getConfigurationSection(key);
+                        for (final Map.Entry<Object, CommentedConfigurationNode> entries : section.childrenMap().entrySet()) {
+                            final String id = entries.getKey().toString();
+                            final CommentedConfigurationNode entry = entries.getValue();
 
-                                if (voucher == null) {
-                                    this.fusion.log(Level.warn, "<red>%s</red> is not a valid configuration section.", key);
+                            if (entry.hasChild("item")) {
+                                final String item = entry.node("item").getString("");
 
-                                    continue;
+                                if (!item.isBlank() && item.contains("#")) {
+                                    final String[] split = item.split("#");
+                                    final String material = split[0];
+                                    final String model_data = split[1];
+
+                                    set(entry.node("item"), material, String.class);
+                                    set(entry.node("custom-model-data"), model_data, String.class, model_data);
+                                } else {
+                                    this.fusion.log(Level.warn, "<red>vouchers.%s.item</red> does not contain <red>custom model data</red>, We cannot migrate.", id);
                                 }
+                            } else {
+                                this.fusion.log(Level.warn, "<red>vouchers.%s.item</red> does not exist.", id);
+                            }
 
-                                if (voucher.contains("random-commands") && voucher.isList("random-commands")) {
-                                    final List<String> commands = voucher.getStringList("random-commands");
+                            if (entry.hasChild("random-commands")) {
+                                final CommentedConfigurationNode index = entry.node("random-commands");
 
-                                    voucher.set("random-commands", null);
+                                if (index.isList()) {
+                                    final List<String> commands = StringUtils.getStringList(index);
 
-                                    final ConfigurationSection newSection = voucher.createSection("random-commands");
+                                    set(index, null, List.class);
 
-                                    newSection.set("%s.commands".formatted(UUID.randomUUID()), commands);
-                                }
-
-                                if (voucher.contains("chance-commands")) {
-                                    final List<String> commands = voucher.getStringList("chance-commands");
-
-                                    convertCommands(voucher, commands);
+                                    set(index.node(UUID.randomUUID().toString()), commands, List.class);
                                 }
                             }
 
-                            customFile.save();
-                        }*/
+                            if (entry.hasChild("chance-commands")) {
+                                convertCommands(entry, StringUtils.getStringList(entry.node("chance-commands")));
+                            }
+                        }
+
+                        customFile.save();
 
                         success.add("<green>⤷ codes.yml");
                     } catch (final Exception exception) {
                         failed.add("<red>⤷ codes.yml");
                     }
-                }, () -> {
-                    failed.add("<red>⤷ codes.yml");
-                });
+                }, () -> failed.add("<red>⤷ codes.yml"));
             }
 
             case MULTIPLE -> {
-                /*final Path voucher_dir = this.dataPath.resolve("vouchers");
-
-                final List<Path> voucher_files = this.fusion.getFilesByPath(voucher_dir, ".yml");
-
-                for (final Path path : voucher_files) {
-                    final Optional<PaperCustomFile> optional = this.fileManager.getPaperFile(path);
-
+                for (final Path path : this.fusion.getFilesByPath(this.dataPath.resolve("vouchers"), ".yml")) {
                     final String fileName = path.getFileName().toString();
 
-                    if (optional.isEmpty()) {
+                    this.fileManager.getYamlFile(path).ifPresentOrElse(customFile -> {
+                        if (!customFile.isLoaded()) {
+                            this.fusion.log(Level.warn, "<red>%s</red> configuration is invalid, likely not loaded properly. Please check console :)", fileName);
+
+                            failed.add("<red>⤷ " + fileName);
+
+                            return;
+                        }
+
+                        final CommentedConfigurationNode configuration = customFile.getConfiguration();
+
+                        if (!configuration.hasChild("voucher")) {
+                            this.fusion.log(Level.warn, "Configuration section for <red>%s</red> was not found.", fileName);
+
+                            failed.add("<red>⤷ " + fileName);
+
+                            return;
+                        }
+
+                        if (configuration.hasChild("item")) {
+                            final String item = configuration.node("item").getString("");
+
+                            if (!item.isBlank() && item.contains("#")) {
+                                final String[] split = item.split("#");
+                                final String material = split[0];
+                                final String model_data = split[1];
+
+                                set(configuration.node("item"), material, String.class);
+                                set(configuration.node("custom-model-data"), model_data, String.class, model_data);
+                            } else {
+                                this.fusion.log(Level.warn, "<red>voucher.item</red> does not contain <red>custom model data</red>, We cannot migrate for %s.", fileName);
+                            }
+                        } else {
+                            this.fusion.log(Level.warn, "<red>voucher.item</red> does not exist for %s.", fileName);
+                        }
+
+                        if (configuration.hasChild("random-commands")) {
+                            final CommentedConfigurationNode index = configuration.node("random-commands");
+
+                            if (index.isList()) {
+                                final List<String> commands = StringUtils.getStringList(index);
+
+                                set(index, null, List.class);
+
+                                set(index.node(UUID.randomUUID().toString()), commands, List.class);
+                            }
+                        }
+
+                        if (configuration.hasChild("chance-commands")) {
+                            convertCommands(configuration, StringUtils.getStringList(configuration.node("chance-commands")));
+                        }
+
+                        success.add("<green>⤷ " + fileName);
+
+                        customFile.save();
+                    }, () -> {
                         this.fusion.log(Level.warn, "<red>%s</red> does not exist in the file cache", fileName);
 
                         failed.add("<red>⤷ " + fileName);
-
-                        continue;
-                    }
-
-                    final PaperCustomFile customFile = optional.get();
-
-                    if (!customFile.isLoaded()) {
-                        this.fusion.log(Level.warn, "<red>%s</red> configuration is invalid, likely not loaded properly. Please check console :)", fileName);
-
-                        failed.add("<red>⤷ " + fileName);
-
-                        continue;
-                    }
-
-                    final YamlConfiguration configuration = customFile.getConfiguration();
-
-                    final ConfigurationSection section = configuration.getConfigurationSection("voucher");
-
-                    if (section == null) {
-                        this.fusion.log(Level.warn, "Configuration section for <red>%s</red> was not found.", fileName);
-
-                        failed.add("<red>⤷ " + fileName);
-
-                        continue;
-                    }
-
-                    if (section.contains("item")) {
-                        final String displayItem = section.getString("item", "");
-
-                        if (displayItem.contains("#")) {
-                            final String[] split = displayItem.split("#");
-                            final String material = split[0];
-                            final String model_data = split[1];
-
-                            section.set("item", material);
-                            section.set("custom-model-data", model_data);
-                        } else {
-                            this.fusion.log(Level.warn, "<red>%s</red> does not contain <red>voucher.item</red> path in the configuration section.", fileName);
-                        }
-                    } else {
-                        this.fusion.log(Level.warn, "<red>vouchers.%s.item</red> does not exist.", fileName);
-                    }
-
-                    if (section.contains("random-commands") && section.isList("random-commands")) {
-                        final List<String> commands = section.getStringList("random-commands");
-
-                        section.set("random-commands", null);
-
-                        final ConfigurationSection newSection = section.createSection("random-commands");
-
-                        commands.forEach(command -> newSection.set("%s.commands".formatted(UUID.randomUUID()), List.of(command)));
-                    }
-
-                    if (section.contains("chance-commands")) {
-                        final List<String> commands = section.getStringList("chance-commands");
-
-                        convertCommands(section, commands);
-                    }
-
-                    success.add("<green>⤷ " + fileName);
-
-                    customFile.save();
+                    });
                 }
 
-                final Path code_dir = this.dataPath.resolve("codes");
-
-                final List<Path> code_files = this.fusion.getFilesByPath(code_dir, ".yml");
-
-                for (final Path path : code_files) {
-                    final Optional<PaperCustomFile> optional = this.fileManager.getPaperFile(path);
-
+                for (final Path path : this.fusion.getFilesByPath(this.dataPath.resolve("codes"), ".yml")) {
                     final String fileName = path.getFileName().toString();
 
-                    if (optional.isEmpty()) {
+                    this.fileManager.getYamlFile(path).ifPresentOrElse(customFile -> {
+                        if (!customFile.isLoaded()) {
+                            this.fusion.log(Level.warn, "<red>%s</red> configuration is invalid, likely not loaded properly. Please check console :)", fileName);
+
+                            failed.add("<red>⤷ " + fileName);
+
+                            return;
+                        }
+
+                        final CommentedConfigurationNode configuration = customFile.getConfiguration();
+
+                        if (!configuration.hasChild("voucher-code")) {
+                            this.fusion.log(Level.warn, "Configuration section for <red>%s</red> was not found.", fileName);
+
+                            failed.add("<red>⤷ " + fileName);
+
+                            return;
+                        }
+
+                        if (configuration.hasChild("item")) {
+                            final String item = configuration.node("item").getString("");
+
+                            if (!item.isBlank() && item.contains("#")) {
+                                final String[] split = item.split("#");
+                                final String material = split[0];
+                                final String model_data = split[1];
+
+                                set(configuration.node("item"), material, String.class);
+                                set(configuration.node("custom-model-data"), model_data, String.class, model_data);
+                            } else {
+                                this.fusion.log(Level.warn, "<red>voucher-code.item</red> does not contain <red>custom model data</red>, We cannot migrate for %s.", fileName);
+                            }
+                        } else {
+                            this.fusion.log(Level.warn, "<red>voucher-code.item</red> does not exist for %s.", fileName);
+                        }
+
+                        if (configuration.hasChild("random-commands")) {
+                            final CommentedConfigurationNode index = configuration.node("random-commands");
+
+                            if (index.isList()) {
+                                final List<String> commands = StringUtils.getStringList(index);
+
+                                set(index, null, List.class);
+
+                                set(index.node(UUID.randomUUID().toString()), commands, List.class);
+                            }
+                        }
+
+                        if (configuration.hasChild("chance-commands")) {
+                            convertCommands(configuration, StringUtils.getStringList(configuration.node("chance-commands")));
+                        }
+
+                        success.add("<green>⤷ " + fileName);
+
+                        customFile.save();
+                    }, () -> {
                         this.fusion.log(Level.warn, "<red>%s</red> does not exist in the file cache", fileName);
 
                         failed.add("<red>⤷ " + fileName);
-
-                        continue;
-                    }
-
-                    final PaperCustomFile customFile = optional.get();
-
-                    if (!customFile.isLoaded()) {
-                        this.fusion.log(Level.warn, "<red>%s</red> configuration is invalid, likely not loaded properly. Please check console :)", fileName);
-
-                        failed.add("<red>⤷ " + fileName);
-
-                        continue;
-                    }
-
-                    final YamlConfiguration configuration = customFile.getConfiguration();
-
-                    final ConfigurationSection section = configuration.getConfigurationSection("voucher-code");
-
-                    if (section == null) {
-                        this.fusion.log(Level.warn, "Configuration section for <red>%s</red> was not found.", fileName);
-
-                        failed.add("<red>⤷ " + fileName);
-
-                        continue;
-                    }
-
-                    if (section.contains("random-commands") && section.isList("random-commands")) {
-                        final List<String> commands = section.getStringList("random-commands");
-
-                        section.set("random-commands", null);
-
-                        final ConfigurationSection newSection = section.createSection("random-commands");
-
-                        commands.forEach(command -> newSection.set("%s.commands".formatted(UUID.randomUUID()), List.of(command)));
-                    }
-
-                    if (section.contains("chance-commands")) {
-                        final List<String> commands = section.getStringList("chance-commands");
-
-                        convertCommands(section, commands);
-                    }
-
-                    success.add("<green>⤷ " + fileName);
-
-                    customFile.save();
-                }*/
+                    });
+                }
             }
         }
 
@@ -282,31 +279,27 @@ public class VoucherDeprecated extends IVoucherMigrator {
         this.crazyManager.reloadCodes();
     }
 
-    private void convertCommands(@NonNull final ConfigurationSection section, @NonNull final List<String> commands) {
+    private void convertCommands(@NonNull final CommentedConfigurationNode section, @NonNull final List<String> commands) {
+        final CommentedConfigurationNode index = section.node("random-commands");
+
         for (final String command : commands) {
-            ConfigurationSection existingSection = section.getConfigurationSection("random-commands");
-
-            if (existingSection == null) {
-                existingSection = section.createSection("random-commands");
-            }
-
-            final ConfigurationSection commandSection = existingSection.createSection(UUID.randomUUID().toString());
+            final CommentedConfigurationNode entry = index.node(UUID.randomUUID().toString());
 
             final String[] chance = command.split(" ");
 
-            commandSection.set("weight", Double.parseDouble(chance[0])); // gets the first 2 numbers of the string if they followed proper syntax.
+            set(entry, Double.parseDouble(chance[0]), Double.class, "weight");
 
-            if (commandSection.contains("commands")) {
-                final List<String> values = commandSection.getStringList("commands");
+            if (entry.hasChild("commands")) {
+                final List<String> values = StringUtils.getStringList(entry.node("commands"));
 
                 values.add(command.replaceFirst(chance[0], "").replaceFirst(" ", ""));
 
-                commandSection.set("commands", values);
+                set(entry.node("commands"), values, List.class);
             } else {
-                commandSection.set("commands", List.of(command.replaceFirst(chance[0], "").replaceFirst(" ", "")));
+                set(entry.node("commands"), List.of(command.replaceFirst(chance[0], "").replaceFirst(" ", "")), List.class);
             }
         }
 
-        section.set("chance-commands", null);
+        set(section.node("chance-commands"), null, List.class);
     }
 }

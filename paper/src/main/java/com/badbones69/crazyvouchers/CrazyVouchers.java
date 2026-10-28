@@ -9,7 +9,6 @@ import com.badbones69.crazyvouchers.listeners.FireworkDamageListener;
 import com.badbones69.crazyvouchers.listeners.VoucherClickListener;
 import com.badbones69.crazyvouchers.listeners.VoucherCraftListener;
 import com.badbones69.crazyvouchers.listeners.VoucherMiscListener;
-import com.badbones69.crazyvouchers.support.MetricsWrapper;
 import com.ryderbelserion.fusion.api.enums.Level;
 import com.ryderbelserion.fusion.paper.FusionPaper;
 import org.bukkit.plugin.PluginManager;
@@ -49,8 +48,6 @@ public class CrazyVouchers extends JavaPlugin {
         );
 
         this.platform.init();
-
-        new MetricsWrapper(4536).start();
 
         this.crazyManager = new CrazyManager();
         this.crazyManager.load();

@@ -1,41 +1,42 @@
 package com.badbones69.crazyvouchers.api;
 
-import ch.jalu.configme.SettingsManager;
 import com.badbones69.crazyvouchers.CrazyVouchers;
+import com.ryderbelserion.fusion.core.api.config.properties.PropertyManager;
+import us.crazycrew.crazyvouchers.api.config.ConfigManager;
+import us.crazycrew.crazyvouchers.api.config.types.RootKeys;
 import us.crazycrew.crazyvouchers.api.enums.other.FileSystem;
 import com.badbones69.crazyvouchers.api.enums.PersistentKeys;
 import com.badbones69.crazyvouchers.api.objects.Voucher;
 import com.badbones69.crazyvouchers.api.objects.VoucherCode;
 import com.ryderbelserion.fusion.api.enums.Level;
 import com.ryderbelserion.fusion.files.FileManager;
-import com.ryderbelserion.fusion.files.enums.FileType;
 import com.ryderbelserion.fusion.files.types.configurate.YamlCustomFile;
 import com.ryderbelserion.fusion.paper.FusionPaper;
 import io.papermc.paper.persistence.PersistentDataContainerView;
 import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;
-import com.badbones69.crazyvouchers.config.ConfigManager;
 import org.bukkit.persistence.PersistentDataType;
 import org.jspecify.annotations.NonNull;
 import org.jetbrains.annotations.Nullable;
 import org.spongepowered.configurate.CommentedConfigurationNode;
-import java.io.IOException;
-import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.*;
-import java.util.stream.Stream;
 
 public class CrazyManager {
 
     private @NonNull final CrazyVouchers plugin = CrazyVouchers.get();
 
+    private @NonNull final CrazyPlatform platform = this.plugin.getPlatform();
+
     private @NonNull final FusionPaper fusion = this.plugin.getFusion();
 
     private @NonNull final Path dataPath = this.plugin.getDataPath();
 
-    private @NonNull final SettingsManager config = ConfigManager.getConfig();
+    private @NonNull final ConfigManager configManager = this.platform.getConfigManager();
 
-    private @NonNull final FileManager fileManager = this.plugin.getFileManager();
+    private @NonNull final PropertyManager config = this.configManager.getConfig();
+
+    private @NonNull final FileManager fileManager = this.fusion.getFileManager();
 
     private @NonNull final List<Voucher> vouchers = new ArrayList<>();
     private @NonNull final List<VoucherCode> voucherCodes = new ArrayList<>();
@@ -46,31 +47,13 @@ public class CrazyManager {
     private @NonNull final Map<UUID, String> voucher_auth = new HashMap<>();
 
     public void load() {
-        loadExamples();
-
-        update();
-
         loadVouchers();
         loadCodes();
     }
 
     public void reload() {
-        loadExamples();
-
-        update();
-
         reloadVouchers();
         reloadCodes();
-    }
-
-    public void update() {
-        final Path version = this.dataPath.resolve("version.json");
-
-        try {
-            Files.deleteIfExists(version);
-        } catch (final IOException exception) {
-            this.fusion.log(Level.warn, "Failed to delete version.json!", exception);
-        }
     }
 
     public void reloadCodes() {
@@ -86,34 +69,34 @@ public class CrazyManager {
     }
 
     public void loadCodes() {
-        final FileSystem type = this.config.getProperty(ConfigKeys.file_system);
+        final FileSystem type = this.config.getProperty(RootKeys.file_system);
 
         switch (type) {
             case SINGLE -> {
-                final YamlCustomFile config = FileKeys.codes.getPaperCustomFile();
+                this.fileManager.getYamlFile(this.dataPath.resolve("codes.yml")).ifPresent(customFile -> {
+                    if (!customFile.isLoaded()) {
+                        this.fusion.log(Level.warn, "The %s was not loaded into memory.", customFile.getFileName());
 
-                if (!config.isLoaded()) {
-                    this.fusion.log(Level.warn, "The %s was not loaded into memory.", FileKeys.codes.getName());
-
-                    return;
-                }
-
-                final CommentedConfigurationNode configuration = config.getConfiguration();
-
-                if (!configuration.hasChild("voucher-codes")) {
-                    this.fusion.log(Level.warn, "The configuration section we need for %s could not be found.", FileKeys.codes.getName());
-
-                    return;
-                }
-
-                final CommentedConfigurationNode section = configuration.node("voucher-codes");
-
-                section.childrenMap().forEach((id, node) -> {
-                    try {
-                        this.voucherCodes.add(new VoucherCode(node, id.toString()));
-                    } catch (final Exception exception) {
-                        this.brokenVoucherCodes.add(id.toString());
+                        return;
                     }
+
+                    final CommentedConfigurationNode configuration = customFile.getConfiguration();
+
+                    if (!configuration.hasChild("voucher-codes")) {
+                        this.fusion.log(Level.warn, "The configuration section we need for %s could not be found.", customFile.getFileName());
+
+                        return;
+                    }
+
+                    final CommentedConfigurationNode section = configuration.node("voucher-codes");
+
+                    section.childrenMap().forEach((id, node) -> {
+                        try {
+                            this.voucherCodes.add(new VoucherCode(node, id.toString()));
+                        } catch (final Exception exception) {
+                            this.brokenVoucherCodes.add(id.toString());
+                        }
+                    });
                 });
             }
 
@@ -156,32 +139,32 @@ public class CrazyManager {
     }
 
     public void loadVouchers() {
-        final FileSystem type = this.config.getProperty(ConfigKeys.file_system);
+        final FileSystem type = this.config.getProperty(RootKeys.file_system);
 
         switch (type) {
             case SINGLE -> {
-                final YamlCustomFile config = FileKeys.vouchers.getPaperCustomFile();
+                this.fileManager.getYamlFile(this.dataPath.resolve("vouchers.yml")).ifPresent(customFile -> {
+                    if (!customFile.isLoaded()) {
+                        this.fusion.log(Level.warn, "The %s was not loaded into memory.", customFile.getFileName());
 
-                if (!config.isLoaded()) {
-                    this.fusion.log(Level.warn, "The %s was not loaded into memory.", FileKeys.vouchers.getName());
-
-                    return;
-                }
-
-                final CommentedConfigurationNode configuration = config.getConfiguration();
-
-                if (configuration.hasChild("vouchers")) {
-                    this.fusion.log(Level.warn, "The configuration section we need for %s could not be found.", FileKeys.vouchers.getName());
-
-                    return;
-                }
-
-                configuration.node("vouchers").childrenMap().forEach((id, node) -> {
-                    try {
-                        this.vouchers.add(new Voucher(node, id.toString()));
-                    } catch (final Exception exception) {
-                        this.brokenVoucherCodes.add(id.toString());
+                        return;
                     }
+
+                    final CommentedConfigurationNode configuration = customFile.getConfiguration();
+
+                    if (configuration.hasChild("vouchers")) {
+                        this.fusion.log(Level.warn, "The configuration section we need for %s could not be found.", customFile.getFileName());
+
+                        return;
+                    }
+
+                    configuration.node("vouchers").childrenMap().forEach((id, node) -> {
+                        try {
+                            this.vouchers.add(new Voucher(node, id.toString()));
+                        } catch (final Exception exception) {
+                            this.brokenVoucherCodes.add(id.toString());
+                        }
+                    });
                 });
             }
 
@@ -220,40 +203,6 @@ public class CrazyManager {
                     this.vouchers.add(new Voucher(configuration.node("voucher"), file.getFileName()));
                 }
             }
-        }
-    }
-
-    public void loadExamples() {
-        if (this.config.getProperty(ConfigKeys.update_examples_folder)) {
-            final Path examples = this.dataPath.resolve("examples");
-
-            if (Files.exists(examples)) {
-                try (final Stream<Path> values = Files.walk(examples)) {
-                    values.sorted(Comparator.reverseOrder()).forEach(path -> { // sorted in reverse order, to ensure the directories are empty first.
-                        try {
-                            this.fusion.log(Level.warn, "Successfully deleted path %s, re-generating the examples later.", path);
-
-                            Files.delete(path);
-                        } catch (final IOException exception) {
-                            this.fusion.log(Level.warn, "Failed to delete %s in loop.", exception, path);
-                        }
-                    });
-                } catch (final Exception exception) {
-                    this.fusion.log(Level.warn, "Failed to delete %s.", exception, exception);
-                }
-            }
-
-            this.fileManager.extractFolder("vouchers", FileType.YAML, examples);
-            this.fileManager.extractFolder("codes", FileType.YAML, examples);
-            this.fileManager.extractFolder("locale", FileType.YAML, examples);
-
-            List.of(
-                    "config.yml",
-                    "codes.yml",
-                    "data.yml",
-                    "users.yml",
-                    "vouchers.yml"
-            ).forEach(file -> this.fileManager.extractFile(file, examples.resolve(file)));
         }
     }
 

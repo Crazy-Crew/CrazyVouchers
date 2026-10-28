@@ -11,9 +11,13 @@ import com.ryderbelserion.fusion.paper.FusionPaper;
 import org.bukkit.command.CommandSender;
 import org.bukkit.configuration.ConfigurationSection;
 import org.jspecify.annotations.NonNull;
+import org.jspecify.annotations.Nullable;
+import org.spongepowered.configurate.CommentedConfigurationNode;
+import org.spongepowered.configurate.serialize.SerializationException;
 import us.crazycrew.crazyvouchers.api.config.ConfigManager;
 import us.crazycrew.crazyvouchers.api.enums.messages.Message;
 
+import java.lang.reflect.Type;
 import java.nio.file.Path;
 import java.util.HashMap;
 import java.util.List;
@@ -51,7 +55,29 @@ public abstract class IVoucherMigrator {
         this.type = type;
     }
 
-    public <T> void set(@NonNull final ConfigurationSection section, @NonNull final String path, @NonNull final T value) {}
+    public <T> void set(@NonNull final CommentedConfigurationNode section, @Nullable final T value, @NonNull final Type type, @NonNull final Object... path) {
+        try {
+            section.node(path).set(type, value);
+        } catch (final SerializationException exception) {
+            exception.printStackTrace();
+        }
+    }
+
+    public <T> void set(@NonNull final CommentedConfigurationNode section, @Nullable final T value, @NonNull final Type type) {
+        try {
+            section.set(type, value);
+        } catch (final SerializationException exception) {
+            exception.printStackTrace();
+        }
+    }
+
+    public void comment(@NonNull final CommentedConfigurationNode section, @NonNull final List<String> comment) {
+        section.commentIfAbsent(StringUtils.toString(comment));
+    }
+
+    public void comment(@NonNull final CommentedConfigurationNode section, @NonNull final String comment) {
+        comment(section, List.of(comment));
+    }
 
     public abstract void run();
 

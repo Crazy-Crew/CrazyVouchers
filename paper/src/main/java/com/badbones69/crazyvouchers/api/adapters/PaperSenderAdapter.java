@@ -2,7 +2,6 @@ package com.badbones69.crazyvouchers.api.adapters;
 
 import com.badbones69.crazyvouchers.CrazyVouchers;
 import com.badbones69.crazyvouchers.api.CrazyPlatform;
-import com.ryderbelserion.crazyvouchers.utils.ConfigUtils;
 import com.ryderbelserion.fusion.api.objects.FusionKey;
 import com.ryderbelserion.fusion.core.api.registry.message.MessageRegistry;
 import com.ryderbelserion.fusion.paper.FusionPaper;
@@ -12,7 +11,6 @@ import org.bukkit.command.ConsoleCommandSender;
 import org.bukkit.entity.Player;
 import org.jspecify.annotations.NonNull;
 import us.crazycrew.crazyvouchers.api.adapters.sender.ISenderAdapter;
-
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;

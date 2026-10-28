@@ -1,6 +1,7 @@
 package com.badbones69.crazyvouchers.api;
 
 import com.badbones69.crazyvouchers.api.adapters.PaperSenderAdapter;
+import com.badbones69.crazyvouchers.support.MetricsWrapper;
 import com.ryderbelserion.crazyvouchers.CrazyVouchersPlugin;
 import com.ryderbelserion.fusion.paper.FusionPaper;
 import net.kyori.adventure.audience.Audience;
@@ -22,6 +23,8 @@ public class CrazyPlatform extends CrazyVouchersPlugin<Audience, FusionPaper> {
         this.senderAdapter = new PaperSenderAdapter();
 
         loadMessages();
+
+        new MetricsWrapper(4536).start();
     }
 
     @Override

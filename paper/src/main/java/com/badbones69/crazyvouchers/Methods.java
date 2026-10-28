@@ -2,7 +2,6 @@ package com.badbones69.crazyvouchers;
 
 import com.badbones69.crazyvouchers.api.enums.PersistentKeys;
 import com.badbones69.crazyvouchers.api.objects.VoucherCommand;
-import com.badbones69.crazyvouchers.config.ConfigManager;
 import com.badbones69.crazyvouchers.utils.ScheduleUtils;
 import com.ryderbelserion.fusion.api.enums.Level;
 import com.ryderbelserion.fusion.core.utils.StringUtils;
@@ -10,7 +9,6 @@ import com.ryderbelserion.fusion.paper.FusionPaper;
 import com.ryderbelserion.fusion.paper.builders.folia.FoliaScheduler;
 import org.bukkit.*;
 import org.bukkit.command.CommandSender;
-import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.entity.Firework;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
@@ -35,7 +33,7 @@ public class Methods {
 
         final List<VoucherCommand> commands = origin.stream().filter(command -> command.getWeight() > 0.0).toList();
 
-        for (double value = Methods.getRandom().nextDouble() * totalWeight; index < commands.size() - 1; index++) {
+        for (double value = ThreadLocalRandom.current().nextDouble() * totalWeight; index < commands.size() - 1; index++) {
             final double weight = commands.get(index).getWeight();
 
             value -= weight;
@@ -55,7 +53,7 @@ public class Methods {
     }
 
     public static void janitor() {
-        final FileConfiguration configuration = FileKeys.users.getConfiguration();
+        /*final FileConfiguration configuration = FileKeys.users.getConfiguration();
 
         if (!configuration.contains("Players")) {
             configuration.set("Players.Clear", null);
@@ -69,19 +67,11 @@ public class Methods {
             data.set("Used-Vouchers.Clear", null);
 
             FileKeys.data.save();
-        }
-    }
-
-    public static boolean useDifferentRandom() {
-        return ConfigManager.getConfig().getProperty(ConfigKeys.use_different_random);
-    }
-
-    public static Random getRandom() {
-        return useDifferentRandom() ? ThreadLocalRandom.current() : new Random();
+        }*/
     }
 
     public static int getRandom(final int max) {
-        return getRandom().nextInt(max);
+        return ThreadLocalRandom.current().nextInt(max);
     }
 
     public static String randomUUID() {
@@ -183,7 +173,7 @@ public class Methods {
             }
 
             try {
-                placeholders.putIfAbsent(matcher.group(), String.valueOf(getRandom().nextInt(minimum, maximum)));
+                placeholders.putIfAbsent(matcher.group(), String.valueOf(ThreadLocalRandom.current().nextInt(minimum, maximum)));
             } catch (final Exception exception) {
                 return placeholders;
             }

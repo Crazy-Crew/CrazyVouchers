@@ -1,8 +1,10 @@
 package com.badbones69.crazyvouchers.commands.features.admin.migrate.types.deprecation;
 
 import com.badbones69.crazyvouchers.Methods;
+import org.spongepowered.configurate.CommentedConfigurationNode;
+import org.spongepowered.configurate.serialize.SerializationException;
 import us.crazycrew.crazyvouchers.api.config.types.RootKeys;
-import us.crazycrew.crazyvouchers.api.enums.Comments;
+import us.crazycrew.crazyvouchers.api.enums.FileComments;
 import us.crazycrew.crazyvouchers.api.enums.other.FileSystem;
 import com.badbones69.crazyvouchers.commands.features.admin.migrate.IVoucherMigrator;
 import com.badbones69.crazyvouchers.commands.features.admin.migrate.enums.MigrationType;
@@ -11,8 +13,6 @@ import com.ryderbelserion.fusion.core.utils.StringUtils;
 import com.ryderbelserion.fusion.files.types.configurate.YamlCustomFile;
 import com.ryderbelserion.fusion.paper.utils.ItemUtils;
 import org.bukkit.command.CommandSender;
-import org.bukkit.configuration.ConfigurationSection;
-import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.inventory.ItemFlag;
 import org.jspecify.annotations.NonNull;
 import java.nio.file.Path;
@@ -33,53 +33,43 @@ public class NewItemMigrator extends IVoucherMigrator {
 
         switch (system) {
             case SINGLE -> {
-                /*final YamlConfiguration codes = FileKeys.codes.getConfiguration();
+                this.fileManager.getYamlFile(this.dataPath.resolve("codes.yml")).ifPresent(customFile -> {
+                    final CommentedConfigurationNode section = customFile.getConfiguration();
 
-                final ConfigurationSection codeSection = codes.getConfigurationSection("voucher-codes");
+                    if (section.hasChild("voucher-codes")) {
+                        final CommentedConfigurationNode codes = section.node("voucher-codes");
 
-                if (codeSection != null) {
-                    for (final String code : codeSection.getKeys(false)) {
-                        final ConfigurationSection item = codeSection.getConfigurationSection(code);
+                        for (final Map.Entry<Object, CommentedConfigurationNode> index : codes.childrenMap().entrySet()) {
+                            final CommentedConfigurationNode entry = index.getValue();
+                            final String id = index.getKey().toString();
 
-                        if (item == null) {
-                            this.fusion.log(Level.warn, "Failed to migrate code %s, because section is null.", code);
+                            if (process(entry)) {
+                                this.fusion.log(Level.info, "Successfully migrated code %s, and saved to file!", id);
 
-                            continue;
-                        }
-
-                        final boolean isSave = process(item);
-
-                        if (isSave) {
-                            this.fusion.log(Level.info, "Successfully migrated code %s, and saved to file!", code);
-
-                            FileKeys.codes.save();
+                                customFile.save();
+                            }
                         }
                     }
-                }*/
+                });
 
-                /*final YamlConfiguration vouchers = FileKeys.vouchers.getConfiguration();
+                this.fileManager.getYamlFile(this.dataPath.resolve("vouchers.yml")).ifPresent(customFile -> {
+                    final CommentedConfigurationNode section = customFile.getConfiguration();
 
-                final ConfigurationSection voucherSection = vouchers.getConfigurationSection("vouchers");
+                    if (section.hasChild("vouchers")) {
+                        final CommentedConfigurationNode vouchers = section.node("vouchers");
 
-                if (voucherSection != null) {
-                    for (final String voucher : voucherSection.getKeys(false)) {
-                        final ConfigurationSection item = voucherSection.getConfigurationSection(voucher);
+                        for (final Map.Entry<Object, CommentedConfigurationNode> index : vouchers.childrenMap().entrySet()) {
+                            final CommentedConfigurationNode entry = index.getValue();
+                            final String id = index.getKey().toString();
 
-                        if (item == null) {
-                            this.fusion.log(Level.warn, "Failed to migrate voucher %s, because section is null.", voucher);
+                            if (process(entry)) {
+                                this.fusion.log(Level.info, "Successfully migrated voucher %s, and saved to file!", id);
 
-                            continue;
-                        }
-
-                        final boolean isSave = process(item);
-
-                        if (isSave) {
-                            this.fusion.log(Level.info, "Successfully migrated voucher %s, and saved to file!", voucher);
-
-                            //FileKeys.vouchers.save();
+                                customFile.save();
+                            }
                         }
                     }
-                }*/
+                });
             }
 
             case MULTIPLE -> {
@@ -103,23 +93,19 @@ public class NewItemMigrator extends IVoucherMigrator {
                             continue;
                         }
 
-                        /*final YamlConfiguration configuration = customFile.getConfiguration();
+                        final CommentedConfigurationNode configuration = customFile.getConfiguration();
 
-                        final ConfigurationSection section = configuration.getConfigurationSection("voucher");
-
-                        if (section == null) {
+                        if (!configuration.hasChild("voucher")) {
                             this.fusion.log(Level.warn, "Failed to migrate voucher %s, because configuration section is null.", voucher);
 
                             continue;
                         }
 
-                        boolean isSave = process(section);
-
-                        if (isSave) {
+                        if (process(configuration.node("voucher"))) {
                             this.fusion.log(Level.info, "Successfully migrated voucher %s, and saved to file!", voucher);
 
                             customFile.save();
-                        }*/
+                        }
 
                         success.add("<green>⤷ " + customFile.getPrettyName());
                     } catch (final Exception exception) {
@@ -135,7 +121,7 @@ public class NewItemMigrator extends IVoucherMigrator {
                     final Optional<YamlCustomFile> optional = this.fileManager.getYamlFile(code);
 
                     if (optional.isEmpty()) {
-                        this.fusion.log(Level.warn, "Failed to migrate code %s, because file does not exist in the cache.", code);
+                        this.fusion.log(Level.warn, "Failed to migrate voucher code %s, because file does not exist in the cache.", code);
 
                         continue;
                     }
@@ -144,28 +130,24 @@ public class NewItemMigrator extends IVoucherMigrator {
 
                     try {
                         if (!customFile.isLoaded()) {
-                            this.fusion.log(Level.warn, "Failed to migrate code %s, because section is null.", code);
+                            this.fusion.log(Level.warn, "Failed to migrate voucher code %s, because section is null.", code);
 
                             continue;
                         }
 
-                        /*final YamlConfiguration configuration = customFile.getConfiguration();
+                        final CommentedConfigurationNode configuration = customFile.getConfiguration();
 
-                        final ConfigurationSection section = configuration.getConfigurationSection("voucher-code");
-
-                        if (section == null) {
-                            this.fusion.log(Level.warn, "Failed to migrate code %s, because configuration section is null.", code);
+                        if (!configuration.hasChild("voucher-code")) {
+                            this.fusion.log(Level.warn, "Failed to migrate voucher code %s, because configuration section is null.", code);
 
                             continue;
                         }
 
-                        boolean isSave = process(section);
-
-                        if (isSave) {
-                            this.fusion.log(Level.info, "Successfully migrated code %s, and saved to file!", code);
+                        if (process(configuration.node("voucher-code"))) {
+                            this.fusion.log(Level.info, "Successfully migrated voucher code %s, and saved to file!", code);
 
                             customFile.save();
-                        }*/
+                        }
 
                         success.add("<green>⤷ " + customFile.getPrettyName());
                     } catch (final Exception exception) {
@@ -189,94 +171,95 @@ public class NewItemMigrator extends IVoucherMigrator {
         this.crazyManager.reloadCodes();
     }
 
-    @Override
-    public <T> void set(@NonNull final ConfigurationSection section, @NonNull final String path, @NonNull final T value) {
-        section.set(path, value);
-    }
-
-    private boolean process(final ConfigurationSection section) {
+    private boolean process(final CommentedConfigurationNode section) {
         boolean isSave = false;
 
-        for (final String value : section.getKeys(false)) {
-            if (!section.isList("items")) continue;
+        for (final CommentedConfigurationNode index : section.childrenMap().values()) {
+            final CommentedConfigurationNode items = index.node("Items");
 
-            final List<String> items = section.getStringList("items");
+            if (!items.isList()) continue;
 
-            section.set("items", null);
+            final List<String> values = StringUtils.getStringList(items);
 
-            final ConfigurationSection itemSection = section.createSection("items");
+            try {
+                items.set(null);
+            } catch (final SerializationException exception) {
+                exception.printStackTrace();
+            }
 
-            items.forEach(item -> {
-                final Map<String, String> patterns = new HashMap<>();
+            for (final String value : values) {
+                if (value.isBlank()) continue;
+
                 final Map<String, Integer> enchantments = new HashMap<>();
+                final Map<String, String> patterns = new HashMap<>();
                 final String uuid = Methods.randomUUID();
 
-                final ConfigurationSection uuidSection = itemSection.createSection(uuid);
+                final CommentedConfigurationNode uuidSection = items.node(uuid);
 
-                for (final String key : item.split(", ")) {
+                for (final String key : value.split(", ")) {
                     final String option = key.split(":")[0];
                     final String type = key.replace(option + ":", "").replace(option, "");
 
                     switch (option.toLowerCase()) {
                         case "item" -> {
-                            uuidSection.set("material", type);
-                            uuidSection.setComments("material", Comments.material.getComments());
+                            set(uuidSection, type, String.class, "material");
+                            comment(uuidSection.node("material"), FileComments.material.getComments());
                         }
                         case "data" -> {
-                            uuidSection.set("data", type);
-                            uuidSection.setComments("data", Comments.base64.getComments());
+                            set(uuidSection, type, String.class, "data");
+                            comment(uuidSection.node("data"), FileComments.base64.getComments());
                         }
                         case "name" -> {
-                            uuidSection.set("name", type);
-                            uuidSection.setComments("name", Comments.name.getComments());
+                            set(uuidSection, type, String.class, "name");
+                            comment(uuidSection.node("name"), FileComments.name.getComments());
                         }
                         case "mob" -> {
-                            uuidSection.set("settings.mob.type", type);
-                            uuidSection.setComments("settings.mob.type", Comments.mob_type.getComments());
+                            set(uuidSection, type, String.class, "settings", "mob", "type");
+                            comment(uuidSection.node("settings", "mob", "type"), FileComments.mob_type.getComments());
                         }
                         case "glowing" -> {
-                            uuidSection.set("settings.glowing", type);
-                            uuidSection.setComments("settings.glowing", Comments.glowing.getComments());
+                            set(uuidSection, type, boolean.class, "settings", "glowing");
+                            comment(uuidSection.node("settings", "glowing"), FileComments.glowing.getComments());
                         }
                         case "amount" -> {
-                            uuidSection.set("amount", type);
-                            uuidSection.setComments("amount", Comments.amount.getComments());
+                            set(uuidSection, type, int.class, "amount");
+                            comment(uuidSection.node("amount"), FileComments.amount.getComments());
                         }
                         case "damage" -> {
-                            uuidSection.set("settings.damage", type);
-                            uuidSection.setComments("settings.damage", Comments.damage.getComments());
+                            set(uuidSection, type, String.class, "settings", "damage");
+                            comment(uuidSection.node("settings", "damage"), FileComments.damage.getComments());
                         }
                         case "lore" -> {
-                            uuidSection.set("lore", List.of(type.split(",")));
-                            uuidSection.setComments("lore", Comments.lore.getComments());
+                            set(uuidSection, List.of(type.split(",")), List.class, "data");
+                            comment(uuidSection.node("data"), FileComments.lore.getComments());
                         }
                         case "player" -> {
-                            uuidSection.set("settings.player", type);
-                            uuidSection.setComments("settings.player", Comments.player.getComments());
+                            set(uuidSection, type, String.class, "settings", "player");
+                            comment(uuidSection.node("settings", "player"), FileComments.player.getComments());
                         }
                         case "skull" -> {
-                            uuidSection.set("settings.skull", type);
-                            uuidSection.setComments("settings.skull", Comments.skull.getComments());
+                            set(uuidSection, type, String.class, "settings", "skull");
+                            comment(uuidSection.node("settings", "skull"), FileComments.skull.getComments());
                         }
                         case "custom-model-data" -> {
-                            uuidSection.set("custom-model-data", type);
-                            uuidSection.setComments("custom-model-data", Comments.custom_model_data.getComments());
+                            set(uuidSection, type, String.class, "custom-model-data");
+                            comment(uuidSection.node("custom-model-data"), FileComments.custom_model_data.getComments());
                         }
                         case "unbreakable-item" -> {
-                            uuidSection.set("unbreakable-item", type);
-                            uuidSection.setComments("unbreakable-item", Comments.unbreakable.getComments());
+                            set(uuidSection, type, String.class, "unbreakable-item");
+                            comment(uuidSection.node("unbreakable-item"), FileComments.unbreakable.getComments());
                         }
                         case "hide-tool-tip" -> {
-                            uuidSection.set("hide-tool-tip", type);
-                            uuidSection.setComments("hide-tool-tip", Comments.hide_tool_tip.getComments());
+                            set(uuidSection, type, String.class, "hide-tool-tip");
+                            comment(uuidSection.node("hide-tool-tip"), FileComments.hide_tool_tip.getComments());
                         }
                         case "trim-pattern" -> {
-                            uuidSection.set("settings.trim.pattern", type);
-                            uuidSection.setComments("trim.pattern", Comments.trim_pattern.getComments());
+                            set(uuidSection, type, String.class, "settings", "trim", "pattern");
+                            comment(uuidSection.node("settings", "trim", "pattern"), FileComments.trim_pattern.getComments());
                         }
                         case "trim-material" -> {
-                            uuidSection.set("settings.trim.material", type);
-                            uuidSection.setComments("settings.trim.material", Comments.trim_material.getComments());
+                            set(uuidSection, type, String.class, "settings", "trim", "material");
+                            comment(uuidSection.node("settings", "trim", "material"), FileComments.trim_material.getComments());
                         }
                         case "trim" -> {
                             final String[] split = type.split("!");
@@ -284,56 +267,61 @@ public class NewItemMigrator extends IVoucherMigrator {
                             final String trim = split[0];
                             final String material = split[1];
 
-                            uuidSection.set("settings.trim.pattern", trim);
-                            uuidSection.setComments("trim.pattern", Comments.trim_pattern.getComments());
+                            set(uuidSection, trim, String.class, "settings", "trim", "pattern");
+                            comment(uuidSection.node("settings", "trim", "pattern"), FileComments.trim_pattern.getComments());
 
-                            uuidSection.set("settings.trim.material", material);
-                            uuidSection.setComments("settings.trim.material", Comments.trim_material.getComments());
+                            set(uuidSection, material, String.class, "settings", "trim", "material");
+                            comment(uuidSection.node("settings", "trim", "material"), FileComments.trim_material.getComments());
                         }
                         case "rgb" -> {
-                            uuidSection.set("settings.rgb", type);
-                            uuidSection.setComments("settings.rgb", Comments.rgb.getComments());
+                            set(uuidSection, type, String.class, "settings", "rgb");
+                            comment(uuidSection.node("settings", "rgb"), FileComments.rgb.getComments());
                         }
                         case "color" -> {
-                            uuidSection.set("settings.color", type);
-                            uuidSection.setComments("settings.color", Comments.color.getComments());
+                            set(uuidSection, type, String.class, "settings", "color");
+                            comment(uuidSection.node("settings", "color"), FileComments.color.getComments());
                         }
                         default -> {
                             final String placeholder = option.toLowerCase();
 
-                            ItemUtils.getPotionEffect(placeholder).ifPresent(effect -> {
-                                final ConfigurationSection potionsSection = uuidSection.createSection("settings.potions");
+                            ItemUtils.getPotionEffect(placeholder).ifPresent(_ -> {
+                                final CommentedConfigurationNode potions = uuidSection.node("settings", "potions");
+                                final CommentedConfigurationNode potion = potions.node(placeholder);
 
-                                final ConfigurationSection potionSection = potionsSection.createSection(placeholder);
+                                set(potion, 60, int.class, "duration");
+                                set(potion, 1, int.class, "level");
 
-                                potionSection.set("duration", 60);
-                                potionSection.set("level", 1);
+                                set(potion, true, boolean.class, "style", "icon");
+                                set(potion, true, boolean.class, "style", "ambient");
+                                set(potion, true, boolean.class, "style", "particles");
 
-                                potionSection.set("style.icon", true);
-                                potionSection.set("style.ambient", true);
-                                potionSection.set("style.particles", true);
-
-                                uuidSection.set("settings.potions", Comments.potions.getComments());
+                                comment(potion, FileComments.potions.getComments());
                             });
 
                             if (ItemUtils.getEnchantment(placeholder).isPresent()) {
                                 enchantments.put(option.toLowerCase(), StringUtils.tryParseInt(value).map(Number::intValue).orElse(1));
 
-                                final ConfigurationSection enchantmentSection = uuidSection.createSection("enchantments");
+                                final CommentedConfigurationNode enchantmentSection = uuidSection.node("enchantments");
 
-                                uuidSection.setComments("enchantments", Comments.enchantments.getComments());
+                                comment(enchantmentSection, FileComments.enchantments.getComments());
 
-                                enchantments.forEach(enchantmentSection::set);
+                                enchantments.forEach((enchantment, level) -> {
+                                    try {
+                                        enchantmentSection.node(enchantment).set(int.class, level);
+                                    } catch (SerializationException exception) {
+                                        exception.printStackTrace();
+                                    }
+                                });
 
                                 break;
                             }
 
-                            if (!uuidSection.contains("hide-tool-tip")) {
+                            if (!uuidSection.hasChild("hide-tool-tip")) {
                                 for (ItemFlag itemFlag : ItemFlag.values()) {
                                     if (itemFlag.name().equalsIgnoreCase(option)) {
-                                        uuidSection.set("hide-tool-tip", true);
-                                        uuidSection.setComments("hide-tool-tip", Comments.hide_tool_tip.getComments());
-
+                                        set(uuidSection, true, Boolean.class, "hide-tool-tip");
+                                        comment(uuidSection.node("hide-tool-tip"), FileComments.hide_tool_tip.getComments());
+                                        
                                         break;
                                     }
                                 }
@@ -342,18 +330,24 @@ public class NewItemMigrator extends IVoucherMigrator {
                             if (ItemUtils.getPatternType(placeholder).isPresent()) {
                                 patterns.put(placeholder, type);
 
-                                final ConfigurationSection patternsSection = uuidSection.createSection("settings.patterns");
+                                final CommentedConfigurationNode patternsSection = uuidSection.node("settings", "patterns");
 
-                                uuidSection.setComments("settings.patterns", Comments.patterns.getComments());
+                                comment(patternsSection, FileComments.patterns.getComments());
 
-                                patterns.forEach(patternsSection::set);
+                                patterns.forEach((pattern, patternType) -> {
+                                    try {
+                                        patternsSection.node(pattern).set(String.class, patternType);
+                                    } catch (SerializationException exception) {
+                                        exception.printStackTrace();
+                                    }
+                                });
                             }
                         }
                     }
                 }
-            });
-
-            isSave = true;
+                
+                isSave = true;
+            }
         }
 
         return isSave;

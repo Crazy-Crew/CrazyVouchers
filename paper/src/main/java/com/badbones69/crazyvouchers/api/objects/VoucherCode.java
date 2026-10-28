@@ -1,8 +1,11 @@
 package com.badbones69.crazyvouchers.api.objects;
 
-import ch.jalu.configme.SettingsManager;
 import com.badbones69.crazyvouchers.CrazyVouchers;
 import com.badbones69.crazyvouchers.Methods;
+import com.badbones69.crazyvouchers.api.CrazyPlatform;
+import com.ryderbelserion.fusion.core.api.config.properties.PropertyManager;
+import us.crazycrew.crazyvouchers.api.config.ConfigManager;
+import us.crazycrew.crazyvouchers.api.config.types.RootKeys;
 import us.crazycrew.crazyvouchers.api.enums.messages.Message;
 import com.badbones69.crazyvouchers.utils.ItemUtils;
 import com.ryderbelserion.crazyvouchers.utils.ConfigUtils;
@@ -14,7 +17,6 @@ import com.ryderbelserion.fusion.paper.utils.ColorUtils;
 import org.bukkit.Color;
 import org.bukkit.Sound;
 import org.bukkit.entity.Player;
-import com.badbones69.crazyvouchers.config.ConfigManager;
 import org.jspecify.annotations.NonNull;
 import org.spongepowered.configurate.CommentedConfigurationNode;
 import java.util.ArrayList;
@@ -25,7 +27,9 @@ public class VoucherCode {
 
     private @NonNull final CrazyVouchers plugin = CrazyVouchers.get();
     private @NonNull final FusionPaper fusion = this.plugin.getFusion();
-    private @NonNull final SettingsManager config = ConfigManager.getConfig();
+    private @NonNull final CrazyPlatform platform = this.plugin.getPlatform();
+    private @NonNull final ConfigManager configManager = this.platform.getConfigManager();
+    private @NonNull final PropertyManager config = this.configManager.getConfig();
 
     private final String fileName;
     private final String name;
@@ -77,7 +81,7 @@ public class VoucherCode {
         this.code = section.node("code").getString("");
         this.commands = StringUtils.getStringList(section.node("commands"));
 
-        if (this.config.getProperty(ConfigKeys.use_different_items_layout) && !section.node("items").isList()) {
+        if (this.config.getProperty(RootKeys.use_different_items_layout) && !section.node("items").isList()) {
             this.items = ItemUtils.convertConfigurationSection(section.node("items"));
         } else {
             this.items = ItemUtils.convertStringList(StringUtils.getStringList(section.node("items")));
@@ -89,7 +93,7 @@ public class VoucherCode {
 
         this.whitelistPermissionToggle = section.node("options", "permission", "whitelist-permission", "toggle").getBoolean(false);
         this.whitelistCommands = ConfigUtils.getStringList(section, List.of(), "options", "permission", "whitelist-permission", "commands");
-        this.whitelistPermissionMessage = getMessage(section, "options.permission.whitelist-permission.message", Message.no_permission_to_use_voucher.getString());
+        this.whitelistPermissionMessage = getMessage(section, "options.permission.whitelist-permission.message", Message.no_permission_to_use_voucher.getMessage());
 
         this.whitelistPermissions.addAll(StringUtils.getStringList(section.node("options", "permission", "whitelist-permission", "permissions")).stream().map(String::toLowerCase).toList());
 
@@ -101,12 +105,12 @@ public class VoucherCode {
 
         this.whitelistWorldsToggle = section.node("options", "whitelist-worlds", "toggle").getBoolean(false);
         this.whitelistWorldCommands.addAll(ConfigUtils.getStringList(section, List.of(), "options", "whitelist-worlds", "commands"));
-        this.whitelistWorldMessage = getMessage(section, Message.not_in_whitelisted_world.getString(), "options", "whitelist-worlds", "message");
+        this.whitelistWorldMessage = getMessage(section, Message.not_in_whitelist_world.getMessage(), "options", "whitelist-worlds", "message");
 
         this.whitelistWorlds.addAll(StringUtils.getStringList(section.node("options", "whitelist-worlds", "worlds")).stream().map(String::toLowerCase).toList());
 
         this.blacklistPermissionsToggle = section.node("options", "permission", "blacklist-permission", "toggle").getBoolean(false);
-        this.blacklistPermissionMessage = getMessage(section, Message.has_blacklist_permission.getString(), "options", "permission", "blacklist-permission", "message");
+        this.blacklistPermissionMessage = getMessage(section, Message.has_blacklist_permission.getMessage(), "options", "permission", "blacklist-permission", "message");
         this.blacklistPermissions.addAll(ConfigUtils.getStringList(section, List.of(), "options", "permission", "blacklist-permission", "permissions"));
         this.blacklistCommands.addAll(ConfigUtils.getStringList(section, List.of(), "options", "permission", "blacklist-permission", "commands"));
 

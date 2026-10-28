@@ -5,6 +5,7 @@ import com.ryderbelserion.fusion.core.api.config.properties.builders.CommentsBui
 import com.ryderbelserion.fusion.core.api.config.properties.interfaces.IPropertyHolder;
 import com.ryderbelserion.fusion.core.api.config.properties.objects.interfaces.Property;
 import org.jspecify.annotations.NonNull;
+import us.crazycrew.crazyvouchers.api.enums.messages.State;
 import us.crazycrew.crazyvouchers.api.enums.other.FileSystem;
 
 import java.util.List;
@@ -41,12 +42,8 @@ public class RootKeys implements IPropertyHolder {
         configuration.setComment("Allows you to configure whether vouchers can be used in recipes!", "settings", "recipes");
     }
 
-    @Comment({
-            "This option will let you test a different way of picking random numbers. If you have any issues, You can set it back to false.",
-            "",
-            "If the option is set to false, items should be more random in theory."
-    })
-    public static final Property<Boolean> use_different_random = newProperty(false, "root", "use-different-random");
+    @Comment("Sends anonymous statistics to https://bstats.org/plugin/bukkit/Vouchers/4536")
+    public static final Property<Boolean> toggle_metrics = newProperty(true, "root", "toggle-metrics");
 
     @Comment({
             "This will allow you to use a new items layout which should be much more straight forward, less prone to errors.",

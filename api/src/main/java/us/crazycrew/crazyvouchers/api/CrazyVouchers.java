@@ -37,6 +37,9 @@ public abstract class CrazyVouchers<C, S> {
     @ApiStatus.Internal
     public abstract void loadMessages();
 
+    @ApiStatus.Internal
+    public abstract void loadExamples();
+
     public abstract void disable();
 
     public abstract void reload();

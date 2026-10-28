@@ -1,5 +1,6 @@
 package com.ryderbelserion.crazyvouchers;
 
+import com.ryderbelserion.fusion.core.api.config.properties.PropertyManager;
 import com.ryderbelserion.fusion.files.enums.FileType;
 import us.crazycrew.crazyvouchers.api.config.ConfigManager;
 import us.crazycrew.crazyvouchers.api.config.types.RootKeys;
@@ -18,7 +19,9 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.StandardCopyOption;
+import java.util.Comparator;
 import java.util.List;
+import java.util.stream.Stream;
 
 @NullMarked
 public abstract class CrazyVouchersPlugin<S, F extends FusionKyori<S>> extends CrazyVouchers<Component, S> {
@@ -37,6 +40,14 @@ public abstract class CrazyVouchersPlugin<S, F extends FusionKyori<S>> extends C
 
     @Override
     public void init() {
+        final Path version = this.path.resolve("version.json");
+
+        try {
+            Files.deleteIfExists(version);
+        } catch (final IOException exception) {
+            this.fusion.log(Level.warn, "Failed to delete version.json!", exception);
+        }
+
         final Path locale = this.path.resolve("locale");
         final Path path = this.path.resolve("messages.yml");
 
@@ -53,6 +64,8 @@ public abstract class CrazyVouchersPlugin<S, F extends FusionKyori<S>> extends C
         for (final FileKeys file : FileKeys.values()) {
             file.addFile();
         }
+
+        loadExamples();
 
         this.fileManager.addFolder(locale, FileType.YAML);
 
@@ -72,7 +85,37 @@ public abstract class CrazyVouchersPlugin<S, F extends FusionKyori<S>> extends C
 
     @Override
     public void reload() {
-        this.fileManager.refresh(false);
+        this.fusion.reload();
+
+        final Path version = this.path.resolve("version.json");
+
+        try {
+            Files.deleteIfExists(version);
+        } catch (final IOException exception) {
+            this.fusion.log(Level.warn, "Failed to delete version.json!", exception);
+        }
+
+        this.fileManager.refresh(false).purge();
+
+        for (final FileKeys file : FileKeys.values()) {
+            file.addFile();
+        }
+
+        loadExamples();
+
+        final Path locale = this.path.resolve("locale");
+
+        this.fileManager.addFolder(locale, FileType.YAML);
+
+        loadMessages();
+
+        final FileSystem system = this.configManager.getConfig().getProperty(RootKeys.file_system);
+
+        switch (system) {
+            case SINGLE -> this.fileManager.addFile(this.path.resolve("codes.yml"), FileType.YAML).addFile(this.path.resolve("vouchers.yml"), FileType.YAML);
+
+            case MULTIPLE -> this.fileManager.addFolder(this.path.resolve("codes"), FileType.YAML).addFolder(this.path.resolve("vouchers"), FileType.YAML);
+        }
     }
 
     @Override
@@ -96,6 +139,43 @@ public abstract class CrazyVouchersPlugin<S, F extends FusionKyori<S>> extends C
                 }, () -> this.fusion.log(Level.info, "Path %s not found in cache.".formatted(path)));
             }
         });
+    }
+
+    @Override
+    public void loadExamples() {
+        final PropertyManager config = this.configManager.getConfig();
+
+        if (config.getProperty(RootKeys.update_examples_folder)) {
+            final Path examples = this.path.resolve("examples");
+
+            if (Files.exists(examples)) {
+                try (final Stream<Path> values = Files.walk(examples)) {
+                    values.sorted(Comparator.reverseOrder()).forEach(path -> { // sorted in reverse order, to ensure the directories are empty first.
+                        try {
+                            this.fusion.log(Level.warn, "Successfully deleted path %s, re-generating the examples later.", path);
+
+                            Files.delete(path);
+                        } catch (final IOException exception) {
+                            this.fusion.log(Level.warn, "Failed to delete %s in loop.", exception, path);
+                        }
+                    });
+                } catch (final Exception exception) {
+                    this.fusion.log(Level.warn, "Failed to delete %s.", exception, exception);
+                }
+            }
+
+            this.fileManager.extractFolder("vouchers", FileType.YAML, examples);
+            this.fileManager.extractFolder("codes", FileType.YAML, examples);
+            this.fileManager.extractFolder("locale", FileType.YAML, examples);
+
+            List.of(
+                    "config.yml",
+                    "codes.yml",
+                    "data.yml",
+                    "users.yml",
+                    "vouchers.yml"
+            ).forEach(file -> this.fileManager.extractFile(file, examples.resolve(file)));
+        }
     }
 
     @Override

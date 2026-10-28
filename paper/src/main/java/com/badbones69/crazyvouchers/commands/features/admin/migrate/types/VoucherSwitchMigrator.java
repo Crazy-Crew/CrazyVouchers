@@ -3,17 +3,19 @@ package com.badbones69.crazyvouchers.commands.features.admin.migrate.types;
 import com.badbones69.crazyvouchers.commands.features.admin.migrate.IVoucherMigrator;
 import com.badbones69.crazyvouchers.commands.features.admin.migrate.enums.MigrationType;
 import com.ryderbelserion.fusion.api.enums.Level;
+import com.ryderbelserion.fusion.core.utils.StringUtils;
 import com.ryderbelserion.fusion.files.types.configurate.YamlCustomFile;
 import org.bukkit.command.CommandSender;
-import org.bukkit.configuration.ConfigurationSection;
-import org.bukkit.configuration.file.YamlConfiguration;
 import org.jspecify.annotations.NonNull;
+import org.spongepowered.configurate.CommentedConfigurationNode;
+import org.spongepowered.configurate.NodePath;
 import us.crazycrew.crazyvouchers.api.config.types.RootKeys;
-
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.List;
+import java.util.Map;
+import java.util.Optional;
 
 public class VoucherSwitchMigrator extends IVoucherMigrator {
 
@@ -25,185 +27,142 @@ public class VoucherSwitchMigrator extends IVoucherMigrator {
     public void run() {
         switch (this.config.getProperty(RootKeys.file_system)) {
             case SINGLE -> {
-                final Path voucher_directory = getVouchersDirectory();
-                final Path code_directory = getCodesDirectory();
+                final Path vouchers = getVouchersDirectory();
+                final Path codes = getCodesDirectory();
 
-                final Path voucher_file = this.dataPath.resolve("vouchers.yml");
+                final Optional<YamlCustomFile> optional = Files.exists(this.dataPath.resolve("vouchers.yml")) ? Optional.empty() :
+                        Optional.of(this.fileManager.buildYamlFile(this.dataPath.resolve("vouchers.yml"), "", _ -> {}));
 
-                YamlConfiguration voucher_config = null;
+                optional.ifPresentOrElse(customFile -> {
+                    final String fileName = customFile.getFileName();
 
-                if (Files.exists(voucher_file)) {
-                    voucher_config = YamlConfiguration.loadConfiguration(voucher_file.toFile());
-                }
+                    if (!customFile.isLoaded()) {
+                        this.fusion.log(Level.warn, "Failed to switch the voucher %s because it failed to load!", fileName);
 
-                if (voucher_config != null) {
-                    final ConfigurationSection vouchers = voucher_config.getConfigurationSection("vouchers");
+                        return;
+                    }
 
-                    if (vouchers != null) {
-                        for (final String key : vouchers.getKeys(false)) {
-                            final ConfigurationSection entry = vouchers.getConfigurationSection(key);
+                    final CommentedConfigurationNode configuration = customFile.getConfiguration();
 
-                            final Path path = voucher_directory.resolve(key);
+                    for (final Map.Entry<Object, CommentedConfigurationNode> entries : configuration.childrenMap().entrySet()) {
+                        final String id = entries.getKey().toString();
+                        final CommentedConfigurationNode entry = entries.getValue();
 
-                            if (!Files.exists(path)) {
-                                try {
-                                    Files.createFile(path);
-                                } catch (IOException exception) {
-                                    exception.printStackTrace();
-                                }
-                            }
+                        final Path path = vouchers.resolve(id);
 
-                            final YamlCustomFile customFile = new YamlCustomFile(this.fileManager, path, _ -> {});
+                        if (Files.exists(path)) {
+                            this.fusion.log(Level.warn, "Cannot migrate %s voucher because the file already exists!", id);
 
-                            customFile.load();
-
-                            if (!customFile.isLoaded()) {
-                                this.fusion.log(Level.warn, "Failed to switch voucher %s, because section is null.", key);
-
-                                continue;
-                            }
-
-                            if (entry == null) {
-                                this.fusion.log(Level.warn, "Failed to switch voucher %s, because configuration section is null.", key);
-
-                                continue;
-                            }
-
-                            //final YamlConfiguration configuration = customFile.getConfiguration();
-
-                            //final ConfigurationSection section = configuration.createSection("voucher");
-
-                            //processItems(entry, section);
+                            continue;
                         }
 
-                        this.crazyManager.reloadVouchers();
-                    } else {
-                        this.fusion.log(Level.warn, "Failed to move vouchers.yml into vouchers, because the section is null.");
-                    }
-                } else {
-                    this.fusion.log(Level.warn, "Failed to move vouchers.yml into vouchers, because configuration is null.");
-                }
-
-                final Path code_file = this.dataPath.resolve("codes.yml");
-
-                YamlConfiguration code_config = null;
-
-                if (Files.exists(code_file)) {
-                    code_config = YamlConfiguration.loadConfiguration(code_file.toFile());
-                }
-
-                if (code_config != null) {
-                    final ConfigurationSection codes = code_config.getConfigurationSection("voucher-codes");
-
-                    if (codes != null) {
-                        for (final String key : codes.getKeys(false)) {
-                            final ConfigurationSection entry = codes.getConfigurationSection(key);
-
-                            final Path path = code_directory.resolve(key);
-
-                            if (!Files.exists(path)) {
-                                try {
-                                    Files.createFile(path);
-                                } catch (IOException exception) {
-                                    exception.printStackTrace();
-                                }
-                            }
-
-                            final YamlCustomFile customFile = new YamlCustomFile(this.fileManager, path, _ -> {});
-
-                            customFile.load();
-
-                            if (!customFile.isLoaded()) {
-                                this.fusion.log(Level.warn, "Failed to switch code %s, because section is null.", key);
-
-                                continue;
-                            }
-
-                            if (entry == null) {
-                                this.fusion.log(Level.warn, "Failed to switch code %s, because configuration section is null.", key);
-
-                                continue;
-                            }
-
-                            //final YamlConfiguration configuration = customFile.getConfiguration();
-
-                            //final ConfigurationSection section = configuration.createSection("voucher-code");
-
-                            //process(entry, section);
+                        try {
+                            Files.createFile(path);
+                        } catch (final IOException exception) {
+                            exception.printStackTrace();
                         }
 
-                        this.crazyManager.reloadCodes();
-                    } else {
-                        this.fusion.log(Level.warn, "Failed to move codes.yml into vouchers, because the section is null.");
+                        Optional.of(this.fileManager.buildYamlFile(path, "", _ -> {})).ifPresentOrElse(
+                                index -> process(entry, index.getConfiguration().node("voucher")),
+                                () -> this.fusion.log(Level.warn, "Failed to build %s voucher!", id));
                     }
-                } else {
-                    this.fusion.log(Level.warn, "Failed to move codes.yml into vouchers, because configuration is null.");
-                }
+                }, () -> this.fusion.log(Level.warn, "Failed to build %s voucher in order to start migration!", "vouchers.yml"));
+
+                final Optional<YamlCustomFile> second = Files.exists(this.dataPath.resolve("codes.yml")) ? Optional.empty() :
+                        Optional.of(this.fileManager.buildYamlFile(this.dataPath.resolve("codes.yml"), "", _ -> {}));
+
+                second.ifPresentOrElse(customFile -> {
+                    final String fileName = customFile.getFileName();
+
+                    if (!customFile.isLoaded()) {
+                        this.fusion.log(Level.warn, "Failed to switch the voucher code %s because it failed to load!", fileName);
+
+                        return;
+                    }
+
+                    final CommentedConfigurationNode configuration = customFile.getConfiguration();
+
+                    for (final Map.Entry<Object, CommentedConfigurationNode> entries : configuration.childrenMap().entrySet()) {
+                        final String id = entries.getKey().toString();
+                        final CommentedConfigurationNode entry = entries.getValue();
+
+                        final Path path = codes.resolve(id);
+
+                        if (Files.exists(path)) {
+                            this.fusion.log(Level.warn, "Cannot migrate %s voucher code because the file already exists!", id);
+
+                            continue;
+                        }
+
+                        try {
+                            Files.createFile(path);
+                        } catch (final IOException exception) {
+                            exception.printStackTrace();
+                        }
+
+                        Optional.of(this.fileManager.buildYamlFile(path, "", _ -> {})).ifPresentOrElse(
+                                index -> process(entry, index.getConfiguration().node("voucher-code")),
+                                () -> this.fusion.log(Level.warn, "Failed to build %s voucher code!", id));
+                    }
+                }, () -> this.fusion.log(Level.warn, "Failed to build %s voucher code in order to start migration!", "codes.yml"));
             }
 
             case MULTIPLE -> {
-                final Path voucher_file = this.dataPath.resolve("vouchers.yml");
+                final Path vouchers = this.dataPath.resolve("vouchers.yml");
 
-                if (Files.exists(voucher_file)) {
+                if (Files.exists(vouchers)) {
                     try {
-                        Files.createFile(voucher_file);
+                        Files.createFile(vouchers);
                     } catch (final IOException exception) {
                         exception.printStackTrace();
                     }
                 }
 
-                final  YamlCustomFile voucher_custom_file = new YamlCustomFile(this.fileManager, voucher_file, _ -> {}).load();
+                final YamlCustomFile voucher_custom_file = new YamlCustomFile(this.fileManager, vouchers, _ -> {}).load();
 
                 if (voucher_custom_file.isLoaded()) {
-                    /*final YamlConfiguration voucher_config = voucher_custom_file.getConfiguration();
-                    final ConfigurationSection new_section = voucher_config.contains("vouchers") ? voucher_config.getConfigurationSection("vouchers") : voucher_config.createSection("vouchers");
+                    final CommentedConfigurationNode configuration = voucher_custom_file.getConfiguration();
 
-                    if (new_section != null) {
-                        final List<Path> vouchers = this.fusion.getFilesByPath(this.dataPath.resolve("vouchers"), ".yml");
+                    final CommentedConfigurationNode root_section = configuration.node("vouchers");
 
-                        for (final Path voucher : vouchers) {
-                            final String fileName = voucher.getFileName().toString();
+                    for (final Path voucher : this.fusion.getFilesByPath(this.dataPath.resolve("vouchers"), ".yml")) {
+                        final YamlCustomFile customFile = new YamlCustomFile(this.fileManager, voucher, _ -> {}).load();
 
-                            final PaperCustomFile customFile = new PaperCustomFile(this.fileManager, voucher, _ -> {});
+                        final String fileName = customFile.getFileName();
 
-                            if (!customFile.isLoaded()) {
-                                this.fusion.log(Level.warn, "Failed to switch voucher %s, because configuration is null.", voucher);
+                        if (!customFile.isLoaded()) {
+                            this.fusion.log(Level.warn, "Failed to switch voucher %s, because configuration is null.", fileName);
 
-                                continue;
-                            }
-
-                            final YamlConfiguration configuration = customFile.getConfiguration();
-
-                            final ConfigurationSection entry = configuration.getConfigurationSection("voucher");
-
-                            if (entry == null) {
-                                this.fusion.log(Level.warn, "Failed to switch voucher %s, because configuration section is null.", voucher);
-
-                                continue;
-                            }
-
-                            final ConfigurationSection section = new_section.createSection(fileName);
-
-                            processItems(entry, section);
-
-                            voucher_custom_file.save();
-
-                            final String path = section.getCurrentPath();
-
-                            if (path != null) {
-                                this.fusion.log(Level.warn, "Successfully moved voucher %s to %s in vouchers.yml.", voucher, path);
-                            }
+                            continue;
                         }
 
-                        this.fileManager.addPaperFile(voucher_custom_file);
-                        this.fileManager.removeFile(voucher_file);
+                        final CommentedConfigurationNode section = customFile.getConfiguration();
 
-                        this.crazyManager.reloadVouchers();
+                        if (!section.hasChild("voucher")) {
+                            this.fusion.log(Level.warn, "Failed to switch voucher %s, because configuration section is null.", fileName);
 
-                        this.fusion.log(Level.warn, "Added voucher %s to the cache, and removed the old voucher file named %s", voucher_custom_file.getPrettyName(), voucher_file);
-                    } else {
-                        this.fusion.log(Level.warn, "Failed to move vouchers into vouchers.yml, because the section is null.");
-                    }*/
+                            continue;
+                        }
+
+                        final CommentedConfigurationNode index = section.node("voucher");
+
+                        processItems(root_section, index);
+
+                        voucher_custom_file.save();
+
+                        final NodePath path = index.path();
+
+                        if (path != null) {
+                            this.fusion.log(Level.warn, "Successfully moved voucher %s to %s in vouchers.yml.", voucher, path);
+                        }
+                    }
+
+                    this.fileManager.removeFile(vouchers);
+                    this.fileManager.addFile(vouchers, voucher_custom_file);
+
+                    this.crazyManager.reloadVouchers();
+
+                    this.fusion.log(Level.warn, "Added voucher %s to the cache, and removed the old voucher file named %s", voucher_custom_file.getPrettyName(), vouchers.getFileName().toString());
                 } else {
                     this.fusion.log(Level.warn, "Failed to move vouchers into vouchers.yml, because configuration is null.");
                 }
@@ -218,69 +177,56 @@ public class VoucherSwitchMigrator extends IVoucherMigrator {
                     }
                 }
 
-                /*final PaperCustomFile code_custom_file = new PaperCustomFile(this.fileManager, code_file, _ -> {}).load();
+                final YamlCustomFile code_custom_file = new YamlCustomFile(this.fileManager, code_file, _ -> {}).load();
 
                 if (code_custom_file.isLoaded()) {
-                    final YamlConfiguration code_config = code_custom_file.getConfiguration();
+                    final CommentedConfigurationNode configuration = voucher_custom_file.getConfiguration();
 
-                    final ConfigurationSection new_section = code_config.contains("voucher-codes") ? code_config.getConfigurationSection("voucher-codes") : code_config.createSection("voucher-codes");
+                    final CommentedConfigurationNode root_section = configuration.node("voucher-code");
 
-                    if (new_section != null) {
-                        final List<Path> codes = this.fusion.getFilesByPath(this.plugin.getDataPath().resolve("codes"), ".yml");
+                    for (final Path voucher : this.fusion.getFilesByPath(this.dataPath.resolve("codes"), ".yml")) {
+                        final YamlCustomFile customFile = new YamlCustomFile(this.fileManager, voucher, _ -> {}).load();
 
-                        for (final Path code : codes) {
-                            final String fileName = code.getFileName().toString();
+                        final String fileName = customFile.getFileName();
 
-                            final PaperCustomFile customFile = new PaperCustomFile(this.fileManager, code, _ -> {});
+                        if (!customFile.isLoaded()) {
+                            this.fusion.log(Level.warn, "Failed to switch voucher code %s, because configuration is null.", fileName);
 
-                            if (!customFile.isLoaded()) {
-                                this.fusion.log(Level.warn, "Failed to switch code %s, because configuration is null.", code);
-
-                                continue;
-                            }
-
-                            final YamlConfiguration configuration = customFile.getConfiguration();
-
-                            final ConfigurationSection entry = configuration.getConfigurationSection("voucher-code");
-
-                            if (entry == null) {
-                                this.fusion.log(Level.warn, "Failed to switch code %s, because configuration section is null.", code);
-
-                                continue;
-                            }
-
-                            final ConfigurationSection section = new_section.createSection(fileName);
-
-                            processItems(entry, section);
-
-                            code_custom_file.save();
-
-                            final String path = section.getCurrentPath();
-
-                            if (path != null) {
-                                this.fusion.log(Level.warn, "Successfully moved code %s to %s in codes.yml.", code, path);
-                            }
+                            continue;
                         }
 
-                        this.fileManager.addPaperFile(code_custom_file);
-                        this.fileManager.removeFile(code_file);
+                        final CommentedConfigurationNode section = customFile.getConfiguration();
 
-                        this.crazyManager.reloadCodes();
+                        if (!section.hasChild("voucher-code")) {
+                            this.fusion.log(Level.warn, "Failed to switch voucher code %s, because configuration section is null.", fileName);
 
-                        this.fusion.log(Level.warn, "Added code %s to the cache, and removed the old code file named %s", code_custom_file.getPrettyName(), code_file);
-                    } else {
-                        this.fusion.log(Level.warn, "Failed to move codes into codes.yml, because the section is null.");
+                            continue;
+                        }
+
+                        final CommentedConfigurationNode index = section.node("voucher-code");
+
+                        processItems(root_section, index);
+
+                        voucher_custom_file.save();
+
+                        final NodePath path = index.path();
+
+                        if (path != null) {
+                            this.fusion.log(Level.warn, "Successfully moved voucher code %s to %s in codes.yml.", voucher, path);
+                        }
                     }
+
+                    this.fileManager.removeFile(vouchers);
+                    this.fileManager.addFile(vouchers, voucher_custom_file);
+
+                    this.crazyManager.reloadVouchers();
+
+                    this.fusion.log(Level.warn, "Added voucher code %s to the cache, and removed the old voucher code file named %s", code_custom_file.getPrettyName(), code_file.getFileName().toString());
                 } else {
-                    this.fusion.log(Level.warn, "Failed to move codes into codes.yml, because configuration is null.");
-                }*/
+                    this.fusion.log(Level.warn, "Failed to move voucher codes into codes.yml, because configuration is null.");
+                }
             }
         }
-    }
-
-    @Override
-    public <T> void set(@NonNull final ConfigurationSection section, @NonNull final String path, @NonNull final T value) {
-        section.set(path, value);
     }
 
     @Override
@@ -293,203 +239,143 @@ public class VoucherSwitchMigrator extends IVoucherMigrator {
         return this.dataPath.resolve("codes");
     }
 
-    private void processItems(@NonNull final ConfigurationSection entry, @NonNull final ConfigurationSection section) {
-        if (entry.contains("item")) {
-            final String item = entry.getString("item");
-
-            section.set("item", item);
+    private void processItems(@NonNull final CommentedConfigurationNode entry, @NonNull final CommentedConfigurationNode section) {
+        if (entry.hasChild("item")) {
+            set(section, entry.node("item").getString("stone"), String.class, "item");
         }
 
-        if (entry.contains("name")) {
-            final String name = entry.getString("name");
-
-            section.set("name", name);
+        if (entry.hasChild("name")) {
+            set(section, entry.node("name").getString(""), String.class, "name");
         }
 
-        if (entry.contains("lore")) {
-            final List<String> lore = entry.getStringList("lore");
-
-            section.set("lore", lore);
+        if (entry.hasChild("lore")) {
+            set(section, StringUtils.getStringList(entry.node("lore")), List.class, "lore");
         }
 
-        if (entry.contains("player")) {
-            final String player = entry.getString("player");
-
-            section.set("player", player);
+        if (entry.hasChild("player")) {
+            set(section, entry.node("player").getString(""), String.class, "player");
         }
 
-        if (entry.contains("glowing")) {
-            final boolean glowing = entry.getBoolean("glowing");
-
-            section.set("glowing", glowing);
+        if (entry.hasChild("glowing")) {
+            set(section, entry.node("glowing").getBoolean(false), boolean.class, "glowing");
         }
 
-        if (entry.contains("display-damage")) {
-            final int display_damage = entry.getInt("display-damage");
-
-            section.set("display-damage", display_damage);
+        if (entry.hasChild("display-damage")) {
+            set(section, entry.node("display-damage").getInt(-1), int.class, "display-damage");
         }
 
-        if (entry.contains("display-trim.material") && entry.contains("display-trim.pattern")) {
-            final String trim_material = entry.getString("display-trim.material");
-            final String trim_pattern = entry.getString("display-trim.pattern");
-
-            section.set("display-trim.material", trim_material);
-            section.set("display-trim.pattern", trim_pattern);
+        if (entry.hasChild("display-trim", "material")) {
+            set(section, entry.node("display-trim", "material").getString(""), String.class, "display-trim", "material");
         }
 
-        if (entry.contains("components.hide-tooltip")) {
-            final boolean hide_tooltip = entry.getBoolean("components.hide-tooltip");
-
-            section.set("components.hide-tooltip", hide_tooltip);
+        if (entry.hasChild("display-trim", "pattern")) {
+            set(section, entry.node("display-trim", "pattern").getString(""), String.class, "display-trim", "pattern");
         }
 
-        if (entry.contains("options.is-edible")) {
-            final boolean edible = entry.getBoolean("options.is-edible");
+        if (entry.hasChild("components", "hide-tooltip")) {
+            set(section, entry.node("components", "hide-tooltip").getBoolean(false), boolean.class, "components", "hide-tooltip");
+        }
 
-            section.set("options.is-edible", edible);
+        if (entry.hasChild("options", "is-edible")) {
+            set(section, entry.node("options", "is-edible").getBoolean(false), boolean.class, "options", "is-edible");
         }
 
         process(entry, section);
     }
 
-    private void process(@NonNull final ConfigurationSection entry, @NonNull final ConfigurationSection section) {
-        if (entry.contains("commands")) {
-            final List<String> commands = entry.getStringList("commands");
-
-            section.set("commands", commands);
+    private void process(@NonNull final CommentedConfigurationNode entry, @NonNull final CommentedConfigurationNode section) {
+        if (entry.hasChild("commands")) {
+            set(section, StringUtils.getStringList(entry.node("commands")), List.class, "commands");
         }
 
-        if (entry.contains("items")) {
-            final List<String> items = entry.getStringList("items");
-
-            section.set("items", items);
+        if (entry.hasChild("items")) {
+            set(section, StringUtils.getStringList(entry.node("items")), List.class, "items");
         }
 
-        if (entry.contains("random-commands")) {
-            final List<String> random_commands = entry.getStringList("random-commands");
-
-            section.set("random-commands", random_commands);
+        if (entry.hasChild("random-commands")) {
+            set(section, StringUtils.getStringList(entry.node("random-commands")), List.class, "random-commands");
         }
 
-        if (entry.contains("chance-commands")) {
-            final List<String> chance_commands = entry.getStringList("chance-commands");
-
-            section.set("chance-commands", chance_commands);
+        if (entry.hasChild("chance-commands")) {
+            set(section, StringUtils.getStringList(entry.node("chance-commands")), List.class, "chance-commands");
         }
 
-        if (entry.contains("options.message")) {
-            final String message = entry.getString("options.message");
-
-            section.set("options.message", message);
+        if (entry.hasChild("options", "whitelist-worlds", "toggle")) {
+            set(section, entry.node("options", "message").getString(""), String.class, "options", "message");
         }
 
-        if (entry.contains("options.whitelist-worlds.toggle")) {
-            final boolean toggle = entry.getBoolean("options.whitelist-worlds.toggle");
-
-            section.set("options.whitelist-worlds.toggle", toggle);
+        if (entry.hasChild("options", "whitelist-worlds", "toggle")) {
+            set(section, entry.node("options", "whitelist-worlds", "toggle").getBoolean(false), boolean.class, "options", "whitelist-worlds", "toggle");
         }
 
-        if (entry.contains("options.whitelist-worlds.message")) {
-            final String message = entry.getString("options.whitelist-worlds.message");
-
-            section.set("options.whitelist-worlds.message", message);
+        if (entry.hasChild("options", "whitelist-worlds", "message")) {
+            set(section, entry.node("options", "whitelist-worlds", "message").getString(""), String.class, "options", "whitelist-worlds", "message");
         }
 
-        if (entry.contains("options.whitelist-worlds.worlds")) {
-            final List<String> worlds = entry.getStringList("options.whitelist-worlds.worlds");
-
-            section.set("options.whitelist-worlds.worlds", worlds);
+        if (entry.hasChild("options", "whitelist-worlds", "worlds")) {
+            set(section, StringUtils.getStringList(entry.node("options.whitelist-worlds.worlds")), List.class, "options", "whitelist-worlds", "worlds");
         }
 
-        if (entry.contains("options.permission.whitelist-permission.toggle")) {
-            final boolean toggle = entry.getBoolean("options.permission.whitelist-permission.toggle");
-
-            section.set("options.permission.whitelist-permission.toggle", toggle);
+        if (entry.hasChild("options", "permission", "whitelist-permission", "toggle")) {
+            set(section, entry.node("options", "permission", "whitelist-permission", "toggle").getBoolean(false), boolean.class, "options", "permission", "whitelist-permission", "toggle");
         }
 
-        if (entry.contains("options.permission.whitelist-permission.message")) {
-            final String message = entry.getString("options.permission.whitelist-permission.message");
-
-            section.set("options.permission.whitelist-permission.message", message);
+        if (entry.hasChild("options", "permission", "whitelist-permission", "message")) {
+            set(section, entry.node("options", "permission", "whitelist-permission", "message").getString(""), String.class, "options", "permission", "whitelist-permission", "message");
         }
 
-        if (entry.contains("options.permission.whitelist-permission.permissions")) {
-            final List<String> permissions = entry.getStringList("options.permission.whitelist-permission.permissions");
+        if (entry.hasChild("options", "permission", "whitelist-permission", "permissions")) {
+            final List<String> permissions = StringUtils.getStringList(entry.node("options", "permission", "whitelist-permission", "permissions"));
 
-            section.set("options.permission.whitelist-permission.permissions", permissions);
+            set(section, permissions, List.class, "options", "permission", "whitelist-permission", "permissions");
         }
 
-        if (entry.contains("options.permission.blacklist-permission.toggle")) {
-            final boolean toggle = entry.getBoolean("options.permission.blacklist-permission.toggle");
-
-            section.set("options.permission.blacklist-permission.toggle", toggle);
+        if (entry.hasChild("options", "permission", "blacklist-permission", "toggle")) {
+            set(section, entry.node("options", "permission", "blacklist-permission", "toggle").getBoolean(false), boolean.class, "options", "permission", "blacklist-permission", "toggle");
         }
 
-        if (entry.contains("options.permission.blacklist-permission.message")) {
-            final String message = entry.getString("options.permission.blacklist-permission.message");
-
-            section.set("options.permission.blacklist-permission.message", message);
+        if (entry.hasChild("options", "permission", "blacklist-permission", "message")) {
+            set(section, entry.node("options", "permission", "blacklist-permission", "message").getString(""), String.class, "options", "permission", "blacklist-permission", "message");
         }
 
-        if (entry.contains("options.permission.blacklist-permission.permissions")) {
-            final List<String> permissions = entry.getStringList("options.permission.blacklist-permission.permissions");
-
-            section.set("options.permission.blacklist-permission.permissions", permissions);
+        if (entry.hasChild("options", "permission", "blacklist-permission", "permissions")) {
+            set(section, StringUtils.getStringList(entry.node("options", "permission", "blacklist-permission", "permissions")), List.class, "options", "permission", "blacklist-permission", "permissions");
         }
 
-        if (entry.contains("options.limiter.toggle")) {
-            final boolean toggle = entry.getBoolean("options.limiter.toggle");
-
-            section.set("options.limiter.toggle", toggle);
+        if (entry.hasChild("options", "limiter", "toggle")) {
+            set(section, entry.node("options", "limiter", "toggle").getBoolean(false), boolean.class, "options", "limiter", "toggle");
         }
 
-        if (entry.contains("options.limiter.amount")) {
-            final int amount = entry.getInt("options.limiter.amount");
-
-            section.set("options.limiter.amount", amount);
+        if (entry.hasChild("options", "limiter", "amount")) {
+            set(section, entry.node("options", "limiter", "amount").getInt(1), int.class, "options", "limiter", "amount");
         }
 
-        if (entry.contains("options.two-step-authentication")) {
-            final boolean two_step_authentication = entry.getBoolean("options.two-step-authentication");
-
-            section.set("options.two-step-authentication", two_step_authentication);
+        if (entry.hasChild("options", "two-step-authentication")) {
+            set(section, entry.node("options", "two-step-authentication").getBoolean(false), boolean.class, "options", "two-step-authentication");
         }
 
-        if (entry.contains("options.sound.toggle")) {
-            final boolean toggle = entry.getBoolean("options.sound.toggle");
-
-            section.set("options.sound.toggle", toggle);
+        if (entry.hasChild("options", "sound", "toggle")) {
+            set(section, entry.node("options", "sound", "toggle").getBoolean(false), boolean.class, "options", "sound", "toggle");
         }
 
-        if (entry.contains("options.sound.volume")) {
-            final double volume = entry.getDouble("options.sound.volume");
-
-            section.set("options.sound.volume", volume);
+        if (entry.hasChild("options", "sound", "volume")) {
+            set(section, entry.node("options", "sound", "volume").getDouble(1.0), double.class, "options", "sound", "volume");
         }
 
-        if (entry.contains("options.sound.pitch")) {
-            final double pitch = entry.getDouble("options.sound.pitch");
-
-            section.set("options.sound.pitch", pitch);
+        if (entry.hasChild("options", "sound", "pitch")) {
+            set(section, entry.node("options", "sound", "pitch").getDouble(1.0), double.class, "options", "sound", "pitch");
         }
 
-        if (entry.contains("options.sound.sounds")) {
-            final List<String> sounds = entry.getStringList("options.sound.sounds");
-
-            section.set("options.sound.sounds", sounds);
+        if (entry.hasChild("options", "sound", "sounds")) {
+            set(section, StringUtils.getStringList(entry.node("options", "sound", "sounds")), List.class, "options", "sound", "sounds");
         }
 
-        if (entry.contains("options.firework.toggle")) {
-            final boolean toggle = entry.getBoolean("options.firework.toggle");
-
-            section.set("options.firework.toggle", toggle);
+        if (entry.hasChild("options", "firework", "toggle")) {
+            set(section, entry.node("options", "firework", "toggle").getBoolean(false), boolean.class, "options", "firework", "toggle");
         }
 
-        if (entry.contains("options.fireworks.colors")) {
-            final String colors = entry.getString("options.fireworks.colors");
-
-            section.set("options.fireworks.colors", colors);
+        if (entry.hasChild("options", "fireworks", "colors")) {
+            set(section, entry.node("options", "fireworks", "colors").getString(""), String.class, "options", "fireworks", "colors");
         }
     }
 }

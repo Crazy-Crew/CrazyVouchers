@@ -3,7 +3,7 @@ package us.crazycrew.crazyvouchers.api.enums;
 import org.jspecify.annotations.NonNull;
 import java.util.List;
 
-public enum Comments {
+public enum FileComments {
 
     name(List.of(
             "The name of the item."
@@ -78,7 +78,7 @@ public enum Comments {
 
     private final List<String> comments;
 
-    Comments(@NonNull final List<String> comments) {
+    FileComments(@NonNull final List<String> comments) {
         this.comments = comments;
     }
 

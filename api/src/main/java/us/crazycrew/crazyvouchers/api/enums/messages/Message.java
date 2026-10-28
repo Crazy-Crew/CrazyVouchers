@@ -6,7 +6,9 @@ import com.ryderbelserion.fusion.core.api.config.properties.objects.enums.Proper
 import com.ryderbelserion.fusion.core.api.registry.message.MessageRegistry;
 import com.ryderbelserion.fusion.core.api.registry.message.adapter.YamlMessageAdapter;
 import com.ryderbelserion.fusion.core.utils.StringUtils;
+import com.ryderbelserion.fusion.files.FileManager;
 import com.ryderbelserion.fusion.files.types.configurate.YamlCustomFile;
+import com.ryderbelserion.fusion.kyori.utils.AdvUtils;
 import net.kyori.adventure.audience.Audience;
 import org.jspecify.annotations.NullMarked;
 import org.spongepowered.configurate.CommentedConfigurationNode;
@@ -16,6 +18,9 @@ import us.crazycrew.crazyvouchers.api.CrazyVouchers;
 import us.crazycrew.crazyvouchers.api.adapters.sender.ISenderAdapter;
 import us.crazycrew.crazyvouchers.api.config.ConfigManager;
 import us.crazycrew.crazyvouchers.api.config.types.RootKeys;
+
+import java.nio.file.Path;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import static us.crazycrew.crazyvouchers.api.CrazyVouchers.namespace;
@@ -133,6 +138,10 @@ public enum Message {
 
     private final CrazyVouchers platform = VouchersProvider.api();
 
+    private final Path dataPath = this.platform.getDataPath();
+
+    private final FileManager fileManager = this.platform.getFusion().getFileManager();
+
     private final ISenderAdapter senderAdapter = this.platform.getSenderAdapter();
 
     private final ConfigManager configManager = this.platform.getConfigManager();
@@ -232,6 +241,42 @@ public enum Message {
         sendMessage(audience, Map.of());
     }
 
+    public void convert() {
+        this.fileManager.getYamlFile(this.dataPath.resolve("messages.yml")).ifPresent(customFile -> {
+            final String message = getMessage();
+
+            final CommentedConfigurationNode node = customFile.getConfiguration().node(this.path);
+
+            if (this.type == PropertyType.STRING_LIST) {
+                final List<String> values = new ArrayList<>();
+
+                for (final String line : message.split("\n")) {
+                    if (line.isBlank()) {
+                        values.add(line);
+
+                        continue;
+                    }
+
+                    values.add(AdvUtils.convert(line, true));
+                }
+
+                try {
+                    node.set(List.class, values);
+                } catch (final SerializationException exception) {
+                    exception.printStackTrace();
+                }
+
+                return;
+            }
+
+            try {
+                node.set(List.class, AdvUtils.convert(message, true));
+            } catch (final SerializationException exception) {
+                exception.printStackTrace();
+            }
+        });
+    }
+
     public String getMessage(final Audience audience, final Map<String, String> placeholders) {
         return this.senderAdapter.getMessage(audience, this.id, placeholders);
     }
@@ -242,6 +287,10 @@ public enum Message {
 
     public String getMessage(final Audience audience) {
         return this.senderAdapter.getMessage(audience, this.id);
+    }
+
+    public String getMessage() {
+        return getMessage(Audience.empty());
     }
 
     public FusionKey getKey() {

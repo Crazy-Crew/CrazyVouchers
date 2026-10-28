@@ -1,14 +1,18 @@
 package com.badbones69.crazyvouchers.api.objects;
 
-import ch.jalu.configme.SettingsManager;
 import com.badbones69.crazyvouchers.CrazyVouchers;
 import com.badbones69.crazyvouchers.Methods;
 import com.badbones69.crazyvouchers.api.CrazyManager;
+import com.badbones69.crazyvouchers.api.CrazyPlatform;
+import com.ryderbelserion.fusion.core.api.config.properties.PropertyManager;
+import net.kyori.adventure.audience.Audience;
+import us.crazycrew.crazyvouchers.api.config.ConfigManager;
+import us.crazycrew.crazyvouchers.api.config.types.RootKeys;
+import us.crazycrew.crazyvouchers.api.enums.FileKeys;
 import us.crazycrew.crazyvouchers.api.enums.messages.Message;
 import com.badbones69.crazyvouchers.api.enums.PermissionKeys;
 import com.badbones69.crazyvouchers.api.enums.PersistentKeys;
 import com.badbones69.crazyvouchers.api.events.VoucherRedeemEvent;
-import us.crazycrew.crazyvouchers.api.config.types.locale.MessageKeys;
 import com.badbones69.crazyvouchers.utils.ItemUtils;
 import com.ryderbelserion.fusion.api.enums.constants.ModSupport;
 import com.ryderbelserion.fusion.api.enums.Level;
@@ -29,7 +33,6 @@ import org.bukkit.inventory.EquipmentSlot;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.PlayerInventory;
 import org.bukkit.persistence.PersistentDataType;
-import com.badbones69.crazyvouchers.config.ConfigManager;
 import org.jspecify.annotations.NonNull;
 import org.spongepowered.configurate.CommentedConfigurationNode;
 import org.spongepowered.configurate.serialize.SerializationException;
@@ -39,6 +42,10 @@ import java.util.concurrent.atomic.AtomicBoolean;
 public class Voucher {
 
     private final CrazyVouchers plugin = CrazyVouchers.get();
+    private final CrazyPlatform platform = this.plugin.getPlatform();
+    private final ConfigManager configManager = this.platform.getConfigManager();
+    private final PropertyManager config = this.configManager.getConfig();
+
     private final Server server = this.plugin.getServer();
     private final FusionPaper fusion = this.plugin.getFusion();
 
@@ -175,7 +182,7 @@ public class Voucher {
 
         this.hasArgument = section.node("has-argument").getBoolean(false);
 
-        if (this.config.getProperty(ConfigKeys.use_different_items_layout) && !section.node("items").isList()) {
+        if (this.config.getProperty(RootKeys.use_different_items_layout) && !section.node("items").isList()) {
             this.items = ItemUtils.convertConfigurationSection(section.node("items"));
         } else {
             this.items = ItemUtils.convertStringList(StringUtils.getStringList(section.node("item")));
@@ -186,7 +193,7 @@ public class Voucher {
         this.whitelistPermissionToggle = section.node("options", "permission", "whitelist-permission", "toggle").getBoolean(false);
         this.whitelistCommands = section.node("options", "permission", "whitelist-permission", "commands").isList() ? StringUtils.getStringList(section.node("options", "permission", "whitelist-permission", "commands")) :
                 List.of(section.node("options", "permission", "whitelist-permission", "commands").getString(""));
-        this.whitelistPermissionMessage = getMessage(section, "options.permission.whitelist-permission.message", Message.no_permission_to_use_voucher.getString());
+        this.whitelistPermissionMessage = getMessage(section, "options.permission.whitelist-permission.message", Message.no_permission_to_use_voucher.getMessage());
 
         this.whitelistPermissions.addAll(StringUtils.getStringList(section.node("options", "permission", "whitelist-permission", "permissions")).stream().map(String::toLowerCase).toList());
 
@@ -198,12 +205,12 @@ public class Voucher {
 
         this.whitelistWorldsToggle = section.node("options", "whitelist-worlds", "toggle").getBoolean(false);
         this.whitelistWorldCommands = section.node("options", "whitelist-worlds", "commands").isList() ? StringUtils.getStringList(section.node("options", "whitelist-worlds", "commands")) : List.of(section.node("options", "whitelist-worlds", "commands").getString(""));
-        this.whitelistWorldMessage = getMessage(section, "options.whitelist-worlds.message", Message.not_in_whitelisted_world.getString());
+        this.whitelistWorldMessage = getMessage(section, "options.whitelist-worlds.message", Message.not_in_whitelist_world.getMessage());
 
         this.whitelistWorlds.addAll(StringUtils.getStringList(section.node("options", "whitelist-worlds", "worlds")).stream().map(String::toLowerCase).toList());
 
         this.blacklistPermissionsToggle = section.node("options", "permission", "blacklist-permission", "toggle").getBoolean(false);
-        this.blacklistPermissionMessage = getMessage(section, "options.permission.blacklist-permission.message", Message.has_blacklist_permission.getString());
+        this.blacklistPermissionMessage = getMessage(section, "options.permission.blacklist-permission.message", Message.has_blacklist_permission.getMessage());
         this.blacklistPermissions = section.node("options", "permission", "blacklist-permission", "permissions").isList() ? StringUtils.getStringList(section.node("options", "permission", "blacklist-permission", "permissions"))
                 : List.of(section.node("options", "permission", "blacklist-permission", "permissions").getString(""));
         this.blacklistCommands = section.node("options", "permission", "blacklist-permission", "commands").isList() ? StringUtils.getStringList(section.node("options", "permission", "blacklist-permission", "commands"))
@@ -231,7 +238,7 @@ public class Voucher {
         }
 
         this.twoFactorAuthToggle = section.hasChild("options", "two-step-authentication") ? section.node("options", "two-step-authentication").getBoolean(false) : section.node("options", "two-factor", "toggle").getBoolean(false);
-        this.twoFactorAuthMessage = section.hasChild("options", "two-factor", "message") ? StringUtils.getStringList(section.node("options", "two-factor", "message")) : List.of(this.locale.getProperty(MessageKeys.two_step_authentication));
+        this.twoFactorAuthMessage = section.hasChild("options", "two-factor", "message") ? StringUtils.getStringList(section.node("options", "two-factor", "message")) : List.of(Message.two_step_authentication.getMessage());
 
         this.soundToggle = section.node("options", "sound", "toggle").getBoolean(false);
         this.volume = (float) section.node("options", "sound", "volume").getDouble(1.0);
@@ -305,8 +312,8 @@ public class Voucher {
     }
 
     public void execute(@NonNull final Player player, @NonNull final ItemStack item, @NonNull final EquipmentSlot slot) {
-        if (player.getGameMode() == GameMode.CREATIVE && this.config.getProperty(ConfigKeys.must_be_in_survival)) {
-            Message.survival_mode.sendMessage(player);
+        if (player.getGameMode() == GameMode.CREATIVE && this.config.getProperty(RootKeys.must_be_in_survival)) {
+            Message.survival_only.sendMessage(player);
 
             return;
         }
@@ -325,11 +332,11 @@ public class Voucher {
         placeholders.put("{x}", String.valueOf(location.getBlockX()));
         placeholders.put("{y}", String.valueOf(location.getBlockY()));
         placeholders.put("{z}", String.valueOf(location.getBlockZ()));
-        placeholders.put("{prefix}", ConfigManager.getConfig().getProperty(ConfigKeys.command_prefix));
+        placeholders.put("{prefix}", this.config.getProperty(RootKeys.command_prefix));
 
         final CommentedConfigurationNode data = FileKeys.data.getConfiguration();
 
-        if (!this.isAntiDupeOverridden && this.config.getProperty(ConfigKeys.dupe_protection)) {
+        if (!this.isAntiDupeOverridden && this.config.getProperty(RootKeys.dupe_protection)) {
             final PersistentDataContainerView view = item.getPersistentDataContainer();
 
             if (view.has(PersistentKeys.dupe_protection.getNamespacedKey())) {
@@ -347,14 +354,12 @@ public class Voucher {
                             values.put("{player}", player.getName());
                             values.put("{id}", id);
 
-                            Message.notify_staff.sendMessage(staff, values);
+                            Message.dupe_protection_notify.sendMessage(staff, values);
                         }
                     });
 
-                    if (this.config.getProperty(ConfigKeys.dupe_protection_toggle_warning)) {
+                    if (this.config.getProperty(RootKeys.dupe_protection_warning_toggle)) {
                         final ItemLore.Builder builder = ItemLore.lore();
-
-                        final String text = this.config.getProperty(ConfigKeys.dupe_protection_warning);
 
                         final boolean hasWarning = item.getPersistentDataContainer().has(PersistentKeys.dupe_protection_warning.getNamespacedKey());
 
@@ -365,6 +370,8 @@ public class Voucher {
                         if (lore != null) {
                             builder.addLines(lore.lines());
                         }
+
+                        final String text = this.config.getProperty(RootKeys.dupe_protection_warning_text);
 
                         final Component warning_text = this.fusion.asComponent(player, text, placeholders);
 
@@ -429,7 +436,7 @@ public class Voucher {
 
                     if (!voucher_name.equalsIgnoreCase(cleanName)) {
                         player.sendMessage(this.fusion.asComponent(player, StringUtils.toString(this.twoFactorAuthMessage), Map.of(
-                                "{prefix}", this.config.getProperty(ConfigKeys.command_prefix)
+                                "{prefix}", this.config.getProperty(RootKeys.command_prefix)
                         )));
 
                         this.crazyManager.addVoucherAuth(uuid, cleanName);
@@ -438,7 +445,7 @@ public class Voucher {
                     }
                 } else {
                     player.sendMessage(this.fusion.asComponent(player, StringUtils.toString(this.twoFactorAuthMessage), Map.of(
-                            "{prefix}", this.config.getProperty(ConfigKeys.command_prefix)
+                            "{prefix}", this.config.getProperty(RootKeys.command_prefix)
                     )));
 
                     this.crazyManager.addVoucherAuth(uuid, cleanName);
@@ -509,10 +516,10 @@ public class Voucher {
 
             // configuration.set("Players." + uuid + ".Vouchers." + cleanName, configuration.getInt("Players." + uuid + ".Vouchers." + cleanName) + 1); //todo() wtf
 
-            FileKeys.users.save();
+            FileKeys.users.saveFile();
         }
 
-        if (this.config.getProperty(ConfigKeys.dupe_protection)) {
+        if (this.config.getProperty(RootKeys.dupe_protection)) {
             final PersistentDataContainerView view = item.getPersistentDataContainer();
 
             if (view.has(PersistentKeys.dupe_protection.getNamespacedKey())) {
@@ -528,7 +535,7 @@ public class Voucher {
                     try {
                         configuration.set(new TypeToken<>() {}, vouchers);
 
-                        FileKeys.data.save();
+                        FileKeys.data.saveFile();
                     } catch (final SerializationException exception) {
                         exception.printStackTrace();
                     }
@@ -586,10 +593,6 @@ public class Voucher {
         return buildItem(player, 1);
     }
 
-    private @NonNull final SettingsManager config = ConfigManager.getConfig();
-
-    private @NonNull final SettingsManager locale = ConfigManager.getMessages();
-
     public ItemStack buildItem(@NonNull final Player player, final int amount) {
         this.itemBuilder.setAmount(amount);
 
@@ -605,7 +608,7 @@ public class Voucher {
     public List<ItemStack> buildItems(@NonNull final Player player, @NonNull final String argument, final int amount) {
         final List<ItemStack> itemStacks = new ArrayList<>();
 
-        if (!this.isAntiDupeOverridden && this.config.getProperty(ConfigKeys.dupe_protection)) {
+        if (!this.isAntiDupeOverridden && this.config.getProperty(RootKeys.dupe_protection)) {
             while (itemStacks.size() < amount) {
                 itemStacks.add(buildItem(player, argument, 1));
             }
@@ -655,7 +658,7 @@ public class Voucher {
     }
 
     private void setUniqueId(@NonNull final ItemStack item) {
-        if (!this.isAntiDupeOverridden && this.config.getProperty(ConfigKeys.dupe_protection)) {
+        if (!this.isAntiDupeOverridden && this.config.getProperty(RootKeys.dupe_protection)) {
             final String uuid = UUID.randomUUID().toString();
 
             item.editPersistentDataContainer(container -> container.set(PersistentKeys.dupe_protection.getNamespacedKey(), PersistentDataType.STRING, uuid));
