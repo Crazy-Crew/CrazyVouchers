@@ -54,8 +54,7 @@ public class DatabaseKeys implements IPropertyHolder {
     @Comment({
             "Available Ports:",
             "  ⤷ postgres (5432)",
-            "  ⤷ sqlite (N/A)",
-            "  ⤷ yaml (N/A)"
+            "  ⤷ sqlite (N/A)"
     })
     public static final Property<Integer> database_port = newProperty(5432, "root", "storage", "connection", "port");
 
