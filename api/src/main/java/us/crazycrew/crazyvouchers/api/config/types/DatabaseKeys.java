@@ -41,10 +41,9 @@ public class DatabaseKeys implements IPropertyHolder {
     @Comment({
             "Available Types:",
             "  ⤷ sqlite (PREFERRED FOR SINGLE SERVER PERFORMANCE)",
-            "  ⤷ postgres (N/A)",
-            "  ⤷ yaml (DEFAULT)"
+            "  ⤷ postgres (N/A)"
     })
-    public static final Property<String> storage_type = newProperty("yaml", "root", "storage", "type");
+    public static final Property<String> storage_type = newProperty("sqlite", "root", "storage", "type");
 
     @Comment({
             "This is only if using cloud providers like Postgres, and must not be empty!",
