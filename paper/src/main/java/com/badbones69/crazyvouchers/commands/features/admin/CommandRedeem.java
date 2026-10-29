@@ -114,30 +114,16 @@ public class CommandRedeem extends BaseCommand {
         if (isLimiterEnabled) {
             final int limit = this.holder.getCodeLimit(id, uuid);
 
-            if (limit < 1) {
+            if (limit >= code.getLimit()) {
                 Message.code_unavailable.sendMessage(player, placeholders);
 
                 return;
             }
-        }
 
-        /*
-        //Checking the limit of the code.
-        if (code.useLimiter()) { //todo() what the fuck is this piece of shit.
-            if (data.contains("Voucher-Limit." + cleanName)) {
-                if (data.getInt("Voucher-Limit." + cleanName) < 1) {
-                    Messages.code_unavailable.sendMessage(player, placeholders);
-
-                    return;
-                }
-
-                data.set("Voucher-Limit." + cleanName, (data.getInt("Voucher-Limit." + cleanName) - 1));
-            } else {
-                data.set("Voucher-Limit." + cleanName, (code.getLimit() - 1));
+            if (this.holder.isCodeRedeemed(id)) { // only increment if code is redeemed.
+                this.holder.incrementCodeLimit(id, uuid);
             }
-
-            FileKeys.users.save();
-        }*/
+        }
 
         // Gives the reward to the player.
         final VoucherRedeemCodeEvent event = new VoucherRedeemCodeEvent(player, code);
@@ -145,7 +131,9 @@ public class CommandRedeem extends BaseCommand {
         server.getPluginManager().callEvent(event);
 
         if (!event.isCancelled()) {
-            this.holder.addRedeemedCode(id, uuid);
+            if (!this.holder.isCodeRedeemed(id)) { // only add if code is not redeemed.
+                this.holder.addRedeemedCode(id, uuid);
+            }
 
             code.dispatchCommands(player, placeholders);
 

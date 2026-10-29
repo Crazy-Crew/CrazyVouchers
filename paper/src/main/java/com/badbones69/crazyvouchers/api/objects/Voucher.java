@@ -392,7 +392,7 @@ public class Voucher {
                 return;
             }
 
-            if (hasCooldown() && isCooldown(player)){
+            if (hasCooldown() && isCooldown(player)) {
                 Message.cooldown_active.sendMessage(player, "{time}", String.valueOf(getCooldown()));
 
                 return;
@@ -473,7 +473,9 @@ public class Voucher {
             }
         }
 
-        if (useFirework()) Methods.firework(player.getLocation(), getFireworkColors());
+        if (useFirework()) {
+            Methods.firework(player.getLocation(), getFireworkColors());
+        }
 
         final String message = getVoucherUsedMessage();
 
@@ -482,7 +484,11 @@ public class Voucher {
         }
 
         if (isLimiterEnabled()) {
-            this.storageHolder.incrementVoucherLimit(cleanName, uuid);
+            if (!this.storageHolder.isVoucherRedeemed(cleanName)) {
+                this.storageHolder.incrementVoucherLimit(cleanName, uuid);
+            } else {
+                this.storageHolder.addRedeemedVoucher(cleanName, uuid);
+            }
         }
 
         if (this.config.getProperty(RootKeys.dupe_protection)) {

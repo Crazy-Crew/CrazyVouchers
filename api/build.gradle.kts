@@ -57,7 +57,7 @@ publishing {
 
     publications {
         create<MavenPublication>("mavenJava") {
-            groupId = "${project.group}" // us.crazycrew.crazyvouchers
+            groupId = "${project.group}"
             artifactId = project.name
             version = projectVersion
 

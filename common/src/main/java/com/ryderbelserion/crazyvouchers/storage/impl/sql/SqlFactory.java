@@ -16,7 +16,7 @@ public abstract class SqlFactory extends FlatFactory {
     protected final String create_vouchers_redeemed_table = "create table if not exists vouchers_redeemed(%s, %s, %s, %s, %s)".formatted(
             "voucher_id varchar(36) primary key",
             "player_uuid varchar(36) not null",
-            "redeem_limit bigint not null default 0", // tracks how many times they redeemed this type of voucher.
+            "redeem_limit bigint not null", // tracks how many times they redeemed this type of voucher.
             "timestamp_redeemed bigint",
             "foreign key(player_uuid) references players(player_uuid) on delete cascade"
     ); // store vouchers for things like a redeem limit

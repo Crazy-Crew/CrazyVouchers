@@ -44,14 +44,6 @@ public class Methods {
         return commands.get(index);
     }
 
-    public static void removeItem(@NonNull final ItemStack item, @NonNull final Player player) {
-        if (item.getAmount() <= 1) {
-            player.getInventory().setItemInMainHand(null); // it's always the main hand, we don't allow off-hand usage
-        } else if (item.getAmount() > 1) {
-            item.setAmount(item.getAmount() - 1);
-        }
-    }
-
     public static int getRandom(final int max) {
         return ThreadLocalRandom.current().nextInt(max);
     }
