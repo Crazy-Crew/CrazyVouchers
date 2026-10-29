@@ -1,6 +1,5 @@
 package com.badbones69.crazyvouchers.commands.features.base;
 
-import com.badbones69.crazyvouchers.Methods;
 import us.crazycrew.crazyvouchers.api.enums.messages.Message;
 import com.badbones69.crazyvouchers.commands.BaseCommand;
 import dev.triumphteam.cmd.core.annotations.Command;
@@ -16,8 +15,6 @@ public class CommandReload extends BaseCommand {
     @Syntax("/crazyvouchers reload")
     public void reload(final CommandSender sender) {
         this.platform.reload();
-
-        Methods.janitor();
 
         Message.config_reload.sendMessage(sender);
     }

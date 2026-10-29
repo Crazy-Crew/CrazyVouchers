@@ -1,5 +1,7 @@
 package com.ryderbelserion.crazyvouchers;
 
+import com.ryderbelserion.crazyvouchers.storage.StorageManager;
+import com.ryderbelserion.crazyvouchers.storage.holder.StorageHolder;
 import com.ryderbelserion.fusion.core.api.config.properties.PropertyManager;
 import com.ryderbelserion.fusion.files.enums.FileType;
 import org.jspecify.annotations.NonNull;
@@ -37,11 +39,18 @@ public abstract class CrazyVouchersPlugin<S, F extends FusionKyori<S>> extends C
         this.fusion = fusion;
     }
 
+    protected StorageManager storageManager;
+    protected StorageHolder storageHolder;
     protected PropertyManager config;
 
     @Override
     public void init() {
         this.configManager.init();
+
+        this.storageManager = new StorageManager();
+
+        this.storageHolder = this.storageManager.init();
+        this.storageHolder.save();
 
         this.config = this.configManager.getConfig();
 
@@ -74,7 +83,7 @@ public abstract class CrazyVouchersPlugin<S, F extends FusionKyori<S>> extends C
 
         this.fileManager.addFolder(locale, FileType.YAML);
 
-        final FileSystem system = this.configManager.getConfig().getProperty(RootKeys.file_system);
+        final FileSystem system = this.config.getProperty(RootKeys.file_system);
 
         switch (system) {
             case SINGLE -> this.fileManager.addFile(path.resolve("codes.yml"), FileType.YAML).addFile(path.resolve("vouchers.yml"), FileType.YAML);
@@ -106,6 +115,8 @@ public abstract class CrazyVouchersPlugin<S, F extends FusionKyori<S>> extends C
             file.addFile();
         }
 
+        this.storageHolder.save();
+
         loadExamples();
 
         final Path locale = this.path.resolve("locale");
@@ -114,7 +125,7 @@ public abstract class CrazyVouchersPlugin<S, F extends FusionKyori<S>> extends C
 
         loadMessages();
 
-        final FileSystem system = this.configManager.getConfig().getProperty(RootKeys.file_system);
+        final FileSystem system = this.config.getProperty(RootKeys.file_system);
 
         switch (system) {
             case SINGLE -> this.fileManager.addFile(this.path.resolve("codes.yml"), FileType.YAML).addFile(this.path.resolve("vouchers.yml"), FileType.YAML);
@@ -201,6 +212,10 @@ public abstract class CrazyVouchersPlugin<S, F extends FusionKyori<S>> extends C
     @Override
     public @NonNull F getFusion() {
         return this.fusion;
+    }
+
+    public final StorageHolder getStorageHolder() {
+        return this.storageHolder;
     }
 
     public void move(@NonNull final Path input, @NonNull final Path output) {

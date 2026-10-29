@@ -42,8 +42,6 @@ public class CrazyVouchers extends JavaPlugin {
 
         this.inventoryManager = new InventoryManager();
 
-        Methods.janitor();
-
         final PluginManager pluginManager = getServer().getPluginManager();
 
         new CommandHandler();

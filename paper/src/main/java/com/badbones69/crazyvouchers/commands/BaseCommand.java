@@ -3,6 +3,7 @@ package com.badbones69.crazyvouchers.commands;
 import com.badbones69.crazyvouchers.CrazyVouchers;
 import com.badbones69.crazyvouchers.api.CrazyPlatform;
 import com.badbones69.crazyvouchers.api.InventoryManager;
+import com.ryderbelserion.crazyvouchers.storage.holder.StorageHolder;
 import com.ryderbelserion.fusion.core.api.config.properties.PropertyManager;
 import com.ryderbelserion.fusion.paper.FusionPaper;
 import dev.triumphteam.cmd.core.annotations.Command;
@@ -15,6 +16,8 @@ public abstract class BaseCommand {
     protected @NonNull final CrazyVouchers plugin = CrazyVouchers.get();
 
     protected @NonNull final CrazyPlatform platform = this.plugin.getPlatform();
+
+    protected @NonNull final StorageHolder holder = this.platform.getStorageHolder();
 
     protected @NonNull final ConfigManager configManager = this.platform.getConfigManager();
 

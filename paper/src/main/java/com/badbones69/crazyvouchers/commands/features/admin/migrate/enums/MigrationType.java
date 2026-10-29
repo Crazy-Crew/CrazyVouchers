@@ -10,6 +10,8 @@ public enum MigrationType {
     NEW_ITEM_FORMAT("NewItemFormat"),
     VOUCHERS_COLOR("VouchersColor"),
 
+    DATABASE_MIGRATION("DataBaseMigration"),
+
     VOUCHERS_RENAME("VouchersRename");
 
     private final String name;

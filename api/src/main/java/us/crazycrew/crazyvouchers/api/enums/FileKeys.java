@@ -18,7 +18,6 @@ import java.util.Optional;
 public enum FileKeys {
 
     users("users.yml", FileType.YAML),
-    data("data.yml", FileType.YAML),
     version("version.json", FileType.JSON);
 
     private final CrazyVouchers plugin = VouchersProvider.api();

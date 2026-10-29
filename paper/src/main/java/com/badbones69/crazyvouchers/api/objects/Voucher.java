@@ -3,11 +3,11 @@ package com.badbones69.crazyvouchers.api.objects;
 import com.badbones69.crazyvouchers.CrazyVouchers;
 import com.badbones69.crazyvouchers.Methods;
 import com.badbones69.crazyvouchers.api.CrazyPlatform;
+import com.ryderbelserion.crazyvouchers.storage.holder.StorageHolder;
 import com.ryderbelserion.crazyvouchers.utils.ConfigUtils;
 import com.ryderbelserion.fusion.core.api.config.properties.PropertyManager;
 import us.crazycrew.crazyvouchers.api.config.ConfigManager;
 import us.crazycrew.crazyvouchers.api.config.types.RootKeys;
-import us.crazycrew.crazyvouchers.api.enums.FileKeys;
 import us.crazycrew.crazyvouchers.api.enums.messages.Message;
 import com.badbones69.crazyvouchers.api.enums.PermissionKeys;
 import com.badbones69.crazyvouchers.api.enums.PersistentKeys;
@@ -20,7 +20,6 @@ import com.ryderbelserion.fusion.paper.FusionPaper;
 import com.ryderbelserion.fusion.paper.builders.items.ItemBuilder;
 import com.ryderbelserion.fusion.paper.builders.items.types.custom.CustomBuilder;
 import com.ryderbelserion.fusion.paper.utils.ColorUtils;
-import io.leangen.geantyref.TypeToken;
 import io.papermc.paper.datacomponent.DataComponentTypes;
 import io.papermc.paper.datacomponent.item.ItemLore;
 import io.papermc.paper.persistence.PersistentDataContainerView;
@@ -34,7 +33,6 @@ import org.bukkit.inventory.PlayerInventory;
 import org.bukkit.persistence.PersistentDataType;
 import org.jspecify.annotations.NonNull;
 import org.spongepowered.configurate.CommentedConfigurationNode;
-import org.spongepowered.configurate.serialize.SerializationException;
 import java.util.*;
 import java.util.concurrent.atomic.AtomicBoolean;
 
@@ -43,6 +41,8 @@ public class Voucher {
     private final CrazyVouchers plugin = CrazyVouchers.get();
     private final CrazyPlatform platform = this.plugin.getPlatform();
     private final ConfigManager configManager = this.platform.getConfigManager();
+    private final StorageHolder storageHolder = this.platform.getStorageHolder();
+
     private final PropertyManager config = this.configManager.getConfig();
 
     private final Server server = this.plugin.getServer();
@@ -331,17 +331,13 @@ public class Voucher {
         placeholders.put("{z}", String.valueOf(location.getBlockZ()));
         placeholders.put("{prefix}", ConfigUtils.getPrefix());
 
-        final CommentedConfigurationNode data = FileKeys.data.getConfiguration();
-
         if (!this.isAntiDupeOverridden && this.config.getProperty(RootKeys.dupe_protection)) {
             final PersistentDataContainerView view = item.getPersistentDataContainer();
 
             if (view.has(PersistentKeys.dupe_protection.getNamespacedKey())) {
-                final String id = view.get(PersistentKeys.dupe_protection.getNamespacedKey(), PersistentDataType.STRING);
+                final String id = view.getOrDefault(PersistentKeys.dupe_protection.getNamespacedKey(), PersistentDataType.STRING, "");
 
-                final List<String> vouchers = StringUtils.getStringList(data.node("Used-Vouchers"));
-
-                if (vouchers.contains(id)) {
+                if (!id.isBlank() && this.storageHolder.isVoucherProtected(id)) {
                     Message.dupe_protection.sendMessage(player);
 
                     this.server.getOnlinePlayers().forEach(staff -> {
@@ -387,15 +383,10 @@ public class Voucher {
         if (!hasPassedChecks(player, argument, placeholders)) return;
 
         final UUID uuid = player.getUniqueId();
-        final String asString = uuid.toString();
         final String cleanName = getStrippedName();
 
-        final CommentedConfigurationNode section = FileKeys.users.getConfiguration().node("Players");
-
-        if (!PermissionKeys.crazyvouchers_bypass.hasPermission(player) && useLimiter() && section.hasChild(asString, "Vouchers", cleanName)) {
-            int amount = section.node(asString, "Vouchers", cleanName).getInt();
-
-            if (amount >= getLimiterLimit()) {
+        if (isLimiterEnabled() && !PermissionKeys.crazyvouchers_bypass.hasPermission(player) && this.storageHolder.isVoucherRedeemed(cleanName)) {
+            if (this.storageHolder.getVoucherLimit(cleanName, uuid) >= getLimiterLimit()) {
                 Message.hit_voucher_limit.sendMessage(player);
 
                 return;
@@ -490,51 +481,29 @@ public class Voucher {
             player.sendMessage(this.fusion.asComponent(player, message, placeholders));
         }
 
-        if (useLimiter()) {
-            final CommentedConfigurationNode user = section.node(uuid.toString());
-
-            try {
-                user.node("UserName").set(String.class, player.getName());
-            } catch (final SerializationException exception) {
-                exception.printStackTrace();
-            }
-
-            final CommentedConfigurationNode voucher = user.node("Vouchers", cleanName);
-
-            try {
-                voucher.set(voucher.getInt()+1);
-            } catch (final SerializationException exception) {
-                exception.printStackTrace();
-            }
-
-            // configuration.set("Players." + uuid + ".Vouchers." + cleanName, configuration.getInt("Players." + uuid + ".Vouchers." + cleanName) + 1); //todo() wtf
-
-            FileKeys.users.saveFile();
+        if (isLimiterEnabled()) {
+            this.storageHolder.incrementVoucherLimit(cleanName, uuid);
         }
 
         if (this.config.getProperty(RootKeys.dupe_protection)) {
             final PersistentDataContainerView view = item.getPersistentDataContainer();
 
             if (view.has(PersistentKeys.dupe_protection.getNamespacedKey())) {
-                final String id = view.get(PersistentKeys.dupe_protection.getNamespacedKey(), PersistentDataType.STRING);
+                final String id = view.getOrDefault(PersistentKeys.dupe_protection.getNamespacedKey(), PersistentDataType.STRING, "");
 
-                final CommentedConfigurationNode configuration = FileKeys.data.getConfiguration().node("Used-Vouchers");
+                if (id.isBlank()) {
+                    this.fusion.log(Level.warn, "Dupe Protection data key was found on the ItemStack, but no value present.");
 
-                final List<String> vouchers = new ArrayList<>(StringUtils.getStringList(configuration));
-
-                if (!vouchers.contains(id)) {
-                    vouchers.add(id);
-
-                    try {
-                        configuration.set(new TypeToken<>() {}, vouchers);
-
-                        FileKeys.data.saveFile();
-                    } catch (final SerializationException exception) {
-                        exception.printStackTrace();
-                    }
-                } else {
-                    this.fusion.log(Level.warn, "%s is already in the data.yml somehow.", id == null ? "N/A" : id);
+                    return;
                 }
+
+                if (!this.storageHolder.isVoucherProtected(id)) {
+                    this.storageHolder.addProtectedVoucher(id, this.cleanName);
+
+                    return;
+                }
+
+                this.fusion.log(Level.warn, "%s id is already present in the database!", id);
             }
         }
     }
@@ -722,7 +691,7 @@ public class Voucher {
         return this.blacklistCommands;
     }
     
-    public boolean useLimiter() {
+    public boolean isLimiterEnabled() {
         return this.limiterToggle;
     }
     

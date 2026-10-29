@@ -1,5 +1,6 @@
 package com.badbones69.crazyvouchers.commands.features.admin;
 
+import com.badbones69.crazyvouchers.commands.features.admin.migrate.types.database.DatabaseMigrator;
 import us.crazycrew.crazyvouchers.api.enums.messages.Message;
 import com.badbones69.crazyvouchers.commands.BaseCommand;
 import com.badbones69.crazyvouchers.commands.features.admin.migrate.enums.MigrationType;
@@ -73,6 +74,8 @@ public class CommandMigrate extends BaseCommand {
             case NEW_ITEM_FORMAT -> new NewItemMigrator(sender).run();
 
             case VOUCHERS_COLOR -> new LegacyColorMigrator(sender).run();
+
+            case DATABASE_MIGRATION -> new DatabaseMigrator(sender).run();
 
             case VOUCHERS_RENAME -> new VoucherFileMigrator(sender, type).run();
 

@@ -6,6 +6,7 @@ import org.jspecify.annotations.NonNull;
 import org.spongepowered.configurate.loader.HeaderMode;
 import org.spongepowered.configurate.yaml.enums.NodeStyle;
 import us.crazycrew.crazyvouchers.api.config.migrate.ConfigMigration;
+import us.crazycrew.crazyvouchers.api.config.types.DatabaseKeys;
 import us.crazycrew.crazyvouchers.api.config.types.RootKeys;
 import java.nio.file.Path;
 
@@ -21,7 +22,7 @@ public final class ConfigManager {
 
     public void init() {
         this.config = ConfigBuilder.withYamlPath(this.path.resolve("config.yml"))
-                .configuration(RootKeys.class)
+                .configuration(RootKeys.class, DatabaseKeys.class)
                 .withMigrationService(new ConfigMigration())
                 .withNodeStyle(NodeStyle.BLOCK)
                 .withHeaderMode(HeaderMode.PRESERVE)

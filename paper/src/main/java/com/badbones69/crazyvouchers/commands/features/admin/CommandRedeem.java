@@ -2,8 +2,6 @@ package com.badbones69.crazyvouchers.commands.features.admin;
 
 import com.badbones69.crazyvouchers.Methods;
 import com.ryderbelserion.crazyvouchers.utils.ConfigUtils;
-import org.spongepowered.configurate.CommentedConfigurationNode;
-import us.crazycrew.crazyvouchers.api.enums.FileKeys;
 import us.crazycrew.crazyvouchers.api.enums.messages.Message;
 import com.badbones69.crazyvouchers.api.enums.PermissionKeys;
 import com.badbones69.crazyvouchers.api.events.VoucherRedeemCodeEvent;
@@ -24,6 +22,7 @@ import org.bukkit.permissions.PermissionDefault;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.UUID;
 
 public class CommandRedeem extends BaseCommand {
 
@@ -99,24 +98,32 @@ public class CommandRedeem extends BaseCommand {
         }
 
         // Has permission to continue.
-        final CommentedConfigurationNode data = FileKeys.users.getConfiguration();
-        final String uuid = player.getUniqueId().toString();
+        final UUID uuid = player.getUniqueId();
         // Checking if the player has used the code before.
 
-        final String cleanName = code.getStrippedName();
+        final String id = code.getStrippedName();
 
-        /*if (data.contains("Players." + uuid)) {
-            if (data.contains("Players." + uuid + ".Codes." + cleanName)) {
-                if (data.getString("Players." + uuid + ".Codes." + cleanName, "").equalsIgnoreCase("used")) {
-                    Messages.code_used.sendMessage(player, placeholders);
+        final boolean isLimiterEnabled = code.useLimiter();
 
-                    return;
-                }
+        if (!isLimiterEnabled && this.holder.isCodeRedeemed(id)) {
+            Message.code_used.sendMessage(player, placeholders);
+
+            return;
+        }
+
+        if (isLimiterEnabled) {
+            final int limit = this.holder.getCodeLimit(id, uuid);
+
+            if (limit < 1) {
+                Message.code_unavailable.sendMessage(player, placeholders);
+
+                return;
             }
         }
 
+        /*
         //Checking the limit of the code.
-        if (code.useLimiter()) {
+        if (code.useLimiter()) { //todo() what the fuck is this piece of shit.
             if (data.contains("Voucher-Limit." + cleanName)) {
                 if (data.getInt("Voucher-Limit." + cleanName) < 1) {
                     Messages.code_unavailable.sendMessage(player, placeholders);
@@ -138,9 +145,7 @@ public class CommandRedeem extends BaseCommand {
         server.getPluginManager().callEvent(event);
 
         if (!event.isCancelled()) {
-            //data.set("Players." + uuid + ".Codes." + cleanName, "used");
-
-            //FileKeys.users.save();
+            this.holder.addRedeemedCode(id, uuid);
 
             code.dispatchCommands(player, placeholders);
 

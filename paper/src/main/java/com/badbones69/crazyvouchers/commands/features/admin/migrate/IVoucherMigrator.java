@@ -3,10 +3,12 @@ package com.badbones69.crazyvouchers.commands.features.admin.migrate;
 import com.badbones69.crazyvouchers.CrazyVouchers;
 import com.badbones69.crazyvouchers.api.CrazyPlatform;
 import com.badbones69.crazyvouchers.commands.features.admin.migrate.enums.MigrationType;
+import com.ryderbelserion.crazyvouchers.storage.holder.StorageHolder;
 import com.ryderbelserion.fusion.core.api.config.properties.PropertyManager;
 import com.ryderbelserion.fusion.core.utils.StringUtils;
 import com.ryderbelserion.fusion.files.FileManager;
 import com.ryderbelserion.fusion.paper.FusionPaper;
+import org.bukkit.Server;
 import org.bukkit.command.CommandSender;
 import org.jspecify.annotations.NonNull;
 import org.jspecify.annotations.Nullable;
@@ -25,7 +27,11 @@ public abstract class IVoucherMigrator {
 
     protected @NonNull final CrazyVouchers plugin = CrazyVouchers.get();
 
+    protected @NonNull final Server server = this.plugin.getServer();
+
     protected @NonNull final CrazyPlatform platform = this.plugin.getPlatform();
+
+    protected @NonNull final StorageHolder holder = this.platform.getStorageHolder();
 
     protected @NonNull final ConfigManager configManager = this.platform.getConfigManager();
 

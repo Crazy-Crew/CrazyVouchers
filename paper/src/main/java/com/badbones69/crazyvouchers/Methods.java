@@ -52,24 +52,6 @@ public class Methods {
         }
     }
 
-    public static void janitor() {
-        /*final FileConfiguration configuration = FileKeys.users.getConfiguration();
-
-        if (!configuration.contains("Players")) {
-            configuration.set("Players.Clear", null);
-
-            FileKeys.users.save();
-        }
-
-        final FileConfiguration data = FileKeys.data.getConfiguration();
-
-        if (!data.contains("Used-Vouchers")) {
-            data.set("Used-Vouchers.Clear", null);
-
-            FileKeys.data.save();
-        }*/
-    }
-
     public static int getRandom(final int max) {
         return ThreadLocalRandom.current().nextInt(max);
     }

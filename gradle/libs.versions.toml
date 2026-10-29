@@ -36,7 +36,7 @@ bStats = "3.2.1" # https://github.com/Bastian/bStats
 ## Fusion API
 fusion = "4.55.0" # https://github.com/ryderbelserion/Fusion
 ## Database API
-hikari = "7.0.2" # https://github.com/brettwooldridge/HikariCP
+hikari = "7.1.0" # https://github.com/brettwooldridge/HikariCP
 
 ## Gradle Plugins
 fix-javadoc = "1.19" # https://github.com/mfnalex/gradle-fix-javadoc-plugin
