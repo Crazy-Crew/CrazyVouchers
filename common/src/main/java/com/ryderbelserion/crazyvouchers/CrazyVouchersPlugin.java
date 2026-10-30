@@ -5,6 +5,7 @@ import com.ryderbelserion.crazyvouchers.storage.holder.StorageHolder;
 import com.ryderbelserion.fusion.core.api.config.properties.PropertyManager;
 import com.ryderbelserion.fusion.files.enums.FileType;
 import org.jspecify.annotations.NonNull;
+import us.crazycrew.crazyvouchers.VouchersProvider;
 import us.crazycrew.crazyvouchers.api.config.ConfigManager;
 import us.crazycrew.crazyvouchers.api.config.types.RootKeys;
 import us.crazycrew.crazyvouchers.api.enums.FileKeys;
@@ -47,7 +48,7 @@ public abstract class CrazyVouchersPlugin<S, F extends FusionKyori<S>> extends C
     public void init() {
         this.configManager.init();
 
-        this.storageManager = new StorageManager();
+        this.storageManager = new StorageManager(this);
 
         this.storageHolder = this.storageManager.init();
         this.storageHolder.save();
@@ -90,6 +91,8 @@ public abstract class CrazyVouchersPlugin<S, F extends FusionKyori<S>> extends C
 
             case MULTIPLE -> this.fileManager.addFolder(path.resolve("codes"), FileType.YAML).addFolder(path.resolve("vouchers"), FileType.YAML);
         }
+
+        VouchersProvider.register(this);
     }
 
     @Override

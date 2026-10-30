@@ -1,5 +1,6 @@
 package us.crazycrew.crazyvouchers.api.enums;
 
+import com.ryderbelserion.fusion.api.FusionProvider;
 import com.ryderbelserion.fusion.api.exceptions.FusionException;
 import com.ryderbelserion.fusion.files.FileManager;
 import com.ryderbelserion.fusion.files.enums.FileType;
@@ -9,8 +10,6 @@ import com.ryderbelserion.fusion.kyori.FusionKyori;
 import org.jspecify.annotations.NullMarked;
 import org.spongepowered.configurate.BasicConfigurationNode;
 import org.spongepowered.configurate.CommentedConfigurationNode;
-import us.crazycrew.crazyvouchers.VouchersProvider;
-import us.crazycrew.crazyvouchers.api.CrazyVouchers;
 import java.nio.file.Path;
 import java.util.Optional;
 
@@ -20,15 +19,17 @@ public enum FileKeys {
     users("users.yml", FileType.YAML),
     version("version.json", FileType.JSON);
 
-    private final CrazyVouchers plugin = VouchersProvider.api();
-    private final FusionKyori fusion = this.plugin.getFusion();
+    private final FusionKyori fusion = (FusionKyori) FusionProvider.api();
+
+    private final Path dataPath = this.fusion.getDataPath();
+
     private final FileManager fileManager = this.fusion.getFileManager();
 
     private final FileType fileType;
     private final Path path;
 
     FileKeys(final String path, final FileType fileType) {
-        this.path = this.plugin.getDataPath().resolve(path);
+        this.path = this.dataPath.resolve(path);
         this.fileType = fileType;
     }
 
