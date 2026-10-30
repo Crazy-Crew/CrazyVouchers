@@ -1,7 +1,8 @@
 package us.crazycrew.crazyvouchers.api.enums.other;
 
-import org.jspecify.annotations.NonNull;
+import org.jspecify.annotations.NullMarked;
 
+@NullMarked
 public enum FileSystem {
 
     SINGLE("single"),
@@ -9,11 +10,11 @@ public enum FileSystem {
 
     private final String name;
 
-    FileSystem(@NonNull final String name) {
+    FileSystem(final String name) {
         this.name = name;
     }
 
-    public @NonNull final String getName() {
+    public final String getName() {
         return this.name;
     }
 }

@@ -3,13 +3,13 @@ package us.crazycrew.crazyvouchers.api.config.types;
 import com.ryderbelserion.fusion.core.api.config.annotations.Comment;
 import com.ryderbelserion.fusion.core.api.config.properties.builders.CommentsBuilder;
 import com.ryderbelserion.fusion.core.api.config.properties.interfaces.IPropertyHolder;
+import com.ryderbelserion.fusion.core.api.config.properties.objects.EnumProperty;
 import com.ryderbelserion.fusion.core.api.config.properties.objects.interfaces.Property;
 import org.jspecify.annotations.NonNull;
 import us.crazycrew.crazyvouchers.api.enums.messages.State;
 import us.crazycrew.crazyvouchers.api.enums.other.FileSystem;
-
 import java.util.List;
-import static com.ryderbelserion.fusion.core.api.config.properties.PropertyBuilder.newBeanProperty;
+import static com.ryderbelserion.fusion.core.api.config.properties.PropertyBuilder.newEnumProperty;
 import static com.ryderbelserion.fusion.core.api.config.properties.PropertyBuilder.newProperty;
 
 public class RootKeys implements IPropertyHolder {
@@ -60,7 +60,7 @@ public class RootKeys implements IPropertyHolder {
             "send_actionbar -> sends messages in actionbar.",
             ""
     })
-    public static final Property<State> message_state = newBeanProperty(State.class, State.send_message, "root", "message-state");
+    public static final EnumProperty<State> message_state = newEnumProperty(State.class, State.send_message, "root", "message-state");
 
     @Comment("This will wipe the example folder on /crazyvouchers reload or plugin startup. so you always have fresh examples to look at.")
     public static final Property<Boolean> update_examples_folder = newProperty(true, "root", "update-examples-folder");
@@ -81,7 +81,7 @@ public class RootKeys implements IPropertyHolder {
               ⤷ SINGLE
               ⤷ MULTIPLE
             """)
-    public static final Property<FileSystem> file_system = newBeanProperty(FileSystem.class, FileSystem.MULTIPLE, "settings", "file-system");
+    public static final EnumProperty<FileSystem> file_system = newEnumProperty(FileSystem.class, FileSystem.MULTIPLE, "settings", "file-system");
 
     @Comment({
             "Vouchers will no longer be able to stack, as each one has a unique identifier",
