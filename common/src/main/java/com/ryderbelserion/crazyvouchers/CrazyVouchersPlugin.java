@@ -87,9 +87,9 @@ public abstract class CrazyVouchersPlugin<S, F extends FusionKyori<S>> extends C
         final FileSystem system = this.config.getProperty(RootKeys.file_system);
 
         switch (system) {
-            case SINGLE -> this.fileManager.addFile(path.resolve("codes.yml"), FileType.YAML).addFile(path.resolve("vouchers.yml"), FileType.YAML);
+            case SINGLE -> this.fileManager.addFile(this.path.resolve("codes.yml"), FileType.YAML).addFile(this.path.resolve("vouchers.yml"), FileType.YAML);
 
-            case MULTIPLE -> this.fileManager.addFolder(path.resolve("codes"), FileType.YAML).addFolder(path.resolve("vouchers"), FileType.YAML);
+            case MULTIPLE -> this.fileManager.addFolder(this.path.resolve("codes"), FileType.YAML).addFolder(this.path.resolve("vouchers"), FileType.YAML);
         }
 
         VouchersProvider.register(this);
