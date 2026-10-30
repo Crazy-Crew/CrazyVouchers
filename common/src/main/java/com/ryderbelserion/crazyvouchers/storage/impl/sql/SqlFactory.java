@@ -21,7 +21,7 @@ public abstract class SqlFactory extends FlatFactory {
             "foreign key(player_uuid) references players(player_uuid) on delete cascade"
     ); // store vouchers for things like a redeem limit
 
-    protected final String index_vouchers_table_uuid = "create index idx_voucher_player_uuid on vouchers_redeemed(player_uuid)"; // set index on player uuid
+    protected final String index_vouchers_table_uuid = "create index if not exists idx_voucher_player_uuid on vouchers_redeemed(player_uuid)"; // set index on player uuid
 
     protected final String duplicate_voucher_tracker = "create table if not exists duplicate_voucher_tracker(%s, %s, %s, %s)".formatted(
             "voucher_id varchar(36) primary key",
@@ -30,7 +30,7 @@ public abstract class SqlFactory extends FlatFactory {
             "foreign key(player_uuid) references players(player_uuid) on delete cascade"
     ); // store vouchers for dupe tracking
 
-    protected final String index_vouchers_tracker_uuid = "create index idx_voucher_tracker_player_uuid on duplicate_voucher_tracker(player_uuid)"; // set index on player uuid
+    protected final String index_vouchers_tracker_uuid = "create index if not exists idx_voucher_tracker_player_uuid on duplicate_voucher_tracker(player_uuid)"; // set index on player uuid
 
     protected final String create_vouchers_dupe_table = "create table if not exists duplicate_voucher_attempts(%s, %s)".formatted(
             "player_uuid varchar(36) primary key",
@@ -47,7 +47,7 @@ public abstract class SqlFactory extends FlatFactory {
             "foreign key(player_uuid) references players(player_uuid) on delete cascade"
     );
 
-    protected final String index_codes_table = "create index idx_code_player_uuid on codes_redeemed(player_uuid)"; // set index on voucher code as well1
+    protected final String index_codes_table = "create index if not exists idx_code_player_uuid on codes_redeemed(player_uuid)"; // set index on voucher code as well1
 
     protected HikariDataSource source;
 
@@ -65,12 +65,12 @@ public abstract class SqlFactory extends FlatFactory {
 
                 try (final Statement statement = connection.createStatement()) {
                     statement.addBatch(this.create_vouchers_dupe_table);
-                    statement.addBatch(this.index_vouchers_table_uuid);
 
                     statement.addBatch(this.duplicate_voucher_tracker);
                     statement.addBatch(this.index_vouchers_tracker_uuid);
 
                     statement.addBatch(this.create_vouchers_redeemed_table);
+                    statement.addBatch(this.index_vouchers_table_uuid);
 
                     statement.addBatch(this.create_codes_table);
                     statement.addBatch(this.index_codes_table);

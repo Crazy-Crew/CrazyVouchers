@@ -24,7 +24,7 @@ public final class SqliteFactory extends SqlFactory {
     public SqliteFactory(final CrazyVouchersPlugin plugin) {
         super(plugin, "SQLite");
 
-        this.path = plugin.getDataPath().resolve("crazycrates.db");
+        this.path = plugin.getDataPath().resolve("crazyvouchers.db");
     }
 
     @Override
