@@ -136,7 +136,6 @@ public enum Message {
             "<dark_gray>- <gold>/crazyvouchers reload <aqua>Reloaded the configuration files."
     ), "misc", "help");
 
-
     private final CrazyVouchers platform = VouchersProvider.api();
 
     private final Path dataPath = this.platform.getDataPath();

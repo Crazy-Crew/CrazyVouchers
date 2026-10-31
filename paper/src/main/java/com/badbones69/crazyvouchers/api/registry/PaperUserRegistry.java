@@ -20,9 +20,11 @@ public class PaperUserRegistry implements IUserRegistry<Component, Audience> {
 
     private final CrazyVouchers plugin = CrazyVouchers.get();
 
+    private final Server server = this.plugin.getServer();
+
     @Override
     public void init() {
-        this.users.put(CrazyVouchersPlugin.CONSOLE_UUID, new PaperUserAdapter(Audience.empty()));
+        this.users.put(CrazyVouchersPlugin.CONSOLE_UUID, new PaperUserAdapter(this.server.getConsoleSender()));
     }
 
     @Override
