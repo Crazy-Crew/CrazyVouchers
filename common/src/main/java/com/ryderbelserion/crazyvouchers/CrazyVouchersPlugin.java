@@ -219,7 +219,8 @@ public abstract class CrazyVouchersPlugin<S, F extends FusionKyori<S>> extends C
         return this.fusion;
     }
 
-    public final StorageHolder getStorageHolder() {
+    @Override
+    public @NonNull StorageHolder getStorageHolder() {
         return this.storageHolder;
     }
 

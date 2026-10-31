@@ -1,9 +1,10 @@
 package com.badbones69.crazyvouchers.api;
 
-import com.badbones69.crazyvouchers.api.adapters.PaperSenderAdapter;
 import com.badbones69.crazyvouchers.api.enums.PersistentKeys;
 import com.badbones69.crazyvouchers.api.objects.Voucher;
 import com.badbones69.crazyvouchers.api.objects.VoucherCode;
+import com.badbones69.crazyvouchers.api.registry.PaperUserRegistry;
+import com.badbones69.crazyvouchers.api.registry.adapters.PaperUserAdapter;
 import com.badbones69.crazyvouchers.support.MetricsWrapper;
 import com.ryderbelserion.crazyvouchers.CrazyVouchersPlugin;
 import com.ryderbelserion.fusion.api.enums.Level;
@@ -38,19 +39,21 @@ public class CrazyPlatform extends CrazyVouchersPlugin<Audience, FusionPaper> {
 
     private @NonNull final Map<UUID, String> two_step_authentication = new ConcurrentHashMap<>();
 
-    private PaperSenderAdapter senderAdapter;
-
     public CrazyPlatform(@NonNull final FusionPaper fusion, @NonNull final Path path) {
         super(fusion, path);
     }
+
+    private PaperUserRegistry userRegistry;
 
     @Override
     public void init() {
         super.init();
 
-        this.senderAdapter = new PaperSenderAdapter();
-
         loadMessages();
+
+        this.userRegistry = new PaperUserRegistry();
+        this.userRegistry.init();
+
         loadVouchers();
         loadCodes();
 
@@ -66,8 +69,8 @@ public class CrazyPlatform extends CrazyVouchersPlugin<Audience, FusionPaper> {
     }
 
     @Override
-    public @NonNull PaperSenderAdapter getSenderAdapter() {
-        return this.senderAdapter;
+    public @NonNull PaperUserAdapter getSenderAdapter(@NonNull final UUID uuid) {
+        return this.userRegistry.getUser(uuid).orElse(this.userRegistry.getConsole()); // if player not found, send to console!
     }
 
     @Override
@@ -224,6 +227,11 @@ public class CrazyPlatform extends CrazyVouchersPlugin<Audience, FusionPaper> {
                 }
             }
         }
+    }
+
+    @Override
+    public @NonNull final PaperUserRegistry getUserRegistry() {
+        return this.userRegistry;
     }
 
     public @NonNull final List<Voucher> getVouchers() {

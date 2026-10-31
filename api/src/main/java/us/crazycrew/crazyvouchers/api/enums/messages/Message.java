@@ -10,19 +10,20 @@ import com.ryderbelserion.fusion.files.FileManager;
 import com.ryderbelserion.fusion.files.types.configurate.YamlCustomFile;
 import com.ryderbelserion.fusion.kyori.utils.AdvUtils;
 import net.kyori.adventure.audience.Audience;
+import net.kyori.adventure.identity.Identity;
 import org.jspecify.annotations.NullMarked;
 import org.spongepowered.configurate.CommentedConfigurationNode;
 import org.spongepowered.configurate.serialize.SerializationException;
 import us.crazycrew.crazyvouchers.VouchersProvider;
 import us.crazycrew.crazyvouchers.api.CrazyVouchers;
-import us.crazycrew.crazyvouchers.api.adapters.sender.ISenderAdapter;
 import us.crazycrew.crazyvouchers.api.config.ConfigManager;
 import us.crazycrew.crazyvouchers.api.config.types.RootKeys;
-
 import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.UUID;
+
 import static us.crazycrew.crazyvouchers.api.CrazyVouchers.namespace;
 
 @NullMarked
@@ -142,8 +143,6 @@ public enum Message {
 
     private final FileManager fileManager = this.platform.getFusion().getFileManager();
 
-    private final ISenderAdapter senderAdapter = this.platform.getSenderAdapter();
-
     private final ConfigManager configManager = this.platform.getConfigManager();
 
     private final PropertyManager pluginConfig = this.configManager.getConfig();
@@ -227,9 +226,11 @@ public enum Message {
     }
 
     public void sendMessage(final Audience audience, final Map<String, String> placeholders) {
+        final UUID uuid = audience.getOrDefault(Identity.UUID, CrazyVouchers.CONSOLE_UUID);
+
         switch (this.pluginConfig.getProperty(RootKeys.message_state)) {
-            case send_message -> this.senderAdapter.sendMessage(audience, this.id, placeholders);
-            case send_actionbar -> this.senderAdapter.sendActionBar(audience, this.id, placeholders);
+            case send_message -> this.platform.getSenderAdapter(uuid).sendMessage(this.id, placeholders);
+            case send_actionbar -> this.platform.getSenderAdapter(uuid).sendActionBar(this.id, placeholders);
         }
     }
 
@@ -278,7 +279,7 @@ public enum Message {
     }
 
     public String getMessage(final Audience audience, final Map<String, String> placeholders) {
-        return this.senderAdapter.getMessage(audience, this.id, placeholders);
+        return this.platform.getSenderAdapter(audience.getOrDefault(Identity.UUID, CrazyVouchers.CONSOLE_UUID)).getMessage(this.id, placeholders);
     }
 
     public String getMessage(final Audience audience, final String placeholder, final String value) {
@@ -286,7 +287,7 @@ public enum Message {
     }
 
     public String getMessage(final Audience audience) {
-        return this.senderAdapter.getMessage(audience, this.id);
+        return this.platform.getSenderAdapter(audience.getOrDefault(Identity.UUID, CrazyVouchers.CONSOLE_UUID)).getMessage(this.id);
     }
 
     public String getMessage() {

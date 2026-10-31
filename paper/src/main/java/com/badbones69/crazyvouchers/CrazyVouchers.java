@@ -8,6 +8,7 @@ import com.badbones69.crazyvouchers.listeners.FireworkDamageListener;
 import com.badbones69.crazyvouchers.listeners.VoucherClickListener;
 import com.badbones69.crazyvouchers.listeners.VoucherCraftListener;
 import com.badbones69.crazyvouchers.listeners.VoucherMiscListener;
+import com.badbones69.crazyvouchers.listeners.cache.TrafficListener;
 import com.ryderbelserion.fusion.api.enums.Level;
 import com.ryderbelserion.fusion.paper.FusionPaper;
 import org.bukkit.plugin.PluginManager;
@@ -51,7 +52,9 @@ public class CrazyVouchers extends JavaPlugin {
                 new VoucherClickListener(),
                 new VoucherCraftListener(),
                 new VoucherMiscListener(),
-                new VoucherMenu()
+                new VoucherMenu(),
+
+                new TrafficListener() // cache listeners for data
         ).forEach(event -> pluginManager.registerEvents(event, this));
 
         this.fusion.log(Level.info, "Done (%s)", String.format(Locale.ROOT, "%.3fs", (double) (System.nanoTime() - this.startTime) / 1.0E9D));
