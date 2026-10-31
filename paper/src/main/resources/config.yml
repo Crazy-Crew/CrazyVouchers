@@ -54,8 +54,6 @@ settings:
       enabled: false
       # The line to add to the lore of an item. This message supports PlaceholderAPI
       value: <red>This item has been duplicated
-  # Pick which locale you want to use if your server is in another language.
-  locale: en-US
   # Whether you should only be allowed to use vouchers in survival.
   survival-only: true
   # Recipe settings.

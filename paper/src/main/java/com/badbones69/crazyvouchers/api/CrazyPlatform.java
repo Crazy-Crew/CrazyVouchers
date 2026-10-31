@@ -50,8 +50,8 @@ public class CrazyPlatform extends CrazyVouchersPlugin<Audience, FusionPaper> {
 
         this.senderAdapter = new PaperSenderAdapter();
 
-        loadVouchers();
         loadMessages();
+        loadVouchers();
         loadCodes();
 
         new MetricsWrapper(4536).start();
@@ -93,7 +93,7 @@ public class CrazyPlatform extends CrazyVouchersPlugin<Audience, FusionPaper> {
 
                     final CommentedConfigurationNode configuration = customFile.getConfiguration();
 
-                    if (configuration.hasChild("vouchers")) {
+                    if (!configuration.hasChild("vouchers")) {
                         this.fusion.log(Level.warn, "The configuration section we need for %s could not be found.", customFile.getFileName());
 
                         return;
@@ -133,7 +133,7 @@ public class CrazyPlatform extends CrazyVouchersPlugin<Audience, FusionPaper> {
 
                     final CommentedConfigurationNode configuration = file.getConfiguration();
 
-                    if (configuration.hasChild("voucher")) {
+                    if (!configuration.hasChild("voucher")) {
                         this.fusion.log(Level.warn, "Could not find voucher configuration section for %s", voucher);
 
                         this.brokenVouchers.add(file.getFileName());
