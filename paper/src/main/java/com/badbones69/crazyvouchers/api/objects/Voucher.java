@@ -182,7 +182,7 @@ public class Voucher {
         if (this.config.getProperty(RootKeys.use_different_items_layout) && !section.node("items").isList()) {
             this.items = ItemUtils.convertConfigurationSection(section.node("items"));
         } else {
-            this.items = ItemUtils.convertStringList(StringUtils.getStringList(section.node("item")));
+            this.items = ItemUtils.convertStringList(StringUtils.getStringList(section.node("items")));
         }
 
         this.usedMessage = getMessage(section, "options.message", "");

@@ -3,6 +3,7 @@ package us.crazycrew.crazyvouchers.api.enums;
 import com.ryderbelserion.fusion.api.FusionProvider;
 import com.ryderbelserion.fusion.api.exceptions.FusionException;
 import com.ryderbelserion.fusion.files.FileManager;
+import com.ryderbelserion.fusion.files.enums.FileAction;
 import com.ryderbelserion.fusion.files.enums.FileType;
 import com.ryderbelserion.fusion.files.types.configurate.JsonCustomFile;
 import com.ryderbelserion.fusion.files.types.configurate.YamlCustomFile;
@@ -16,7 +17,7 @@ import java.util.Optional;
 @NullMarked
 public enum FileKeys {
 
-    users("users.yml", FileType.YAML),
+    messages("messages.yml", FileType.YAML),
     version("version.json", FileType.JSON);
 
     private final FusionKyori fusion = (FusionKyori) FusionProvider.api();
@@ -66,7 +67,7 @@ public enum FileKeys {
     }
 
     public void addFile() {
-        this.fileManager.addFile(this.path, this.fileType);
+        this.fileManager.addFile(this.path, this.fileType, consumer -> consumer.addAction(FileAction.KEEP_FILE)); // do not purge these files.
     }
 
     public final Path getPath() {

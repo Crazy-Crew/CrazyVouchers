@@ -17,7 +17,6 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
-import java.util.Optional;
 import java.util.stream.Collectors;
 
 public class ItemUtils {
@@ -148,10 +147,10 @@ public class ItemUtils {
      * Converts a string to an ItemBuilder with a placeholder for errors.
      *
      * @param itemString the string you wish to convert.
-     * @param placeHolder the placeholder to use if there is an error.
+     * @param placeholder the placeholder to use if there is an error.
      * @return the string as an ItemBuilder.
      */
-    public static ItemBuilder convertString(@NonNull final String itemString, @NonNull final String placeHolder) {
+    public static ItemBuilder convertString(@NonNull final String itemString, @NonNull final String placeholder) {
         ItemBuilder itemBuilder = new ItemBuilder(ItemType.STONE);
 
         try {
@@ -208,11 +207,7 @@ public class ItemUtils {
                     }
 
                     default -> {
-                        com.ryderbelserion.fusion.paper.utils.ItemUtils.getEnchantment(getEnchant(option)).ifPresent(enchantment -> {
-                            final Optional<Number> level = StringUtils.tryParseInt(value);
-
-                            itemBuilder.addEnchantment(getEnchant(option), level.map(Number::intValue).orElse(1));
-                        });
+                        itemBuilder.addEnchantment(getEnchant(option), StringUtils.tryParseInt(value).map(Number::intValue).orElse(1));
 
                         if (itemBuilder.isBanner() || itemBuilder.isShield()) {
                             final PatternBuilder builder = itemBuilder.asPatternBuilder();
@@ -223,7 +218,7 @@ public class ItemUtils {
                 }
             }
         } catch (final Exception exception) {
-            itemBuilder.withType(ItemType.RED_TERRACOTTA).withDisplayName("<red>ERROR").withDisplayLore(Arrays.asList("<red>There is an error", "<red>For : <red>" + placeHolder));
+            itemBuilder.withType(ItemType.RED_TERRACOTTA).withDisplayName("<red>ERROR").withDisplayLore(Arrays.asList("<red>There is an error", "<red>For : <red>" + placeholder));
 
             exception.printStackTrace();
         }
@@ -234,22 +229,22 @@ public class ItemUtils {
     /**
      * Converts a list of Strings to a list of ItemBuilders.
      *
-     * @param itemStrings the list of Strings.
+     * @param items the list of Strings.
      * @return the list of ItemBuilders.
      */
-    public static List<ItemBuilder> convertStringList(@NonNull final List<String> itemStrings) {
-        return convertStringList(itemStrings, "");
+    public static List<ItemBuilder> convertStringList(@NonNull final List<String> items) {
+        return convertStringList(items, "");
     }
 
     /**
      * Converts a list of Strings to a list of ItemBuilders with a placeholder for errors.
      *
-     * @param itemStrings the list of strings.
+     * @param items the list of strings.
      * @param placeholder the placeholder for errors.
      * @return the list of ItemBuilders.
      */
-    public static List<ItemBuilder> convertStringList(@NonNull final List<String> itemStrings, @NonNull final String placeholder) {
-        return itemStrings.stream().map(itemString -> convertString(itemString, placeholder)).collect(Collectors.toList());
+    public static List<ItemBuilder> convertStringList(@NonNull final List<String> items, @NonNull final String placeholder) {
+        return items.stream().map(item -> convertString(item, placeholder)).collect(Collectors.toList());
     }
 
     public static String getEnchant(@NonNull final String enchant) {

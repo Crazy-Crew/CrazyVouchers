@@ -118,6 +118,8 @@ public abstract class CrazyVouchersPlugin<S, F extends FusionKyori<S>> extends C
             file.addFile();
         }
 
+        this.configManager.reload();
+
         this.storageHolder.save();
 
         loadExamples();
