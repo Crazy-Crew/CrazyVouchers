@@ -64,12 +64,12 @@ public class DatabaseMigrator extends IVoucherMigrator {
                             success.clear(); // all success failed because roll back!
                             failed.addAll(values);
 
-                            this.fusion.log(true, Level.error, "Failed to execute batch for data.yml, Rolling back!");
+                            this.fusion.log(true, Level.error, "<red>Failed to execute batch for data.yml, Rolling back! (<gold>%s</gold>)", exception.getMessage());
                         } finally {
                             connection.setAutoCommit(true);
                         }
                     } catch (final SQLException exception) {
-                        this.fusion.log(true, Level.error, "Failed to fetch connection! Cannot migrate data.yml");
+                        this.fusion.log(true, Level.error, "<red>Failed to fetch connection! Cannot migrate data.yml. (<gold>%s</gold>)", exception.getMessage());
                     }
                 });
             });
@@ -102,7 +102,7 @@ public class DatabaseMigrator extends IVoucherMigrator {
                         } catch (final SQLException exception) {
                             connection.rollback();
 
-                            this.fusion.log(true, Level.error, "Failed to execute batch for users.yml, Rolling back! (Reason: %s)", exception.getMessage());
+                            this.fusion.log(true, Level.error, "<red>Failed to execute batch for users.yml, Rolling back! (<gold>%s</gold>)", exception.getMessage());
                         }
 
                         try (final PreparedStatement statement = connection.prepareStatement("insert into codes_redeemed(code, player_uuid, redeem_limit, timestamp_redeemed) values (?, ?, ?, ?)")) {
@@ -127,7 +127,7 @@ public class DatabaseMigrator extends IVoucherMigrator {
                         } catch (final SQLException exception) {
                             connection.rollback();
 
-                            this.fusion.log(true, Level.error, "Failed to execute batch for users.yml, Rolling back! (Reason: %s)", exception.getMessage());
+                            this.fusion.log(true, Level.error, "<red>Failed to execute batch for users.yml, Rolling back! (<gold>%s</gold>)", exception.getMessage());
                         }
 
                         try (final PreparedStatement statement = connection.prepareStatement("insert into vouchers_redeemed(voucher_id, player_uuid, redeem_limit, timestamp_redeemed) values (?, ?, ?, ?)")) {
@@ -156,12 +156,12 @@ public class DatabaseMigrator extends IVoucherMigrator {
                         } catch (final SQLException exception) {
                             connection.rollback();
 
-                            this.fusion.log(true, Level.error, "Failed to execute batch for users.yml, Rolling back! (Reason: %s)", exception.getMessage());
+                            this.fusion.log(true, Level.error, "<red>Failed to execute batch for users.yml, Rolling back! (<gold>%s</gold>)", exception.getMessage());
                         }
 
                         connection.setAutoCommit(true);
                     } catch (final SQLException exception) {
-                        this.fusion.log(true, Level.error, "Failed to fetch connection! Cannot migrate users.yml (Reason: %s)", exception.getMessage());
+                        this.fusion.log(true, Level.error, "<red>Failed to fetch connection! Cannot migrate users.yml, Rolling back! (<gold>%s</gold>)", exception.getMessage());
                     }
                 });
             });

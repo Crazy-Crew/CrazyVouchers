@@ -75,9 +75,15 @@ public class VoucherDeprecated extends IVoucherMigrator {
 
                         success.add("<green>⤷ vouchers.yml");
                     } catch (final Exception exception) {
+                        this.fusion.log(true, Level.error, "<red>Failed to migrate <gold>vouchers.yml</gold>. (<gold>%s</gold>)", exception.getMessage());
+
                         failed.add("<red>⤷ vouchers.yml");
                     }
-                }, () -> failed.add("<red>⤷ vouchers.yml"));
+                }, () -> {
+                    this.fusion.log(Level.warn, "<red>vouchers.yml</red> does not exist in the file cache.");
+
+                    failed.add("<red>⤷ vouchers.yml");
+                });
 
                 this.fileManager.getYamlFile(this.dataPath.resolve("codes.yml")).ifPresentOrElse(customFile -> {
                     final CommentedConfigurationNode configuration = customFile.getConfiguration();
@@ -127,9 +133,15 @@ public class VoucherDeprecated extends IVoucherMigrator {
 
                         success.add("<green>⤷ codes.yml");
                     } catch (final Exception exception) {
+                        this.fusion.log(true, Level.error, "<red>Failed to migrate <gold>codes.yml</gold>. (<gold>%s</gold>)", exception.getMessage());
+
                         failed.add("<red>⤷ codes.yml");
                     }
-                }, () -> failed.add("<red>⤷ codes.yml"));
+                }, () -> {
+                    this.fusion.log(Level.warn, "<red>codes.yml</red> does not exist in the file cache.");
+
+                    failed.add("<red>⤷ codes.yml");
+                });
             }
 
             case MULTIPLE -> {
@@ -192,7 +204,7 @@ public class VoucherDeprecated extends IVoucherMigrator {
 
                         customFile.save();
                     }, () -> {
-                        this.fusion.log(Level.warn, "<red>%s</red> does not exist in the file cache", fileName);
+                        this.fusion.log(Level.warn, "<red>%s</red> does not exist in the file cache.", fileName);
 
                         failed.add("<red>⤷ " + fileName);
                     });
@@ -257,7 +269,7 @@ public class VoucherDeprecated extends IVoucherMigrator {
 
                         customFile.save();
                     }, () -> {
-                        this.fusion.log(Level.warn, "<red>%s</red> does not exist in the file cache", fileName);
+                        this.fusion.log(Level.warn, "<red>%s</red> does not exist in the file cache.", fileName);
 
                         failed.add("<red>⤷ " + fileName);
                     });

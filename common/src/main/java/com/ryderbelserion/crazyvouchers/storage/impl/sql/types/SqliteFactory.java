@@ -74,7 +74,7 @@ public final class SqliteFactory extends SqlFactory {
 
                 Files.createFile(this.path);
             } catch (final IOException exception) {
-                exception.printStackTrace();
+                this.fusion.log(true, Level.error, "<red>Failed to create the file %s. (<gold>%s</gold>)", this.path, exception.getMessage() != null ? exception.getMessage() : "N/A");
             }
         }
 

@@ -118,10 +118,6 @@ public class ItemUtils {
             }
 
             if (item.hasChild("settings", "patterns")) {
-                for (final Map.Entry<Object, CommentedConfigurationNode> entry : item.node("settings", "patterns").childrenMap().entrySet()) {
-                    final CommentedConfigurationNode config = entry.getValue();
-                }
-
                 final CommentedConfigurationNode patterns = item.node("settings", "patterns");
 
                 final PatternBuilder patternBuilder = itemBuilder.asPatternBuilder();
@@ -220,7 +216,7 @@ public class ItemUtils {
         } catch (final Exception exception) {
             itemBuilder.withType(ItemType.RED_TERRACOTTA).withDisplayName("<red>ERROR").withDisplayLore(Arrays.asList("<red>There is an error", "<red>For : <red>" + placeholder));
 
-            exception.printStackTrace();
+            fusion.log(true, Level.error, "<red>Failed to create item <gold>%s</gold>. (<gold>%s</gold>)", itemString, exception.getMessage());
         }
 
         return itemBuilder;

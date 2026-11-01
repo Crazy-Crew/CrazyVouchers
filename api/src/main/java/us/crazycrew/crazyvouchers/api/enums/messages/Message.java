@@ -1,5 +1,6 @@
 package us.crazycrew.crazyvouchers.api.enums.messages;
 
+import com.ryderbelserion.fusion.api.enums.Level;
 import com.ryderbelserion.fusion.api.objects.FusionKey;
 import com.ryderbelserion.fusion.core.api.config.properties.PropertyManager;
 import com.ryderbelserion.fusion.core.api.config.properties.objects.enums.PropertyType;
@@ -8,6 +9,7 @@ import com.ryderbelserion.fusion.core.api.registry.message.adapter.YamlMessageAd
 import com.ryderbelserion.fusion.core.utils.StringUtils;
 import com.ryderbelserion.fusion.files.FileManager;
 import com.ryderbelserion.fusion.files.types.configurate.YamlCustomFile;
+import com.ryderbelserion.fusion.kyori.FusionKyori;
 import com.ryderbelserion.fusion.kyori.utils.AdvUtils;
 import net.kyori.adventure.audience.Audience;
 import net.kyori.adventure.identity.Identity;
@@ -140,7 +142,9 @@ public enum Message {
 
     private final Path dataPath = this.platform.getDataPath();
 
-    private final FileManager fileManager = this.platform.getFusion().getFileManager();
+    private final FusionKyori fusion = this.platform.getFusion();
+
+    private final FileManager fileManager = this.fusion.getFileManager();
 
     private final ConfigManager configManager = this.platform.getConfigManager();
 
@@ -193,7 +197,7 @@ public enum Message {
 
                         customFile.save();
                     } catch (final SerializationException exception) {
-                        exception.printStackTrace();
+                        this.fusion.log(true, Level.error, "<red>Failed to save the list %s to %s. (<gold>%s</gold>)", this.path, customFile.getFileName(), exception.getMessage() != null ? exception.getMessage() : "N/A");
                     }
                 }
 
@@ -207,7 +211,7 @@ public enum Message {
 
                         customFile.save();
                     } catch (final SerializationException exception) {
-                        exception.printStackTrace();
+                        this.fusion.log(true, Level.error, "<red>Failed to save the string %s to %s (<gold>%s</gold>)", this.path, customFile.getFileName(), exception.getMessage() != null ? exception.getMessage() : "N/A");
                     }
                 }
             }
@@ -263,7 +267,7 @@ public enum Message {
                 try {
                     node.set(List.class, values);
                 } catch (final SerializationException exception) {
-                    exception.printStackTrace();
+                    this.fusion.log(true, Level.error, "<red>Failed to convert the list %s to %s (<gold>%s</gold>)", this.path, customFile.getFileName(), exception.getMessage() != null ? exception.getMessage() : "N/A");
                 }
 
                 return;
@@ -272,7 +276,7 @@ public enum Message {
             try {
                 node.set(List.class, AdvUtils.convert(message, true));
             } catch (final SerializationException exception) {
-                exception.printStackTrace();
+                this.fusion.log(true, Level.error, "<red>Failed to convert the string %s to %s (<gold>%s</gold>)", this.path, customFile.getFileName(), exception.getMessage() != null ? exception.getMessage() : "N/A");
             }
         });
     }

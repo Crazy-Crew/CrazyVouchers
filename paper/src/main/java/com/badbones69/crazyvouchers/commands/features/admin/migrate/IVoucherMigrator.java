@@ -4,6 +4,7 @@ import com.badbones69.crazyvouchers.CrazyVouchers;
 import com.badbones69.crazyvouchers.api.CrazyPlatform;
 import com.badbones69.crazyvouchers.commands.features.admin.migrate.enums.MigrationType;
 import com.ryderbelserion.crazyvouchers.storage.holder.StorageHolder;
+import com.ryderbelserion.fusion.api.enums.Level;
 import com.ryderbelserion.fusion.core.api.config.properties.PropertyManager;
 import com.ryderbelserion.fusion.core.utils.StringUtils;
 import com.ryderbelserion.fusion.files.FileManager;
@@ -60,7 +61,7 @@ public abstract class IVoucherMigrator {
         try {
             section.node(path).set(type, value);
         } catch (final SerializationException exception) {
-            exception.printStackTrace();
+            this.fusion.log(true, Level.error, "<red>Failed to set <gold>%s</gold>. (<gold>%s</gold>)", path, exception.getMessage() != null ? exception.getMessage() : "N/A");
         }
     }
 
@@ -68,7 +69,7 @@ public abstract class IVoucherMigrator {
         try {
             section.set(type, value);
         } catch (final SerializationException exception) {
-            exception.printStackTrace();
+            this.fusion.log(true, Level.error, "<red>Failed to set <gold>%s</gold>. (<gold>%s</gold>)", section.path(), exception.getMessage() != null ? exception.getMessage() : "N/A");
         }
     }
 

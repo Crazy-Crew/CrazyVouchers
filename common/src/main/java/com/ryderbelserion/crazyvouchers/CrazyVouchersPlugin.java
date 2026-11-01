@@ -60,7 +60,7 @@ public abstract class CrazyVouchersPlugin<S, F extends FusionKyori<S>> extends C
         try {
             Files.deleteIfExists(version);
         } catch (final IOException exception) {
-            this.fusion.log(Level.warn, "Failed to delete version.json!", exception);
+            this.fusion.log(Level.warn, "<red>Failed to delete version.json! (<gold>%s</gold>)", exception.getMessage());
         }
 
         final Path locale = this.path.resolve("locale");
@@ -109,7 +109,7 @@ public abstract class CrazyVouchersPlugin<S, F extends FusionKyori<S>> extends C
         try {
             Files.deleteIfExists(version);
         } catch (final IOException exception) {
-            this.fusion.log(Level.warn, "Failed to delete version.json!", exception);
+            this.fusion.log(Level.warn, "<red>Failed to delete version.json! (<gold>%s</gold>)", exception.getMessage());
         }
 
         this.fileManager.refresh(false).purge();
@@ -177,11 +177,11 @@ public abstract class CrazyVouchersPlugin<S, F extends FusionKyori<S>> extends C
 
                             Files.delete(path);
                         } catch (final IOException exception) {
-                            this.fusion.log(Level.warn, "Failed to delete %s in loop.", exception, path);
+                            this.fusion.log(Level.warn, "<red>Failed to delete %s in loop. (<gold>%s</gold>)", path, exception.getMessage());
                         }
                     });
                 } catch (final Exception exception) {
-                    this.fusion.log(Level.warn, "Failed to delete %s.", exception, exception);
+                    this.fusion.log(Level.warn, "<red>Failed to delete %s. (<gold>%s</gold>)", examples, exception.getMessage());
                 }
             }
 
@@ -229,7 +229,7 @@ public abstract class CrazyVouchersPlugin<S, F extends FusionKyori<S>> extends C
             try {
                 Files.move(input, output, StandardCopyOption.REPLACE_EXISTING);
             } catch (final IOException exception) {
-                this.fusion.log(Level.error, "Failed to copy %s to %s", exception, input, output);
+                this.fusion.log(true, Level.error, "<red>Failed to copy <gold>%s</gold> to <gold>%s</gold>. (<gold>%s</gold>)", input, output, exception.getMessage());
             }
         }
     }

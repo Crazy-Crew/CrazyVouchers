@@ -1,6 +1,7 @@
 package us.crazycrew.crazyvouchers.api.config.enums;
 
 import com.ryderbelserion.fusion.api.FusionProvider;
+import com.ryderbelserion.fusion.api.enums.Level;
 import com.ryderbelserion.fusion.core.api.config.properties.interfaces.IPropertyData;
 import com.ryderbelserion.fusion.core.api.config.properties.objects.interfaces.Property;
 import com.ryderbelserion.fusion.core.api.config.properties.objects.primitives.string.ListProperty;
@@ -14,7 +15,6 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-
 import static com.ryderbelserion.fusion.core.api.config.properties.PropertyBuilder.newProperty;
 
 public enum PropertyStorage {
@@ -95,7 +95,7 @@ public enum PropertyStorage {
                 }
             }
         } catch (final SerializationException exception) {
-            throw new RuntimeException(exception);
+            this.fusion.log(true, Level.error, "<red>Failed to migrate %s to %s. (<gold>%s</gold>)", this.newProperty.getPath(), path, exception.getMessage() != null ? exception.getMessage() : "N/A");
         }
 
         return true;

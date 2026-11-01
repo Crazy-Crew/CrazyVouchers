@@ -59,7 +59,7 @@ public class VoucherSwitchMigrator extends IVoucherMigrator {
                         try {
                             Files.createFile(path);
                         } catch (final IOException exception) {
-                            exception.printStackTrace();
+                            this.fusion.log(true, Level.error, "<red>Failed to create <gold>%s</gold>. (<gold>%s</gold>)", path, exception.getMessage());
                         }
 
                         Optional.of(this.fileManager.buildYamlFile(path, "", _ -> {})).ifPresentOrElse(
@@ -97,7 +97,7 @@ public class VoucherSwitchMigrator extends IVoucherMigrator {
                         try {
                             Files.createFile(path);
                         } catch (final IOException exception) {
-                            exception.printStackTrace();
+                            this.fusion.log(true, Level.error, "<red>Failed to create <gold>%s</gold>. (<gold>%s</gold>)", path, exception.getMessage());
                         }
 
                         Optional.of(this.fileManager.buildYamlFile(path, "", _ -> {})).ifPresentOrElse(
@@ -114,7 +114,7 @@ public class VoucherSwitchMigrator extends IVoucherMigrator {
                     try {
                         Files.createFile(vouchers);
                     } catch (final IOException exception) {
-                        exception.printStackTrace();
+                        this.fusion.log(true, Level.error, "<red>Failed to create <gold>%s</gold>. (<gold>%s</gold>)", vouchers, exception.getMessage());
                     }
                 }
 
@@ -162,7 +162,7 @@ public class VoucherSwitchMigrator extends IVoucherMigrator {
 
                     this.platform.updateVouchers();
 
-                    this.fusion.log(Level.warn, "Added voucher %s to the cache, and removed the old voucher file named %s", voucher_custom_file.getPrettyName(), vouchers.getFileName().toString());
+                    this.fusion.log(Level.warn, "Added voucher %s to the cache, and removed the old voucher file named %s.", voucher_custom_file.getPrettyName(), vouchers.getFileName().toString());
                 } else {
                     this.fusion.log(Level.warn, "Failed to move vouchers into vouchers.yml, because configuration is null.");
                 }
@@ -173,7 +173,7 @@ public class VoucherSwitchMigrator extends IVoucherMigrator {
                     try {
                         Files.createFile(code_file);
                     } catch (final IOException exception) {
-                        exception.printStackTrace();
+                        this.fusion.log(true, Level.error, "<red>Failed to create <gold>%s</gold>. (<gold>%s</gold>)", code_file, exception.getMessage());
                     }
                 }
 
@@ -221,7 +221,7 @@ public class VoucherSwitchMigrator extends IVoucherMigrator {
 
                     this.platform.updateCodes();
 
-                    this.fusion.log(Level.warn, "Added voucher code %s to the cache, and removed the old voucher code file named %s", code_custom_file.getPrettyName(), code_file.getFileName().toString());
+                    this.fusion.log(Level.warn, "Added voucher code %s to the cache, and removed the old voucher code file named %s.", code_custom_file.getPrettyName(), code_file.getFileName().toString());
                 } else {
                     this.fusion.log(Level.warn, "Failed to move voucher codes into codes.yml, because configuration is null.");
                 }

@@ -26,7 +26,7 @@ public class VoucherFileMigrator extends IVoucherMigrator {
                 final Path oldPath = this.dataPath.resolve("voucher-codes.yml");
 
                 if (!Files.exists(oldPath)) {
-                    this.fusion.log(Level.warn, "The file %s does not exist at the path.", oldPath);
+                    this.fusion.log(Level.info, "The file %s does not exist at the path.", oldPath);
 
                     return;
                 }
@@ -40,27 +40,27 @@ public class VoucherFileMigrator extends IVoucherMigrator {
                         try {
                             Files.createDirectory(backup);
 
-                            this.fusion.log(Level.warn, "Successfully created the backup %s", backup);
+                            this.fusion.log(Level.info, "Successfully created the backup %s.", backup);
                         } catch (final IOException exception) {
-                            exception.printStackTrace();
+                            this.fusion.log(true, Level.error, "<red>Failed to create backup %s. (<gold>%s</gold>)", backup, exception.getMessage());
                         }
                     }
 
                     try {
                         Files.move(backup, newPath, StandardCopyOption.REPLACE_EXISTING);
 
-                        this.fusion.log(Level.warn, "Successfully moved %s to %s.", backup, newPath);
+                        this.fusion.log(Level.info, "Successfully moved %s to %s.", backup, newPath);
                     } catch (final IOException exception) {
-                        exception.printStackTrace();
+                        this.fusion.log(true, Level.error, "<red>Failed to move backup %s to %s. (<gold>%s</gold>)", backup, newPath, exception.getMessage());
                     }
                 }
 
                 try {
                     Files.move(oldPath, newPath, StandardCopyOption.REPLACE_EXISTING);
 
-                    this.fusion.log(Level.warn, "Successfully moved %s to %s.", oldPath, newPath);
+                    this.fusion.log(Level.info, "Successfully moved %s to %s.", oldPath, newPath);
                 } catch (final Exception exception) {
-                    exception.printStackTrace();
+                    this.fusion.log(true, Level.error, "<red>Failed to move %s to %s. (<gold>%s</gold>)", oldPath, newPath, exception.getMessage());
                 }
 
                 if (this.config.getProperty(RootKeys.file_system) == FileSystem.SINGLE) {

@@ -43,7 +43,7 @@ public class NewItemMigrator extends IVoucherMigrator {
                             final CommentedConfigurationNode entry = index.getValue();
                             final String id = index.getKey().toString();
 
-                            if (process(entry)) {
+                            if (process(entry, "vouchers.yml")) {
                                 this.fusion.log(Level.info, "Successfully migrated code %s, and saved to file!", id);
 
                                 customFile.save();
@@ -62,7 +62,7 @@ public class NewItemMigrator extends IVoucherMigrator {
                             final CommentedConfigurationNode entry = index.getValue();
                             final String id = index.getKey().toString();
 
-                            if (process(entry)) {
+                            if (process(entry, "vouchers.yml")) {
                                 this.fusion.log(Level.info, "Successfully migrated voucher %s, and saved to file!", id);
 
                                 customFile.save();
@@ -85,6 +85,7 @@ public class NewItemMigrator extends IVoucherMigrator {
                     }
 
                     final YamlCustomFile customFile = optional.get();
+                    final String prettyName = customFile.getPrettyName();
 
                     try {
                         if (!customFile.isLoaded()) {
@@ -101,17 +102,17 @@ public class NewItemMigrator extends IVoucherMigrator {
                             continue;
                         }
 
-                        if (process(configuration.node("voucher"))) {
+                        if (process(configuration.node("voucher"), prettyName)) {
                             this.fusion.log(Level.info, "Successfully migrated voucher %s, and saved to file!", voucher);
 
                             customFile.save();
                         }
 
-                        success.add("<green>⤷ " + customFile.getPrettyName());
+                        success.add("<green>⤷ " + prettyName);
                     } catch (final Exception exception) {
-                        failed.add("<red>⤷ " + customFile.getPrettyName());
+                        this.fusion.log(true, Level.error, "<red>Failed to migrate <gold>%s</gold>. (<gold>%s</gold>)", prettyName, exception.getMessage());
 
-                        exception.printStackTrace();
+                        failed.add("<red>⤷ " + prettyName);
                     }
                 }
 
@@ -127,6 +128,7 @@ public class NewItemMigrator extends IVoucherMigrator {
                     }
 
                     final YamlCustomFile customFile = optional.get();
+                    final String prettyName = customFile.getPrettyName();
 
                     try {
                         if (!customFile.isLoaded()) {
@@ -143,15 +145,17 @@ public class NewItemMigrator extends IVoucherMigrator {
                             continue;
                         }
 
-                        if (process(configuration.node("voucher-code"))) {
+                        if (process(configuration.node("voucher-code"), prettyName)) {
                             this.fusion.log(Level.info, "Successfully migrated voucher code %s, and saved to file!", code);
 
                             customFile.save();
                         }
 
-                        success.add("<green>⤷ " + customFile.getPrettyName());
+                        success.add("<green>⤷ " + prettyName);
                     } catch (final Exception exception) {
-                        failed.add("<red>⤷ " + customFile.getPrettyName());
+                        this.fusion.log(true, Level.error, "<red>Failed to migrate <gold>%s</gold>. (<gold>%s</gold>)", prettyName, exception.getMessage());
+
+                        failed.add("<red>⤷ " + prettyName);
                     }
                 }
             }
@@ -171,7 +175,7 @@ public class NewItemMigrator extends IVoucherMigrator {
         this.platform.updateCodes();
     }
 
-    private boolean process(final CommentedConfigurationNode section) {
+    private boolean process(final CommentedConfigurationNode section, final String fileName) {
         boolean isSave = false;
 
         for (final CommentedConfigurationNode index : section.childrenMap().values()) {
@@ -184,7 +188,7 @@ public class NewItemMigrator extends IVoucherMigrator {
             try {
                 items.set(null);
             } catch (final SerializationException exception) {
-                exception.printStackTrace();
+                this.fusion.log(true, Level.error, "<red>Failed to remove value from <gold>%s</gold> at node <gold>%s</gold>. (<gold>%s</gold>)", fileName, items.path(), exception.getMessage() != null ? exception.getMessage() : "N/A");
             }
 
             for (final String value : values) {
@@ -306,10 +310,12 @@ public class NewItemMigrator extends IVoucherMigrator {
                                 comment(enchantmentSection, FileComments.enchantments.getComments());
 
                                 enchantments.forEach((enchantment, level) -> {
+                                    final CommentedConfigurationNode sectio = enchantmentSection.node(enchantment);
+
                                     try {
-                                        enchantmentSection.node(enchantment).set(int.class, level);
+                                        sectio.set(int.class, level);
                                     } catch (SerializationException exception) {
-                                        exception.printStackTrace();
+                                        this.fusion.log(true, Level.error, "<red>Failed to add value to <gold>%s</gold> at node <gold>%s</gold>. (<gold>%s</gold>)", fileName, sectio.path(), exception.getMessage() != null ? exception.getMessage() : "N/A");
                                     }
                                 });
 
@@ -319,7 +325,7 @@ public class NewItemMigrator extends IVoucherMigrator {
                             if (!uuidSection.hasChild("hide-tool-tip")) {
                                 for (ItemFlag itemFlag : ItemFlag.values()) {
                                     if (itemFlag.name().equalsIgnoreCase(option)) {
-                                        set(uuidSection, true, Boolean.class, "hide-tool-tip");
+                                        set(uuidSection, true, boolean.class, "hide-tool-tip");
                                         comment(uuidSection.node("hide-tool-tip"), FileComments.hide_tool_tip.getComments());
                                         
                                         break;
@@ -335,10 +341,12 @@ public class NewItemMigrator extends IVoucherMigrator {
                                 comment(patternsSection, FileComments.patterns.getComments());
 
                                 patterns.forEach((pattern, patternType) -> {
+                                    final CommentedConfigurationNode sectio = patternsSection.node(pattern);
+
                                     try {
-                                        patternsSection.node(pattern).set(String.class, patternType);
+                                        sectio.set(String.class, patternType);
                                     } catch (SerializationException exception) {
-                                        exception.printStackTrace();
+                                        this.fusion.log(true, Level.error, "<red>Failed to add value to <gold>%s</gold> at node <gold>%s</gold>. (<gold>%s</gold>)", fileName, sectio.path(), exception.getMessage() != null ? exception.getMessage() : "N/A");
                                     }
                                 });
                             }

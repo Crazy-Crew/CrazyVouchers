@@ -35,7 +35,9 @@ public class LegacyColorMigrator extends IVoucherMigrator {
 
             this.config.save();
             this.config.reload();
-        } catch (Exception exception) {
+        } catch (final Exception exception) {
+            this.fusion.log(true, Level.error, "<red>Failed to migrate legacy colors in config.yml. (<gold>%s</gold>)", exception.getMessage());
+
             failed.add("<red>⤷ config.yml");
         }
 
@@ -45,7 +47,9 @@ public class LegacyColorMigrator extends IVoucherMigrator {
             }
 
             success.add("<green>⤷ messages.yml");
-        } catch (Exception exception) {
+        } catch (final Exception exception) {
+            this.fusion.log(true, Level.error, "<red>Failed to migrate legacy colors in messages.yml. (<gold>%s</gold>)", exception.getMessage());
+
             failed.add("<red>⤷ messages.yml");
         }
 
@@ -69,7 +73,11 @@ public class LegacyColorMigrator extends IVoucherMigrator {
                     }
 
                     failed.add("<red>⤷ vouchers.yml");
-                }, () -> failed.add("<red>⤷ vouchers.yml"));
+                }, () -> {
+                    this.fusion.log(Level.warn, "<red>vouchers.yml</red> does not exist in the file cache.");
+
+                    failed.add("<red>⤷ vouchers.yml");
+                });
 
                 this.fileManager.getYamlFile(this.dataPath.resolve("codes.yml")).ifPresentOrElse(customFile -> {
                     final CommentedConfigurationNode configuration = customFile.getConfiguration();
@@ -89,7 +97,11 @@ public class LegacyColorMigrator extends IVoucherMigrator {
                     }
 
                     failed.add("<red>⤷ codes.yml");
-                }, () -> failed.add("<red>⤷ codes.yml"));
+                }, () -> {
+                    this.fusion.log(Level.warn, "<red>codes.yml</red> does not exist in the file cache.");
+
+                    failed.add("<red>⤷ codes.yml");
+                });
             }
 
             case MULTIPLE -> {
@@ -98,7 +110,7 @@ public class LegacyColorMigrator extends IVoucherMigrator {
 
                     this.fileManager.getYamlFile(path).ifPresentOrElse(customFile -> {
                         if (!customFile.isLoaded()) {
-                            this.fusion.log(Level.warn, "<red>%s</red> configuration is invalid, likely not loaded properly. Please check console :)", fileName);
+                            this.fusion.log(Level.warn, "<red>%s</red> configuration is invalid, likely not loaded properly. Please read console logs :)", fileName);
 
                             failed.add("<red>⤷ " + fileName);
 
@@ -121,7 +133,7 @@ public class LegacyColorMigrator extends IVoucherMigrator {
 
                         customFile.save();
                     }, () -> {
-                        this.fusion.log(Level.warn, "<red>%s</red> does not exist in the file cache", fileName);
+                        this.fusion.log(Level.warn, "<red>%s</red> does not exist in the file cache.", fileName);
 
                         failed.add("<red>⤷ " + fileName);
                     });
@@ -155,7 +167,7 @@ public class LegacyColorMigrator extends IVoucherMigrator {
 
                         customFile.save();
                     }, () -> {
-                        this.fusion.log(Level.warn, "<red>%s</red> does not exist in the file cache", fileName);
+                        this.fusion.log(Level.warn, "<red>%s</red> does not exist in the file cache.", fileName);
 
                         failed.add("<red>⤷ " + fileName);
                     });
@@ -213,7 +225,7 @@ public class LegacyColorMigrator extends IVoucherMigrator {
 
             section.set(String.class, AdvUtils.convert(section.getString(defaultValue), true));
         } catch (final SerializationException exception) {
-            exception.printStackTrace();
+            this.fusion.log(Level.error, "<red>Failed to convert <gold>%s</gold> to MiniMessage. (<gold>%s</gold>)", section.path(), exception.getMessage() != null ? exception.getMessage() : "N/A");
         }
     }
 }

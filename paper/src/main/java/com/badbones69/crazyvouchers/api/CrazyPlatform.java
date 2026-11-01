@@ -106,6 +106,8 @@ public class CrazyPlatform extends CrazyVouchersPlugin<Audience, FusionPaper> {
                         try {
                             this.vouchers.add(new Voucher(node, id.toString()));
                         } catch (final Exception exception) {
+                            this.fusion.log(true, Level.error, "<red>Failed to create voucher %s. (<gold>%s</gold>)", id.toString(), exception.getMessage());
+
                             this.brokenVouchers.add(id.toString());
                         }
                     });
@@ -127,7 +129,7 @@ public class CrazyPlatform extends CrazyVouchersPlugin<Audience, FusionPaper> {
                     final YamlCustomFile file = optional.get();
 
                     if (!file.isLoaded()) {
-                        this.fusion.log(Level.warn, "Could not load voucher configuration for %s", voucher);
+                        this.fusion.log(Level.warn, "Could not load voucher configuration for %s.", voucher);
 
                         this.brokenVouchers.add(file.getFileName());
 
@@ -137,7 +139,7 @@ public class CrazyPlatform extends CrazyVouchersPlugin<Audience, FusionPaper> {
                     final CommentedConfigurationNode configuration = file.getConfiguration();
 
                     if (!configuration.hasChild("voucher")) {
-                        this.fusion.log(Level.warn, "Could not find voucher configuration section for %s", voucher);
+                        this.fusion.log(Level.warn, "Could not find voucher configuration section for %s.", voucher);
 
                         this.brokenVouchers.add(file.getFileName());
 
@@ -185,6 +187,8 @@ public class CrazyPlatform extends CrazyVouchersPlugin<Audience, FusionPaper> {
                         try {
                             this.codes.add(new VoucherCode(node, id.toString()));
                         } catch (final Exception exception) {
+                            this.fusion.log(true, Level.error, "<red>Failed to create voucher code %s. (<gold>%s</gold>)", id.toString(), exception.getMessage());
+
                             this.brokenCodes.add(id.toString());
                         }
                     });
@@ -196,7 +200,7 @@ public class CrazyPlatform extends CrazyVouchersPlugin<Audience, FusionPaper> {
                     final Optional<YamlCustomFile> optional = this.fileManager.getYamlFile(code);
 
                     if (optional.isEmpty()) {
-                        this.fusion.log(Level.warn, "The code file named %s could not be found in the cache", code);
+                        this.fusion.log(Level.warn, "The code file named %s could not be found in the cache.", code);
 
                         this.brokenCodes.add(code.getFileName().toString());
 
@@ -206,7 +210,7 @@ public class CrazyPlatform extends CrazyVouchersPlugin<Audience, FusionPaper> {
                     final YamlCustomFile file = optional.get();
 
                     if (!file.isLoaded()) {
-                        this.fusion.log(Level.warn, "Could not load code configuration for %s", code);
+                        this.fusion.log(Level.warn, "Could not load code configuration for %s.", code);
 
                         this.brokenCodes.add(file.getFileName());
 
@@ -216,7 +220,7 @@ public class CrazyPlatform extends CrazyVouchersPlugin<Audience, FusionPaper> {
                     final CommentedConfigurationNode configuration = file.getConfiguration();
 
                     if (!configuration.hasChild("voucher-code")) {
-                        this.fusion.log(Level.warn, "Could not find voucher code configuration section for %s", code);
+                        this.fusion.log(Level.warn, "Could not find voucher code configuration section for %s.", code);
 
                         this.brokenCodes.add(file.getFileName());
 

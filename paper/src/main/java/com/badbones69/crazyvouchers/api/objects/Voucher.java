@@ -270,14 +270,14 @@ public class Voucher {
         this.isEdible = section.node("options", "is-edible").getBoolean(false) && this.itemBuilder.isEdible();
 
         if (section.hasChild("chance-commands")) {
-            this.fusion.log(Level.warn, "We detected that you have the list version of chance-commands which is no longer used, Please run /crazyvouchers migrate -mt VouchersDeprecated");
+            this.fusion.log(Level.warn, "We detected that you have the list version of chance-commands which is no longer used, Please run /crazyvouchers migrate -mt VouchersDeprecated.");
         }
 
         if (section.hasChild("random-commands")) {
             final CommentedConfigurationNode node = section.node("random-commands");
 
             if (node.isList()) {
-                this.fusion.log(Level.warn, "We've detected that you have the list version of random-commands which is no longer used, Please run /crazyvouchers migrate -mt VouchersDeprecated");
+                this.fusion.log(Level.warn, "We've detected that you have the list version of random-commands which is no longer used, Please run /crazyvouchers migrate -mt VouchersDeprecated.");
             } else {
                 node.childrenMap().forEach((id, key) -> this.randomCommands.add(new VoucherCommand(
                         StringUtils.getStringList(key.node("commands")),
