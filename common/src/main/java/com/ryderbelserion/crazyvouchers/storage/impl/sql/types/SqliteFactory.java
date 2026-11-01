@@ -276,7 +276,7 @@ public final class SqliteFactory extends SqlFactory {
     public void incrementVoucherLimit(final String voucher_id, final UUID player_uuid) {
         CompletableFuture.runAsync(() -> {
             try (final Connection connection = this.source.getConnection(); final PreparedStatement statement =
-                    connection.prepareStatement("update vouchers_redeemed set redeem_limit + 1 where voucher_id=? and player_uuid=? limit 1")) {
+                    connection.prepareStatement("update vouchers_redeemed set redeem_limit = redeem_limit+1 where voucher_id=? and player_uuid=?")) {
                 statement.setString(1, voucher_id);
                 statement.setString(2, player_uuid.toString());
 
@@ -388,7 +388,7 @@ public final class SqliteFactory extends SqlFactory {
     public void incrementCodeLimit(final String code, final UUID player_uuid) {
         CompletableFuture.runAsync(() -> {
             try (final Connection connection = this.source.getConnection(); final PreparedStatement statement =
-                    connection.prepareStatement("update codes_redeemed set redeem_limit + 1 where code=? and player_uuid=?")) {
+                    connection.prepareStatement("update codes_redeemed set redeem_limit = redeem_limit+1 where code=? and player_uuid=?")) {
                 statement.setString(1, code);
                 statement.setString(2, player_uuid.toString());
 
