@@ -1,8 +1,12 @@
 package com.ryderbelserion.crazyvouchers.storage.holder;
 
 import com.ryderbelserion.crazyvouchers.storage.impl.ConnectionFactory;
+import com.ryderbelserion.fusion.api.exceptions.FusionException;
+import org.jetbrains.annotations.ApiStatus;
 import org.jspecify.annotations.NullMarked;
 import us.crazycrew.crazyvouchers.api.storage.IStorageHolder;
+import java.sql.Connection;
+import java.sql.SQLException;
 import java.util.UUID;
 
 @NullMarked
@@ -14,9 +18,33 @@ public final class StorageHolder implements IStorageHolder {
         this.factory = factory;
     }
 
+    @ApiStatus.Internal
+    @Override
+    public Connection getConnection() {
+        try {
+            return this.factory.getConnection();
+        } catch (final SQLException exception) {
+            throw new FusionException("Failed to get connection. (%s)".formatted(exception.getMessage()));
+        }
+    }
+
+    @Override
+    public IStorageHolder migrate() {
+        this.factory.migrate();
+
+        return this;
+    }
+
     @Override
     public StorageHolder init() {
         this.factory.init();
+
+        return this;
+    }
+
+    @Override
+    public IStorageHolder post() {
+        this.factory.post();
 
         return this;
     }
@@ -33,6 +61,21 @@ public final class StorageHolder implements IStorageHolder {
         this.factory.stop();
 
         return this;
+    }
+
+    @Override
+    public void removeUser(final UUID player_uuid) {
+        this.factory.removeUser(player_uuid);
+    }
+
+    @Override
+    public void addUser(final UUID player_uuid) {
+        this.factory.addUser(player_uuid);
+    }
+
+    @Override
+    public boolean hasUser(final UUID player_uuid) {
+        return this.factory.hasUser(player_uuid);
     }
 
     // dupe protection start

@@ -1,14 +1,30 @@
 package us.crazycrew.crazyvouchers.api.storage;
 
+import org.jetbrains.annotations.ApiStatus;
+import java.sql.Connection;
+import java.sql.SQLException;
 import java.util.UUID;
 
 public interface IStorageHolder {
 
+    @ApiStatus.Internal
+    Connection getConnection();
+
+    IStorageHolder migrate();
+
     IStorageHolder init();
+
+    IStorageHolder post();
 
     IStorageHolder save();
 
     IStorageHolder stop();
+
+    void removeUser(final UUID player_uuid);
+
+    void addUser(final UUID player_uuid);
+
+    boolean hasUser(final UUID player_uuid);
 
     boolean isVoucherProtected(final UUID voucher_id);
 

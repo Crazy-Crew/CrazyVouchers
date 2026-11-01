@@ -483,7 +483,9 @@ public class Voucher {
             player.sendMessage(this.fusion.asComponent(player, message, placeholders));
         }
 
-        if (isLimiterEnabled()) {
+        final boolean isDupeProtectionEnabled = this.config.getProperty(RootKeys.dupe_protection);
+
+        if (isLimiterEnabled() && !isDupeProtectionEnabled) { // dupe protection must be turned off if the limiter is enabled, these 2 features are not compatible
             if (!this.storageHolder.isVoucherRedeemed(cleanName)) {
                 this.storageHolder.incrementVoucherLimit(cleanName, uuid);
             } else {
@@ -491,7 +493,7 @@ public class Voucher {
             }
         }
 
-        if (this.config.getProperty(RootKeys.dupe_protection)) {
+        if (isDupeProtectionEnabled) {
             final PersistentDataContainerView view = item.getPersistentDataContainer();
 
             if (view.has(PersistentKeys.dupe_protection.getNamespacedKey())) {
@@ -504,12 +506,12 @@ public class Voucher {
                 }
 
                 if (!this.storageHolder.isVoucherProtected(id)) {
-                    this.storageHolder.addProtectedVoucher(id, this.cleanName);
+                    this.storageHolder.addProtectedVoucher(id, uuid.toString());
 
                     return;
                 }
 
-                this.fusion.log(Level.warn, "%s id is already present in the database!", id);
+                this.fusion.log(Level.warn, "%s id is already present in the database and may be duplicated!", id);
             }
         }
     }

@@ -101,7 +101,7 @@ public abstract class IVoucherMigrator {
 
         placeholders.put("{succeeded_amount}", String.valueOf(success));
         placeholders.put("{failed_amount}", String.valueOf(failed));
-        placeholders.put("{type}", type.getName());
+        placeholders.put("{type}", this.type.getName());
         placeholders.put("{time}", time());
 
         Message.successfully_migrated_users.sendMessage(this.sender, placeholders);

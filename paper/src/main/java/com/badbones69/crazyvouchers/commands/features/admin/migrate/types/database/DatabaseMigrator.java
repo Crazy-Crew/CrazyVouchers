@@ -2,17 +2,23 @@ package com.badbones69.crazyvouchers.commands.features.admin.migrate.types.datab
 
 import com.badbones69.crazyvouchers.commands.features.admin.migrate.IVoucherMigrator;
 import com.badbones69.crazyvouchers.commands.features.admin.migrate.enums.MigrationType;
+import com.ryderbelserion.crazyvouchers.CrazyVouchersPlugin;
+import com.ryderbelserion.fusion.api.enums.Level;
 import com.ryderbelserion.fusion.files.enums.FileType;
 import org.bukkit.command.CommandSender;
 import org.jspecify.annotations.NonNull;
 import org.spongepowered.configurate.CommentedConfigurationNode;
-import us.crazycrew.crazyvouchers.api.config.types.DatabaseKeys;
-import us.crazycrew.crazyvouchers.api.enums.messages.Message;
 import java.nio.file.Files;
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.SQLException;
+import java.time.Instant;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.UUID;
+import java.util.concurrent.CompletableFuture;
 
 public class DatabaseMigrator extends IVoucherMigrator {
 
@@ -22,18 +28,10 @@ public class DatabaseMigrator extends IVoucherMigrator {
 
     @Override
     public void run() {
-        if (!this.config.getProperty(DatabaseKeys.storage_type).equalsIgnoreCase("yaml")) {
-            Message.migration_not_available.sendMessage(this.sender, Map.of(
-                    "{file}", "data.yml",
-                    "{type}", this.type.getName(),
-                    "{reason}", "root.storage.type is not set to yaml!"
-            ));
-
-            return;
-        }
-
         final List<String> failed = new ArrayList<>();
         final List<String> success = new ArrayList<>();
+
+        this.holder.migrate(); // disable indexes
 
         if (Files.exists(this.dataPath.resolve("data.yml"))) {
             this.fileManager.addFile(this.dataPath.resolve("data.yml"), FileType.YAML);
@@ -41,17 +39,39 @@ public class DatabaseMigrator extends IVoucherMigrator {
             this.fileManager.getYamlFile(this.dataPath.resolve("data.yml")).ifPresent(customFile -> {
                 final List<String> values = customFile.getStringList("Used-Vouchers");
 
-                for (final String value : values) {
-                    if (this.holder.isVoucherProtected(value)) {
-                        failed.add(value);
+                CompletableFuture.runAsync(() -> {
+                    try (final Connection connection = this.holder.getConnection()) {
+                        connection.setAutoCommit(false);
 
-                        continue; // already added
+                        try (final PreparedStatement statement = connection.prepareStatement("insert into vouchers_tracker(voucher_id, player_uuid, timestamp_redeemed) values (?, ?, ?)")) {
+                            final UUID uuid = CrazyVouchersPlugin.CONSOLE_UUID;
+
+                            for (final String value : values) {
+                                statement.setString(1, value);
+                                statement.setString(2, uuid.toString());
+                                statement.setLong(3, Instant.now().toEpochMilli());
+
+                                statement.addBatch();
+
+                                success.add(value);
+                            }
+
+                            statement.executeBatch();
+                            connection.commit();
+                        } catch (final SQLException exception) {
+                            connection.rollback();
+
+                            success.clear(); // all success failed because roll back!
+                            failed.addAll(values);
+
+                            this.fusion.log(true, Level.error, "Failed to execute batch for data.yml, Rolling back!");
+                        } finally {
+                            connection.setAutoCommit(true);
+                        }
+                    } catch (final SQLException exception) {
+                        this.fusion.log(true, Level.error, "Failed to fetch connection! Cannot migrate data.yml");
                     }
-
-                    this.holder.addProtectedVoucher(value, "N/A"); // add it
-
-                    success.add(value);
-                }
+                });
             });
         }
 
@@ -60,25 +80,94 @@ public class DatabaseMigrator extends IVoucherMigrator {
 
             this.fileManager.getYamlFile(this.dataPath.resolve("users.yml")).ifPresent(customFile -> {
                 final CommentedConfigurationNode configuration = customFile.getConfiguration();
+                final Set<Map.Entry<Object, CommentedConfigurationNode>> values = configuration.node("Players").childrenMap().entrySet();
 
-                for (final Map.Entry<Object, CommentedConfigurationNode> entries : configuration.node("Players").childrenMap().entrySet()) {
-                    final CommentedConfigurationNode entry = entries.getValue();
-                    final String id = entries.getKey().toString();
-                    final UUID uuid = UUID.fromString(id);
+                CompletableFuture.runAsync(() -> {
+                    try (final Connection connection = this.holder.getConnection()) {
+                        connection.setAutoCommit(false);
 
-                    for (final Object index : entry.node("Codes").childrenMap().keySet()) { // if the id is in here, it's used lol
-                        this.holder.addRedeemedCode(index.toString(), uuid);
+                        try (final PreparedStatement statement = connection.prepareStatement("insert into vouchers_players(player_uuid) values (?)")) {
+                            for (final Map.Entry<Object, CommentedConfigurationNode> entries : values) {
+                                final String id = entries.getKey().toString();
+                                final UUID uuid = UUID.fromString(id);
+
+                                statement.setString(1, uuid.toString());
+                                statement.addBatch();
+
+                                success.add(id);
+                            }
+
+                            statement.executeBatch();
+                            connection.commit();
+                        } catch (final SQLException exception) {
+                            connection.rollback();
+
+                            this.fusion.log(true, Level.error, "Failed to execute batch for users.yml, Rolling back! (Reason: %s)", exception.getMessage());
+                        }
+
+                        try (final PreparedStatement statement = connection.prepareStatement("insert into codes_redeemed(code, player_uuid, redeem_limit, timestamp_redeemed) values (?, ?, ?, ?)")) {
+                            for (final Map.Entry<Object, CommentedConfigurationNode> entries : values) {
+                                final CommentedConfigurationNode entry = entries.getValue();
+                                final String id = entries.getKey().toString();
+                                final UUID uuid = UUID.fromString(id);
+
+                                for (final Object index : entry.node("Codes").childrenMap().keySet()) { // if the id is in here, it's used lol
+                                    statement.setString(1, index.toString());
+                                    statement.setString(2, uuid.toString());
+                                    statement.setLong(3, Instant.now().toEpochMilli());
+
+                                    statement.addBatch();
+
+                                    success.add(id);
+                                }
+                            }
+
+                            statement.executeBatch();
+                            connection.commit();
+                        } catch (final SQLException exception) {
+                            connection.rollback();
+
+                            this.fusion.log(true, Level.error, "Failed to execute batch for users.yml, Rolling back! (Reason: %s)", exception.getMessage());
+                        }
+
+                        try (final PreparedStatement statement = connection.prepareStatement("insert into vouchers_redeemed(voucher_id, player_uuid, redeem_limit, timestamp_redeemed) values (?, ?, ?, ?)")) {
+                            for (final Map.Entry<Object, CommentedConfigurationNode> entries : values) {
+                                final CommentedConfigurationNode entry = entries.getValue();
+                                final String id = entries.getKey().toString();
+                                final UUID uuid = UUID.fromString(id);
+
+                                for (final Map.Entry<Object, CommentedConfigurationNode> index : entry.node("Vouchers").childrenMap().entrySet()) {
+                                    final CommentedConfigurationNode config = index.getValue();
+                                    final String voucher_id = index.getKey().toString();
+
+                                    statement.setString(1, voucher_id);
+                                    statement.setString(2, uuid.toString());
+                                    statement.setInt(3, config.getInt(0));
+                                    statement.setLong(4, Instant.now().toEpochMilli());
+
+                                    statement.addBatch();
+
+                                    success.add(id);
+                                }
+                            }
+
+                            statement.executeBatch();
+                            connection.commit();
+                        } catch (final SQLException exception) {
+                            connection.rollback();
+
+                            this.fusion.log(true, Level.error, "Failed to execute batch for users.yml, Rolling back! (Reason: %s)", exception.getMessage());
+                        }
+
+                        connection.setAutoCommit(true);
+                    } catch (final SQLException exception) {
+                        this.fusion.log(true, Level.error, "Failed to fetch connection! Cannot migrate users.yml (Reason: %s)", exception.getMessage());
                     }
-
-                    for (final Map.Entry<Object, CommentedConfigurationNode> index : configuration.node("Vouchers").childrenMap().entrySet()) {
-                        final CommentedConfigurationNode config = index.getValue();
-                        final String voucher_id = index.getKey().toString();
-
-                        this.holder.addRedeemedVoucher(voucher_id, uuid, config.getInt(0));
-                    }
-                }
+                });
             });
         }
+
+        this.holder.post(); // enable indexes
 
         final int convertedCrates = success.size();
         final int failedCrates = failed.size();
