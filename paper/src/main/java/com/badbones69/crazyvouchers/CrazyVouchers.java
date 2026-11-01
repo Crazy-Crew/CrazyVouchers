@@ -36,7 +36,7 @@ public class CrazyVouchers extends JavaPlugin {
     @Override
     public void onEnable() {
         this.fusion = new FusionPaper(this);
-        this.fusion.init();
+        this.fusion.init().post();
 
         this.platform = new CrazyPlatform(this.fusion, getDataPath());
         this.platform.init();
