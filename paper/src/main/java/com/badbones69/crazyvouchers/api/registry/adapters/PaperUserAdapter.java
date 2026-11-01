@@ -2,10 +2,7 @@ package com.badbones69.crazyvouchers.api.registry.adapters;
 
 import com.ryderbelserion.crazyvouchers.CrazyVouchersPlugin;
 import com.ryderbelserion.crazyvouchers.utils.ConfigUtils;
-import com.ryderbelserion.fusion.api.FusionProvider;
 import com.ryderbelserion.fusion.api.objects.FusionKey;
-import com.ryderbelserion.fusion.core.api.registry.message.MessageRegistry;
-import com.ryderbelserion.fusion.paper.FusionPaper;
 import net.kyori.adventure.audience.Audience;
 import net.kyori.adventure.text.Component;
 import org.bukkit.command.ConsoleCommandSender;
@@ -21,10 +18,6 @@ import static us.crazycrew.crazyvouchers.api.CrazyVouchers.CONSOLE_NAME;
 import static us.crazycrew.crazyvouchers.api.CrazyVouchers.CONSOLE_UUID;
 
 public class PaperUserAdapter extends ISenderAdapter<Component, Audience> {
-
-    private final FusionPaper fusion = (FusionPaper) FusionProvider.api();
-
-    private final MessageRegistry registry = this.fusion.getMessageRegistry();
 
     private final String name;
     private final UUID uuid;

@@ -1,6 +1,9 @@
 package us.crazycrew.crazyvouchers.api.adapters.sender;
 
+import com.ryderbelserion.fusion.api.FusionProvider;
 import com.ryderbelserion.fusion.api.objects.FusionKey;
+import com.ryderbelserion.fusion.core.api.registry.message.MessageRegistry;
+import com.ryderbelserion.fusion.kyori.FusionKyori;
 import org.jetbrains.annotations.ApiStatus;
 import org.jspecify.annotations.NonNull;
 import java.util.HashMap;
@@ -8,6 +11,10 @@ import java.util.Map;
 import java.util.UUID;
 
 public abstract class ISenderAdapter<C, S> {
+
+    protected final FusionKyori<S> fusion = (FusionKyori<S>) FusionProvider.api();
+
+    protected final MessageRegistry registry = this.fusion.getMessageRegistry();
 
     protected final S sender;
 
