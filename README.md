@@ -1,8 +1,7 @@
 <center><div align="center">
 
-![CrazyVouchers](https://raw.githubusercontent.com/Crazy-Crew/Branding/main/crazyvouchers/banner/webp/banner.webp)
+![CrazyVouchers](https://raw.githubusercontent.com/Crazy-Crew/Branding/main/repositories/crazyvouchers/banner/webp/banner.webp)
 
-[![][jenkins-shield]][jenkins-url]
 [![][discord-shield]][discord-url]
 [![][contributors-shield]][contributors-url]
 [![][forks-shield]][forks-url]
@@ -22,10 +21,6 @@
 6) Reload the plugin, Use `crazyvouchers give` or `crazyvouchers redeem` to test your changes.
 7) View the documentation @ https://docs.crazycrew.us/docs/mods/crazyvouchers/
 
-## Quick Builds
-Get the latest builds for every commit!
-- https://ci.crazycrew.us/job/CrazyVouchers/
-
 ## Contributing
 - https://docs.crazycrew.us/mods/crazyvouchers/contributing/
 
@@ -43,9 +38,6 @@ If you do not want this anonymous data sent, You currently have to go to the `bS
 
 ## Apex Hosting (ad)
 We're sponsored by Apex Hosting, Click [here](https://billing.apexminecrafthosting.com/aff.php?aff=5511) to get 25% off your first purchase with the code `APEX25` at checkout for Minecraft servers, Satisfactory servers, and more!
-
-[jenkins-shield]: https://img.shields.io/jenkins/build?jobUrl=https%3A%2F%2Fci.crazycrew.us%2Fjob%2FCrazyVouchers%2F&style=flat&logo=jenkins
-[jenkins-url]: https://ci.crazycrew.us/job/CrazyVouchers/
 
 [contributors-shield]: https://img.shields.io/github/contributors-anon/Crazy-Crew/CrazyVouchers.svg?style=flat&logo=appveyor
 [contributors-url]: https://github.com/Crazy-Crew/CrazyVouchers/graphs/contributors
