@@ -76,13 +76,17 @@ public class Methods {
         return hasPermission;
     }
 
-    public static void addItem(@NonNull final Player player, @NonNull final ItemStack... items) {
+    public static void addItem(@NotNull final Player player, @NotNull final ItemStack item) {
+        addItem(player, List.of(item));
+    }
+
+    public static void addItem(@NotNull final Player player, @NotNull final List<ItemStack> items) {
         final PlayerInventory inventory = player.getInventory();
 
         final World world = player.getWorld();
         final Location location = player.getLocation();
 
-        Arrays.asList(items).forEach(item -> {
+        items.forEach(item -> {
             if (isInventoryFull(inventory)) {
                 new FoliaScheduler(plugin, location) {
                     public void run() {

@@ -133,8 +133,8 @@ public class Voucher {
         final List<String> displayLore = section.node("lore").isList() ? StringUtils.getStringList(section.node("lore")) : List.of(section.node("lore").getString(""));
 
         this.itemBuilder = new ItemBuilder(material)
-                .withDisplayName(displayName)
-                .withDisplayLore(displayLore);
+                .withDisplayName(this.displayName = displayName)
+                .withDisplayLore(this.displayLore = displayLore);
 
         final CustomBuilder customBuilder = this.itemBuilder.asCustomBuilder();
 
@@ -563,34 +563,34 @@ public class Voucher {
         return buildItem(player, 1);
     }
 
-    public ItemStack buildItem(@NonNull final Player player, final int amount) {
-        this.itemBuilder.setAmount(amount);
-
-        final ItemStack item = this.itemBuilder.build().asItemStack(player);
+    public ItemStack buildItem(@NotNull final Player player, final int amount) {
+        final ItemStack item = this.itemBuilder.setAmount(amount).asItemStack(player);
 
         setUniqueId(item);
 
         item.editPersistentDataContainer(container -> container.set(PersistentKeys.voucher_item.getNamespacedKey(), PersistentDataType.STRING, getStrippedName()));
 
-        return item;
+        return new ItemStack(item);
     }
 
-    public List<ItemStack> buildItems(@NonNull final Player player, @NonNull final String argument, final int amount) {
-        final List<ItemStack> itemStacks = new ArrayList<>();
+    public List<ItemStack> buildItems(@NotNull final Player player, @NotNull final String argument, final int amount) {
+        final List<ItemStack> items = new ArrayList<>();
 
-        if (!this.isAntiDupeOverridden && this.config.getProperty(RootKeys.dupe_protection)) {
-            while (itemStacks.size() < amount) {
-                itemStacks.add(buildItem(player, argument, 1));
+        if (!this.isAntiDupeOverridden && this.config.getProperty(ConfigKeys.dupe_protection)) {
+            while (items.size() < amount) {
+                items.add(buildItem(player, argument, 1));
             }
-        } else {
-            itemStacks.add(buildItem(player, argument, amount));
+
+            return items;
         }
 
-        return itemStacks;
+        items.add(buildItem(player, argument, amount));
+
+        return items;
     }
     
-    public ItemStack buildItem(@NonNull final Player player, @NonNull final String argument, final int amount) {
-        final ItemStack item = this.itemBuilder.setAmount(amount).addPlaceholder("{arg}", argument).asItemStack(player);
+    public ItemStack buildItem(@NotNull final Player player, @NotNull final String argument, final int amount) {
+        final ItemStack item = this.itemBuilder.addPlaceholder("{arg}", argument).setAmount(amount).asItemStack(player);
 
         setUniqueId(item);
 
@@ -600,7 +600,7 @@ public class Voucher {
             if (!argument.isEmpty()) container.set(PersistentKeys.voucher_arg.getNamespacedKey(), PersistentDataType.STRING, argument);
         });
 
-        return item;
+        return new ItemStack(item);
     }
 
     public void dispatchCommands(@NonNull final Player player, @NonNull final Map<String, String> placeholders) {
@@ -627,11 +627,11 @@ public class Voucher {
         }
     }
 
-    private void setUniqueId(@NonNull final ItemStack item) {
-        if (!this.isAntiDupeOverridden && this.config.getProperty(RootKeys.dupe_protection)) {
-            final String uuid = UUID.randomUUID().toString();
+    private void setUniqueId(@NotNull final ItemStack item) {
+        if (!this.isAntiDupeOverridden && this.config.getProperty(ConfigKeys.dupe_protection)) {
+            final UUID uuid = UUID.randomUUID();
 
-            item.editPersistentDataContainer(container -> container.set(PersistentKeys.dupe_protection.getNamespacedKey(), PersistentDataType.STRING, uuid));
+            item.editPersistentDataContainer(container -> container.set(PersistentKeys.dupe_protection.getNamespacedKey(), PersistentDataType.STRING, uuid.toString()));
         }
     }
 
