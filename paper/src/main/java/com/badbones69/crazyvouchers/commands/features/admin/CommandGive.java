@@ -4,7 +4,6 @@ import com.badbones69.crazyvouchers.Methods;
 import us.crazycrew.crazyvouchers.api.enums.messages.Message;
 import com.badbones69.crazyvouchers.api.objects.Voucher;
 import com.badbones69.crazyvouchers.commands.BaseCommand;
-import com.ryderbelserion.fusion.core.api.enums.Level;
 import com.ryderbelserion.fusion.paper.builders.items.PlayerBuilder;
 import dev.triumphteam.cmd.bukkit.annotation.Permission;
 import dev.triumphteam.cmd.core.annotations.ArgName;
@@ -16,7 +15,6 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.permissions.PermissionDefault;
-import org.bukkit.persistence.PersistentDataType;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -36,9 +34,7 @@ public class CommandGive extends BaseCommand {
         }
 
         target.getPlayer().ifPresentOrElse(player -> {
-            build(player, amount, argument, voucher).forEach(item -> {
-                Methods.addItem(player, item);
-            });
+            build(player, amount, argument, voucher).forEach(item -> Methods.addItem(player, item));
 
             final Map<String, String> placeholders = new HashMap<>();
 
@@ -61,7 +57,7 @@ public class CommandGive extends BaseCommand {
             return;
         }
 
-        for (final Player player : server.getOnlinePlayers()) {
+        for (final Player player : this.server.getOnlinePlayers()) {
             for (final ItemStack item : build(player, amount, argument, voucher)) {
                 Methods.addItem(player, item);
             }

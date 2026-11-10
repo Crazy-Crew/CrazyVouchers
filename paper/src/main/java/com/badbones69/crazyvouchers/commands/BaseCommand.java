@@ -7,6 +7,7 @@ import com.ryderbelserion.crazyvouchers.storage.holder.StorageHolder;
 import com.ryderbelserion.fusion.core.api.config.properties.PropertyManager;
 import com.ryderbelserion.fusion.paper.FusionPaper;
 import dev.triumphteam.cmd.core.annotations.Command;
+import org.bukkit.Server;
 import org.jspecify.annotations.NonNull;
 import us.crazycrew.crazyvouchers.api.config.ConfigManager;
 
@@ -14,6 +15,8 @@ import us.crazycrew.crazyvouchers.api.config.ConfigManager;
 public abstract class BaseCommand {
 
     protected @NonNull final CrazyVouchers plugin = CrazyVouchers.get();
+
+    protected @NonNull final Server server = this.plugin.getServer();
 
     protected @NonNull final CrazyPlatform platform = this.plugin.getPlatform();
 

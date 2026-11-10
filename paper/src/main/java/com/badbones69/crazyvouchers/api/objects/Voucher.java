@@ -133,8 +133,8 @@ public class Voucher {
         final List<String> displayLore = section.node("lore").isList() ? StringUtils.getStringList(section.node("lore")) : List.of(section.node("lore").getString(""));
 
         this.itemBuilder = new ItemBuilder(material)
-                .withDisplayName(this.displayName = displayName)
-                .withDisplayLore(this.displayLore = displayLore);
+                .withDisplayName(displayName)
+                .withDisplayLore(displayLore);
 
         final CustomBuilder customBuilder = this.itemBuilder.asCustomBuilder();
 
@@ -563,7 +563,7 @@ public class Voucher {
         return buildItem(player, 1);
     }
 
-    public ItemStack buildItem(@NotNull final Player player, final int amount) {
+    public ItemStack buildItem(@NonNull final Player player, final int amount) {
         final ItemStack item = this.itemBuilder.setAmount(amount).asItemStack(player);
 
         setUniqueId(item);
@@ -573,10 +573,10 @@ public class Voucher {
         return new ItemStack(item);
     }
 
-    public List<ItemStack> buildItems(@NotNull final Player player, @NotNull final String argument, final int amount) {
+    public List<ItemStack> buildItems(@NonNull final Player player, @NonNull final String argument, final int amount) {
         final List<ItemStack> items = new ArrayList<>();
 
-        if (!this.isAntiDupeOverridden && this.config.getProperty(ConfigKeys.dupe_protection)) {
+        if (!this.isAntiDupeOverridden && this.config.getProperty(RootKeys.dupe_protection)) {
             while (items.size() < amount) {
                 items.add(buildItem(player, argument, 1));
             }
@@ -589,7 +589,7 @@ public class Voucher {
         return items;
     }
     
-    public ItemStack buildItem(@NotNull final Player player, @NotNull final String argument, final int amount) {
+    public ItemStack buildItem(@NonNull final Player player, @NonNull final String argument, final int amount) {
         final ItemStack item = this.itemBuilder.addPlaceholder("{arg}", argument).setAmount(amount).asItemStack(player);
 
         setUniqueId(item);
@@ -627,8 +627,8 @@ public class Voucher {
         }
     }
 
-    private void setUniqueId(@NotNull final ItemStack item) {
-        if (!this.isAntiDupeOverridden && this.config.getProperty(ConfigKeys.dupe_protection)) {
+    private void setUniqueId(@NonNull final ItemStack item) {
+        if (!this.isAntiDupeOverridden && this.config.getProperty(RootKeys.dupe_protection)) {
             final UUID uuid = UUID.randomUUID();
 
             item.editPersistentDataContainer(container -> container.set(PersistentKeys.dupe_protection.getNamespacedKey(), PersistentDataType.STRING, uuid.toString()));

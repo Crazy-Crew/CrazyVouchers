@@ -76,11 +76,11 @@ public class Methods {
         return hasPermission;
     }
 
-    public static void addItem(@NotNull final Player player, @NotNull final ItemStack item) {
+    public static void addItem(@NonNull final Player player, @NonNull final ItemStack item) {
         addItem(player, List.of(item));
     }
 
-    public static void addItem(@NotNull final Player player, @NotNull final List<ItemStack> items) {
+    public static void addItem(@NonNull final Player player, @NonNull final List<ItemStack> items) {
         final PlayerInventory inventory = player.getInventory();
 
         final World world = player.getWorld();
