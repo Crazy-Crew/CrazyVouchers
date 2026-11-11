@@ -19,6 +19,7 @@ import org.bukkit.Location;
 import org.bukkit.Server;
 import org.bukkit.Sound;
 import org.bukkit.SoundCategory;
+import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.entity.Player;
 import org.bukkit.permissions.PermissionDefault;
@@ -106,31 +107,38 @@ public class CommandRedeem extends BaseCommand {
 
         final String cleanName = code.getStrippedName();
 
-        if (data.contains("Players." + uuid)) {
-            if (data.contains("Players." + uuid + ".Codes." + cleanName)) {
-                if (data.getString("Players." + uuid + ".Codes." + cleanName, "").equalsIgnoreCase("used")) {
-                    Messages.code_used.sendMessage(player, placeholders);
+        // Checking if the player has used the code before.
+        final String id = code.getStrippedName();
 
-                    return;
-                }
-            }
+        final boolean isLimiterEnabled = code.useLimiter();
+
+        if (!isLimiterEnabled && data.getString("Players." + uuid + ".Codes" + id, "").equalsIgnoreCase("used")) {
+            Messages.code_used.sendMessage(player, placeholders);
+
+            return;
         }
 
-        //Checking the limit of the code.
-        if (code.useLimiter()) {
-            if (data.contains("Voucher-Limit." + cleanName)) {
-                if (data.getInt("Voucher-Limit." + cleanName) < 1) {
-                    Messages.code_unavailable.sendMessage(player, placeholders);
+        // Checking the limit of the code.
+        if (isLimiterEnabled) {
+            final ConfigurationSection section = data.getConfigurationSection("Voucher-Limit");
 
-                    return;
+            if (section != null) {
+                if (section.contains(id)) {
+                    final int amount = section.getInt(id, 1);
+
+                    if (amount < 1) {
+                        Messages.code_unavailable.sendMessage(player, placeholders);
+
+                        return;
+                    }
+
+                    section.set(id, amount-1);
+                } else {
+                    section.set(id, code.getLimit()-1);
                 }
 
-                data.set("Voucher-Limit." + cleanName, (data.getInt("Voucher-Limit." + cleanName) - 1));
-            } else {
-                data.set("Voucher-Limit." + cleanName, (code.getLimit() - 1));
+                FileKeys.users.save();
             }
-
-            FileKeys.users.save();
         }
 
         // Gives the reward to the player.
