@@ -1,0 +1,14 @@
+name: Upload Artifact
+
+on:
+  pull_request:
+    types: [ labeled ]
+
+permissions:
+  contents: read
+
+jobs:
+  build:
+    if: github.repository_owner == 'Crazy-Crew'
+
+    uses: Crazy-Crew/.github/.github/workflows/upload.yml@main

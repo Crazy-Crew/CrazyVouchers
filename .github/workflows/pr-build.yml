@@ -1,10 +1,13 @@
 name: Build Pull Request
 
 on:
-  workflow_dispatch:
+  workflow_run:
+    workflows: ["Upload Artifact"]
+    types:
+      - completed
 
-  pull_request:
-    types: [ labeled ]
+permissions:
+  pull-requests: write
 
 jobs:
   build:
@@ -20,4 +23,3 @@ jobs:
 
     with:
       label: "build"
-      path: "build/libs"
