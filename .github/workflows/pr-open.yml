@@ -1,0 +1,11 @@
+name: Open Pull Request
+
+on:
+  workflow_dispatch:
+
+  pull_request:
+    types: [ opened ]
+
+jobs:
+  build:
+    uses: Crazy-Crew/.github/.github/workflows/pr-open.yml@main
