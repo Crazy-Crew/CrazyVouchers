@@ -8,4 +8,6 @@ on:
 
 jobs:
   build:
+    if: github.repository_owner == 'Crazy-Crew'
+
     uses: Crazy-Crew/.github/.github/workflows/pr-open.yml@main
