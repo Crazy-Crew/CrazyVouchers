@@ -10,6 +10,11 @@ project.group = "us.crazycrew.crazyvouchers"
 
 val projectVersion = rootProject.property("api_version").toString()
 
+dependencies {
+    compileOnly(libs.bundles.adventure)
+    compileOnly(libs.fusion.kyori)
+}
+
 java {
     withSourcesJar()
     withJavadocJar()
@@ -52,7 +57,7 @@ publishing {
 
     publications {
         create<MavenPublication>("mavenJava") {
-            groupId = "${project.group}" // us.crazycrew.crazyvouchers
+            groupId = "${project.group}"
             artifactId = project.name
             version = projectVersion
 

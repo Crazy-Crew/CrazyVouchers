@@ -1,33 +1,33 @@
 package com.badbones69.crazyvouchers.commands.features.relations;
 
-import com.badbones69.crazyvouchers.api.enums.config.Messages;
 import dev.triumphteam.cmd.bukkit.BukkitCommandManager;
 import dev.triumphteam.cmd.bukkit.message.BukkitMessageKey;
 import dev.triumphteam.cmd.core.message.MessageKey;
 import org.bukkit.command.CommandSender;
-import org.jetbrains.annotations.NotNull;
+import org.jspecify.annotations.NonNull;
+import us.crazycrew.crazyvouchers.api.enums.messages.Message;
 
 public class ArgumentRelations {
 
-    private @NotNull final BukkitCommandManager<CommandSender> commandManager;
+    private @NonNull final BukkitCommandManager<CommandSender> commandManager;
 
-    public ArgumentRelations(@NotNull final BukkitCommandManager<CommandSender> commandManager) {
+    public ArgumentRelations(@NonNull final BukkitCommandManager<CommandSender> commandManager) {
         this.commandManager = commandManager;
     }
 
     public void build() {
-        this.commandManager.registerMessage(MessageKey.NOT_ENOUGH_ARGUMENTS, (sender, context) -> Messages.correct_usage.sendMessage(sender, "{usage}", context.getSyntax()));
+        this.commandManager.registerMessage(MessageKey.NOT_ENOUGH_ARGUMENTS, (sender, context) -> Message.correct_usage.sendMessage(sender, "{usage}", context.getSyntax()));
 
-        this.commandManager.registerMessage(MessageKey.TOO_MANY_ARGUMENTS, (sender, context) -> Messages.correct_usage.sendMessage(sender, "{usage}", context.getSyntax()));
+        this.commandManager.registerMessage(MessageKey.TOO_MANY_ARGUMENTS, (sender, context) -> Message.correct_usage.sendMessage(sender, "{usage}", context.getSyntax()));
 
-        this.commandManager.registerMessage(MessageKey.INVALID_ARGUMENT, (sender, context) -> Messages.correct_usage.sendMessage(sender, "{usage}", context.getSyntax()));
+        this.commandManager.registerMessage(MessageKey.INVALID_ARGUMENT, (sender, context) -> Message.correct_usage.sendMessage(sender, "{usage}", context.getSyntax()));
 
-        this.commandManager.registerMessage(BukkitMessageKey.NO_PERMISSION, (sender, context) -> Messages.no_permission.sendMessage(sender, "{permission}", context.getPermission().toString()));
+        this.commandManager.registerMessage(BukkitMessageKey.NO_PERMISSION, (sender, context) -> Message.no_permission.sendMessage(sender, "{permission}", context.getPermission().toString()));
 
-        this.commandManager.registerMessage(BukkitMessageKey.UNKNOWN_COMMAND, (sender, context) -> Messages.unknown_command.sendMessage(sender, "{command}", context.getInvalidInput()));
+        this.commandManager.registerMessage(BukkitMessageKey.UNKNOWN_COMMAND, (sender, context) -> Message.unknown_command.sendMessage(sender, "{command}", context.getInvalidInput()));
 
-        this.commandManager.registerMessage(BukkitMessageKey.CONSOLE_ONLY, (sender, context) -> Messages.must_be_console_sender.sendMessage(sender));
+        this.commandManager.registerMessage(BukkitMessageKey.CONSOLE_ONLY, (sender, _) -> Message.must_be_console_sender.sendMessage(sender));
 
-        this.commandManager.registerMessage(BukkitMessageKey.PLAYER_ONLY, (sender, context) -> Messages.player_only.sendMessage(sender));
+        this.commandManager.registerMessage(BukkitMessageKey.PLAYER_ONLY, (sender, _) -> Message.player_only.sendMessage(sender));
     }
 }

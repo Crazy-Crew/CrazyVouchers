@@ -1,26 +1,24 @@
 package com.badbones69.crazyvouchers.commands.features.admin.migrate.types.deprecation;
 
-import com.badbones69.crazyvouchers.api.enums.FileKeys;
-import com.badbones69.crazyvouchers.api.enums.config.Messages;
+import com.ryderbelserion.fusion.api.enums.Level;
+import com.ryderbelserion.fusion.core.utils.StringUtils;
+import org.spongepowered.configurate.CommentedConfigurationNode;
+import org.spongepowered.configurate.serialize.SerializationException;
+import us.crazycrew.crazyvouchers.api.config.types.RootKeys;
 import com.badbones69.crazyvouchers.commands.features.admin.migrate.IVoucherMigrator;
 import com.badbones69.crazyvouchers.commands.features.admin.migrate.enums.MigrationType;
-import com.badbones69.crazyvouchers.config.types.ConfigKeys;
-import com.ryderbelserion.fusion.core.api.enums.Level;
-import com.ryderbelserion.fusion.core.utils.StringUtils;
 import com.ryderbelserion.fusion.kyori.utils.AdvUtils;
-import com.ryderbelserion.fusion.paper.files.types.PaperCustomFile;
 import org.bukkit.command.CommandSender;
-import org.bukkit.configuration.ConfigurationSection;
-import org.bukkit.configuration.file.YamlConfiguration;
-import org.jetbrains.annotations.NotNull;
+import org.jspecify.annotations.NonNull;
+import us.crazycrew.crazyvouchers.api.enums.messages.Message;
 import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
+import java.util.Map;
 
 public class LegacyColorMigrator extends IVoucherMigrator {
 
-    public LegacyColorMigrator(@NotNull final CommandSender sender) {
+    public LegacyColorMigrator(@NonNull final CommandSender sender) {
         super(sender, MigrationType.VOUCHERS_COLOR);
     }
 
@@ -30,162 +28,149 @@ public class LegacyColorMigrator extends IVoucherMigrator {
         final List<String> success = new ArrayList<>();
 
         try {
-            this.config.setProperty(ConfigKeys.command_prefix, AdvUtils.convert(this.config.getProperty(ConfigKeys.command_prefix), true));
-            this.config.setProperty(ConfigKeys.dupe_protection_warning, AdvUtils.convert(this.config.getProperty(ConfigKeys.dupe_protection_warning), true));
+            this.config.setProperty(RootKeys.command_prefix, AdvUtils.convert(this.config.getProperty(RootKeys.command_prefix), true));
+            this.config.setProperty(RootKeys.dupe_protection_warning_text, AdvUtils.convert(this.config.getProperty(RootKeys.dupe_protection_warning_text), true));
 
             success.add("<green>⤷ config.yml");
 
             this.config.save();
             this.config.reload();
-        } catch (Exception exception) {
+        } catch (final Exception exception) {
+            this.fusion.log(true, Level.error, "<red>Failed to migrate legacy colors in config.yml. (<gold>%s</gold>)", exception.getMessage());
+
             failed.add("<red>⤷ config.yml");
         }
 
         try {
-            for (final Messages message : Messages.values()) {
-                message.migrate();
+            for (final Message message : Message.values()) {
+                message.convert();
             }
 
             success.add("<green>⤷ messages.yml");
+        } catch (final Exception exception) {
+            this.fusion.log(true, Level.error, "<red>Failed to migrate legacy colors in messages.yml. (<gold>%s</gold>)", exception.getMessage());
 
-            this.messages.save();
-            this.messages.reload();
-        } catch (Exception exception) {
             failed.add("<red>⤷ messages.yml");
         }
 
-        switch (this.config.getProperty(ConfigKeys.file_system)) {
+        switch (this.config.getProperty(RootKeys.file_system)) {
             case SINGLE -> {
-                final YamlConfiguration vouchers = FileKeys.vouchers.getConfiguration();
+                this.fileManager.getYamlFile(this.dataPath.resolve("vouchers.yml")).ifPresentOrElse(customFile -> {
+                    final CommentedConfigurationNode configuration = customFile.getConfiguration();
 
-                final ConfigurationSection voucherSection = vouchers.getConfigurationSection("vouchers");
+                    if (configuration.hasChild("vouchers")) {
+                        for (final Map.Entry<Object, CommentedConfigurationNode> section : configuration.node("vouchers").childrenMap().entrySet()) {
+                            final String id = section.toString();
 
-                if (voucherSection != null) {
-                    for (final String key : voucherSection.getKeys(false)) {
-                        final ConfigurationSection voucher = voucherSection.getConfigurationSection(key);
+                            processItems(id, section.getValue());
+                        }
 
-                        if (voucher == null) continue;
+                        success.add("<green>⤷ vouchers.yml");
 
-                        processItems(key, voucher);
+                        customFile.save();
+
+                        return;
                     }
 
-                    success.add("<green>⤷ vouchers.yml");
-
-                    FileKeys.vouchers.save();
-                } else {
-                    this.fusion.log(Level.WARNING, "Failed to migrate vouchers.yml due to the configuration section being null.");
+                    failed.add("<red>⤷ vouchers.yml");
+                }, () -> {
+                    this.fusion.log(Level.warn, "<red>vouchers.yml</red> does not exist in the file cache.");
 
                     failed.add("<red>⤷ vouchers.yml");
-                }
+                });
 
-                final YamlConfiguration codes = FileKeys.codes.getConfiguration();
+                this.fileManager.getYamlFile(this.dataPath.resolve("codes.yml")).ifPresentOrElse(customFile -> {
+                    final CommentedConfigurationNode configuration = customFile.getConfiguration();
 
-                final ConfigurationSection codeSection = codes.getConfigurationSection("voucher-codes");
+                    if (configuration.hasChild("voucher-codes")) {
+                        for (final Map.Entry<Object, CommentedConfigurationNode> section : configuration.node("voucher-codes").childrenMap().entrySet()) {
+                            final String id = section.toString();
 
-                if (codeSection != null) {
-                    process(codeSection);
+                            processItems(id, section.getValue());
+                        }
 
-                    success.add("<green>⤷ codes.yml");
+                        success.add("<green>⤷ codes.yml");
 
-                    FileKeys.codes.save();
-                } else {
-                    this.fusion.log(Level.WARNING, "Failed to migrate codes.yml due to the configuration section being null.");
+                        customFile.save();
+
+                        return;
+                    }
 
                     failed.add("<red>⤷ codes.yml");
-                }
+                }, () -> {
+                    this.fusion.log(Level.warn, "<red>codes.yml</red> does not exist in the file cache.");
+
+                    failed.add("<red>⤷ codes.yml");
+                });
             }
 
             case MULTIPLE -> {
-                final Path code_dir = this.dataPath.resolve("codes");
-
-                final List<Path> code_files = this.fusion.getFilesByPath(code_dir, ".yml");
-
-                for (final Path path : code_files) {
-                    final Optional<PaperCustomFile> optional = this.fileManager.getPaperFile(path);
-
+                for (final Path path : this.fusion.getFilesByPath(this.dataPath.resolve("codes"), ".yml")) {
                     final String fileName = path.getFileName().toString();
 
-                    if (optional.isEmpty()) {
-                        this.fusion.log(Level.WARNING, "<red>%s</red> does not exist in the file cache", fileName);
+                    this.fileManager.getYamlFile(path).ifPresentOrElse(customFile -> {
+                        if (!customFile.isLoaded()) {
+                            this.fusion.log(Level.warn, "<red>%s</red> configuration is invalid, likely not loaded properly. Please read console logs :)", fileName);
+
+                            failed.add("<red>⤷ " + fileName);
+
+                            return;
+                        }
+
+                        final CommentedConfigurationNode configuration = customFile.getConfiguration();
+
+                        if (!configuration.hasChild("voucher-code")) {
+                            this.fusion.log(Level.warn, "Configuration section for <red>%s</red> was not found.", fileName);
+
+                            failed.add("<red>⤷ " + fileName);
+
+                            return;
+                        }
+
+                        process(configuration.node("voucher-code"));
+
+                        success.add("<green>⤷ " + fileName);
+
+                        customFile.save();
+                    }, () -> {
+                        this.fusion.log(Level.warn, "<red>%s</red> does not exist in the file cache.", fileName);
 
                         failed.add("<red>⤷ " + fileName);
-
-                        continue;
-                    }
-
-                    final PaperCustomFile customFile = optional.get();
-
-                    if (!customFile.isLoaded()) {
-                        this.fusion.log(Level.WARNING, "<red>%s</red> configuration is invalid, likely not loaded properly. Please check console :)", fileName);
-
-                        failed.add("<red>⤷ " + fileName);
-
-                        continue;
-                    }
-
-                    final YamlConfiguration configuration = customFile.getConfiguration();
-
-                    final ConfigurationSection section = configuration.getConfigurationSection("voucher-code");
-
-                    if (section == null) {
-                        this.fusion.log(Level.WARNING, "Configuration section for <red>%s</red> was not found.", fileName);
-
-                        failed.add("<red>⤷ " + fileName);
-
-                        continue;
-                    }
-
-                    process(section);
-
-                    success.add("<green>⤷ " + fileName);
-
-                    customFile.save();
+                    });
                 }
 
-                final Path voucher_dir = this.dataPath.resolve("vouchers");
-
-                final List<Path> voucher_files = this.fusion.getFilesByPath(voucher_dir, ".yml");
-
-                for (final Path path : voucher_files) {
-                    final Optional<PaperCustomFile> optional = this.fileManager.getPaperFile(path);
-
+                for (final Path path : this.fusion.getFilesByPath(this.dataPath.resolve("vouchers"), ".yml")) {
                     final String fileName = path.getFileName().toString();
 
-                    if (optional.isEmpty()) {
-                        this.fusion.log(Level.WARNING, "<red>%s</red> does not exist in the file cache", fileName);
+                    this.fileManager.getYamlFile(path).ifPresentOrElse(customFile -> {
+                        if (!customFile.isLoaded()) {
+                            this.fusion.log(Level.warn, "<red>%s</red> configuration is invalid, likely not loaded properly. Please check console :)", fileName);
+
+                            failed.add("<red>⤷ " + fileName);
+
+                            return;
+                        }
+
+                        final CommentedConfigurationNode configuration = customFile.getConfiguration();
+
+                        if (!configuration.hasChild("voucher")) {
+                            this.fusion.log(Level.warn, "Configuration section for <red>%s</red> was not found.", fileName);
+
+                            failed.add("<red>⤷ " + fileName);
+
+                            return;
+                        }
+
+                        processItems(customFile.getPrettyName(), configuration.node("voucher"));
+
+                        success.add("<green>⤷ " + fileName);
+
+                        customFile.save();
+                    }, () -> {
+                        this.fusion.log(Level.warn, "<red>%s</red> does not exist in the file cache.", fileName);
 
                         failed.add("<red>⤷ " + fileName);
-
-                        continue;
-                    }
-
-                    final PaperCustomFile customFile = optional.get();
-
-                    if (!customFile.isLoaded()) {
-                        this.fusion.log(Level.WARNING, "<red>%s</red> configuration is invalid, likely not loaded properly. Please check console :)", fileName);
-
-                        failed.add("<red>⤷ " + fileName);
-
-                        continue;
-                    }
-
-                    final YamlConfiguration configuration = customFile.getConfiguration();
-
-                    final ConfigurationSection section = configuration.getConfigurationSection("voucher");
-
-                    if (section == null) {
-                        this.fusion.log(Level.WARNING, "Configuration section for <red>%s</red> was not found.", fileName);
-
-                        failed.add("<red>⤷ " + fileName);
-
-                        continue;
-                    }
-
-                    processItems(customFile.getPrettyName(), section);
-
-                    success.add("<green>⤷ " + fileName);
-
-                    customFile.save();
+                    });
                 }
             }
         }
@@ -200,54 +185,47 @@ public class LegacyColorMigrator extends IVoucherMigrator {
 
         sendMessage(files, convertedCount, failedCount);
 
-        this.crazyManager.reloadVouchers();
-        this.crazyManager.reloadCodes();
+        this.platform.updateVouchers();
+        this.platform.updateCodes();
     }
 
-    private void processItems(@NotNull final String name, @NotNull final ConfigurationSection section) {
-        section.set("lore", AdvUtils.convert(section.getStringList("lore"), true));
+    private void processItems(@NonNull final String name, @NonNull final CommentedConfigurationNode section) {
+        setMessage(section.node("lore"), "");
+        setMessage(section.node("name"), name);
 
-        section.set("name", AdvUtils.convert(section.getString("name", name), true));
-
-        setMessage(section, "options.message", "");
-        setMessage(section, "options.whitelist-worlds.message",
-                "{prefix}You are not in any of the whitelisted worlds.");
-
-        setMessage(section, "options.permission.whitelist-permission.message",
-                "{prefix}You do not have the permission <red>{permission} <gray>to use this voucher.");
-
-        setMessage(section, "options.permission.blacklist-permission.message",
-                "{prefix}You already have the permission <red>{permission} <gray>so you can''t use this voucher.");
+        process(section);
     }
 
-    private void process(@NotNull final ConfigurationSection section) {
-        setMessage(section, "options.message", "");
-        setMessage(section, "options.whitelist-worlds.message",
-                "{prefix}<red>You can not use that voucher here as you are not in a whitelisted world for this voucher.");
+    private void process(@NonNull final CommentedConfigurationNode section) {
+        setMessage(section.node("options", "message"), "");
+        setMessage(section.node("options", "whitelist-worlds", "message"), "{prefix}You are not in any of the whitelisted worlds.");
 
-        setMessage(section, "options.permission.whitelist-permission.message",
-                "{prefix}<red>You can not use that voucher here as you are not in a whitelisted world for this voucher.");
+        setMessage(section.node("options", "permission", "whitelist-permission", "message"), "{prefix}You do not have the permission <red>{permission} <gray>to use this voucher.");
 
-        setMessage(section, "options.permission.blacklist-permission.message",
-                "{prefix}<red>You can not use that voucher here as you are not in a whitelisted world for this voucher.");
+        setMessage(section.node("options", "permission", "blacklist-permission", "message"), "{prefix}You already have the permission <red>{permission} <gray>so you can''t use this voucher.");
     }
 
     @Override
-    public <T> void set(@NotNull final ConfigurationSection section, @NotNull final String path, @NotNull final T value) {
-        section.set(path, value);
-    }
-
-    @Override
-    public @NotNull final Path getVouchersDirectory() {
+    public @NonNull final Path getVouchersDirectory() {
         return this.dataPath.resolve("vouchers");
     }
 
     @Override
-    public @NotNull final Path getCodesDirectory() {
+    public @NonNull final Path getCodesDirectory() {
         return this.dataPath.resolve("codes");
     }
 
-    private void setMessage(@NotNull final ConfigurationSection section, @NotNull final String path, @NotNull final String defaultValue) {
-        section.set(path, section.isList(path) ? AdvUtils.convert(section.getStringList(path), true) : AdvUtils.convert(section.getString(path, defaultValue), true));
+    private void setMessage(@NonNull final CommentedConfigurationNode section, @NonNull final String defaultValue) {
+        try {
+            if (section.isList()) {
+                section.setList(String.class, AdvUtils.convert(StringUtils.getStringList(section), true));
+
+                return;
+            }
+
+            section.set(String.class, AdvUtils.convert(section.getString(defaultValue), true));
+        } catch (final SerializationException exception) {
+            this.fusion.log(Level.error, "<red>Failed to convert <gold>%s</gold> to MiniMessage. (<gold>%s</gold>)", section.path(), exception.getMessage() != null ? exception.getMessage() : "N/A");
+        }
     }
 }

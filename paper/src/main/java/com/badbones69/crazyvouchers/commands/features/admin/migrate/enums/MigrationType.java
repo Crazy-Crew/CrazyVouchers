@@ -1,6 +1,6 @@
 package com.badbones69.crazyvouchers.commands.features.admin.migrate.enums;
 
-import org.jetbrains.annotations.NotNull;
+import org.jspecify.annotations.NonNull;
 
 public enum MigrationType {
 
@@ -10,19 +10,21 @@ public enum MigrationType {
     NEW_ITEM_FORMAT("NewItemFormat"),
     VOUCHERS_COLOR("VouchersColor"),
 
+    DATABASE_MIGRATION("DataBaseMigration"),
+
     VOUCHERS_RENAME("VouchersRename");
 
     private final String name;
 
-    MigrationType(@NotNull final String name) {
+    MigrationType(@NonNull final String name) {
         this.name = name;
     }
 
-    public @NotNull final String getName() {
+    public @NonNull final String getName() {
         return this.name;
     }
 
-    public static MigrationType fromName(@NotNull final String name) {
+    public static MigrationType fromName(@NonNull final String name) {
         MigrationType type = null;
 
         for (final MigrationType key : MigrationType.values()) {

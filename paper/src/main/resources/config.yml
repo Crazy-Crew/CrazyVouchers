@@ -4,10 +4,6 @@
 # Issues: https://github.com/Crazy-Crew/CrazyVouchers/issues
 # Features: https://github.com/Crazy-Crew/CrazyVouchers/issues
 root:
-  # This option will let you test a different way of picking random numbers. If you have any issues, You can set it back to false.
-  # 
-  # If the option is set to false, items should be more random in theory.
-  use-different-random: false
   # This will allow you to use a new items layout which should be much more straight forward, less prone to errors.
   # You can run /crazyvouchers migrate -mt NewItemFormat which should migrate all existing prizes after you set this to true
   # 
@@ -54,8 +50,6 @@ settings:
       enabled: false
       # The line to add to the lore of an item. This message supports PlaceholderAPI
       value: <red>This item has been duplicated
-  # Pick which locale you want to use if your server is in another language.
-  locale: en-US
   # Whether you should only be allowed to use vouchers in survival.
   survival-only: true
   # Recipe settings.

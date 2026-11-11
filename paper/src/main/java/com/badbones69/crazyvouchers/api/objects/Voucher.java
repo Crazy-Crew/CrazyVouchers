@@ -1,18 +1,20 @@
 package com.badbones69.crazyvouchers.api.objects;
 
-import ch.jalu.configme.SettingsManager;
 import com.badbones69.crazyvouchers.CrazyVouchers;
 import com.badbones69.crazyvouchers.Methods;
-import com.badbones69.crazyvouchers.api.CrazyManager;
-import com.badbones69.crazyvouchers.api.enums.FileKeys;
-import com.badbones69.crazyvouchers.api.enums.config.Messages;
-import com.badbones69.crazyvouchers.api.enums.misc.PermissionKeys;
-import com.badbones69.crazyvouchers.api.enums.misc.PersistentKeys;
+import com.badbones69.crazyvouchers.api.CrazyPlatform;
+import com.ryderbelserion.crazyvouchers.storage.holder.StorageHolder;
+import com.ryderbelserion.crazyvouchers.utils.ConfigUtils;
+import com.ryderbelserion.fusion.core.api.config.properties.PropertyManager;
+import us.crazycrew.crazyvouchers.api.config.ConfigManager;
+import us.crazycrew.crazyvouchers.api.config.types.RootKeys;
+import us.crazycrew.crazyvouchers.api.enums.messages.Message;
+import com.badbones69.crazyvouchers.api.enums.PermissionKeys;
+import com.badbones69.crazyvouchers.api.enums.PersistentKeys;
 import com.badbones69.crazyvouchers.api.events.VoucherRedeemEvent;
-import com.badbones69.crazyvouchers.config.types.locale.MessageKeys;
 import com.badbones69.crazyvouchers.utils.ItemUtils;
-import com.ryderbelserion.fusion.core.api.constants.ModSupport;
-import com.ryderbelserion.fusion.core.api.enums.Level;
+import com.ryderbelserion.fusion.api.enums.constants.ModSupport;
+import com.ryderbelserion.fusion.api.enums.Level;
 import com.ryderbelserion.fusion.core.utils.StringUtils;
 import com.ryderbelserion.fusion.paper.FusionPaper;
 import com.ryderbelserion.fusion.paper.builders.items.ItemBuilder;
@@ -24,26 +26,27 @@ import io.papermc.paper.persistence.PersistentDataContainerView;
 import me.clip.placeholderapi.PlaceholderAPI;
 import net.kyori.adventure.text.Component;
 import org.bukkit.*;
-import org.bukkit.configuration.ConfigurationSection;
-import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.EquipmentSlot;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.PlayerInventory;
 import org.bukkit.persistence.PersistentDataType;
-import com.badbones69.crazyvouchers.config.ConfigManager;
-import com.badbones69.crazyvouchers.config.types.ConfigKeys;
-import org.jetbrains.annotations.NotNull;
+import org.jspecify.annotations.NonNull;
+import org.spongepowered.configurate.CommentedConfigurationNode;
 import java.util.*;
 import java.util.concurrent.atomic.AtomicBoolean;
 
 public class Voucher {
 
     private final CrazyVouchers plugin = CrazyVouchers.get();
+    private final CrazyPlatform platform = this.plugin.getPlatform();
+    private final ConfigManager configManager = this.platform.getConfigManager();
+    private final StorageHolder storageHolder = this.platform.getStorageHolder();
+
+    private final PropertyManager config = this.configManager.getConfig();
+
     private final Server server = this.plugin.getServer();
     private final FusionPaper fusion = this.plugin.getFusion();
-
-    private final CrazyManager crazyManager = this.plugin.getCrazyManager();
 
     private final ItemBuilder itemBuilder;
 
@@ -104,22 +107,18 @@ public class Voucher {
 
     private final double totalWeight;
 
-    private final List<String> displayLore;
-    private final String displayName;
-
-
-    public Voucher(@NotNull final ConfigurationSection section, @NotNull final String name) {
+    public Voucher(@NonNull final CommentedConfigurationNode section, @NonNull final String name) {
         this.cleanName = name.replace(".yml", "");
         this.name = name;
 
-        this.isAntiDupeOverridden = section.getBoolean("override-anti-dupe", false);
+        this.isAntiDupeOverridden = section.node("override-anti-dupe").getBoolean(false);
 
-        this.isItemFramePlacementToggled = section.getBoolean("allow-vouchers-in-item-frames", false);
+        this.isItemFramePlacementToggled = section.node("allow-vouchers-in-item-frames").getBoolean(false);
 
-        this.hasCooldown = section.getBoolean("cooldown.toggle", false);
-        this.cooldownInterval = section.getInt("cooldown.interval", 5);
+        this.hasCooldown = section.node("cooldown", "toggle").getBoolean(false);
+        this.cooldownInterval = section.node("cooldown", "interval").getInt(5);
 
-        String material = section.getString("item", "stone").toLowerCase();
+        String material = section.node("item").getString("stone").toLowerCase();
         String model_data = "";
 
         if (material.contains("#")) {
@@ -129,13 +128,13 @@ public class Voucher {
             model_data = split[1];
         }
 
-        final String displayName = section.getString("name", "");
+        final String displayName = section.node("name").getString("");
 
-        final List<String> displayLore = section.isList("lore") ? section.getStringList("lore") : List.of(section.getString("lore", ""));
+        final List<String> displayLore = section.node("lore").isList() ? StringUtils.getStringList(section.node("lore")) : List.of(section.node("lore").getString(""));
 
         this.itemBuilder = new ItemBuilder(material)
-                .withDisplayName(this.displayName = displayName)
-                .withDisplayLore(this.displayLore = displayLore);
+                .withDisplayName(displayName)
+                .withDisplayLore(displayLore);
 
         final CustomBuilder customBuilder = this.itemBuilder.asCustomBuilder();
 
@@ -143,154 +142,147 @@ public class Voucher {
             customBuilder.setCustomModelData(model_data);
         }
 
-        if (section.contains("custom-model-data")) {
-            customBuilder.setCustomModelData(section.getString("custom-model-data", "-1"));
+        if (section.hasChild("custom-model-data")) {
+            customBuilder.setCustomModelData(section.node("custom-model-data").getString("-1"));
         }
 
-        final String playerName = section.getString("player", "");
+        final String playerName = section.node("player").getString("");
 
         if (!playerName.isEmpty()) {
             this.itemBuilder.asSkullBuilder().withName(playerName).build();
         }
 
-        this.itemBuilder.setItemDamage(section.getInt("display-damage", -1));
+        this.itemBuilder.setItemDamage(section.node("display-damage").getInt(-1));
 
-        final String trimMaterial = section.getString("display-trim.material", "").toLowerCase();
-        final String trimPattern = section.getString("display-trim.pattern", "").toLowerCase();
+        final String trimMaterial = section.node("display-trim", "material").getString("").toLowerCase();
+        final String trimPattern = section.node("display-trim", "pattern").getString("").toLowerCase();
 
         if (!trimMaterial.isEmpty() && !trimPattern.isEmpty()) {
             this.itemBuilder.setTrim(trimPattern, trimMaterial);
         }
 
-        final String rgb = section.getString("settings.rgb", "");
+        final String rgb = section.node("settings", "rgb").getString("");
 
-        final String color = section.getString("settings.color", "");
+        final String color = section.node("settings", "color").getString("");
 
         this.itemBuilder.setColor(!color.isEmpty() ? color : !rgb.isEmpty() ? rgb : "");
 
-        this.itemBuilder.withSkull(section.getString("skull", ""));
+        this.itemBuilder.withSkull(section.node("skull").getString(""));
 
-        switch (section.getString("glowing", "none").toLowerCase()) {
+        switch (section.node("glowing").getString("none").toLowerCase()) {
             case "add_glow", "true" -> this.itemBuilder.addEnchantGlint();
             case "remove_glow", "false" -> this.itemBuilder.removeEnchantGlint();
             case "none" -> {}
         }
 
-        this.commands = section.isList("commands") ? section.getStringList("commands") : List.of(section.getString("commands", ""));
+        this.commands = section.node("commands").isList() ? StringUtils.getStringList(section.node("commands")) : List.of(section.node("commands").getString(""));
 
-        this.hasArgument = section.getBoolean("has-argument", false);
+        this.hasArgument = section.node("has-argument").getBoolean(false);
 
-        if (this.config.getProperty(ConfigKeys.use_different_items_layout) && !section.isList("items")) {
-            this.items = ItemUtils.convertConfigurationSection(section.getConfigurationSection("items"));
+        if (this.config.getProperty(RootKeys.use_different_items_layout) && !section.node("items").isList()) {
+            this.items = ItemUtils.convertConfigurationSection(section.node("items"));
         } else {
-            this.items = ItemUtils.convertStringList(section.getStringList("items"));
+            this.items = ItemUtils.convertStringList(StringUtils.getStringList(section.node("items")));
         }
 
         this.usedMessage = getMessage(section, "options.message", "");
 
-        this.whitelistPermissionToggle = section.getBoolean("options.permission.whitelist-permission.toggle", false);
-        this.whitelistCommands = section.isList("options.permission.whitelist-permission.commands") ? section.getStringList("options.permission.whitelist-permission.commands")
-                : List.of(section.getString("options.permission.whitelist-permission.commands", ""));
-        this.whitelistPermissionMessage = getMessage(section, "options.permission.whitelist-permission.message", Messages.no_permission_to_use_voucher.getString());
+        this.whitelistPermissionToggle = section.node("options", "permission", "whitelist-permission", "toggle").getBoolean(false);
+        this.whitelistCommands = section.node("options", "permission", "whitelist-permission", "commands").isList() ? StringUtils.getStringList(section.node("options", "permission", "whitelist-permission", "commands")) :
+                List.of(section.node("options", "permission", "whitelist-permission", "commands").getString(""));
+        this.whitelistPermissionMessage = getMessage(section, "options.permission.whitelist-permission.message", Message.no_permission_to_use_voucher.getMessage());
 
-        this.whitelistPermissions.addAll(section.getStringList("options.permission.whitelist-permission.permissions").stream().map(String::toLowerCase).toList());
+        this.whitelistPermissions.addAll(StringUtils.getStringList(section.node("options", "permission", "whitelist-permission", "permissions")).stream().map(String::toLowerCase).toList());
 
-        final String permission = section.getString("options.permission.whitelist-permission.node", "").toLowerCase();
+        final String permission = section.node("options", "permission", "whitelist-permission", "node").getString("").toLowerCase();
 
         if (!permission.isEmpty()) {
             this.whitelistPermissions.add(permission);
         }
 
-        this.whitelistWorldsToggle = section.getBoolean("options.whitelist-worlds.toggle", false);
-        this.whitelistWorldCommands = section.isList("options.whitelist-worlds.commands") ? section.getStringList("options.whitelist-worlds.commands")
-                : List.of(section.getString("options.whitelist-worlds.commands", ""));
-        this.whitelistWorldMessage = getMessage(section, "options.whitelist-worlds.message", Messages.not_in_whitelisted_world.getString());
+        this.whitelistWorldsToggle = section.node("options", "whitelist-worlds", "toggle").getBoolean(false);
+        this.whitelistWorldCommands = section.node("options", "whitelist-worlds", "commands").isList() ? StringUtils.getStringList(section.node("options", "whitelist-worlds", "commands")) : List.of(section.node("options", "whitelist-worlds", "commands").getString(""));
+        this.whitelistWorldMessage = getMessage(section, "options.whitelist-worlds.message", Message.not_in_whitelist_world.getMessage());
 
-        this.whitelistWorlds.addAll(section.getStringList("options.whitelist-worlds.worlds").stream().map(String::toLowerCase).toList());
+        this.whitelistWorlds.addAll(StringUtils.getStringList(section.node("options", "whitelist-worlds", "worlds")).stream().map(String::toLowerCase).toList());
 
-        this.blacklistPermissionsToggle = section.getBoolean("options.permission.blacklist-permission.toggle", false);
-        this.blacklistPermissionMessage = getMessage(section, "options.permission.blacklist-permission.message", Messages.has_blacklist_permission.getString());
-        this.blacklistPermissions = section.isList("options.permission.blacklist-permission.permissions") ? section.getStringList("options.permission.blacklist-permission.permissions")
-                : List.of(section.getString("options.permission.blacklist-permission.permissions", ""));
-        this.blacklistCommands = section.isList("options.permission.blacklist-permission.commands") ? section.getStringList("options.permission.blacklist-permission.commands")
-                : List.of(section.getString("options.permission.blacklist-permission.commands", ""));
+        this.blacklistPermissionsToggle = section.node("options", "permission", "blacklist-permission", "toggle").getBoolean(false);
+        this.blacklistPermissionMessage = getMessage(section, "options.permission.blacklist-permission.message", Message.has_blacklist_permission.getMessage());
+        this.blacklistPermissions = section.node("options", "permission", "blacklist-permission", "permissions").isList() ? StringUtils.getStringList(section.node("options", "permission", "blacklist-permission", "permissions"))
+                : List.of(section.node("options", "permission", "blacklist-permission", "permissions").getString(""));
+        this.blacklistCommands = section.node("options", "permission", "blacklist-permission", "commands").isList() ? StringUtils.getStringList(section.node("options", "permission", "blacklist-permission", "commands"))
+                : List.of(section.node("options", "permission", "blacklist-permission", "commands").getString(""));
 
-        this.limiterToggle = section.getBoolean("options.limiter.toggle", false);
-        this.limiterLimit = section.getInt("options.limiter.limit", 0);
+        this.limiterToggle = section.node("options", "limiter", "toggle").getBoolean(false);
+        this.limiterLimit = section.node("options", "limiter", "limit").getInt(0);
 
         this.requiredPlaceholdersMessage = getMessage(section, "options.required-placeholders-message", "");
 
-        final ConfigurationSection requiredSection = section.getConfigurationSection("options.required-placeholders");
+        if (section.hasChild("options", "required-placeholders")) {
+            for (final Map.Entry<Object, CommentedConfigurationNode> entry : section.node("options", "required-placeholders").childrenMap().entrySet()) {
+                final CommentedConfigurationNode value = entry.getValue();
 
-        if (requiredSection != null) {
-            for (final String key : requiredSection.getKeys(false)) {
-                final ConfigurationSection internalSection = requiredSection.getConfigurationSection(key);
+                final String placeholder = value.node("placeholder").getString("");
 
-                if (internalSection == null) continue;
+                if (placeholder.isEmpty()) continue;
 
-                final String placeholder = internalSection.getString("placeholder", "");
-                final String value = internalSection.getString("value", "");
+                final String text = value.node("value").getString("");
 
-                if (placeholder.isEmpty() || value.isEmpty()) continue;
+                if (text.isEmpty()) continue;
 
-                this.requiredPlaceholders.put(placeholder, value);
+                this.requiredPlaceholders.put(placeholder, text);
             }
         }
 
-        this.twoFactorAuthToggle = section.contains("options.two-step-authentication") ? section.getBoolean("options.two-step-authentication", false) : section.getBoolean("options.two-factor.toggle", false);
-        this.twoFactorAuthMessage = section.contains("options.two-factor.message") ? section.getStringList("options.two-factor.message") : List.of(this.locale.getProperty(MessageKeys.two_step_authentication));
+        this.twoFactorAuthToggle = section.hasChild("options", "two-step-authentication") ? section.node("options", "two-step-authentication").getBoolean(false) : section.node("options", "two-factor", "toggle").getBoolean(false);
+        this.twoFactorAuthMessage = section.hasChild("options", "two-factor", "message") ? StringUtils.getStringList(section.node("options", "two-factor", "message")) : List.of(Message.two_step_authentication.getMessage());
 
-        this.soundToggle = section.getBoolean("options.sound.toggle", false);
-        this.volume = (float) section.getDouble("options.sound.volume", 1.0);
-        this.pitch = (float) section.getDouble("options.sound.pitch", 1.0);
+        this.soundToggle = section.node("options", "sound", "toggle").getBoolean(false);
+        this.volume = (float) section.node("options", "sound", "volume").getDouble(1.0);
+        this.pitch = (float) section.node("options", "sound", "pitch").getDouble(1.0);
 
         if (this.soundToggle) {
-            for (final String sound : section.getStringList("options.sound.sounds")) {
-                this.sounds.add(com.ryderbelserion.fusion.paper.utils.ItemUtils.getSound(sound));
+            for (final String sound : StringUtils.getStringList(section.node("options", "sound", "sounds"))) {
+                com.ryderbelserion.fusion.paper.utils.ItemUtils.getSound(sound).ifPresent(this.sounds::add);
             }
         }
 
-        if (section.getBoolean("components.hide-tooltip", false)) {
+        if (section.node("components", "hide-tooltip").getBoolean(false)) {
             this.itemBuilder.hideToolTip();
         }
 
-        if (section.isList("components.hide-tooltip-advanced")) {
-            this.itemBuilder.hideComponents(section.getStringList("components.hide-tooltip-advanced"));
+        if (section.node("components", "hide-tooltip-advanced").isList()) {
+            this.itemBuilder.hideComponents(StringUtils.getStringList(section.node("components", "hide-tooltip-advanced")));
         }
 
-        customBuilder.setItemModel(section.getString("components.item-model.namespace", ""), section.getString("components.item-model.key", ""));
+        customBuilder.setItemModel(section.node("components", "item-model", "namespace").getString(""), section.node("components", "item-model", "key").getString(""));
 
         customBuilder.build();
 
-        this.fireworkToggle = section.getBoolean("options.firework.toggle", false);
+        this.fireworkToggle = section.node("options", "firework", "toggle").getBoolean(false);
 
         if (this.fireworkToggle) {
-            for (final String fireworkColor : section.getString("options.firework.colors", "").split(", ")) {
+            for (final String fireworkColor : section.node("options", "firework", "colors").getString("").split(", ")) {
                 this.fireworkColors.add(ColorUtils.getColor(fireworkColor));
             }
         }
 
-        this.isEdible = section.getBoolean("options.is-edible", false) && this.itemBuilder.isEdible();
+        this.isEdible = section.node("options", "is-edible").getBoolean(false) && this.itemBuilder.isEdible();
 
-        if (section.contains("chance-commands")) {
-            this.fusion.log(Level.WARNING, "We detected that you have the list version of chance-commands which is no longer used, Please run /crazyvouchers migrate -mt VouchersDeprecated");
+        if (section.hasChild("chance-commands")) {
+            this.fusion.log(Level.warn, "We detected that you have the list version of chance-commands which is no longer used, Please run /crazyvouchers migrate -mt VouchersDeprecated.");
         }
 
-        if (section.contains("random-commands")) {
-            if (section.isList("random-commands")) {
-                this.fusion.log(Level.WARNING, "We've detected that you have the list version of random-commands which is no longer used, Please run /crazyvouchers migrate -mt VouchersDeprecated");
+        if (section.hasChild("random-commands")) {
+            final CommentedConfigurationNode node = section.node("random-commands");
+
+            if (node.isList()) {
+                this.fusion.log(Level.warn, "We've detected that you have the list version of random-commands which is no longer used, Please run /crazyvouchers migrate -mt VouchersDeprecated.");
             } else {
-                final ConfigurationSection randomCommands = section.getConfigurationSection("random-commands");
-
-                if (randomCommands != null) {
-                    for (final String key : randomCommands.getKeys(false)) {
-                        final ConfigurationSection command = randomCommands.getConfigurationSection(key);
-
-                        if (command == null) continue;
-
-                        this.randomCommands.add(new VoucherCommand(command.getStringList("commands"), command.getDouble("weight", -1)));
-                    }
-                }
+                node.childrenMap().forEach((id, key) -> this.randomCommands.add(new VoucherCommand(
+                        StringUtils.getStringList(key.node("commands")),
+                        key.node("weight").getDouble(-1)
+                )));
             }
         }
 
@@ -298,7 +290,7 @@ public class Voucher {
         this.totalWeight = this.randomCommands.stream().filter(filter -> filter.getWeight() > 0.0).mapToDouble(VoucherCommand::getWeight).sum();
     }
 
-    public @NotNull String getArgument(@NotNull final ItemStack item) {
+    public @NonNull String getArgument(@NonNull final ItemStack item) {
         if (item.getType() == Material.AIR || !hasArgument()) return "";
 
         final PersistentDataContainerView container = item.getPersistentDataContainer();
@@ -316,9 +308,9 @@ public class Voucher {
         return "";
     }
 
-    public void execute(@NotNull final Player player, @NotNull final ItemStack item, @NotNull final EquipmentSlot slot) {
-        if (player.getGameMode() == GameMode.CREATIVE && this.config.getProperty(ConfigKeys.must_be_in_survival)) {
-            Messages.survival_mode.sendMessage(player);
+    public void execute(@NonNull final Player player, @NonNull final ItemStack item, @NonNull final EquipmentSlot slot) {
+        if (player.getGameMode() == GameMode.CREATIVE && this.config.getProperty(RootKeys.must_be_in_survival)) {
+            Message.survival_only.sendMessage(player);
 
             return;
         }
@@ -337,20 +329,16 @@ public class Voucher {
         placeholders.put("{x}", String.valueOf(location.getBlockX()));
         placeholders.put("{y}", String.valueOf(location.getBlockY()));
         placeholders.put("{z}", String.valueOf(location.getBlockZ()));
-        placeholders.put("{prefix}", this.config.getProperty(ConfigKeys.command_prefix));
+        placeholders.put("{prefix}", ConfigUtils.getPrefix());
 
-        final FileConfiguration data = FileKeys.data.getConfiguration();
-
-        if (!this.isAntiDupeOverridden && this.config.getProperty(ConfigKeys.dupe_protection)) {
+        if (!this.isAntiDupeOverridden && this.config.getProperty(RootKeys.dupe_protection)) {
             final PersistentDataContainerView view = item.getPersistentDataContainer();
 
             if (view.has(PersistentKeys.dupe_protection.getNamespacedKey())) {
-                final String id = view.get(PersistentKeys.dupe_protection.getNamespacedKey(), PersistentDataType.STRING);
+                final String id = view.getOrDefault(PersistentKeys.dupe_protection.getNamespacedKey(), PersistentDataType.STRING, "");
 
-                final List<String> vouchers = data.getStringList("Used-Vouchers");
-
-                if (vouchers.contains(id)) {
-                    Messages.dupe_protection.sendMessage(player);
+                if (!id.isBlank() && this.storageHolder.isVoucherProtected(id)) {
+                    Message.dupe_protection.sendMessage(player);
 
                     this.server.getOnlinePlayers().forEach(staff -> {
                         if (PermissionKeys.crazyvouchers_notify.hasPermission(staff)) {
@@ -359,14 +347,12 @@ public class Voucher {
                             values.put("{player}", player.getName());
                             values.put("{id}", id);
 
-                            Messages.notify_staff.sendMessage(staff, values);
+                            Message.dupe_protection_notify.sendMessage(staff, values);
                         }
                     });
 
-                    if (this.config.getProperty(ConfigKeys.dupe_protection_toggle_warning)) {
+                    if (this.config.getProperty(RootKeys.dupe_protection_warning_toggle)) {
                         final ItemLore.Builder builder = ItemLore.lore();
-
-                        final String text = this.config.getProperty(ConfigKeys.dupe_protection_warning);
 
                         final boolean hasWarning = item.getPersistentDataContainer().has(PersistentKeys.dupe_protection_warning.getNamespacedKey());
 
@@ -377,6 +363,8 @@ public class Voucher {
                         if (lore != null) {
                             builder.addLines(lore.lines());
                         }
+
+                        final String text = this.config.getProperty(RootKeys.dupe_protection_warning_text);
 
                         final Component warning_text = this.fusion.asComponent(player, text, placeholders);
 
@@ -394,23 +382,18 @@ public class Voucher {
 
         if (!hasPassedChecks(player, argument, placeholders)) return;
 
-        final FileConfiguration user = FileKeys.users.getConfiguration();
-
         final UUID uuid = player.getUniqueId();
-        final String asString = uuid.toString();
         final String cleanName = getStrippedName();
 
-        if (!PermissionKeys.crazyvouchers_bypass.hasPermission(player) && useLimiter() && user.contains("Players." + asString + ".Vouchers." + cleanName)) {
-            int amount = user.getInt("Players." + asString + ".Vouchers." + cleanName);
-
-            if (amount >= getLimiterLimit()) {
-                Messages.hit_voucher_limit.sendMessage(player);
+        if (isLimiterEnabled() && !PermissionKeys.crazyvouchers_bypass.hasPermission(player) && this.storageHolder.isVoucherRedeemed(cleanName)) {
+            if (this.storageHolder.getVoucherLimit(cleanName, uuid) >= getLimiterLimit()) {
+                Message.hit_voucher_limit.sendMessage(player);
 
                 return;
             }
 
-            if (hasCooldown() && isCooldown(player)){
-                Messages.cooldown_active.sendMessage(player, "{time}", String.valueOf(getCooldown()));
+            if (hasCooldown() && isCooldown(player)) {
+                Message.cooldown_active.sendMessage(player, "{time}", String.valueOf(getCooldown()));
 
                 return;
             } else {
@@ -436,31 +419,27 @@ public class Voucher {
 
         if (!this.isEdible && this.twoFactorAuthToggle) {
             if (!PermissionKeys.crazyvouchers_bypass_2fa.hasPermission(player)) {
-                if (this.crazyManager.isVoucherAuthActive(uuid)) {
-                    final String voucher_name = this.crazyManager.getActiveVoucherAuth(uuid);
+                if (this.platform.isVoucherAuthActive(uuid)) {
+                    final String voucher_name = this.platform.getActiveVoucherAuth(uuid);
 
                     if (!voucher_name.equalsIgnoreCase(cleanName)) {
-                        player.sendMessage(this.fusion.asComponent(player, StringUtils.toString(this.twoFactorAuthMessage), Map.of(
-                                "{prefix}", this.config.getProperty(ConfigKeys.command_prefix)
-                        )));
+                        player.sendMessage(this.fusion.asComponent(player, StringUtils.toString(this.twoFactorAuthMessage), Map.of("{prefix}", ConfigUtils.getPrefix())));
 
-                        this.crazyManager.addVoucherAuth(uuid, cleanName);
+                        this.platform.addVoucherAuth(uuid, cleanName);
 
                         return;
                     }
                 } else {
-                    player.sendMessage(this.fusion.asComponent(player, StringUtils.toString(this.twoFactorAuthMessage), Map.of(
-                            "{prefix}", this.config.getProperty(ConfigKeys.command_prefix)
-                    )));
+                    player.sendMessage(this.fusion.asComponent(player, StringUtils.toString(this.twoFactorAuthMessage), Map.of("{prefix}", ConfigUtils.getPrefix())));
 
-                    this.crazyManager.addVoucherAuth(uuid, cleanName);
+                    this.platform.addVoucherAuth(uuid, cleanName);
 
                     return;
                 }
             }
         }
 
-        this.crazyManager.removeVoucherAuth(uuid);
+        this.platform.removeVoucherAuth(uuid);
 
         final VoucherRedeemEvent event = new VoucherRedeemEvent(player, this, argument);
 
@@ -494,7 +473,9 @@ public class Voucher {
             }
         }
 
-        if (useFirework()) Methods.firework(player.getLocation(), getFireworkColors());
+        if (useFirework()) {
+            Methods.firework(player.getLocation(), getFireworkColors());
+        }
 
         final String message = getVoucherUsedMessage();
 
@@ -502,39 +483,40 @@ public class Voucher {
             player.sendMessage(this.fusion.asComponent(player, message, placeholders));
         }
 
-        if (useLimiter()) {
-            FileConfiguration configuration = FileKeys.users.getConfiguration();
+        final boolean isDupeProtectionEnabled = this.config.getProperty(RootKeys.dupe_protection);
 
-            configuration.set("Players." + uuid + ".UserName", player.getName());
-            configuration.set("Players." + uuid + ".Vouchers." + cleanName, configuration.getInt("Players." + uuid + ".Vouchers." + cleanName) + 1);
-
-            FileKeys.users.save();
+        if (isLimiterEnabled() && !isDupeProtectionEnabled) { // dupe protection must be turned off if the limiter is enabled, these 2 features are not compatible
+            if (!this.storageHolder.isVoucherRedeemed(cleanName)) {
+                this.storageHolder.incrementVoucherLimit(cleanName, uuid);
+            } else {
+                this.storageHolder.addRedeemedVoucher(cleanName, uuid);
+            }
         }
 
-        if (this.config.getProperty(ConfigKeys.dupe_protection)) {
+        if (isDupeProtectionEnabled) {
             final PersistentDataContainerView view = item.getPersistentDataContainer();
 
             if (view.has(PersistentKeys.dupe_protection.getNamespacedKey())) {
-                final String id = view.get(PersistentKeys.dupe_protection.getNamespacedKey(), PersistentDataType.STRING);
+                final String id = view.getOrDefault(PersistentKeys.dupe_protection.getNamespacedKey(), PersistentDataType.STRING, "");
 
-                FileConfiguration configuration = FileKeys.data.getConfiguration();
+                if (id.isBlank()) {
+                    this.fusion.log(Level.warn, "Dupe Protection data key was found on the ItemStack, but no value present.");
 
-                List<String> vouchers = new ArrayList<>(configuration.getStringList("Used-Vouchers"));
-
-                if (!vouchers.contains(id)) {
-                    vouchers.add(id);
-
-                    configuration.set("Used-Vouchers", vouchers);
-
-                    FileKeys.data.save();
-                } else {
-                    this.fusion.log(Level.WARNING, "%s is already in the data.yml somehow.", id == null ? "N/A" : id);
+                    return;
                 }
+
+                if (!this.storageHolder.isVoucherProtected(id)) {
+                    this.storageHolder.addProtectedVoucher(id, uuid.toString());
+
+                    return;
+                }
+
+                this.fusion.log(Level.warn, "%s id is already present in the database and may be duplicated!", id);
             }
         }
     }
 
-    private boolean hasPassedChecks(@NotNull final Player player, @NotNull final String argument, @NotNull final Map<String, String> placeholders) {
+    private boolean hasPassedChecks(@NonNull final Player player, @NonNull final String argument, @NonNull final Map<String, String> placeholders) {
         if (player.isOp()) {
             return true;
         }
@@ -577,15 +559,11 @@ public class Voucher {
         return this.hasArgument;
     }
     
-    public ItemStack buildItem(@NotNull final Player player) {
+    public ItemStack buildItem(@NonNull final Player player) {
         return buildItem(player, 1);
     }
 
-    private @NotNull final SettingsManager config = ConfigManager.getConfig();
-
-    private @NotNull final SettingsManager locale = ConfigManager.getMessages();
-
-    public ItemStack buildItem(@NotNull final Player player, final int amount) {
+    public ItemStack buildItem(@NonNull final Player player, final int amount) {
         final ItemStack item = this.itemBuilder.setAmount(amount).asItemStack(player);
 
         setUniqueId(item);
@@ -595,10 +573,10 @@ public class Voucher {
         return new ItemStack(item);
     }
 
-    public List<ItemStack> buildItems(@NotNull final Player player, @NotNull final String argument, final int amount) {
+    public List<ItemStack> buildItems(@NonNull final Player player, @NonNull final String argument, final int amount) {
         final List<ItemStack> items = new ArrayList<>();
 
-        if (!this.isAntiDupeOverridden && this.config.getProperty(ConfigKeys.dupe_protection)) {
+        if (!this.isAntiDupeOverridden && this.config.getProperty(RootKeys.dupe_protection)) {
             while (items.size() < amount) {
                 items.add(buildItem(player, argument, 1));
             }
@@ -611,7 +589,7 @@ public class Voucher {
         return items;
     }
     
-    public ItemStack buildItem(@NotNull final Player player, @NotNull final String argument, final int amount) {
+    public ItemStack buildItem(@NonNull final Player player, @NonNull final String argument, final int amount) {
         final ItemStack item = this.itemBuilder.addPlaceholder("{arg}", argument).setAmount(amount).asItemStack(player);
 
         setUniqueId(item);
@@ -625,7 +603,7 @@ public class Voucher {
         return new ItemStack(item);
     }
 
-    public void dispatchCommands(@NotNull final Player player, @NotNull final Map<String, String> placeholders) {
+    public void dispatchCommands(@NonNull final Player player, @NonNull final Map<String, String> placeholders) {
         Methods.dispatch(player, this.commands, placeholders, true); // dispatch normal commands
 
         if (this.randomCommands.isEmpty()) return;
@@ -649,15 +627,15 @@ public class Voucher {
         }
     }
 
-    private void setUniqueId(@NotNull final ItemStack item) {
-        if (!this.isAntiDupeOverridden && this.config.getProperty(ConfigKeys.dupe_protection)) {
+    private void setUniqueId(@NonNull final ItemStack item) {
+        if (!this.isAntiDupeOverridden && this.config.getProperty(RootKeys.dupe_protection)) {
             final UUID uuid = UUID.randomUUID();
 
             item.editPersistentDataContainer(container -> container.set(PersistentKeys.dupe_protection.getNamespacedKey(), PersistentDataType.STRING, uuid.toString()));
         }
     }
 
-    public boolean hasPermission(@NotNull final Player player, @NotNull final List<String> permissions, @NotNull final List<String> commands, @NotNull final Map<String, String> placeholders, @NotNull final String message, @NotNull final String argument) {
+    public boolean hasPermission(@NonNull final Player player, @NonNull final List<String> permissions, @NonNull final List<String> commands, @NonNull final Map<String, String> placeholders, @NonNull final String message, @NonNull final String argument) {
         return Methods.hasPermission(true, player, permissions, commands, placeholders, message, argument);
     }
 
@@ -721,7 +699,7 @@ public class Voucher {
         return this.blacklistCommands;
     }
     
-    public boolean useLimiter() {
+    public boolean isLimiterEnabled() {
         return this.limiterToggle;
     }
     
@@ -793,29 +771,21 @@ public class Voucher {
         return this.cooldownInterval;
     }
 
-    public boolean isCooldown(@NotNull final Player player) {
+    public boolean isCooldown(@NonNull final Player player) {
         return this.cooldowns.getOrDefault(player.getUniqueId(), 0L) >= System.currentTimeMillis();
     }
 
-    public void addCooldown(@NotNull final Player player) {
+    public void addCooldown(@NonNull final Player player) {
         this.cooldowns.put(player.getUniqueId(), System.currentTimeMillis() + (1000L * getCooldown()));
     }
 
-    public void removeCooldown(@NotNull final Player player) {
+    public void removeCooldown(@NonNull final Player player) {
         this.cooldowns.remove(player.getUniqueId());
     }
 
-    private String getMessage(@NotNull final ConfigurationSection section, @NotNull final String path, @NotNull final String defaultValue) {
-        String safeMessage;
+    private String getMessage(@NonNull final CommentedConfigurationNode section, @NonNull final String defaultValue, @NonNull final Object... path) {
+        final CommentedConfigurationNode node = section.node(path);
         
-        if (section.isList(path)) {
-            safeMessage = StringUtils.toString(section.getStringList(path));
-        
-            return safeMessage;
-        }
-        
-        safeMessage = section.getString(path, defaultValue);
-        
-        return safeMessage;
+        return node.isList() ? StringUtils.toString(StringUtils.getStringList(node, defaultValue)) : node.getString(defaultValue);
     }
 }

@@ -1,14 +1,12 @@
 package com.badbones69.crazyvouchers.commands.features.admin;
 
 import com.badbones69.crazyvouchers.Methods;
-import com.badbones69.crazyvouchers.api.enums.FileKeys;
-import com.badbones69.crazyvouchers.api.enums.config.Messages;
-import com.badbones69.crazyvouchers.api.enums.misc.PermissionKeys;
+import com.ryderbelserion.crazyvouchers.utils.ConfigUtils;
+import us.crazycrew.crazyvouchers.api.enums.messages.Message;
+import com.badbones69.crazyvouchers.api.enums.PermissionKeys;
 import com.badbones69.crazyvouchers.api.events.VoucherRedeemCodeEvent;
 import com.badbones69.crazyvouchers.api.objects.VoucherCode;
 import com.badbones69.crazyvouchers.commands.BaseCommand;
-import com.badbones69.crazyvouchers.config.ConfigManager;
-import com.badbones69.crazyvouchers.config.types.ConfigKeys;
 import com.ryderbelserion.fusion.paper.builders.items.ItemBuilder;
 import dev.triumphteam.cmd.core.annotations.ArgName;
 import dev.triumphteam.cmd.core.annotations.Command;
@@ -19,12 +17,12 @@ import org.bukkit.Location;
 import org.bukkit.Server;
 import org.bukkit.Sound;
 import org.bukkit.SoundCategory;
-import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.entity.Player;
 import org.bukkit.permissions.PermissionDefault;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.UUID;
 
 public class CommandRedeem extends BaseCommand {
 
@@ -42,15 +40,15 @@ public class CommandRedeem extends BaseCommand {
         placeholders.put("{x}", String.valueOf(location.x()));
         placeholders.put("{y}", String.valueOf(location.y()));
         placeholders.put("{z}", String.valueOf(location.z()));
-        placeholders.put("{prefix}", ConfigManager.getConfig().getProperty(ConfigKeys.command_prefix));
+        placeholders.put("{prefix}", ConfigUtils.getPrefix());
 
-        if (!this.crazyManager.isVoucherCode(name)) {
-            Messages.code_unavailable.sendMessage(player, placeholders);
+        if (!this.platform.isVoucherCode(name)) {
+            Message.code_unavailable.sendMessage(player, placeholders);
 
             return;
         }
 
-        final VoucherCode code = this.crazyManager.getVoucherCode(name);
+        final VoucherCode code = this.platform.getVoucherCode(name);
 
         if (code == null) {
             return;
@@ -65,7 +63,7 @@ public class CommandRedeem extends BaseCommand {
 
                 for (final String permission : code.getWhitelistPermissions()) {
                     if (!player.hasPermission(permission)) {
-                        Messages.no_permission_to_use_voucher.sendMessage(player, placeholders);
+                        Message.no_permission_to_use_voucher.sendMessage(player, placeholders);
 
                         Methods.dispatch(player, commands, placeholders, true);
 
@@ -100,37 +98,31 @@ public class CommandRedeem extends BaseCommand {
         }
 
         // Has permission to continue.
-        final FileConfiguration data = FileKeys.users.getConfiguration();
-        final String uuid = player.getUniqueId().toString();
+        final UUID uuid = player.getUniqueId();
         // Checking if the player has used the code before.
 
-        final String cleanName = code.getStrippedName();
+        final String id = code.getStrippedName();
 
-        if (data.contains("Players." + uuid)) {
-            if (data.contains("Players." + uuid + ".Codes." + cleanName)) {
-                if (data.getString("Players." + uuid + ".Codes." + cleanName, "").equalsIgnoreCase("used")) {
-                    Messages.code_used.sendMessage(player, placeholders);
+        final boolean isLimiterEnabled = code.useLimiter();
 
-                    return;
-                }
-            }
+        if (!isLimiterEnabled && this.holder.isCodeRedeemed(id)) {
+            Message.code_used.sendMessage(player, placeholders);
+
+            return;
         }
 
-        //Checking the limit of the code.
-        if (code.useLimiter()) {
-            if (data.contains("Voucher-Limit." + cleanName)) {
-                if (data.getInt("Voucher-Limit." + cleanName) < 1) {
-                    Messages.code_unavailable.sendMessage(player, placeholders);
+        if (isLimiterEnabled) {
+            final int limit = this.holder.getCodeLimit(id, uuid);
 
-                    return;
-                }
+            if (limit >= code.getLimit()) {
+                Message.code_unavailable.sendMessage(player, placeholders);
 
-                data.set("Voucher-Limit." + cleanName, (data.getInt("Voucher-Limit." + cleanName) - 1));
-            } else {
-                data.set("Voucher-Limit." + cleanName, (code.getLimit() - 1));
+                return;
             }
 
-            FileKeys.users.save();
+            if (this.holder.isCodeRedeemed(id)) { // only increment if code is redeemed.
+                this.holder.incrementCodeLimit(id, uuid);
+            }
         }
 
         // Gives the reward to the player.
@@ -139,9 +131,9 @@ public class CommandRedeem extends BaseCommand {
         server.getPluginManager().callEvent(event);
 
         if (!event.isCancelled()) {
-            data.set("Players." + uuid + ".Codes." + cleanName, "used");
-
-            FileKeys.users.save();
+            if (!this.holder.isCodeRedeemed(id)) { // only add if code is not redeemed.
+                this.holder.addRedeemedCode(id, uuid);
+            }
 
             code.dispatchCommands(player, placeholders);
 
