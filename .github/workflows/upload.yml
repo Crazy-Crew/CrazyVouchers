@@ -4,11 +4,16 @@ on:
   pull_request:
     types: [ labeled ]
 
-permissions:
-  contents: read
-
 jobs:
   build:
     if: github.repository_owner == 'Crazy-Crew'
 
     uses: Crazy-Crew/.github/.github/workflows/upload.yml@main
+
+    secrets:
+      app_id: ${{ secrets.APP_ID }}
+      app_secret_key: ${{ secrets.APP_SECRET_KEY }}
+
+    with:
+      path: "build/libs"
+      label: "build-pr-jar"

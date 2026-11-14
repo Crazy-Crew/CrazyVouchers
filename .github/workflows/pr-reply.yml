@@ -1,0 +1,17 @@
+name: Reply Pull Request
+
+on:
+  workflow_run:
+    workflows: ["Upload Artifact"]
+    types:
+      - completed
+
+jobs:
+  build:
+    if: github.repository_owner == 'Crazy-Crew'
+
+    uses: Crazy-Crew/.github/.github/workflows/pr-reply.yml@main
+
+    secrets:
+      app_id: ${{ secrets.APP_ID }}
+      app_secret_key: ${{ secrets.APP_SECRET_KEY }}
