@@ -112,7 +112,7 @@ public class CommandRedeem extends BaseCommand {
 
         final boolean isLimiterEnabled = code.useLimiter();
 
-        if (!isLimiterEnabled && data.getString("Players." + uuid + ".Codes" + id, "").equalsIgnoreCase("used")) {
+        if (!isLimiterEnabled && data.getString("Players." + uuid + ".Codes." + id, "").equalsIgnoreCase("used")) {
             Messages.code_used.sendMessage(player, placeholders);
 
             return;
