@@ -8,6 +8,3 @@ jobs:
     if: github.repository_owner == 'Crazy-Crew'
 
     uses: Crazy-Crew/.github/.github/workflows/debug.yml@main
-    with:
-      status: "beta"
-      branch: main
