@@ -23,7 +23,15 @@ on:
 
 jobs:
   build:
-    runs-on: ubuntu-latest
+    if: github.repository_owner == 'Crazy-Crew'
 
-    steps:
-      - uses: actions/checkout@v7
+    uses: Crazy-Crew/.github/.github/workflows/build.yml@main
+
+    with:
+      status: "beta"
+      branch: main
+
+    secrets:
+      webhook: ${{ secrets.BUILD_WEBHOOK }}
+      modrinth_token: ${{ secrets.MODRINTH_TOKEN }}
+      hangar_token: ${{ secrets.HANGAR_KEY }}
