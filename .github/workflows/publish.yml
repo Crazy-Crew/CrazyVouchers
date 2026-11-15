@@ -1,0 +1,38 @@
+name: Publish Release
+
+on:
+  workflow_dispatch:
+
+  workflow_run:
+    workflows: [ "Release Build", "Snapshot Build" ]
+    types:
+      - completed
+
+jobs:
+  build:
+    if: github.repository_owner == 'Crazy-Crew'
+
+    steps:
+      - uses: Crazy-Crew/.github/.github/workflows/build.yml@main
+        if: github.event.workflow_run.name == 'Snapshot Build'
+
+        with:
+         status: "beta"
+         branch: main
+
+        secrets:
+          webhook: ${{ secrets.BUILD_WEBHOOK }}
+          modrinth_token: ${{ secrets.MODRINTH_TOKEN }}
+          hangar_token: ${{ secrets.HANGAR_KEY }}
+
+      - uses: Crazy-Crew/.github/.github/workflows/build.yml@main
+        if: github.event.workflow_run.name == 'Release Build'
+
+        with:
+          status: "release"
+          branch: main
+
+        secrets:
+          webhook: ${{ secrets.BUILD_WEBHOOK }}
+          modrinth_token: ${{ secrets.MODRINTH_TOKEN }}
+          hangar_token: ${{ secrets.HANGAR_KEY }}
