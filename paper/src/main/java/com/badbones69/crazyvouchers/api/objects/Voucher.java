@@ -185,7 +185,7 @@ public class Voucher {
             this.items = ItemUtils.convertStringList(StringUtils.getStringList(section.node("items")));
         }
 
-        this.usedMessage = getMessage(section, "options.message", "");
+        this.usedMessage = getMessage(section, "", "options", "message");
 
         this.whitelistPermissionToggle = section.node("options", "permission", "whitelist-permission", "toggle").getBoolean(false);
         this.whitelistCommands = section.node("options", "permission", "whitelist-permission", "commands").isList() ? StringUtils.getStringList(section.node("options", "permission", "whitelist-permission", "commands")) :
@@ -214,7 +214,7 @@ public class Voucher {
                 : List.of(section.node("options", "permission", "blacklist-permission", "commands").getString(""));
 
         this.limiterToggle = section.node("options", "limiter", "toggle").getBoolean(false);
-        this.limiterLimit = section.node("options", "limiter", "limit").getInt(0);
+        this.limiterLimit = section.node("options", "limiter", "amount").getInt(0);
 
         this.requiredPlaceholdersMessage = getMessage(section, "options.required-placeholders-message", "");
 
@@ -486,7 +486,7 @@ public class Voucher {
         final boolean isDupeProtectionEnabled = this.config.getProperty(RootKeys.dupe_protection);
 
         if (isLimiterEnabled() && !isDupeProtectionEnabled) { // dupe protection must be turned off if the limiter is enabled, these 2 features are not compatible
-            if (!this.storageHolder.isVoucherRedeemed(cleanName)) {
+            if (this.storageHolder.isVoucherRedeemed(cleanName)) {
                 this.storageHolder.incrementVoucherLimit(cleanName, uuid);
             } else {
                 this.storageHolder.addRedeemedVoucher(cleanName, uuid);
