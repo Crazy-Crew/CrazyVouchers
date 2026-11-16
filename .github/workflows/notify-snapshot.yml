@@ -14,7 +14,6 @@ jobs:
 
     with:
       status: "beta"
-      branch: main
 
     secrets:
-      webhook: ${{ secrets.CV_WEBHOOK }}
+      webhook: ${{ secrets.BUILD_WEBHOOK }}
