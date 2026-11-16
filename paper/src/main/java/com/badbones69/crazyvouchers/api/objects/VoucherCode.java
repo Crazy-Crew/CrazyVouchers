@@ -1,31 +1,35 @@
 package com.badbones69.crazyvouchers.api.objects;
 
-import ch.jalu.configme.SettingsManager;
 import com.badbones69.crazyvouchers.CrazyVouchers;
 import com.badbones69.crazyvouchers.Methods;
-import com.badbones69.crazyvouchers.api.enums.config.Messages;
+import com.badbones69.crazyvouchers.api.CrazyPlatform;
+import com.ryderbelserion.fusion.core.api.config.properties.PropertyManager;
+import us.crazycrew.crazyvouchers.api.config.ConfigManager;
+import us.crazycrew.crazyvouchers.api.config.types.RootKeys;
+import us.crazycrew.crazyvouchers.api.enums.messages.Message;
 import com.badbones69.crazyvouchers.utils.ItemUtils;
-import com.ryderbelserion.fusion.core.api.enums.Level;
+import com.ryderbelserion.crazyvouchers.utils.ConfigUtils;
+import com.ryderbelserion.fusion.api.enums.Level;
 import com.ryderbelserion.fusion.core.utils.StringUtils;
 import com.ryderbelserion.fusion.paper.FusionPaper;
 import com.ryderbelserion.fusion.paper.builders.items.ItemBuilder;
 import com.ryderbelserion.fusion.paper.utils.ColorUtils;
 import org.bukkit.Color;
 import org.bukkit.Sound;
-import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.entity.Player;
-import com.badbones69.crazyvouchers.config.ConfigManager;
-import com.badbones69.crazyvouchers.config.types.ConfigKeys;
-import org.jetbrains.annotations.NotNull;
+import org.jspecify.annotations.NonNull;
+import org.spongepowered.configurate.CommentedConfigurationNode;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
 public class VoucherCode {
 
-    private @NotNull final CrazyVouchers plugin = CrazyVouchers.get();
-    private @NotNull final FusionPaper fusion = this.plugin.getFusion();
-    private @NotNull final SettingsManager config = ConfigManager.getConfig();
+    private @NonNull final CrazyVouchers plugin = CrazyVouchers.get();
+    private @NonNull final FusionPaper fusion = this.plugin.getFusion();
+    private @NonNull final CrazyPlatform platform = this.plugin.getPlatform();
+    private @NonNull final ConfigManager configManager = this.platform.getConfigManager();
+    private @NonNull final PropertyManager config = this.configManager.getConfig();
 
     private final String fileName;
     private final String name;
@@ -69,91 +73,82 @@ public class VoucherCode {
 
     private final List<ItemBuilder> items;
 
-    public VoucherCode(@NotNull final ConfigurationSection section, @NotNull final String name) {
+    public VoucherCode(@NonNull final CommentedConfigurationNode section, @NonNull final String name) {
         this.fileName = name.replaceAll(".yml", "");
         this.name = name;
 
-        this.enabled = section.getBoolean("options.enabled", false);
-        this.code = section.getString("code", "");
-        this.commands = section.getStringList("commands");
+        this.enabled = section.node("options", "enabled").getBoolean(false);
+        this.code = section.node("code").getString("");
+        this.commands = StringUtils.getStringList(section.node("commands"));
 
-        if (this.config.getProperty(ConfigKeys.use_different_items_layout) && !section.isList("items")) {
-            this.items = ItemUtils.convertConfigurationSection(section.getConfigurationSection("items"));
+        if (this.config.getProperty(RootKeys.use_different_items_layout) && !section.node("items").isList()) {
+            this.items = ItemUtils.convertConfigurationSection(section.node("items"));
         } else {
-            this.items = ItemUtils.convertStringList(section.getStringList("items"));
+            this.items = ItemUtils.convertStringList(StringUtils.getStringList(section.node("items")));
         }
 
-        this.caseSensitive = section.getBoolean("options.case-sensitive", false);
+        this.caseSensitive = section.node("options", "case-sensitive").getBoolean(false);
 
-        this.message = getMessage(section, "options.message", "");
+        this.message = getMessage(section, "options", "message");
 
-        this.whitelistPermissionToggle = section.getBoolean("options.permission.whitelist-permission.toggle", false);
-        this.whitelistCommands = section.isList("options.permission.whitelist-permission.commands") ? section.getStringList("options.permission.whitelist-permission.commands")
-                : List.of(section.getString("options.permission.whitelist-permission.commands", ""));
-        this.whitelistPermissionMessage = getMessage(section, "options.permission.whitelist-permission.message", Messages.no_permission_to_use_voucher.getString());
+        this.whitelistPermissionToggle = section.node("options", "permission", "whitelist-permission", "toggle").getBoolean(false);
+        this.whitelistCommands = ConfigUtils.getStringList(section, List.of(), "options", "permission", "whitelist-permission", "commands");
+        this.whitelistPermissionMessage = getMessage(section, "options.permission.whitelist-permission.message", Message.no_permission_to_use_voucher.getMessage());
 
-        this.whitelistPermissions.addAll(section.getStringList("options.permission.whitelist-permission.permissions").stream().map(String::toLowerCase).toList());
+        this.whitelistPermissions.addAll(StringUtils.getStringList(section.node("options", "permission", "whitelist-permission", "permissions")).stream().map(String::toLowerCase).toList());
 
-        final String permission = section.getString("options.permission.whitelist-permission.node", "").toLowerCase();
+        final String permission = section.node("options", "permission", "whitelist-permission", "node").getString("").toLowerCase();
 
         if (!permission.isEmpty()) {
             this.whitelistPermissions.add(permission);
         }
 
-        this.whitelistWorldsToggle = section.getBoolean("options.whitelist-worlds.toggle", false);
-        this.whitelistWorldCommands.addAll(section.isList("options.whitelist-worlds.commands") ? section.getStringList("options.whitelist-worlds.commands")
-                : List.of(section.getString("options.whitelist-worlds.commands", "")));
-        this.whitelistWorldMessage = getMessage(section, "options.whitelist-worlds.message", Messages.not_in_whitelisted_world.getString());
+        this.whitelistWorldsToggle = section.node("options", "whitelist-worlds", "toggle").getBoolean(false);
+        this.whitelistWorldCommands.addAll(ConfigUtils.getStringList(section, List.of(), "options", "whitelist-worlds", "commands"));
+        this.whitelistWorldMessage = getMessage(section, Message.not_in_whitelist_world.getMessage(), "options", "whitelist-worlds", "message");
 
-        this.whitelistWorlds.addAll(section.getStringList("options.whitelist-worlds.worlds").stream().map(String::toLowerCase).toList());
+        this.whitelistWorlds.addAll(StringUtils.getStringList(section.node("options", "whitelist-worlds", "worlds")).stream().map(String::toLowerCase).toList());
 
-        this.blacklistPermissionsToggle = section.getBoolean("options.permission.blacklist-permission.toggle", false);
-        this.blacklistPermissionMessage = getMessage(section, "options.permission.blacklist-permission.message", Messages.has_blacklist_permission.getString());
-        this.blacklistPermissions.addAll(section.isList("options.permission.blacklist-permission.permissions") ? section.getStringList("options.permission.blacklist-permission.permissions")
-                : List.of(section.getString("options.permission.blacklist-permission.permissions", "")));
-        this.blacklistCommands.addAll(section.isList("options.permission.blacklist-permission.commands") ? section.getStringList("options.permission.blacklist-permission.commands")
-                : List.of(section.getString("options.permission.blacklist-permission.commands", "")));
+        this.blacklistPermissionsToggle = section.node("options", "permission", "blacklist-permission", "toggle").getBoolean(false);
+        this.blacklistPermissionMessage = getMessage(section, Message.has_blacklist_permission.getMessage(), "options", "permission", "blacklist-permission", "message");
+        this.blacklistPermissions.addAll(ConfigUtils.getStringList(section, List.of(), "options", "permission", "blacklist-permission", "permissions"));
+        this.blacklistCommands.addAll(ConfigUtils.getStringList(section, List.of(), "options", "permission", "blacklist-permission", "commands"));
 
-        this.limiterToggle = section.getBoolean("options.limiter.toggle", false);
-        this.limiterLimit = section.getInt("options.limiter.limit", 0);
+        this.limiterToggle = section.node("options", "limiter", "toggle").getBoolean(false);
+        this.limiterLimit = section.node("options", "limiter", "limit").getInt(0);
 
-        this.soundToggle = section.getBoolean("options.sound.toggle", false);
-        this.volume = (float) section.getDouble("options.sound.volume", 1.0);
-        this.pitch = (float) section.getDouble("options.sound.pitch", 1.0);
+        this.soundToggle = section.node("options", "sound", "toggle").getBoolean(false);
+        this.volume = (float) section.node("options", "sound", "volume").getDouble(1.0);
+        this.pitch = (float) section.node("options", "sound", "pitch").getDouble(1.0);
 
         if (this.soundToggle) {
-            for (final String sound : section.getStringList("options.sound.sounds")) {
-                this.sounds.add(com.ryderbelserion.fusion.paper.utils.ItemUtils.getSound(sound));
+            for (final String sound : StringUtils.getStringList(section.node("options", "sound", "sounds"))) {
+                com.ryderbelserion.fusion.paper.utils.ItemUtils.getSound(sound).ifPresent(this.sounds::add);
             }
         }
 
-        this.fireworkToggle = section.getBoolean("options.firework.toggle", false);
+        this.fireworkToggle = section.node("options", "firework", "toggle").getBoolean(false);
 
         if (this.fireworkToggle) {
-            for (final String color : section.getString("options.firework.colors", "").split(", ")) {
+            for (final String color : section.node("options", "firework", "colors").getString("").split(", ")) {
                 this.fireworkColors.add(ColorUtils.getColor(color));
             }
         }
 
-        if (section.contains("chance-commands")) {
-            this.fusion.log(Level.WARNING, "We detected that you have the list version of chance-commands which is no longer used, Please run /crazyvouchers migrate -mt VouchersDeprecated");
+        if (section.hasChild("chance-commands")) {
+            this.fusion.log(Level.warn, "We detected that you have the list version of chance-commands which is no longer used, Please run /crazyvouchers migrate -mt VouchersDeprecated.");
         }
 
-        if (section.contains("random-commands")) {
-            if (section.isList("random-commands")) {
-                this.fusion.log(Level.WARNING, "We've detected that you have the list version of random-commands which is no longer used, Please run /crazyvouchers migrate -mt VouchersDeprecated");
+        if (section.hasChild("random-commands")) {
+            final CommentedConfigurationNode node = section.node("random-commands");
+
+            if (node.isList()) {
+                this.fusion.log(Level.warn, "We've detected that you have the list version of random-commands which is no longer used, Please run /crazyvouchers migrate -mt VouchersDeprecated.");
             } else {
-                final ConfigurationSection randomCommands = section.getConfigurationSection("random-commands");
-
-                if (randomCommands != null) {
-                    for (final String key : randomCommands.getKeys(false)) {
-                        final ConfigurationSection command = randomCommands.getConfigurationSection(key);
-
-                        if (command == null) continue;
-
-                        this.randomCommands.add(new VoucherCommand(command.getStringList("commands"), command.getDouble("weight", -1)));
-                    }
-                }
+                node.childrenMap().forEach((id, key) -> this.randomCommands.add(new VoucherCommand(
+                        StringUtils.getStringList(key.node("commands")),
+                        key.node("weight").getDouble(-1)
+                )));
             }
         }
 
@@ -161,7 +156,7 @@ public class VoucherCode {
         this.totalWeight = this.randomCommands.stream().filter(filter -> filter.getWeight() > 0.0).mapToDouble(VoucherCommand::getWeight).sum();
     }
 
-    public void dispatchCommands(@NotNull final Player player, @NotNull final Map<String, String> placeholders) {
+    public void dispatchCommands(@NonNull final Player player, @NonNull final Map<String, String> placeholders) {
         Methods.dispatch(player, this.commands, placeholders, true); // dispatch normal commands
 
         if (this.randomCommands.isEmpty()) return;
@@ -185,7 +180,7 @@ public class VoucherCode {
         }
     }
 
-    public boolean hasPermission(@NotNull final Player player, @NotNull final List<String> permissions, @NotNull final List<String> commands, @NotNull final Map<String, String> placeholders, @NotNull final String message, @NotNull final String argument) {
+    public boolean hasPermission(@NonNull final Player player, @NonNull final List<String> permissions, @NonNull final List<String> commands, @NonNull final Map<String, String> placeholders, @NonNull final String message, @NonNull final String argument) {
         return Methods.hasPermission(false, player, permissions, commands, placeholders, message, argument);
     }
 
@@ -305,17 +300,9 @@ public class VoucherCode {
         return this.items;
     }
 
-    private String getMessage(@NotNull final ConfigurationSection section, @NotNull final String path, @NotNull final String defaultValue) {
-        String safeMessage;
+    private String getMessage(@NonNull final CommentedConfigurationNode section, @NonNull final String defaultValue, @NonNull final Object... path) {
+        final CommentedConfigurationNode node = section.node(path);
 
-        if (section.isList(path)) {
-            safeMessage = StringUtils.toString(section.getStringList(path));
-
-            return safeMessage;
-        }
-
-        safeMessage = section.getString(path, defaultValue);
-
-        return safeMessage;
+        return node.isList() ? StringUtils.toString(StringUtils.getStringList(node, defaultValue)) : node.getString(defaultValue);
     }
 }

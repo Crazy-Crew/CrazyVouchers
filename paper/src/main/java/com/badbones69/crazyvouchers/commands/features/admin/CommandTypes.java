@@ -1,6 +1,6 @@
 package com.badbones69.crazyvouchers.commands.features.admin;
 
-import com.badbones69.crazyvouchers.api.enums.config.Messages;
+import us.crazycrew.crazyvouchers.api.enums.messages.Message;
 import com.badbones69.crazyvouchers.api.objects.Voucher;
 import com.badbones69.crazyvouchers.api.objects.VoucherCode;
 import com.badbones69.crazyvouchers.commands.BaseCommand;
@@ -20,14 +20,14 @@ public class CommandTypes extends BaseCommand {
     @Permission(value = "crazyvouchers.types", def = PermissionDefault.OP)
     @Syntax("/crazyvouchers types")
     public void types(final CommandSender sender) {
-        final List<Voucher> vouchers = this.crazyManager.getVouchers();
-        final List<VoucherCode> codes = this.crazyManager.getVoucherCodes();
+        final List<Voucher> vouchers = this.platform.getVouchers();
+        final List<VoucherCode> codes = this.platform.getVoucherCodes();
 
         final int voucherCount = vouchers.size();
         final int codeCount = codes.size();
 
-        final List<String> brokeVouchers = this.crazyManager.getBrokenVouchers();
-        final List<String> brokeCodes = this.crazyManager.getBrokenVoucherCodes();
+        final List<String> brokeVouchers = this.platform.getBrokenVouchers();
+        final List<String> brokeCodes = this.platform.getBrokenVoucherCodes();
 
         final int inactiveVouchers = brokeVouchers.size();
         final int inactiveCodes = brokeCodes.size();
@@ -70,6 +70,6 @@ public class CommandTypes extends BaseCommand {
         placeholders.put("{vouchers}", String.valueOf(coloredVouchers));
         placeholders.put("{codes}", String.valueOf(coloredCodes));
 
-        Messages.vouchers_list.sendMessage(sender, placeholders);
+        Message.vouchers_list.sendMessage(sender, placeholders);
     }
 }

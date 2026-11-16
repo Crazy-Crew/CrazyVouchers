@@ -1,13 +1,9 @@
 package com.badbones69.crazyvouchers.listeners;
 
-import ch.jalu.configme.SettingsManager;
 import com.badbones69.crazyvouchers.CrazyVouchers;
-import com.badbones69.crazyvouchers.api.CrazyManager;
-import com.badbones69.crazyvouchers.api.enums.config.Messages;
+import com.badbones69.crazyvouchers.api.CrazyPlatform;
 import com.badbones69.crazyvouchers.api.objects.Voucher;
-import com.badbones69.crazyvouchers.config.ConfigManager;
-import com.badbones69.crazyvouchers.config.types.ConfigKeys;
-import org.bukkit.*;
+import com.ryderbelserion.fusion.core.api.config.properties.PropertyManager;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.ItemFrame;
 import org.bukkit.entity.Player;
@@ -21,15 +17,19 @@ import org.bukkit.event.player.PlayerItemConsumeEvent;
 import org.bukkit.inventory.EquipmentSlot;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.PlayerInventory;
-import java.util.*;
+import us.crazycrew.crazyvouchers.api.config.ConfigManager;
+import us.crazycrew.crazyvouchers.api.config.types.RootKeys;
+import us.crazycrew.crazyvouchers.api.enums.messages.Message;
 
 public class VoucherClickListener implements Listener {
 
     private final CrazyVouchers plugin = CrazyVouchers.get();
 
-    private final CrazyManager crazyManager = this.plugin.getCrazyManager();
+    private final CrazyPlatform platform = this.plugin.getPlatform();
 
-    private final SettingsManager config = ConfigManager.getConfig();
+    private final ConfigManager configManager = this.platform.getConfigManager();
+
+    private final PropertyManager config = this.configManager.getConfig();
 
     @EventHandler(priority = EventPriority.HIGHEST)
     public void onVoucherClick(PlayerInteractEvent event) {
@@ -48,13 +48,13 @@ public class VoucherClickListener implements Listener {
 
         if (itemStack.isEmpty()) return;
 
-        final Voucher voucher = this.crazyManager.getVoucherFromItem(itemStack);
+        final Voucher voucher = this.platform.getVoucherFromItem(itemStack);
 
         if (voucher == null) return;
         if (voucher.isEdible()) return;
 
-        if (slot == EquipmentSlot.OFF_HAND && !this.config.getProperty(ConfigKeys.allow_off_hand_usage)) {
-            Messages.no_permission_to_use_voucher_offhand.sendMessage(player);
+        if (slot == EquipmentSlot.OFF_HAND && !this.config.getProperty(RootKeys.allow_off_hand_usage)) {
+            Message.no_permission_to_use_voucher_in_offhand.sendMessage(player);
 
             return;
         }
@@ -80,7 +80,7 @@ public class VoucherClickListener implements Listener {
 
         final ItemStack itemStack = inventory.getItem(slot);
 
-        final Voucher voucher = this.crazyManager.getVoucherFromItem(itemStack);
+        final Voucher voucher = this.platform.getVoucherFromItem(itemStack);
 
         if (voucher == null) return;
         if (voucher.isEdible()) return;
@@ -111,13 +111,13 @@ public class VoucherClickListener implements Listener {
 
         if (itemStack.isEmpty()) return;
 
-        final Voucher voucher = this.crazyManager.getVoucherFromItem(itemStack);
+        final Voucher voucher = this.platform.getVoucherFromItem(itemStack);
 
         if (voucher == null) return;
         if (!voucher.isEdible()) return;
 
-        if (slot == EquipmentSlot.OFF_HAND && !this.config.getProperty(ConfigKeys.allow_off_hand_usage)) {
-            Messages.no_permission_to_use_voucher_offhand.sendMessage(player);
+        if (slot == EquipmentSlot.OFF_HAND && !this.config.getProperty(RootKeys.allow_off_hand_usage)) {
+            Message.no_permission_to_use_voucher_in_offhand.sendMessage(player);
 
             return;
         }
@@ -127,7 +127,7 @@ public class VoucherClickListener implements Listener {
         event.setCancelled(true);
 
         if (amount > 1) {
-            Messages.unstack_item.sendMessage(player);
+            Message.unstack_item.sendMessage(player);
 
             return;
         }
@@ -147,7 +147,7 @@ public class VoucherClickListener implements Listener {
 
         if (itemStack.isEmpty()) return;
 
-        final Voucher voucher = this.crazyManager.getVoucherFromItem(itemStack);
+        final Voucher voucher = this.platform.getVoucherFromItem(itemStack);
 
         if (voucher != null) event.setCancelled(true);
     }

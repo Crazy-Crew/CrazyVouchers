@@ -5,7 +5,7 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.Cancellable;
 import org.bukkit.event.Event;
 import org.bukkit.event.HandlerList;
-import org.jetbrains.annotations.NotNull;
+import org.jspecify.annotations.NonNull;
 
 public class VoucherRedeemEvent extends Event implements Cancellable {
     
@@ -21,7 +21,7 @@ public class VoucherRedeemEvent extends Event implements Cancellable {
      * @param voucher The voucher being used.
      * @param argument The argument that is used. If no argument is used leave it as a blank string.
      */
-    public VoucherRedeemEvent(@NotNull final Player player, @NotNull final Voucher voucher, @NotNull final String argument) {
+    public VoucherRedeemEvent(@NonNull final Player player, @NonNull final Voucher voucher, @NonNull final String argument) {
         this.player = player;
         this.voucher = voucher;
         this.argument = argument;
@@ -31,21 +31,21 @@ public class VoucherRedeemEvent extends Event implements Cancellable {
     /**
      * @return The player redeeming the voucher.
      */
-    public @NotNull Player getPlayer() {
+    public @NonNull Player getPlayer() {
         return this.player;
     }
     
     /**
      * @return Voucher object used in the event.
      */
-    public @NotNull Voucher getVoucher() {
+    public @NonNull Voucher getVoucher() {
         return this.voucher;
     }
     
     /**
      * @return The argument used by the voucher. If not used it will be a blank string.
      */
-    public @NotNull String getArgument() {
+    public @NonNull String getArgument() {
         return this.argument;
     }
     

@@ -5,7 +5,7 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.Cancellable;
 import org.bukkit.event.Event;
 import org.bukkit.event.HandlerList;
-import org.jetbrains.annotations.NotNull;
+import org.jspecify.annotations.NonNull;
 
 public class VoucherRedeemCodeEvent extends Event implements Cancellable {
     
@@ -18,7 +18,7 @@ public class VoucherRedeemCodeEvent extends Event implements Cancellable {
      * @param player The player using the voucherCode.
      * @param voucherCode The voucherCode being used.
      */
-    public VoucherRedeemCodeEvent(@NotNull final Player player, @NotNull final VoucherCode voucherCode) {
+    public VoucherRedeemCodeEvent(@NonNull final Player player, @NonNull final VoucherCode voucherCode) {
         this.player = player;
         this.voucherCode = voucherCode;
         this.cancelled = false;
@@ -27,14 +27,14 @@ public class VoucherRedeemCodeEvent extends Event implements Cancellable {
     /**
      * @return The player redeeming the voucherCode.
      */
-    public @NotNull Player getPlayer() {
+    public @NonNull Player getPlayer() {
         return this.player;
     }
     
     /**
      * @return Voucher object used in the event.
      */
-    public @NotNull VoucherCode getVoucherCode() {
+    public @NonNull VoucherCode getVoucherCode() {
         return this.voucherCode;
     }
     

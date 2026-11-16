@@ -1,6 +1,6 @@
 package com.badbones69.crazyvouchers.api.objects;
 
-import org.jetbrains.annotations.NotNull;
+import org.jspecify.annotations.NonNull;
 import java.util.List;
 
 public class VoucherCommand {
@@ -8,7 +8,7 @@ public class VoucherCommand {
     private final List<String> commands;
     private final double weight;
 
-    public VoucherCommand(@NotNull final List<String> commands, final double weight) {
+    public VoucherCommand(@NonNull final List<String> commands, final double weight) {
         this.commands = commands;
         this.weight = weight;
     }

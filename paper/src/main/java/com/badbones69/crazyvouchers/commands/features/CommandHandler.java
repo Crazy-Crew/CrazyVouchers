@@ -1,8 +1,8 @@
 package com.badbones69.crazyvouchers.commands.features;
 
 import com.badbones69.crazyvouchers.CrazyVouchers;
-import com.badbones69.crazyvouchers.api.CrazyManager;
-import com.badbones69.crazyvouchers.api.enums.misc.PermissionKeys;
+import com.badbones69.crazyvouchers.api.CrazyPlatform;
+import com.badbones69.crazyvouchers.api.enums.PermissionKeys;
 import com.badbones69.crazyvouchers.api.objects.Voucher;
 import com.badbones69.crazyvouchers.api.objects.VoucherCode;
 import com.badbones69.crazyvouchers.commands.features.admin.CommandGive;
@@ -23,18 +23,18 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.bukkit.permissions.Permission;
 import org.bukkit.plugin.PluginManager;
-import org.jetbrains.annotations.NotNull;
+import org.jspecify.annotations.NonNull;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
 public class CommandHandler {
 
-    private @NotNull final CrazyVouchers plugin = CrazyVouchers.get();
+    private @NonNull final CrazyVouchers plugin = CrazyVouchers.get();
 
-    private @NotNull final CrazyManager crazyManager = this.plugin.getCrazyManager();
+    private @NonNull final CrazyPlatform platform = this.plugin.getPlatform();
 
-    private @NotNull final BukkitCommandManager<CommandSender> commandManager = BukkitCommandManager.create(this.plugin);
+    private @NonNull final BukkitCommandManager<CommandSender> commandManager = BukkitCommandManager.create(this.plugin);
 
     public CommandHandler() {
         load();
@@ -47,9 +47,9 @@ public class CommandHandler {
 
         new ArgumentRelations(this.commandManager).build();
 
-        this.commandManager.registerSuggestion(SuggestionKey.of("players"), sender -> server.getOnlinePlayers().stream().map(Player::getName).toList());
+        this.commandManager.registerSuggestion(SuggestionKey.of("players"), _ -> server.getOnlinePlayers().stream().map(Player::getName).toList());
 
-        this.commandManager.registerSuggestion(SuggestionKey.of("numbers"), sender -> {
+        this.commandManager.registerSuggestion(SuggestionKey.of("numbers"), _ -> {
             final List<String> numbers = new ArrayList<>();
 
             for (int i = 1; i <= 100; i++) numbers.add(String.valueOf(i));
@@ -57,7 +57,7 @@ public class CommandHandler {
             return numbers;
         });
 
-        this.commandManager.registerSuggestion(SuggestionKey.of("doubles"), sender -> {
+        this.commandManager.registerSuggestion(SuggestionKey.of("doubles"), _ -> {
             final List<String> numbers = new ArrayList<>();
 
             int count = 0;
@@ -74,11 +74,11 @@ public class CommandHandler {
         });
 
         this.commandManager.registerSuggestion(SuggestionKey.of("codes"), sender -> {
-            final List<VoucherCode> codes = this.crazyManager.getVoucherCodes();
+            final List<VoucherCode> codes = this.platform.getVoucherCodes();
 
             final List<String> suggestions = new ArrayList<>();
 
-            if (sender.getSender() instanceof Player player) {
+            if (sender.sender() instanceof Player player) {
                 if (PermissionKeys.crazyvouchers_admin.hasPermission(player)) { // if they have this permission, they get all the codes.
                     suggestions.addAll(codes.stream().map(VoucherCode::getCode).toList());
 
@@ -103,11 +103,11 @@ public class CommandHandler {
         });
 
         this.commandManager.registerSuggestion(SuggestionKey.of("vouchers"), sender -> {
-            final List<Voucher> codes = this.crazyManager.getVouchers();
+            final List<Voucher> codes = this.platform.getVouchers();
 
             final List<String> suggestions = new ArrayList<>();
 
-            if (sender.getSender() instanceof Player player) {
+            if (sender.sender() instanceof Player player) {
                 if (PermissionKeys.crazyvouchers_admin.hasPermission(player)) { // if they have this permission, they get all the codes.
                     suggestions.addAll(codes.stream().map(Voucher::getStrippedName).toList());
 
@@ -161,7 +161,7 @@ public class CommandHandler {
         }
     }
 
-    public @NotNull final BukkitCommandManager<CommandSender> getCommandManager() {
+    public @NonNull final BukkitCommandManager<CommandSender> getCommandManager() {
         return this.commandManager;
     }
 }
