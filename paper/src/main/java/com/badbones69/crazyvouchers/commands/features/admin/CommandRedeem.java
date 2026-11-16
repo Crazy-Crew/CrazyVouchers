@@ -101,7 +101,7 @@ public class CommandRedeem extends BaseCommand {
         final UUID uuid = player.getUniqueId();
         // Checking if the player has used the code before.
 
-        final String id = code.getStrippedName();
+        final String id = code.getCode();
 
         final boolean isLimiterEnabled = code.useLimiter();
 
@@ -115,7 +115,7 @@ public class CommandRedeem extends BaseCommand {
             final int limit = this.holder.getCodeLimit(id, uuid);
 
             if (limit >= code.getLimit()) {
-                Message.code_unavailable.sendMessage(player, placeholders);
+                Message.code_limit.sendMessage(player, placeholders);
 
                 return;
             }
