@@ -257,7 +257,7 @@ public final class SqliteFactory extends SqlFactory {
     public int getVoucherLimit(final String voucher_id, final UUID player_uuid) {
         return CompletableFuture.supplyAsync(() -> {
             try (final Connection connection = this.source.getConnection(); final PreparedStatement statement =
-                    connection.prepareStatement("select 1 from vouchers_redeemed where voucher_id=? and player_uuid=? limit 1")) {
+                    connection.prepareStatement("select redeem_limit from vouchers_redeemed where voucher_id=? and player_uuid=? limit 1")) {
                 statement.setString(1, voucher_id);
                 statement.setString(2, player_uuid.toString());
 
@@ -325,7 +325,7 @@ public final class SqliteFactory extends SqlFactory {
                    connection.prepareStatement("insert into codes_redeemed(code, player_uuid, redeem_limit, timestamp_redeemed) values (?, ?, ?, ?)")) {
                statement.setString(1, code);
                statement.setString(2, player_uuid.toString());
-               statement.setInt(3, 0);
+               statement.setInt(3, 1); // redeemed once already
                statement.setLong(4, Instant.now().toEpochMilli());
 
                statement.executeUpdate();
@@ -369,7 +369,7 @@ public final class SqliteFactory extends SqlFactory {
     public int getCodeLimit(final String code, final UUID player_uuid) {
         return CompletableFuture.supplyAsync(() -> {
             try (final Connection connection = this.source.getConnection(); final PreparedStatement statement =
-                    connection.prepareStatement("select 1 from codes_redeemed where code=? and player_uuid=? limit 1")) {
+                    connection.prepareStatement("select redeem_limit from codes_redeemed where code=? and player_uuid=? limit 1")) {
                 statement.setString(1, code);
                 statement.setString(2, player_uuid.toString());
 
