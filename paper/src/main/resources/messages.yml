@@ -18,6 +18,8 @@ voucher:
   code:
     used: '{prefix}<red>The voucher code <gold>{arg} <red>has already been redeemed.'
     unavailable: '{prefix}<red>The voucher code <gold>{arg} <red>has already been redeemed.'
+    # Available Placeholders: {prefix}, {code}
+    limit: '{prefix}<red>You have hit your limit while trying to redeem {code}.'
   sent-voucher: '{prefix}<aqua>You have just given <gold>{player} <aqua>a <gold>{voucher} <aqua>voucher.'
   sent-everyone-voucher: '{prefix}<aqua>You have just given all players a <gold>{voucher} <aqua>voucher.'
 misc:
