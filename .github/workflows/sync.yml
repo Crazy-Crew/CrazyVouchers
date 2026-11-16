@@ -7,9 +7,6 @@ on:
     paths:
       - 'README.md'
 
-permissions:
-  contents: write
-
 jobs:
   sync:
     if: github.repository_owner == 'Crazy-Crew'
