@@ -1,5 +1,6 @@
 package com.badbones69.crazyvouchers.commands.features.admin.migrate.types.database;
 
+import com.badbones69.crazyvouchers.api.objects.VoucherCode;
 import com.badbones69.crazyvouchers.commands.features.admin.migrate.IVoucherMigrator;
 import com.badbones69.crazyvouchers.commands.features.admin.migrate.enums.MigrationType;
 import com.ryderbelserion.crazyvouchers.CrazyVouchersPlugin;
@@ -16,6 +17,7 @@ import java.time.Instant;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.Set;
 import java.util.UUID;
 import java.util.concurrent.CompletableFuture;
@@ -79,7 +81,7 @@ public class DatabaseMigrator extends IVoucherMigrator {
             this.fileManager.addFile(this.dataPath.resolve("users.yml"), FileType.YAML);
 
             this.fileManager.getYamlFile(this.dataPath.resolve("users.yml")).ifPresent(customFile -> {
-                final CommentedConfigurationNode configuration = customFile.getConfiguration();
+                final CommentedConfigurationNode configuration = customFile.getConfig();
                 final Set<Map.Entry<Object, CommentedConfigurationNode>> values = configuration.node("Players").childrenMap().entrySet();
 
                 CompletableFuture.runAsync(() -> {
@@ -108,11 +110,21 @@ public class DatabaseMigrator extends IVoucherMigrator {
                         try (final PreparedStatement statement = connection.prepareStatement("insert into codes_redeemed(code, player_uuid, redeem_limit, timestamp_redeemed) values (?, ?, ?, ?)")) {
                             for (final Map.Entry<Object, CommentedConfigurationNode> entries : values) {
                                 final CommentedConfigurationNode entry = entries.getValue();
-                                final String id = entries.getKey().toString();
+                                final String id = entries.getKey().toString(); // player uuid
                                 final UUID uuid = UUID.fromString(id);
 
                                 for (final Object index : entry.node("Codes").childrenMap().keySet()) { // if the id is in here, it's used lol
-                                    statement.setString(1, index.toString());
+                                    final Optional<VoucherCode> instance = this.platform.getVoucherCodeByFile(index.toString());
+
+                                    if (instance.isEmpty()) {
+                                        failed.add(id);
+
+                                        continue;
+                                    }
+
+                                    final VoucherCode code = instance.get();
+
+                                    statement.setString(1, code.getCode());
                                     statement.setString(2, uuid.toString());
                                     statement.setLong(3, Instant.now().toEpochMilli());
 

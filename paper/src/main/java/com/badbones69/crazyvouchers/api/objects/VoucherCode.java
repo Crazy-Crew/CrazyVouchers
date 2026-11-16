@@ -3,7 +3,7 @@ package com.badbones69.crazyvouchers.api.objects;
 import com.badbones69.crazyvouchers.CrazyVouchers;
 import com.badbones69.crazyvouchers.Methods;
 import com.badbones69.crazyvouchers.api.CrazyPlatform;
-import com.ryderbelserion.fusion.core.api.config.properties.PropertyManager;
+import com.ryderbelserion.fusion.config.properties.PropertyManager;
 import us.crazycrew.crazyvouchers.api.config.ConfigManager;
 import us.crazycrew.crazyvouchers.api.config.types.RootKeys;
 import us.crazycrew.crazyvouchers.api.enums.messages.Message;
@@ -74,11 +74,12 @@ public class VoucherCode {
     private final List<ItemBuilder> items;
 
     public VoucherCode(@NonNull final CommentedConfigurationNode section, @NonNull final String name) {
-        this.fileName = name.replaceAll(".yml", "");
-        this.name = name;
+        this.fileName = name;
+        this.name = name.replace(".yml", "");
 
         this.enabled = section.node("options", "enabled").getBoolean(false);
         this.code = section.node("code").getString("");
+
         this.commands = StringUtils.getStringList(section.node("commands"));
 
         if (this.config.getProperty(RootKeys.use_different_items_layout) && !section.node("items").isList()) {
@@ -89,7 +90,7 @@ public class VoucherCode {
 
         this.caseSensitive = section.node("options", "case-sensitive").getBoolean(false);
 
-        this.message = getMessage(section, "options", "message");
+        this.message = getMessage(section, "", "options", "message");
 
         this.whitelistPermissionToggle = section.node("options", "permission", "whitelist-permission", "toggle").getBoolean(false);
         this.whitelistCommands = ConfigUtils.getStringList(section, List.of(), "options", "permission", "whitelist-permission", "commands");
@@ -115,7 +116,7 @@ public class VoucherCode {
         this.blacklistCommands.addAll(ConfigUtils.getStringList(section, List.of(), "options", "permission", "blacklist-permission", "commands"));
 
         this.limiterToggle = section.node("options", "limiter", "toggle").getBoolean(false);
-        this.limiterLimit = section.node("options", "limiter", "limit").getInt(0);
+        this.limiterLimit = section.node("options", "limiter", "amount").getInt(0);
 
         this.soundToggle = section.node("options", "sound", "toggle").getBoolean(false);
         this.volume = (float) section.node("options", "sound", "volume").getDouble(1.0);
