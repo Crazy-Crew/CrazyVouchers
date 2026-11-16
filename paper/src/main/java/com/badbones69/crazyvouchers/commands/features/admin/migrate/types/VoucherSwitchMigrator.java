@@ -4,7 +4,9 @@ import com.badbones69.crazyvouchers.commands.features.admin.migrate.IVoucherMigr
 import com.badbones69.crazyvouchers.commands.features.admin.migrate.enums.MigrationType;
 import com.ryderbelserion.fusion.api.enums.Level;
 import com.ryderbelserion.fusion.core.utils.StringUtils;
-import com.ryderbelserion.fusion.files.types.configurate.YamlCustomFile;
+import com.ryderbelserion.fusion.files.enums.FileType;
+import com.ryderbelserion.fusion.files.objects.FileData;
+import com.ryderbelserion.fusion.files.types.YamlCustomFile;
 import org.bukkit.command.CommandSender;
 import org.jspecify.annotations.NonNull;
 import org.spongepowered.configurate.CommentedConfigurationNode;
@@ -31,10 +33,10 @@ public class VoucherSwitchMigrator extends IVoucherMigrator {
                 final Path codes = getCodesDirectory();
 
                 final Optional<YamlCustomFile> optional = Files.exists(this.dataPath.resolve("vouchers.yml")) ? Optional.empty() :
-                        Optional.of(this.fileManager.buildYamlFile(this.dataPath.resolve("vouchers.yml"), "", _ -> {}));
+                        Optional.of(this.fileManager.buildYamlFile(this.dataPath.resolve("vouchers.yml")));
 
                 optional.ifPresentOrElse(customFile -> {
-                    final String fileName = customFile.getFileName();
+                    final String fileName = customFile.getName();
 
                     if (!customFile.isLoaded()) {
                         this.fusion.log(Level.warn, "Failed to switch the voucher %s because it failed to load!", fileName);
@@ -42,7 +44,7 @@ public class VoucherSwitchMigrator extends IVoucherMigrator {
                         return;
                     }
 
-                    final CommentedConfigurationNode configuration = customFile.getConfiguration();
+                    final CommentedConfigurationNode configuration = customFile.getConfig();
 
                     for (final Map.Entry<Object, CommentedConfigurationNode> entries : configuration.childrenMap().entrySet()) {
                         final String id = entries.getKey().toString();
@@ -62,17 +64,17 @@ public class VoucherSwitchMigrator extends IVoucherMigrator {
                             this.fusion.log(true, Level.error, "<red>Failed to create <gold>%s</gold>. (<gold>%s</gold>)", path, exception.getMessage());
                         }
 
-                        Optional.of(this.fileManager.buildYamlFile(path, "", _ -> {})).ifPresentOrElse(
-                                index -> process(entry, index.getConfiguration().node("voucher")),
+                        Optional.of(this.fileManager.buildYamlFile(path)).ifPresentOrElse(
+                                index -> process(entry, index.getConfig().node("voucher")),
                                 () -> this.fusion.log(Level.warn, "Failed to build %s voucher!", id));
                     }
                 }, () -> this.fusion.log(Level.warn, "Failed to build %s voucher in order to start migration!", "vouchers.yml"));
 
                 final Optional<YamlCustomFile> second = Files.exists(this.dataPath.resolve("codes.yml")) ? Optional.empty() :
-                        Optional.of(this.fileManager.buildYamlFile(this.dataPath.resolve("codes.yml"), "", _ -> {}));
+                        Optional.of(this.fileManager.buildYamlFile(this.dataPath.resolve("codes.yml")));
 
                 second.ifPresentOrElse(customFile -> {
-                    final String fileName = customFile.getFileName();
+                    final String fileName = customFile.getName();
 
                     if (!customFile.isLoaded()) {
                         this.fusion.log(Level.warn, "Failed to switch the voucher code %s because it failed to load!", fileName);
@@ -80,7 +82,7 @@ public class VoucherSwitchMigrator extends IVoucherMigrator {
                         return;
                     }
 
-                    final CommentedConfigurationNode configuration = customFile.getConfiguration();
+                    final CommentedConfigurationNode configuration = customFile.getConfig();
 
                     for (final Map.Entry<Object, CommentedConfigurationNode> entries : configuration.childrenMap().entrySet()) {
                         final String id = entries.getKey().toString();
@@ -100,8 +102,8 @@ public class VoucherSwitchMigrator extends IVoucherMigrator {
                             this.fusion.log(true, Level.error, "<red>Failed to create <gold>%s</gold>. (<gold>%s</gold>)", path, exception.getMessage());
                         }
 
-                        Optional.of(this.fileManager.buildYamlFile(path, "", _ -> {})).ifPresentOrElse(
-                                index -> process(entry, index.getConfiguration().node("voucher-code")),
+                        Optional.of(this.fileManager.buildYamlFile(path)).ifPresentOrElse(
+                                index -> process(entry, index.getConfig().node("voucher-code")),
                                 () -> this.fusion.log(Level.warn, "Failed to build %s voucher code!", id));
                     }
                 }, () -> this.fusion.log(Level.warn, "Failed to build %s voucher code in order to start migration!", "codes.yml"));
@@ -118,17 +120,17 @@ public class VoucherSwitchMigrator extends IVoucherMigrator {
                     }
                 }
 
-                final YamlCustomFile voucher_custom_file = new YamlCustomFile(this.fileManager, vouchers, _ -> {}).load();
+                final YamlCustomFile voucher_custom_file = new YamlCustomFile(this.fileManager, new FileData(vouchers, FileType.YAML)).load();
 
                 if (voucher_custom_file.isLoaded()) {
-                    final CommentedConfigurationNode configuration = voucher_custom_file.getConfiguration();
+                    final CommentedConfigurationNode configuration = voucher_custom_file.getConfig();
 
                     final CommentedConfigurationNode root_section = configuration.node("vouchers");
 
                     for (final Path voucher : this.fusion.getFilesByPath(this.dataPath.resolve("vouchers"), ".yml")) {
-                        final YamlCustomFile customFile = new YamlCustomFile(this.fileManager, voucher, _ -> {}).load();
+                        final YamlCustomFile customFile = new YamlCustomFile(this.fileManager, new FileData(voucher, FileType.YAML)).load();
 
-                        final String fileName = customFile.getFileName();
+                        final String fileName = customFile.getName();
 
                         if (!customFile.isLoaded()) {
                             this.fusion.log(Level.warn, "Failed to switch voucher %s, because configuration is null.", fileName);
@@ -136,7 +138,7 @@ public class VoucherSwitchMigrator extends IVoucherMigrator {
                             continue;
                         }
 
-                        final CommentedConfigurationNode section = customFile.getConfiguration();
+                        final CommentedConfigurationNode section = customFile.getConfig();
 
                         if (!section.hasChild("voucher")) {
                             this.fusion.log(Level.warn, "Failed to switch voucher %s, because configuration section is null.", fileName);
@@ -177,17 +179,17 @@ public class VoucherSwitchMigrator extends IVoucherMigrator {
                     }
                 }
 
-                final YamlCustomFile code_custom_file = new YamlCustomFile(this.fileManager, code_file, _ -> {}).load();
+                final YamlCustomFile code_custom_file = new YamlCustomFile(this.fileManager, new FileData(code_file, FileType.YAML)).load();
 
                 if (code_custom_file.isLoaded()) {
-                    final CommentedConfigurationNode configuration = voucher_custom_file.getConfiguration();
+                    final CommentedConfigurationNode configuration = voucher_custom_file.getConfig();
 
                     final CommentedConfigurationNode root_section = configuration.node("voucher-code");
 
                     for (final Path voucher : this.fusion.getFilesByPath(this.dataPath.resolve("codes"), ".yml")) {
-                        final YamlCustomFile customFile = new YamlCustomFile(this.fileManager, voucher, _ -> {}).load();
+                        final YamlCustomFile customFile = new YamlCustomFile(this.fileManager, new FileData(voucher, FileType.YAML)).load();
 
-                        final String fileName = customFile.getFileName();
+                        final String fileName = customFile.getName();
 
                         if (!customFile.isLoaded()) {
                             this.fusion.log(Level.warn, "Failed to switch voucher code %s, because configuration is null.", fileName);
@@ -195,7 +197,7 @@ public class VoucherSwitchMigrator extends IVoucherMigrator {
                             continue;
                         }
 
-                        final CommentedConfigurationNode section = customFile.getConfiguration();
+                        final CommentedConfigurationNode section = customFile.getConfig();
 
                         if (!section.hasChild("voucher-code")) {
                             this.fusion.log(Level.warn, "Failed to switch voucher code %s, because configuration section is null.", fileName);

@@ -1,7 +1,7 @@
 package us.crazycrew.crazyvouchers.api.config.migrate;
 
-import com.ryderbelserion.fusion.core.api.config.migration.MigrationService;
-import com.ryderbelserion.fusion.core.api.config.properties.interfaces.IPropertyData;
+import com.ryderbelserion.fusion.config.migration.MigrationService;
+import com.ryderbelserion.fusion.config.properties.interfaces.IPropertyData;
 import org.jspecify.annotations.NullMarked;
 import org.spongepowered.configurate.CommentedConfigurationNode;
 import us.crazycrew.crazyvouchers.api.config.enums.PropertyStorage;

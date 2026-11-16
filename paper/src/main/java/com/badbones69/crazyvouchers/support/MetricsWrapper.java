@@ -2,7 +2,7 @@ package com.badbones69.crazyvouchers.support;
 
 import com.badbones69.crazyvouchers.CrazyVouchers;
 import com.badbones69.crazyvouchers.api.CrazyPlatform;
-import com.ryderbelserion.fusion.core.api.config.properties.PropertyManager;
+import com.ryderbelserion.fusion.config.properties.PropertyManager;
 import us.crazycrew.crazyvouchers.api.config.ConfigManager;
 import us.crazycrew.crazyvouchers.api.config.types.RootKeys;
 import us.crazycrew.crazyvouchers.api.enums.other.FileSystem;

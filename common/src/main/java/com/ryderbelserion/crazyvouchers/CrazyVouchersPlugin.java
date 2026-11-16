@@ -2,7 +2,7 @@ package com.ryderbelserion.crazyvouchers;
 
 import com.ryderbelserion.crazyvouchers.storage.StorageManager;
 import com.ryderbelserion.crazyvouchers.storage.holder.StorageHolder;
-import com.ryderbelserion.fusion.core.api.config.properties.PropertyManager;
+import com.ryderbelserion.fusion.config.properties.PropertyManager;
 import com.ryderbelserion.fusion.files.enums.FileType;
 import org.jspecify.annotations.NonNull;
 import us.crazycrew.crazyvouchers.VouchersProvider;
@@ -148,11 +148,11 @@ public abstract class CrazyVouchersPlugin<S, F extends FusionKyori<S>> extends C
         this.fusion.getMessageRegistry().init(action -> {
             for (final Path path : paths) {
                 this.fileManager.getYamlFile(path).ifPresentOrElse(customFile -> {
-                    final String fileName = customFile.getFileName();
+                    final String fileName = customFile.getName();
 
                     final FusionKey key = FusionKey.key(namespace, fileName.equalsIgnoreCase("messages.yml") ? "default" : fileName.toLowerCase());
 
-                    final CommentedConfigurationNode configuration = customFile.getConfiguration();
+                    final CommentedConfigurationNode configuration = customFile.getConfig();
 
                     for (final Message message : Message.values()) {
                         message.addKey(action, customFile, configuration, key);
@@ -192,8 +192,6 @@ public abstract class CrazyVouchersPlugin<S, F extends FusionKyori<S>> extends C
             List.of(
                     "config.yml",
                     "codes.yml",
-                    "data.yml",
-                    "users.yml",
                     "vouchers.yml"
             ).forEach(file -> this.fileManager.extractFile(file, examples.resolve(file)));
         }

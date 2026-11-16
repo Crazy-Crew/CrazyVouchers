@@ -1,6 +1,7 @@
 package com.badbones69.crazyvouchers.commands.features.admin.migrate.types.deprecation;
 
 import com.badbones69.crazyvouchers.Methods;
+import com.ryderbelserion.fusion.files.types.YamlCustomFile;
 import org.spongepowered.configurate.CommentedConfigurationNode;
 import org.spongepowered.configurate.serialize.SerializationException;
 import us.crazycrew.crazyvouchers.api.config.types.RootKeys;
@@ -10,7 +11,6 @@ import com.badbones69.crazyvouchers.commands.features.admin.migrate.IVoucherMigr
 import com.badbones69.crazyvouchers.commands.features.admin.migrate.enums.MigrationType;
 import com.ryderbelserion.fusion.api.enums.Level;
 import com.ryderbelserion.fusion.core.utils.StringUtils;
-import com.ryderbelserion.fusion.files.types.configurate.YamlCustomFile;
 import com.ryderbelserion.fusion.paper.utils.ItemUtils;
 import org.bukkit.command.CommandSender;
 import org.bukkit.inventory.ItemFlag;
@@ -34,7 +34,7 @@ public class NewItemMigrator extends IVoucherMigrator {
         switch (system) {
             case SINGLE -> {
                 this.fileManager.getYamlFile(this.dataPath.resolve("codes.yml")).ifPresent(customFile -> {
-                    final CommentedConfigurationNode section = customFile.getConfiguration();
+                    final CommentedConfigurationNode section = customFile.getConfig();
 
                     if (section.hasChild("voucher-codes")) {
                         final CommentedConfigurationNode codes = section.node("voucher-codes");
@@ -53,7 +53,7 @@ public class NewItemMigrator extends IVoucherMigrator {
                 });
 
                 this.fileManager.getYamlFile(this.dataPath.resolve("vouchers.yml")).ifPresent(customFile -> {
-                    final CommentedConfigurationNode section = customFile.getConfiguration();
+                    final CommentedConfigurationNode section = customFile.getConfig();
 
                     if (section.hasChild("vouchers")) {
                         final CommentedConfigurationNode vouchers = section.node("vouchers");
@@ -94,7 +94,7 @@ public class NewItemMigrator extends IVoucherMigrator {
                             continue;
                         }
 
-                        final CommentedConfigurationNode configuration = customFile.getConfiguration();
+                        final CommentedConfigurationNode configuration = customFile.getConfig();
 
                         if (!configuration.hasChild("voucher")) {
                             this.fusion.log(Level.warn, "Failed to migrate voucher %s, because configuration section is null.", voucher);
@@ -137,7 +137,7 @@ public class NewItemMigrator extends IVoucherMigrator {
                             continue;
                         }
 
-                        final CommentedConfigurationNode configuration = customFile.getConfiguration();
+                        final CommentedConfigurationNode configuration = customFile.getConfig();
 
                         if (!configuration.hasChild("voucher-code")) {
                             this.fusion.log(Level.warn, "Failed to migrate voucher code %s, because configuration section is null.", code);

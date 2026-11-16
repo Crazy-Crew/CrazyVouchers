@@ -28,7 +28,7 @@ public class VoucherDeprecated extends IVoucherMigrator {
         switch (this.config.getProperty(RootKeys.file_system)) {
             case SINGLE -> {
                 this.fileManager.getYamlFile(this.dataPath.resolve("vouchers.yml")).ifPresentOrElse(customFile -> {
-                    final CommentedConfigurationNode configuration = customFile.getConfiguration();
+                    final CommentedConfigurationNode configuration = customFile.getConfig();
 
                     try {
                         final CommentedConfigurationNode section = configuration.node("vouchers");
@@ -86,7 +86,7 @@ public class VoucherDeprecated extends IVoucherMigrator {
                 });
 
                 this.fileManager.getYamlFile(this.dataPath.resolve("codes.yml")).ifPresentOrElse(customFile -> {
-                    final CommentedConfigurationNode configuration = customFile.getConfiguration();
+                    final CommentedConfigurationNode configuration = customFile.getConfig();
 
                     try {
                         final CommentedConfigurationNode section = configuration.node("voucher-codes");
@@ -157,7 +157,7 @@ public class VoucherDeprecated extends IVoucherMigrator {
                             return;
                         }
 
-                        final CommentedConfigurationNode configuration = customFile.getConfiguration();
+                        final CommentedConfigurationNode configuration = customFile.getConfig();
 
                         if (!configuration.hasChild("voucher")) {
                             this.fusion.log(Level.warn, "Configuration section for <red>%s</red> was not found.", fileName);
@@ -222,7 +222,7 @@ public class VoucherDeprecated extends IVoucherMigrator {
                             return;
                         }
 
-                        final CommentedConfigurationNode configuration = customFile.getConfiguration();
+                        final CommentedConfigurationNode configuration = customFile.getConfig();
 
                         if (!configuration.hasChild("voucher-code")) {
                             this.fusion.log(Level.warn, "Configuration section for <red>%s</red> was not found.", fileName);

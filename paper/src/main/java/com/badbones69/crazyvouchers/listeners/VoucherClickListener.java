@@ -3,7 +3,7 @@ package com.badbones69.crazyvouchers.listeners;
 import com.badbones69.crazyvouchers.CrazyVouchers;
 import com.badbones69.crazyvouchers.api.CrazyPlatform;
 import com.badbones69.crazyvouchers.api.objects.Voucher;
-import com.ryderbelserion.fusion.core.api.config.properties.PropertyManager;
+import com.ryderbelserion.fusion.config.properties.PropertyManager;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.ItemFrame;
 import org.bukkit.entity.Player;

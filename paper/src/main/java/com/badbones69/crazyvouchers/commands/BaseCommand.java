@@ -4,7 +4,7 @@ import com.badbones69.crazyvouchers.CrazyVouchers;
 import com.badbones69.crazyvouchers.api.CrazyPlatform;
 import com.badbones69.crazyvouchers.api.InventoryManager;
 import com.ryderbelserion.crazyvouchers.storage.holder.StorageHolder;
-import com.ryderbelserion.fusion.core.api.config.properties.PropertyManager;
+import com.ryderbelserion.fusion.config.properties.PropertyManager;
 import com.ryderbelserion.fusion.paper.FusionPaper;
 import dev.triumphteam.cmd.core.annotations.Command;
 import org.bukkit.Server;

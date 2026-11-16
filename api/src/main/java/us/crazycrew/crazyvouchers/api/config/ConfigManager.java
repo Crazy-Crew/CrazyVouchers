@@ -1,7 +1,7 @@
 package us.crazycrew.crazyvouchers.api.config;
 
-import com.ryderbelserion.fusion.core.api.config.ConfigBuilder;
-import com.ryderbelserion.fusion.core.api.config.properties.PropertyManager;
+import com.ryderbelserion.fusion.config.ConfigBuilder;
+import com.ryderbelserion.fusion.config.properties.PropertyManager;
 import org.jspecify.annotations.NonNull;
 import org.spongepowered.configurate.loader.HeaderMode;
 import org.spongepowered.configurate.yaml.enums.NodeStyle;

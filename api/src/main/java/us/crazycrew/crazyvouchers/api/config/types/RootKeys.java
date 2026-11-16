@@ -1,16 +1,16 @@
 package us.crazycrew.crazyvouchers.api.config.types;
 
-import com.ryderbelserion.fusion.core.api.config.annotations.Comment;
-import com.ryderbelserion.fusion.core.api.config.properties.builders.CommentsBuilder;
-import com.ryderbelserion.fusion.core.api.config.properties.interfaces.IPropertyHolder;
-import com.ryderbelserion.fusion.core.api.config.properties.objects.EnumProperty;
-import com.ryderbelserion.fusion.core.api.config.properties.objects.interfaces.Property;
+import com.ryderbelserion.fusion.config.annotations.Comment;
+import com.ryderbelserion.fusion.config.properties.builders.CommentsBuilder;
+import com.ryderbelserion.fusion.config.properties.interfaces.IPropertyHolder;
+import com.ryderbelserion.fusion.config.properties.objects.EnumProperty;
+import com.ryderbelserion.fusion.config.properties.objects.interfaces.Property;
 import org.jspecify.annotations.NonNull;
 import us.crazycrew.crazyvouchers.api.enums.messages.State;
 import us.crazycrew.crazyvouchers.api.enums.other.FileSystem;
 import java.util.List;
-import static com.ryderbelserion.fusion.core.api.config.properties.PropertyBuilder.newEnumProperty;
-import static com.ryderbelserion.fusion.core.api.config.properties.PropertyBuilder.newProperty;
+import static com.ryderbelserion.fusion.config.properties.PropertyBuilder.newEnumProperty;
+import static com.ryderbelserion.fusion.config.properties.PropertyBuilder.newProperty;
 
 public class RootKeys implements IPropertyHolder {
 

@@ -2,10 +2,10 @@ package us.crazycrew.crazyvouchers.api.config.enums;
 
 import com.ryderbelserion.fusion.api.FusionProvider;
 import com.ryderbelserion.fusion.api.enums.Level;
-import com.ryderbelserion.fusion.core.api.config.properties.interfaces.IPropertyData;
-import com.ryderbelserion.fusion.core.api.config.properties.objects.interfaces.Property;
-import com.ryderbelserion.fusion.core.api.config.properties.objects.primitives.string.ListProperty;
-import com.ryderbelserion.fusion.core.api.config.properties.objects.primitives.string.StringProperty;
+import com.ryderbelserion.fusion.config.properties.interfaces.IPropertyData;
+import com.ryderbelserion.fusion.config.properties.objects.interfaces.Property;
+import com.ryderbelserion.fusion.config.properties.objects.primitives.string.ListProperty;
+import com.ryderbelserion.fusion.config.properties.objects.primitives.string.StringProperty;
 import com.ryderbelserion.fusion.kyori.FusionKyori;
 import org.jspecify.annotations.NonNull;
 import org.spongepowered.configurate.CommentedConfigurationNode;
@@ -15,7 +15,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import static com.ryderbelserion.fusion.core.api.config.properties.PropertyBuilder.newProperty;
+import static com.ryderbelserion.fusion.config.properties.PropertyBuilder.newProperty;
 
 public enum PropertyStorage {
 

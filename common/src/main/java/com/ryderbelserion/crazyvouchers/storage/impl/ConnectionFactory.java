@@ -1,7 +1,6 @@
 package com.ryderbelserion.crazyvouchers.storage.impl;
 
 import org.jspecify.annotations.NullMarked;
-
 import java.sql.Connection;
 import java.sql.SQLException;
 import java.util.UUID;

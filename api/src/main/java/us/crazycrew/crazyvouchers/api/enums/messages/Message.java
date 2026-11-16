@@ -2,13 +2,13 @@ package us.crazycrew.crazyvouchers.api.enums.messages;
 
 import com.ryderbelserion.fusion.api.enums.Level;
 import com.ryderbelserion.fusion.api.objects.FusionKey;
-import com.ryderbelserion.fusion.core.api.config.properties.PropertyManager;
-import com.ryderbelserion.fusion.core.api.config.properties.objects.enums.PropertyType;
+import com.ryderbelserion.fusion.config.properties.PropertyManager;
+import com.ryderbelserion.fusion.config.properties.objects.enums.PropertyType;
 import com.ryderbelserion.fusion.core.api.registry.message.MessageRegistry;
 import com.ryderbelserion.fusion.core.api.registry.message.adapter.YamlMessageAdapter;
 import com.ryderbelserion.fusion.core.utils.StringUtils;
 import com.ryderbelserion.fusion.files.FileManager;
-import com.ryderbelserion.fusion.files.types.configurate.YamlCustomFile;
+import com.ryderbelserion.fusion.files.types.YamlCustomFile;
 import com.ryderbelserion.fusion.kyori.FusionKyori;
 import com.ryderbelserion.fusion.kyori.utils.AdvUtils;
 import net.kyori.adventure.audience.Audience;
@@ -119,6 +119,7 @@ public enum Message {
 
     code_unavailable("voucher.code.unavailable", "", "{prefix}<red>The Voucher code <gold>{arg} <red>is incorrect or unavailable at this time.", "voucher", "code", "unavailable"),
     code_used("voucher.code.used", "", "{prefix}<red>The voucher code <gold>{arg} <red>has already been redeemed.", "voucher", "code", "used"),
+    code_limit("voucher.code.limit", "Available Placeholders: {prefix}, {code}", "{prefix}<red>You have hit your limit while trying to redeem {code}.", "voucher", "code", "limit"),
 
     sent_everyone_voucher("voucher.sent.everyone.voucher", "", "{prefix}<aqua>You have just given all players a <gold>{voucher} <aqua>voucher.", "voucher", "sent-everyone-voucher"),
     sent_voucher("voucher.sent.voucher", "", "{prefix}<aqua>You have just given <gold>{player} <aqua>a <gold>{voucher} <aqua>voucher.", "voucher", "sent-voucher"),
@@ -197,7 +198,7 @@ public enum Message {
 
                         customFile.save();
                     } catch (final SerializationException exception) {
-                        this.fusion.log(true, Level.error, "<red>Failed to save the list %s to %s. (<gold>%s</gold>)", this.path, customFile.getFileName(), exception.getMessage() != null ? exception.getMessage() : "N/A");
+                        this.fusion.log(true, Level.error, "<red>Failed to save the list %s to %s. (<gold>%s</gold>)", this.path, customFile.getName(), exception.getMessage() != null ? exception.getMessage() : "N/A");
                     }
                 }
 
@@ -211,7 +212,7 @@ public enum Message {
 
                         customFile.save();
                     } catch (final SerializationException exception) {
-                        this.fusion.log(true, Level.error, "<red>Failed to save the string %s to %s (<gold>%s</gold>)", this.path, customFile.getFileName(), exception.getMessage() != null ? exception.getMessage() : "N/A");
+                        this.fusion.log(true, Level.error, "<red>Failed to save the string %s to %s (<gold>%s</gold>)", this.path, customFile.getName(), exception.getMessage() != null ? exception.getMessage() : "N/A");
                     }
                 }
             }
@@ -249,7 +250,7 @@ public enum Message {
         this.fileManager.getYamlFile(this.dataPath.resolve("messages.yml")).ifPresent(customFile -> {
             final String message = getMessage();
 
-            final CommentedConfigurationNode node = customFile.getConfiguration().node(this.path);
+            final CommentedConfigurationNode node = customFile.getConfig().node(this.path);
 
             if (this.type == PropertyType.STRING_LIST) {
                 final List<String> values = new ArrayList<>();
@@ -267,7 +268,7 @@ public enum Message {
                 try {
                     node.set(List.class, values);
                 } catch (final SerializationException exception) {
-                    this.fusion.log(true, Level.error, "<red>Failed to convert the list %s to %s (<gold>%s</gold>)", this.path, customFile.getFileName(), exception.getMessage() != null ? exception.getMessage() : "N/A");
+                    this.fusion.log(true, Level.error, "<red>Failed to convert the list %s to %s (<gold>%s</gold>)", this.path, customFile.getName(), exception.getMessage() != null ? exception.getMessage() : "N/A");
                 }
 
                 return;
@@ -276,7 +277,7 @@ public enum Message {
             try {
                 node.set(List.class, AdvUtils.convert(message, true));
             } catch (final SerializationException exception) {
-                this.fusion.log(true, Level.error, "<red>Failed to convert the string %s to %s (<gold>%s</gold>)", this.path, customFile.getFileName(), exception.getMessage() != null ? exception.getMessage() : "N/A");
+                this.fusion.log(true, Level.error, "<red>Failed to convert the string %s to %s (<gold>%s</gold>)", this.path, customFile.getName(), exception.getMessage() != null ? exception.getMessage() : "N/A");
             }
         });
     }

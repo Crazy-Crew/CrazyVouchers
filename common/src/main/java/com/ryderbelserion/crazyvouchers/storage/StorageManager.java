@@ -3,7 +3,7 @@ package com.ryderbelserion.crazyvouchers.storage;
 import com.ryderbelserion.crazyvouchers.CrazyVouchersPlugin;
 import com.ryderbelserion.crazyvouchers.storage.holder.StorageHolder;
 import com.ryderbelserion.crazyvouchers.storage.impl.sql.types.SqliteFactory;
-import com.ryderbelserion.fusion.core.api.config.properties.PropertyManager;
+import com.ryderbelserion.fusion.config.properties.PropertyManager;
 import us.crazycrew.crazyvouchers.api.config.ConfigManager;
 import us.crazycrew.crazyvouchers.api.config.types.DatabaseKeys;
 

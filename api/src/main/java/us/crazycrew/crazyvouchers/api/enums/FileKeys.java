@@ -5,8 +5,8 @@ import com.ryderbelserion.fusion.api.exceptions.FusionException;
 import com.ryderbelserion.fusion.files.FileManager;
 import com.ryderbelserion.fusion.files.enums.FileAction;
 import com.ryderbelserion.fusion.files.enums.FileType;
-import com.ryderbelserion.fusion.files.types.configurate.JsonCustomFile;
-import com.ryderbelserion.fusion.files.types.configurate.YamlCustomFile;
+import com.ryderbelserion.fusion.files.types.JsonCustomFile;
+import com.ryderbelserion.fusion.files.types.YamlCustomFile;
 import com.ryderbelserion.fusion.kyori.FusionKyori;
 import org.jspecify.annotations.NullMarked;
 import org.spongepowered.configurate.BasicConfigurationNode;
@@ -45,7 +45,7 @@ public enum FileKeys {
     }
 
     public final BasicConfigurationNode getBasicConfiguration() {
-        return getJsonCustomFile().getConfiguration();
+        return getJsonCustomFile().getConfig();
     }
 
     public final YamlCustomFile getYamlCustomFile() {
@@ -59,7 +59,7 @@ public enum FileKeys {
     }
 
     public final CommentedConfigurationNode getConfiguration() {
-        return getYamlCustomFile().getConfiguration();
+        return getYamlCustomFile().getConfig();
     }
 
     public void saveFile() {
