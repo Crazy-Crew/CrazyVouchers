@@ -6,6 +6,9 @@ import com.ryderbelserion.fusion.core.api.registry.message.MessageRegistry;
 import com.ryderbelserion.fusion.kyori.FusionKyori;
 import org.jetbrains.annotations.ApiStatus;
 import org.jspecify.annotations.NonNull;
+import us.crazycrew.crazyvouchers.VouchersProvider;
+import us.crazycrew.crazyvouchers.api.CrazyVouchers;
+import us.crazycrew.crazyvouchers.api.storage.IStorageHolder;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
@@ -15,6 +18,10 @@ public abstract class ISenderAdapter<C, S> {
     protected final FusionKyori<S> fusion = (FusionKyori<S>) FusionProvider.api();
 
     protected final MessageRegistry registry = this.fusion.getMessageRegistry();
+
+    protected final CrazyVouchers<C, S> instance = VouchersProvider.api();
+
+    protected final IStorageHolder holder = this.instance.getStorageHolder();
 
     protected final S sender;
 
@@ -51,13 +58,13 @@ public abstract class ISenderAdapter<C, S> {
     }
 
     public void init() {
-        /*if (this.storage.hasUser(this.getUniqueId())) {
-            this.storage.populate(this);
+        final UUID uuid = this.getUniqueId();
 
+        if (this.holder.hasUser(uuid)) {
             return;
         }
 
-        this.storage.insertUser(this, Instant.now().getEpochSecond());*/
+        this.holder.addUser(uuid);
     }
 
     public abstract boolean isConsole();
