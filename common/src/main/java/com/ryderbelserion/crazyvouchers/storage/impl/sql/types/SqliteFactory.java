@@ -1,6 +1,7 @@
 package com.ryderbelserion.crazyvouchers.storage.impl.sql.types;
 
 import com.ryderbelserion.crazyvouchers.CrazyVouchersPlugin;
+import us.crazycrew.crazyvouchers.api.objects.VoucherHistory;
 import com.ryderbelserion.crazyvouchers.storage.impl.sql.SqlFactory;
 import com.ryderbelserion.fusion.api.enums.Level;
 import com.zaxxer.hikari.HikariConfig;
@@ -15,6 +16,8 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.time.Instant;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.UUID;
 import java.util.concurrent.CompletableFuture;
 
@@ -254,10 +257,37 @@ public final class SqliteFactory extends SqlFactory {
     }
 
     @Override
+    public List<VoucherHistory> getRedeemedVouchers(final UUID player_uuid) {
+        final List<VoucherHistory> vouchers = new ArrayList<>();
+
+        CompletableFuture.runAsync(() -> {
+           try (final Connection connection = this.source.getConnection(); final PreparedStatement statement =
+                   connection.prepareStatement("select voucher_id, redeem_limit, timestamp_redeemed from vouchers_redeemed where player_uuid=?")) {
+               statement.setString(1, player_uuid.toString());
+
+               final ResultSet resultSet = statement.executeQuery();
+
+               while (resultSet.next()) {
+                   vouchers.add(new VoucherHistory(
+                           resultSet.getString("voucher_id"),
+                           player_uuid,
+                           resultSet.getInt("redeem_limit"),
+                           resultSet.getLong("timestamp_redeemed")
+                   ));
+               }
+           } catch (final SQLException exception) {
+               this.fusion.log(true, Level.error, "<red>An error has occurred with the reason <gold>%s</gold> while fetching all redeemed vouchers for <gold>%s's</gold>!", exception.getMessage(), player_uuid);
+           }
+        }).join();
+
+        return vouchers;
+    }
+
+    @Override
     public int getVoucherLimit(final String voucher_id, final UUID player_uuid) {
         return CompletableFuture.supplyAsync(() -> {
             try (final Connection connection = this.source.getConnection(); final PreparedStatement statement =
-                    connection.prepareStatement("select (redeem_limit) from vouchers_redeemed where voucher_id=? and player_uuid=? limit 1")) {
+                    connection.prepareStatement("select redeem_limit from vouchers_redeemed where voucher_id=? and player_uuid=? limit 1")) {
                 statement.setString(1, voucher_id);
                 statement.setString(2, player_uuid.toString());
 
@@ -276,7 +306,7 @@ public final class SqliteFactory extends SqlFactory {
     public void incrementVoucherLimit(final String voucher_id, final UUID player_uuid) {
         CompletableFuture.runAsync(() -> {
             try (final Connection connection = this.source.getConnection(); final PreparedStatement statement =
-                    connection.prepareStatement("update (vouchers_redeemed) set redeem_limit = redeem_limit+1 where voucher_id=? and player_uuid=?")) {
+                    connection.prepareStatement("update vouchers_redeemed set redeem_limit = redeem_limit+1 where voucher_id=? and player_uuid=?")) {
                 statement.setString(1, voucher_id);
                 statement.setString(2, player_uuid.toString());
 
@@ -369,7 +399,7 @@ public final class SqliteFactory extends SqlFactory {
     public int getCodeLimit(final String code, final UUID player_uuid) {
         return CompletableFuture.supplyAsync(() -> {
             try (final Connection connection = this.source.getConnection(); final PreparedStatement statement =
-                    connection.prepareStatement("select (redeem_limit) from codes_redeemed where code=? and player_uuid=? limit 1")) {
+                    connection.prepareStatement("select redeem_limit from codes_redeemed where code=? and player_uuid=? limit 1")) {
                 statement.setString(1, code);
                 statement.setString(2, player_uuid.toString());
 

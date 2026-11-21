@@ -382,10 +382,12 @@ public class Voucher {
 
         if (!hasPassedChecks(player, argument, placeholders)) return;
 
+        final boolean isLimiterEnabled = isLimiterEnabled();
+
         final UUID uuid = player.getUniqueId();
         final String cleanName = getStrippedName();
 
-        if (isLimiterEnabled() && !PermissionKeys.crazyvouchers_bypass.hasPermission(player) && this.storageHolder.isVoucherRedeemed(cleanName)) {
+        if (isLimiterEnabled && !PermissionKeys.crazyvouchers_bypass.hasPermission(player) && this.storageHolder.isVoucherRedeemed(cleanName)) {
             if (this.storageHolder.getVoucherLimit(cleanName, uuid) >= getLimiterLimit()) {
                 Message.hit_voucher_limit.sendMessage(player);
 
@@ -485,12 +487,16 @@ public class Voucher {
 
         final boolean isDupeProtectionEnabled = this.config.getProperty(RootKeys.dupe_protection);
 
-        if (isLimiterEnabled() && !isDupeProtectionEnabled) { // dupe protection must be turned off if the limiter is enabled, these 2 features are not compatible
+        if (isLimiterEnabled && !isDupeProtectionEnabled) { // dupe protection must be turned off if the limiter is enabled, these 2 features are not compatible
             if (this.storageHolder.isVoucherRedeemed(cleanName)) {
                 this.storageHolder.incrementVoucherLimit(cleanName, uuid);
             } else {
                 this.storageHolder.addRedeemedVoucher(cleanName, uuid);
             }
+        }
+
+        if (!isLimiterEnabled && this.config.getProperty(RootKeys.track_voucher_usage)) { // only run this if limiter is disabled to avoid double-dipping.
+            this.storageHolder.addRedeemedVoucher(cleanName, uuid);
         }
 
         if (isDupeProtectionEnabled) {

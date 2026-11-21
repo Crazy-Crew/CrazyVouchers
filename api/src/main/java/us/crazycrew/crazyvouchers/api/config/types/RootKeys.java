@@ -98,6 +98,9 @@ public class RootKeys implements IPropertyHolder {
     @Comment("The line to add to the lore of an item. This message supports PlaceholderAPI")
     public static final Property<String> dupe_protection_warning_text = newProperty("<red>This item has been duplicated", "settings", "dupe-protection", "warning", "value");
 
+    @Comment("If this option is set to true, all voucher redemptions will be logged.")
+    public static final Property<Boolean> track_voucher_usage = newProperty(false, "settings", "tracking", "voucher-usage");
+
     @Comment("If you set this to true, you will be allowing vouchers to be used in off hand.")
     public static final Property<Boolean> allow_off_hand_usage = newProperty(false, "settings", "allow-off-hand-usage");
 

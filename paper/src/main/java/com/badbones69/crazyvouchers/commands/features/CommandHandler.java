@@ -6,6 +6,7 @@ import com.badbones69.crazyvouchers.api.enums.PermissionKeys;
 import com.badbones69.crazyvouchers.api.objects.Voucher;
 import com.badbones69.crazyvouchers.api.objects.VoucherCode;
 import com.badbones69.crazyvouchers.commands.features.admin.CommandGive;
+import com.badbones69.crazyvouchers.commands.features.admin.CommandHistory;
 import com.badbones69.crazyvouchers.commands.features.admin.CommandMenu;
 import com.badbones69.crazyvouchers.commands.features.admin.CommandMigrate;
 import com.badbones69.crazyvouchers.commands.features.admin.CommandRedeem;
@@ -133,6 +134,8 @@ public class CommandHandler {
         this.commandManager.registerArgument(PlayerBuilder.class, (_, context) -> new PlayerBuilder(context));
 
         List.of(
+                new CommandHistory(),
+
                 new CommandGive(),
                 new CommandMenu(),
                 new CommandMigrate(),
