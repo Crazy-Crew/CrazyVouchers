@@ -1,0 +1,62 @@
+package us.crazycrew.crazyvouchers.api.storage;
+
+import us.crazycrew.crazyvouchers.api.objects.VoucherHistory;
+import java.util.List;
+import java.util.UUID;
+
+public abstract class ISharedMethods {
+
+    public abstract void removeUser(final UUID player_uuid);
+
+    public abstract void addUser(final UUID player_uuid);
+
+    public abstract boolean hasUser(final UUID player_uuid);
+
+    public abstract boolean isVoucherProtected(final UUID voucher_id);
+
+    public boolean isVoucherProtected(final String voucher_id) {
+        return isVoucherProtected(UUID.fromString(voucher_id));
+    }
+
+    public void removeProtectedVoucher(final String voucher_id) {
+        removeProtectedVoucher(UUID.fromString(voucher_id));
+    }
+
+    public abstract void removeProtectedVoucher(final UUID voucher_id);
+
+    public abstract void addProtectedVoucher(final UUID voucher_id, final UUID player_uuid);
+
+    public void addProtectedVoucher(final String voucher_id, final String player_uuid) {
+        addProtectedVoucher(UUID.fromString(voucher_id), UUID.fromString(player_uuid));
+    }
+
+    public abstract boolean isVoucherRedeemed(final String voucher_id);
+
+    public abstract void removeRedeemedVoucher(final String voucher_id);
+
+    public abstract void addRedeemedVoucher(final String voucher_id, final UUID player_uuid, final int amount);
+
+    public void addRedeemedVoucher(final String voucher_id, final UUID player_uuid) {
+        addRedeemedVoucher(voucher_id, player_uuid, 1);
+    }
+
+    public abstract int getVoucherLimit(final String voucher_id, final UUID player_uuid);
+
+    public abstract void incrementVoucherLimit(final String voucher_id, final UUID player_uuid);
+
+    public abstract boolean isCodeRedeemed(final String code);
+
+    public abstract void removeRedeemedCode(final String code);
+
+    public abstract void addRedeemedCode(final String code, final UUID player_uuid);
+
+    public void addRedeemedCode(final String code, final String player_uuid) {
+        addRedeemedCode(code, UUID.fromString(player_uuid));
+    }
+
+    public abstract int getCodeLimit(final String code, final UUID player_uuid);
+
+    public abstract void incrementCodeLimit(final String code, final UUID player_uuid);
+
+    public abstract List<VoucherHistory> getRedeemedVouchers(final UUID player_uuid);
+}

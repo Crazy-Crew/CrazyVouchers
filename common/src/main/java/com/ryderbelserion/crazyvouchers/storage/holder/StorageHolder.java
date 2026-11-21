@@ -1,5 +1,6 @@
 package com.ryderbelserion.crazyvouchers.storage.holder;
 
+import us.crazycrew.crazyvouchers.api.objects.VoucherHistory;
 import com.ryderbelserion.crazyvouchers.storage.impl.ConnectionFactory;
 import com.ryderbelserion.fusion.api.exceptions.FusionException;
 import org.jetbrains.annotations.ApiStatus;
@@ -7,10 +8,11 @@ import org.jspecify.annotations.NullMarked;
 import us.crazycrew.crazyvouchers.api.storage.IStorageHolder;
 import java.sql.Connection;
 import java.sql.SQLException;
+import java.util.List;
 import java.util.UUID;
 
 @NullMarked
-public final class StorageHolder implements IStorageHolder {
+public final class StorageHolder extends IStorageHolder {
 
     private final ConnectionFactory factory;
 
@@ -85,11 +87,6 @@ public final class StorageHolder implements IStorageHolder {
     }
 
     @Override
-    public boolean isVoucherProtected(final String voucher_id) {
-        return isVoucherProtected(UUID.fromString(voucher_id));
-    }
-
-    @Override
     public void removeProtectedVoucher(final String voucher_id) {
         removeProtectedVoucher(UUID.fromString(voucher_id));
     }
@@ -102,11 +99,6 @@ public final class StorageHolder implements IStorageHolder {
     @Override
     public void addProtectedVoucher(final UUID voucher_id, final UUID player_uuid) {
         this.factory.addProtectedVoucher(voucher_id, player_uuid);
-    }
-
-    @Override
-    public void addProtectedVoucher(final String voucher_id, final String player_uuid) {
-        addProtectedVoucher(UUID.fromString(voucher_id), UUID.fromString(player_uuid));
     }
     // dupe protection end
 
@@ -124,11 +116,6 @@ public final class StorageHolder implements IStorageHolder {
     @Override
     public void addRedeemedVoucher(final String voucher_id, final UUID player_uuid, final int amount) {
         this.factory.addRedeemedVoucher(voucher_id, player_uuid, amount);
-    }
-
-    @Override
-    public void addRedeemedVoucher(final String voucher_id, final UUID player_uuid) {
-        addRedeemedVoucher(voucher_id, player_uuid, 1);
     }
 
     @Override
@@ -159,11 +146,6 @@ public final class StorageHolder implements IStorageHolder {
     }
 
     @Override
-    public void addRedeemedCode(final String code, final String player_uuid) {
-        addRedeemedCode(code, UUID.fromString(player_uuid));
-    }
-
-    @Override
     public int getCodeLimit(final String code, final UUID player_uuid) {
         return this.factory.getCodeLimit(code, player_uuid);
     }
@@ -171,6 +153,11 @@ public final class StorageHolder implements IStorageHolder {
     @Override
     public void incrementCodeLimit(final String code, final UUID player_uuid) {
         this.factory.incrementCodeLimit(code, player_uuid);
+    }
+
+    @Override
+    public List<VoucherHistory> getRedeemedVouchers(final UUID player_uuid) {
+        return this.factory.getRedeemedVouchers(player_uuid);
     }
     // generic code checks stop
 
