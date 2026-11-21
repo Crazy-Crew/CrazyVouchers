@@ -228,7 +228,7 @@ public final class SqliteFactory extends SqlFactory {
                     connection.prepareStatement("insert into vouchers_tracker(voucher_id, player_uuid, timestamp_redeemed) values (?, ?, ?)")) {
                 statement.setString(1, voucher_id.toString());
                 statement.setString(2, player_uuid.toString());
-                statement.setLong(3, Instant.now().toEpochMilli());
+                statement.setLong(3, Instant.now().getEpochSecond());
 
                 statement.executeUpdate();
             } catch (final SQLException exception) {
@@ -309,7 +309,7 @@ public final class SqliteFactory extends SqlFactory {
                 statement.setString(1, voucher_id);
                 statement.setString(2, player_uuid.toString());
                 statement.setInt(3, amount);
-                statement.setLong(4, Instant.now().toEpochMilli());
+                statement.setLong(4, Instant.now().getEpochSecond());
 
                 statement.executeUpdate();
             } catch (final SQLException exception) {
@@ -326,7 +326,7 @@ public final class SqliteFactory extends SqlFactory {
                statement.setString(1, code);
                statement.setString(2, player_uuid.toString());
                statement.setInt(3, 1); // redeemed once already
-               statement.setLong(4, Instant.now().toEpochMilli());
+               statement.setLong(4, Instant.now().getEpochSecond());
 
                statement.executeUpdate();
            } catch (final SQLException exception) {

@@ -51,7 +51,7 @@ public class DatabaseMigrator extends IVoucherMigrator {
                             for (final String value : values) {
                                 statement.setString(1, value);
                                 statement.setString(2, uuid.toString());
-                                statement.setLong(3, Instant.now().toEpochMilli());
+                                statement.setLong(3, Instant.now().getEpochSecond());
 
                                 statement.addBatch();
 
@@ -126,7 +126,7 @@ public class DatabaseMigrator extends IVoucherMigrator {
 
                                     statement.setString(1, code.getCode());
                                     statement.setString(2, uuid.toString());
-                                    statement.setLong(3, Instant.now().toEpochMilli());
+                                    statement.setLong(3, Instant.now().getEpochSecond());
 
                                     statement.addBatch();
 
@@ -155,7 +155,7 @@ public class DatabaseMigrator extends IVoucherMigrator {
                                     statement.setString(1, voucher_id);
                                     statement.setString(2, uuid.toString());
                                     statement.setInt(3, config.getInt(0));
-                                    statement.setLong(4, Instant.now().toEpochMilli());
+                                    statement.setLong(4, Instant.now().getEpochSecond());
 
                                     statement.addBatch();
 
