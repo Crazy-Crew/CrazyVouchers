@@ -66,8 +66,16 @@ public enum FileKeys {
         this.fileManager.saveFile(this.path);
     }
 
+    public void addFile(final FileAction action) {
+        this.fileManager.addFile(this.path, this.fileType, event -> event.addAction(action));
+    }
+
     public void addFile() {
-        this.fileManager.addFile(this.path, this.fileType, consumer -> consumer.addAction(FileAction.KEEP_FILE)); // do not purge these files.
+        this.fileManager.addFile(this.path, this.fileType);
+    }
+
+    public final FileType getFileType() {
+        return this.fileType;
     }
 
     public final Path getPath() {

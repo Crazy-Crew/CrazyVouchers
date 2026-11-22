@@ -11,12 +11,14 @@ public class VoucherHistory {
     private final UUID player_uuid;
     private final int redeemLimit;
     private final long timestamp;
+    private final int position;
 
-    public VoucherHistory(final String voucher_id, final UUID player_uuid, final int redeemLimit, final long timestamp) {
+    public VoucherHistory(final String voucher_id, final int position, final UUID player_uuid, final int redeemLimit, final long timestamp) {
         this.voucher_id = voucher_id;
         this.player_uuid = player_uuid;
         this.redeemLimit = redeemLimit;
         this.timestamp = timestamp;
+        this.position = position;
     }
 
     public String getVoucherId() {
@@ -34,5 +36,9 @@ public class VoucherHistory {
 
     public UUID getPlayerId() {
         return this.player_uuid;
+    }
+
+    public int getPosition() {
+        return this.position;
     }
 }

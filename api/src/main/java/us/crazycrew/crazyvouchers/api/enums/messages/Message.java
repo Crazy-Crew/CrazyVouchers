@@ -128,6 +128,35 @@ public enum Message {
     config_reload("misc.config.reload", "", "{prefix}<gray>You have just reloaded the configurations.", "misc", "config-reload"),
     player_only("misc.player.only", "", "{prefix}<red>Only players can use this command.", "misc", "player-only"),
 
+    storage_user_does_not_exist("storage.user.does.not.exist", "Available Placeholders: {player}, {prefix}", "{prefix}<red>{player} is not stored yet.", "storage", "user-does-not-exist"),
+
+    history_next_text("command.history.navigation.next", "The text for the next button.", ">>", "commands", "history", "navigation", "next-text"),
+    history_back_text("commandd.history.navigation.back", "The text for the back button.", "<<", "commands", "history", "navigation", "back-text"),
+    history_header("command.history.header", List.of(
+            "The header of the message.",
+            "",
+            "Available Placeholders: {player}, {page}, {max_pages} and {back}/{next}"
+    ), "<yellow>=== <gold>{page}<red>/</red>{max_pages}</gold> {button} ===", "commands", "history", "header"),
+    history_footer("command.history.footer", List.of(
+            "The footer of the message.",
+            "",
+            "Available Placeholders: {player}, {page}, {max_pages} and {back}/{next}"
+    ), "<yellow>=== <gold>{page}<red>/</red>{max_pages}</gold> {button} ===", "commands", "history", "footer"),
+    history_body("command.history.body", List.of(
+            "The main body of the message.",
+            "Available Placeholders: {player}, {header}, {footer}"
+    ), List.of(
+            "{header}",
+            "",
+            "{footer}"
+    ), "commands", "history", "body"),
+
+    history_format("command.history.format", List.of(
+            "The format for each voucher.",
+            "",
+            "Available placeholders: {voucher_id}, {position}, {player}, {redeem_limit}, {timestamp}"
+    ), "#{position}: ID: {voucher_id}, Limit: {redeem_limit}, Timestamp: {timestamp}", "commands", "history", "format"),
+
     help("misc.help", "", List.of(
             "<dark_gray>- <gold>/crazyvouchers help <aqua>Lists all the commands for vouchers.",
             "<dark_gray>- <gold>/crazyvouchers list <aqua>Lists all available types of vouchers and codes.",

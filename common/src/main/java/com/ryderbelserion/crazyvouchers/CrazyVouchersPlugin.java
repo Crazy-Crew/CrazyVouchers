@@ -3,6 +3,7 @@ package com.ryderbelserion.crazyvouchers;
 import com.ryderbelserion.crazyvouchers.storage.StorageManager;
 import com.ryderbelserion.crazyvouchers.storage.holder.StorageHolder;
 import com.ryderbelserion.fusion.config.properties.PropertyManager;
+import com.ryderbelserion.fusion.files.enums.FileAction;
 import com.ryderbelserion.fusion.files.enums.FileType;
 import org.jspecify.annotations.NonNull;
 import us.crazycrew.crazyvouchers.VouchersProvider;
@@ -77,7 +78,10 @@ public abstract class CrazyVouchersPlugin<S, F extends FusionKyori<S>> extends C
         }
 
         for (final FileKeys file : FileKeys.values()) {
-            file.addFile();
+            switch (file.getFileType()) {
+                case JSON -> file.addFile(FileAction.KEEP_FILE);
+                default -> file.addFile();
+            }
         }
 
         loadExamples();
@@ -115,7 +119,10 @@ public abstract class CrazyVouchersPlugin<S, F extends FusionKyori<S>> extends C
         this.fileManager.refresh(false).purge();
 
         for (final FileKeys file : FileKeys.values()) {
-            file.addFile();
+            switch (file.getFileType()) {
+                case JSON -> file.addFile(FileAction.KEEP_FILE);
+                default -> file.addFile();
+            }
         }
 
         this.configManager.reload();

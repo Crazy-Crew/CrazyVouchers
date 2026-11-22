@@ -20,43 +20,62 @@ import java.util.UUID;
 
 public class CommandHistory extends BaseCommand {
 
-    private final Map<UUID, Map<Integer, VoucherHistory>> pages = new HashMap<>();
-
     @Command(value = "history")
     @Permission(value = "crazyvouchers.history", def = PermissionDefault.OP)
     @Syntax("/crazyvouchers history [player]")
     public void give(final CommandSender sender, @ArgName("player") @Suggestion("players") PlayerBuilder target) {
         target.getPlayer().ifPresentOrElse(player -> {
             final UUID uuid = player.getUniqueId();
+            final String name = player.getName();
 
             if (!this.holder.hasUser(uuid)) {
-                //todo() send message
+                Message.storage_user_does_not_exist.sendMessage(sender);
 
                 return;
             }
 
-            final List<VoucherHistory> vouchers = this.holder.getRedeemedVouchers(uuid);
+            final List<VoucherHistory> vouchers = this.holder.getRedeemedVouchersByPage(uuid, 1, 5);
+            final int maxPages = calculateMaxPages(5, this.holder.getRedeemedVouchers(uuid)); //todo() find an alternative eventually.
 
-            final List<String> values = new ArrayList<>();
+            final Map<String, String> placeholders = new HashMap<>();
 
-            if (vouchers.isEmpty()) {
-                values.add("N/A");
-            } else {
-                vouchers.forEach(voucher -> values.add("Voucher: %s, Limit: %s, Timestamp: %s".formatted(voucher.getVoucherId(), voucher.getRedeemLimit(), voucher.getTimestamp())));
-            }
+            final List<String> messages = new ArrayList<>();
 
-            final String message = this.fusion.replacePlaceholders(StringUtils.toString(List.of(
-                    "=== === === {player} === === ===",
-                    "",
-                    "{vouchers}",
-                    "",
-                    "=== === === {player} === === ==="
-            )), Map.of(
-                    "{player}", player.getName(),
-                    "{vouchers}", StringUtils.toString(values)
-            ));
+            vouchers.forEach(voucher -> {
+                final String format = Message.history_format.getMessage(sender, Map.of(
+                        "{position}", String.valueOf(voucher.getPosition()),
+                        "{voucher_id}", voucher.getVoucherId(),
+                        "{redeem_limit}", String.valueOf(voucher.getRedeemLimit()),
+                        "{timestamp}", voucher.getTimestamp()
+                ));
 
-            sender.sendRichMessage(message);
+                messages.add(format);
+            });
+
+            final String message = StringUtils.toString(messages);
+
+            placeholders.putIfAbsent("{header}", Message.history_header.getMessage(sender, Map.of(
+                    "{back}", Message.history_back_text.getMessage(),
+                    "{next}", Message.history_next_text.getMessage(),
+                    "{player}", name,
+                    "{page}", String.valueOf(1),
+                    "{max_pages}", String.valueOf(maxPages)
+            )));
+            placeholders.putIfAbsent("{footer}", Message.history_footer.getMessage(sender, Map.of(
+                    "{back}", Message.history_back_text.getMessage(),
+                    "{next}", Message.history_next_text.getMessage(),
+                    "{player}", name,
+                    "{page}", String.valueOf(1),
+                    "{max_pages}", String.valueOf(maxPages)
+            )));
+
+            placeholders.putIfAbsent("{vouchers}", message);
+
+            Message.history_body.sendMessage(sender, placeholders);
         }, () -> Message.not_online.sendMessage(sender));
+    }
+
+    public int calculateMaxPages(final int perPage, final List<VoucherHistory> vouchers) {
+        return Math.max(1, Math.ceilDiv(vouchers.size(), perPage));
     }
 }

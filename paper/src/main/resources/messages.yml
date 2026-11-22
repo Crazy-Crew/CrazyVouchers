@@ -1,36 +1,72 @@
 player:
-  no-permission: '{prefix}<red>You do not have permission to use that command!'
+  no-permission: "{prefix}<red>You do not have permission to use that command!"
   voucher:
-    no-permission: '{prefix}<red>You do not have permission to use that voucher.'
-    no-permission-offhand: '{prefix}<red>You do not have permission to use vouchers in your off hand.'
-    cant-put-in-crafting-table: '{prefix}<red>You cannot put vouchers in the crafting table.'
-  survival-only: '{prefix}<red>You must be in survival mode to use vouchers.'
-  target-not-online: '{prefix}<red>That player is not online.'
-  two-step-authentication: '{prefix}<gray>Right click again to confirm that you want to use this voucher.'
-  hit-limit: '{prefix}<red>You have hit your limit for using this voucher.'
+    no-permission: "{prefix}<red>You do not have permission to use that voucher."
+    no-permission-offhand: "{prefix}<red>You do not have permission to use vouchers in your off hand."
+    cant-put-in-crafting-table: "{prefix}<red>You cannot put vouchers in the crafting table."
+  survival-only: "{prefix}<red>You must be in survival mode to use vouchers."
+  target-not-online: "{prefix}<red>That player is not online."
+  two-step-authentication: "{prefix}<gray>Right click again to confirm that you want to use this voucher."
+  hit-limit: "{prefix}<red>You have hit your limit for using this voucher."
 voucher:
   requirements:
-    not-a-number: '{prefix}<red>{arg} is not a number.'
-    not-a-voucher: '{prefix}<red>That is not a Voucher Type.'
-    not-in-world: '{prefix}<red>You can not use that voucher here as you are not in a whitelisted world for this voucher.'
-    un-stack-item: '{prefix}<red>You need to unstack that item before you can use it.'
-    has-blacklist-perm: '{prefix}<red>Sorry but you can not use this voucher because you have a black-listed permission.'
+    not-a-number: "{prefix}<red>{arg} is not a number."
+    not-a-voucher: "{prefix}<red>That is not a Voucher Type."
+    not-in-world: "{prefix}<red>You can not use that voucher here as you are not in a whitelisted world for this voucher."
+    un-stack-item: "{prefix}<red>You need to unstack that item before you can use it."
+    has-blacklist-perm: "{prefix}<red>Sorry but you can not use this voucher because you have a black-listed permission."
   code:
-    used: '{prefix}<red>The voucher code <gold>{arg} <red>has already been redeemed.'
-    unavailable: '{prefix}<red>The voucher code <gold>{arg} <red>has already been redeemed.'
+    used: "{prefix}<red>The voucher code <gold>{arg} <red>has already been redeemed."
+    unavailable: "{prefix}<red>The voucher code <gold>{arg} <red>has already been redeemed."
     # Available Placeholders: {prefix}, {code}
-    limit: '{prefix}<red>You have hit your limit while trying to redeem {code}.'
-  sent-voucher: '{prefix}<aqua>You have just given <gold>{player} <aqua>a <gold>{voucher} <aqua>voucher.'
-  sent-everyone-voucher: '{prefix}<aqua>You have just given all players a <gold>{voucher} <aqua>voucher.'
+    limit: "{prefix}<red>You have hit your limit while trying to redeem {code}."
+  sent-voucher: "{prefix}<aqua>You have given <gold>{player} <aqua>a <gold>{voucher} <aqua>voucher."
+  sent-everyone-voucher: "{prefix}<aqua>You have given all players a <gold>{voucher} <aqua>voucher."
 misc:
-  player-only: '{prefix}<red>Only players can use this command.'
-  config-reload: '{prefix}<gray>You have just reloaded the Config.yml'
+  player-only: "{prefix}<red>Only players can use this command."
+  config-reload: "{prefix}<gray>You have reloaded the plugin!"
   help:
-    - '<dark_gray>- <gold>/crazyvouchers help <aqua>Lists all the commands for vouchers.'
-    - '<dark_gray>- <gold>/crazyvouchers list <aqua>Lists all available types of vouchers and codes.'
-    - '<dark_gray>- <gold>/crazyvouchers redeem <code> <aqua>Allows the player to redeem a voucher code.'
-    - '<dark_gray>- <gold>/crazyvouchers give <voucher> [amount] [player] [arguments] <aqua>Gives a player
-    a voucher.'
-    - '<dark_gray>- <gold>/crazyvouchers giveAll <voucher> [amount] [arguments] <aqua>Gives all players a voucher.'
-    - '<dark_gray>- <gold>/crazyvouchers open [page] <aqua>Opens a GUI so you can get vouchers easily.'
-    - '<dark_gray>- <gold>/crazyvouchers reload <aqua>Reloaded the configuration files.'
+    - "<dark_gray>- <gold>/crazyvouchers help <aqua>Lists all the commands for vouchers."
+    - "<dark_gray>- <gold>/crazyvouchers list <aqua>Lists all available types of vouchers and codes."
+    - "<dark_gray>- <gold>/crazyvouchers redeem <code> <aqua>Allows the player to redeem a voucher code."
+    - "<dark_gray>- <gold>/crazyvouchers give <voucher> [amount] [player] [arguments] <aqua>Gives a player a voucher."
+    - "<dark_gray>- <gold>/crazyvouchers giveAll <voucher> [amount] [arguments] <aqua>Gives all players a voucher."
+    - "<dark_gray>- <gold>/crazyvouchers open [page] <aqua>Opens a GUI so you can get vouchers easily."
+    - "<dark_gray>- <gold>/crazyvouchers reload <aqua>Reloaded the configuration files."
+storage:
+  # Available Placeholders: {player}, {prefix}
+  user-does-not-exist: "{prefix}<red>{player} is not stored yet."
+# All messages handling commands!
+commands:
+  # /crazyvouchers history
+  history:
+    # Navigation text
+    navigation:
+      # The text for the next button.
+      next-text: "»"
+      # The hover text for the next button.
+      next-hover-text: "<red>Next Button"
+      # The text for the back button.
+      back-text: "«"
+      # The hover text for the back button.
+      back-hover-text: "<red>Back Button"
+    # The header of the message.
+    #
+    # Available Placeholders: {player}, {page}, {max_pages} and {back}/{next}
+    header: " <bold><gold>━━━━━━━━━━━━━━━━━━━ <red>{back} Page {page}/{max_pages} {next}</red> ━━━━━━━━━━━━━━━━━━━</gold></bold>"
+    # The footer of the message.
+    #
+    # Available Placeholders: {player}, {page}, {max_pages} and {back}/{next}
+    footer: " <bold><gold>━━━━━━━━━━━━━━━━━━━ <red>{back} Page {page}/{max_pages} {next}</red> ━━━━━━━━━━━━━━━━━━━</gold></bold>"
+    # The format for each voucher.
+    #
+    # Available placeholders: {voucher_id}, {position}, {player}, {redeem_limit}, {timestamp}
+    format: "<dark_gray>[<green>#{position}<dark_gray>]: <red>Name: {voucher_id}<dark_gray>, <red>Redeem Limit: {redeem_limit}<dark_gray>, <red>Timestamp: {timestamp}<dark_gray>"
+    # The main body of the message.
+    # Available Placeholders: {player}, {header}, {footer}, {vouchers}
+    body:
+      - "{header}"
+      - ""
+      - "{vouchers}"
+      - ""
+      - "{footer}"

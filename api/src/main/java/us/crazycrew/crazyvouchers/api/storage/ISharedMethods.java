@@ -1,9 +1,11 @@
 package us.crazycrew.crazyvouchers.api.storage;
 
+import org.jetbrains.annotations.ApiStatus;
 import us.crazycrew.crazyvouchers.api.objects.VoucherHistory;
 import java.util.List;
 import java.util.UUID;
 
+@ApiStatus.Internal
 public abstract class ISharedMethods {
 
     public abstract void removeUser(final UUID player_uuid);
@@ -57,6 +59,8 @@ public abstract class ISharedMethods {
     public abstract int getCodeLimit(final String code, final UUID player_uuid);
 
     public abstract void incrementCodeLimit(final String code, final UUID player_uuid);
+
+    public abstract List<VoucherHistory> getRedeemedVouchersByPage(final UUID player_uuid, final int page, final int perPage);
 
     public abstract List<VoucherHistory> getRedeemedVouchers(final UUID player_uuid);
 }

@@ -156,6 +156,11 @@ public final class StorageHolder extends IStorageHolder {
     }
 
     @Override
+    public List<VoucherHistory> getRedeemedVouchersByPage(final UUID player_uuid, final int page, final int perPage) {
+        return this.factory.getRedeemedVouchersByPage(player_uuid, page, perPage);
+    }
+
+    @Override
     public List<VoucherHistory> getRedeemedVouchers(final UUID player_uuid) {
         return this.factory.getRedeemedVouchers(player_uuid);
     }

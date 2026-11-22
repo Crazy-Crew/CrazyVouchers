@@ -257,6 +257,37 @@ public final class SqliteFactory extends SqlFactory {
     }
 
     @Override
+    public List<VoucherHistory> getRedeemedVouchersByPage(final UUID player_uuid, final int page, final int perPage) {
+        final List<VoucherHistory> vouchers = new ArrayList<>();
+
+        CompletableFuture.runAsync(() -> {
+            try (final Connection connection = this.source.getConnection(); final PreparedStatement statement =
+                    connection.prepareStatement("select voucher_id, redeem_limit, timestamp_redeemed from vouchers_redeemed where player_uuid=? order by rowid limit ? offset ?")) {
+                statement.setString(1, player_uuid.toString());
+                statement.setInt(2, perPage);
+                statement.setInt(3, (page - 1) * perPage);
+
+                final ResultSet resultSet = statement.executeQuery();
+
+                while (resultSet.next()) {
+                    final int row = resultSet.getRow();
+
+                    vouchers.add(new VoucherHistory(
+                            resultSet.getString("voucher_id"),
+                            row,
+                            player_uuid,
+                            resultSet.getInt("redeem_limit"),
+                            resultSet.getLong("timestamp_redeemed")));
+                }
+            } catch (final SQLException exception) {
+                this.fusion.log(true, Level.error, "<red>An error has occurred with the reason <gold>%s</gold> while fetching all redeemed vouchers for <gold>%s's</gold>!", exception.getMessage(), player_uuid);
+            }
+        }).join();
+
+        return vouchers;
+    }
+
+    @Override
     public List<VoucherHistory> getRedeemedVouchers(final UUID player_uuid) {
         final List<VoucherHistory> vouchers = new ArrayList<>();
 
@@ -270,6 +301,7 @@ public final class SqliteFactory extends SqlFactory {
                while (resultSet.next()) {
                    vouchers.add(new VoucherHistory(
                            resultSet.getString("voucher_id"),
+                           resultSet.getRow(),
                            player_uuid,
                            resultSet.getInt("redeem_limit"),
                            resultSet.getLong("timestamp_redeemed")
