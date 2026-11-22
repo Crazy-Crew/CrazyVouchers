@@ -290,7 +290,11 @@ public abstract class HikariFactory extends SqlFactory {
 
                 final ResultSet resultSet = statement.executeQuery();
 
-                return resultSet.getInt("redeem_limit");
+                if (resultSet.next()) {
+                    return resultSet.getInt("redeem_limit");
+                }
+
+                return -1;
             } catch (final SQLException exception) {
                 this.fusion.log(true, Level.error, "<red>An error has occurred with the reason <gold>%s</gold> while checking the voucher <gold>%s's</gold> redeem limit!", exception.getMessage(), voucher_id);
             }
@@ -402,7 +406,11 @@ public abstract class HikariFactory extends SqlFactory {
 
                 final ResultSet resultSet = statement.executeQuery();
 
-                return resultSet.getInt("redeem_limit");
+                if (resultSet.next()) {
+                    return resultSet.getInt("redeem_limit");
+                }
+
+                return -1;
             } catch (final SQLException exception) {
                 this.fusion.log(true, Level.error, "<red>An error has occurred with the reason <gold>%s</gold> while checking the voucher code <gold>%s's</gold> redeem limit!", exception.getMessage(), code);
             }
