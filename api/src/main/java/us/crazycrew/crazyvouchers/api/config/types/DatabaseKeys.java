@@ -41,7 +41,8 @@ public class DatabaseKeys implements IPropertyHolder {
     @Comment({
             "Available Types:",
             "  ⤷ sqlite (PREFERRED FOR SINGLE SERVER PERFORMANCE)",
-            "  ⤷ postgres (N/A)"
+            "  ⤷ postgres",
+            "  ⤷ mariadb"
     })
     public static final Property<String> storage_type = newProperty("sqlite", "root", "storage", "type");
 
@@ -54,6 +55,7 @@ public class DatabaseKeys implements IPropertyHolder {
     @Comment({
             "Available Ports:",
             "  ⤷ postgres (5432)",
+            "  ⤷ mariadb (3306)",
             "  ⤷ sqlite (N/A)"
     })
     public static final Property<Integer> database_port = newProperty(5432, "root", "storage", "connection", "port");
@@ -67,7 +69,7 @@ public class DatabaseKeys implements IPropertyHolder {
     @Comment({
             "Define the address and port for the database.",
             " - The standard DB engine port is used by default",
-            "   (MySQL: 3306, PostgreSQL: 5432, MongoDB: 27017)",
+            "   (MySQL: 3306, PostgreSQL: 5432)",
             " - Specify as host:port if differs"
     })
     public static final Property<String> database_address = newProperty("", "root", "storage", "connection", "address");

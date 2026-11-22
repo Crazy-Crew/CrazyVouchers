@@ -1,145 +1,110 @@
-package com.ryderbelserion.crazyvouchers.storage.impl.sql.types;
+package com.ryderbelserion.crazyvouchers.storage.impl.sql;
 
 import com.ryderbelserion.crazyvouchers.CrazyVouchersPlugin;
-import us.crazycrew.crazyvouchers.api.objects.VoucherHistory;
-import com.ryderbelserion.crazyvouchers.storage.impl.sql.SqlFactory;
+import com.ryderbelserion.crazyvouchers.storage.StorageCredentials;
 import com.ryderbelserion.fusion.api.enums.Level;
+import com.ryderbelserion.fusion.api.exceptions.FusionException;
 import com.zaxxer.hikari.HikariConfig;
 import com.zaxxer.hikari.HikariDataSource;
-import org.jspecify.annotations.NullMarked;
-import java.io.IOException;
-import java.nio.file.Files;
-import java.nio.file.Path;
+import org.jspecify.annotations.NonNull;
+import us.crazycrew.crazyvouchers.api.objects.VoucherHistory;
+
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.sql.Statement;
 import java.time.Instant;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 import java.util.concurrent.CompletableFuture;
 
-@NullMarked
-public final class SqliteFactory extends SqlFactory {
+public abstract class HikariFactory extends SqlFactory {
 
-    private final String drop_index_vouchers_uuid = "drop index if exists idx_vouchers_redeemed_player_uuid";
-    private final String drop_index_vouchers_id = "drop index if exists idx_vouchers_redeemed_id";
+    private final StorageCredentials credentials;
 
-    private final String drop_index_tracker_uuid = "drop index if exists idx_vouchers_tracker_player_uuid";
-    private final String drop_index_tracker_id = "drop index if exists idx_vouchers_tracker_voucher_id";
+    private HikariDataSource source;
 
-    private final String drop_index_codes_uuid = "drop index if exists idx_code_player_uuid";
-    private final String drop_index_codes_id = "drop index if exists idx_code_id";
+    public HikariFactory(
+            @NonNull final StorageCredentials credentials,
+            @NonNull final CrazyVouchersPlugin plugin,
+            @NonNull final String impl
+    ) {
+        super(plugin, impl);
 
-    private final Path path;
-
-    public SqliteFactory(final CrazyVouchersPlugin plugin) {
-        super(plugin, "SQLite");
-
-        this.path = plugin.getDataPath().resolve("crazyvouchers.db");
+        this.credentials = credentials;
     }
+
+    public abstract String getDriverIdentifier();
+
+    public abstract String getJDBCIdentifier();
+
+    public abstract int getDefaultPort();
 
     @Override
     public void migrate() {
-        CompletableFuture.runAsync(() -> {
-            try (final Connection connection = getConnection()) {
-                if (connection == null) return;
 
-                try (final Statement statement = connection.createStatement()) {
-                    statement.addBatch(this.drop_index_vouchers_uuid);
-                    statement.addBatch(this.drop_index_vouchers_id);
-
-                    statement.addBatch(this.drop_index_tracker_uuid);
-                    statement.addBatch(this.drop_index_tracker_id);
-
-                    statement.addBatch(this.drop_index_codes_uuid);
-                    statement.addBatch(this.drop_index_codes_id);
-
-                    statement.executeBatch();
-                }
-            } catch (final SQLException exception) {
-                this.fusion.log(true, Level.error, "<red>An error has occurred with the reason <gold>%s</gold> while removing indexes for migration!", exception.getMessage());
-            }
-        });
-    }
-
-    @Override
-    public void init() {
-        if (!Files.exists(this.path)) {
-            try {
-                final Path parent = this.path.getParent();
-
-                if (!Files.exists(parent)) {
-                    Files.createDirectory(parent);
-                }
-
-                Files.createFile(this.path);
-            } catch (final IOException exception) {
-                this.fusion.log(true, Level.error, "<red>Failed to create the file %s. (<gold>%s</gold>)", this.path, exception.getMessage() != null ? exception.getMessage() : "N/A");
-            }
-        }
-
-        final HikariConfig config = new HikariConfig();
-
-        config.setJdbcUrl(url());
-        config.setMaximumPoolSize(5); // 5 is enough for flat file.
-        config.setConnectionInitSql("PRAGMA foreign_keys = ON;");
-
-        this.source = new HikariDataSource(config);
-
-        CompletableFuture.runAsync(() -> {
-            try (final Connection connection = getConnection()) {
-                if (connection == null) return;
-
-                try (final Statement statement = connection.createStatement()) {
-                    statement.addBatch(this.create_users_table);
-
-                    statement.addBatch(this.create_vouchers_tracker_table);
-                    statement.addBatch(this.index_tracker_uuid);
-                    statement.addBatch(this.index_tracker_id);
-
-                    statement.addBatch(this.create_vouchers_dupe_table);
-
-                    statement.addBatch(this.create_vouchers_redeemed_table);
-                    statement.addBatch(this.index_vouchers_uuid);
-                    statement.addBatch(this.index_vouchers_id);
-
-                    statement.addBatch(this.create_codes_table);
-                    statement.addBatch(this.index_codes_uuid);
-                    statement.addBatch(this.index_codes_id);
-
-                    statement.executeBatch();
-                }
-            } catch (final SQLException exception) {
-                this.fusion.log(true, Level.error, "<red>An error has occurred with the reason <gold>%s</gold> while initializing the tables!", exception.getMessage());
-            }
-        });
     }
 
     @Override
     public void post() {
-        CompletableFuture.runAsync(() -> {
-            try (final Connection connection = getConnection()) {
-                if (connection == null) return;
 
-                try (final Statement statement = connection.createStatement()) {
-                    statement.addBatch(this.index_tracker_uuid);
-                    statement.addBatch(this.index_tracker_id);
+    }
 
-                    statement.addBatch(this.index_vouchers_uuid);
-                    statement.addBatch(this.index_vouchers_id);
+    @Override
+    public String url() {
+        return "";
+    }
 
-                    statement.addBatch(this.index_codes_uuid);
-                    statement.addBatch(this.index_codes_id);
+    protected void configure(
+            @NonNull final HikariConfig config,
+            @NonNull final String database,
+            @NonNull final String username,
+            @NonNull final String password,
+            @NonNull final String address,
+            final int port
+    ) {
+        config.setDriverClassName(getDriverIdentifier());
 
-                    statement.executeBatch();
-                }
-            } catch (final SQLException exception) {
-                this.fusion.log(true, Level.error, "<red>An error has occurred with the reason <gold>%s</gold> while adding indexing to the columns!", exception.getMessage());
-            }
-        });
+        config.setJdbcUrl(String.format("jdbc:%s://%s:%s/%s", getJDBCIdentifier(), address, port == -1 ? getDefaultPort() : port, database));
+
+        config.setUsername(username);
+        config.setPassword(password);
+    }
+
+    @Override
+    public void init() {
+        final HikariConfig config = new HikariConfig();
+
+        config.setPoolName("corecraft-hikari");
+
+        configure(
+                config,
+                this.credentials.database(),
+                this.credentials.username(),
+                this.credentials.password(),
+                this.credentials.address(),
+                this.credentials.port()
+        );
+
+        config.setMaximumPoolSize(this.credentials.maxPoolSize());
+        config.setMinimumIdle(this.credentials.minIdle());
+        config.setMaxLifetime(this.credentials.maxLifetime());
+        config.setKeepaliveTime(this.credentials.heartbeat());
+        config.setConnectionTimeout(this.credentials.connectionTimeout());
+
+        config.setInitializationFailTimeout(-1);
+
+        this.source = new HikariDataSource(config);
+
+        super.init();
+    }
+
+    @Override
+    public void stop() {
+        if (this.source != null) {
+            this.source.close();
+        }
     }
 
     @Override
@@ -235,7 +200,7 @@ public final class SqliteFactory extends SqlFactory {
 
                 statement.executeUpdate();
             } catch (final SQLException exception) {
-                this.fusion.log(true, Level.error, "<red>An error has occurred with the reason <gold>%s</gold> while adding a protected voucher using the <gold>uuid %s</gold> (<green>voucher_id %s</green>)!", exception.getMessage(), player_uuid,  voucher_id);
+                this.fusion.log(true, Level.error, "<red>An error has occurred with the reason <gold>%s</gold> while adding a private voucher using the <gold>uuid %s</gold> (<green>voucher_id %s</green>)!", exception.getMessage(), player_uuid,  voucher_id);
             }
         });
     }
@@ -292,24 +257,24 @@ public final class SqliteFactory extends SqlFactory {
         final List<VoucherHistory> vouchers = new ArrayList<>();
 
         CompletableFuture.runAsync(() -> {
-           try (final Connection connection = this.source.getConnection(); final PreparedStatement statement =
-                   connection.prepareStatement("select voucher_id, redeem_limit, timestamp_redeemed from vouchers_redeemed where player_uuid=?")) {
-               statement.setString(1, player_uuid.toString());
+            try (final Connection connection = this.source.getConnection(); final PreparedStatement statement =
+                    connection.prepareStatement("select voucher_id, redeem_limit, timestamp_redeemed from vouchers_redeemed where player_uuid=?")) {
+                statement.setString(1, player_uuid.toString());
 
-               final ResultSet resultSet = statement.executeQuery();
+                final ResultSet resultSet = statement.executeQuery();
 
-               while (resultSet.next()) {
-                   vouchers.add(new VoucherHistory(
-                           resultSet.getString("voucher_id"),
-                           resultSet.getRow(),
-                           player_uuid,
-                           resultSet.getInt("redeem_limit"),
-                           resultSet.getLong("timestamp_redeemed")
-                   ));
-               }
-           } catch (final SQLException exception) {
-               this.fusion.log(true, Level.error, "<red>An error has occurred with the reason <gold>%s</gold> while fetching all redeemed vouchers for <gold>%s's</gold>!", exception.getMessage(), player_uuid);
-           }
+                while (resultSet.next()) {
+                    vouchers.add(new VoucherHistory(
+                            resultSet.getString("voucher_id"),
+                            resultSet.getRow(),
+                            player_uuid,
+                            resultSet.getInt("redeem_limit"),
+                            resultSet.getLong("timestamp_redeemed")
+                    ));
+                }
+            } catch (final SQLException exception) {
+                this.fusion.log(true, Level.error, "<red>An error has occurred with the reason <gold>%s</gold> while fetching all redeemed vouchers for <gold>%s's</gold>!", exception.getMessage(), player_uuid);
+            }
         }).join();
 
         return vouchers;
@@ -383,17 +348,17 @@ public final class SqliteFactory extends SqlFactory {
     @Override
     public void addRedeemedCode(final String code, final UUID player_uuid) {
         CompletableFuture.runAsync(() -> {
-           try (final Connection connection = this.source.getConnection(); final PreparedStatement statement =
-                   connection.prepareStatement("insert into codes_redeemed(code, player_uuid, redeem_limit, timestamp_redeemed) values (?, ?, ?, ?)")) {
-               statement.setString(1, code);
-               statement.setString(2, player_uuid.toString());
-               statement.setInt(3, 1); // redeemed once already
-               statement.setLong(4, Instant.now().getEpochSecond());
+            try (final Connection connection = this.source.getConnection(); final PreparedStatement statement =
+                    connection.prepareStatement("insert into codes_redeemed(code, player_uuid, redeem_limit, timestamp_redeemed) values (?, ?, ?, ?)")) {
+                statement.setString(1, code);
+                statement.setString(2, player_uuid.toString());
+                statement.setInt(3, 1); // redeemed once already
+                statement.setLong(4, Instant.now().getEpochSecond());
 
-               statement.executeUpdate();
-           } catch (final SQLException exception) {
-               this.fusion.log(true, Level.error, "<red>An error has occurred with the reason <gold>%s</gold> while adding the code <gold>%s</gold> with player id <gold>%s</gold>!", exception.getMessage(), code, player_uuid);
-           }
+                statement.executeUpdate();
+            } catch (final SQLException exception) {
+                this.fusion.log(true, Level.error, "<red>An error has occurred with the reason <gold>%s</gold> while adding the code <gold>%s</gold> with player id <gold>%s</gold>!", exception.getMessage(), code, player_uuid);
+            }
         });
     }
 
@@ -462,7 +427,17 @@ public final class SqliteFactory extends SqlFactory {
     }
 
     @Override
-    public String url() {
-        return "jdbc:sqlite:" + this.path.toFile().getAbsolutePath();
+    public Connection getConnection() throws SQLException {
+        if (this.source == null) {
+            throw new FusionException("Failed to get connection from pool. (Source returned null)");
+        }
+
+        final Connection connection = this.source.getConnection();
+
+        if (connection == null) {
+            throw new FusionException("Failed to get connection from pool. (getConnection returned null)");
+        }
+
+        return connection;
     }
 }

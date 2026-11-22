@@ -2,7 +2,9 @@ package com.ryderbelserion.crazyvouchers.storage;
 
 import com.ryderbelserion.crazyvouchers.CrazyVouchersPlugin;
 import com.ryderbelserion.crazyvouchers.storage.holder.StorageHolder;
-import com.ryderbelserion.crazyvouchers.storage.impl.sql.types.SqliteFactory;
+import com.ryderbelserion.crazyvouchers.storage.impl.file.SqliteFactory;
+import com.ryderbelserion.crazyvouchers.storage.impl.sql.types.MariadbFactory;
+import com.ryderbelserion.crazyvouchers.storage.impl.sql.types.PostgresFactory;
 import com.ryderbelserion.fusion.config.properties.PropertyManager;
 import us.crazycrew.crazyvouchers.api.config.ConfigManager;
 import us.crazycrew.crazyvouchers.api.config.types.DatabaseKeys;
@@ -18,12 +20,27 @@ public class StorageManager {
     }
 
     public StorageHolder init() {
-        final PropertyManager holder = this.configManager.getConfig();
+        final PropertyManager config = this.configManager.getConfig();
 
-        final String storageType = holder.getProperty(DatabaseKeys.storage_type);
+        final StorageCredentials credentials = new StorageCredentials(
+                config.getProperty(DatabaseKeys.database_name),
+                config.getProperty(DatabaseKeys.database_username),
+                config.getProperty(DatabaseKeys.database_password),
+                config.getProperty(DatabaseKeys.database_address),
+                config.getProperty(DatabaseKeys.connection_timeout),
+                config.getProperty(DatabaseKeys.maximum_lifetime),
+                config.getProperty(DatabaseKeys.maximum_pool_size),
+                config.getProperty(DatabaseKeys.connection_heartbeat),
+                config.getProperty(DatabaseKeys.minimum_pool_size),
+                config.getProperty(DatabaseKeys.database_port)
+        );
+
+        final String storageType = config.getProperty(DatabaseKeys.storage_type);
 
         return switch (storageType.toLowerCase()) {
             case "sqlite" -> new StorageHolder(new SqliteFactory(this.plugin)).init();
+            case "mariadb" -> new StorageHolder(new MariadbFactory(credentials, this.plugin)).init();
+            case "postgres" -> new StorageHolder(new PostgresFactory(credentials, this.plugin)).init();
             default -> throw new IllegalStateException("Unexpected storage type value: " + storageType);
         };
     }

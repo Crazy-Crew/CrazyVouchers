@@ -7,7 +7,6 @@ import com.ryderbelserion.fusion.api.exceptions.FusionException;
 import com.zaxxer.hikari.HikariDataSource;
 import org.jspecify.annotations.NonNull;
 import org.jspecify.annotations.NullUnmarked;
-
 import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.SQLException;
