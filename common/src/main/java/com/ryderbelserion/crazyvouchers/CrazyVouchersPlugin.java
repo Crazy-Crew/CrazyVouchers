@@ -79,7 +79,10 @@ public abstract class CrazyVouchersPlugin<S, F extends FusionKyori<S>> extends C
 
         for (final FileKeys file : FileKeys.values()) {
             switch (file.getFileType()) {
-                case JSON -> file.addFile(FileAction.KEEP_FILE);
+                case JSON -> file.addFile(List.of(
+                        FileAction.EXTRACT_FILE,
+                        FileAction.KEEP_FILE
+                ));
                 default -> file.addFile();
             }
         }
@@ -120,7 +123,10 @@ public abstract class CrazyVouchersPlugin<S, F extends FusionKyori<S>> extends C
 
         for (final FileKeys file : FileKeys.values()) {
             switch (file.getFileType()) {
-                case JSON -> file.addFile(FileAction.KEEP_FILE);
+                case JSON -> file.addFile(List.of(
+                        FileAction.EXTRACT_FILE,
+                        FileAction.KEEP_FILE
+                ));
                 default -> file.addFile();
             }
         }

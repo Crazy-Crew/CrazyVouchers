@@ -12,6 +12,7 @@ import org.jspecify.annotations.NullMarked;
 import org.spongepowered.configurate.BasicConfigurationNode;
 import org.spongepowered.configurate.CommentedConfigurationNode;
 import java.nio.file.Path;
+import java.util.List;
 import java.util.Optional;
 
 @NullMarked
@@ -66,8 +67,8 @@ public enum FileKeys {
         this.fileManager.saveFile(this.path);
     }
 
-    public void addFile(final FileAction action) {
-        this.fileManager.addFile(this.path, this.fileType, event -> event.addAction(action));
+    public void addFile(final List<FileAction> actions) {
+        this.fileManager.addFile(this.path, this.fileType, event -> actions.forEach(event::addAction));
     }
 
     public void addFile() {
