@@ -10,8 +10,7 @@ public abstract class FlatFactory extends ConnectionFactory {
 
     protected final CrazyVouchersPlugin plugin;
     protected final FusionCore fusion;
-
-    private final String impl;
+    protected final String impl;
 
     public FlatFactory(final CrazyVouchersPlugin plugin, final String impl) {
         this.fusion = plugin.getFusion();

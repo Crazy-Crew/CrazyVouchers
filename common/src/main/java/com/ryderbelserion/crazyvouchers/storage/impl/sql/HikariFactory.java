@@ -152,7 +152,9 @@ public abstract class HikariFactory extends SqlFactory {
                     connection.prepareStatement("select 1 from vouchers_players where player_uuid=? limit 1")) {
                 statement.setString(1, player_uuid.toString());
 
-                return statement.executeQuery().next();
+                try (final ResultSet resultSet = statement.executeQuery()) {
+                    return resultSet.next();
+                }
             } catch (final SQLException exception) {
                 this.fusion.log(true, Level.error, "<red>An error has occurred with the reason for data type <green>%s</green>, <gold>%s</gold> while checking if <gold>%s</gold> exists!",
                         this.impl, exception.getMessage(), player_uuid);
@@ -169,7 +171,9 @@ public abstract class HikariFactory extends SqlFactory {
                     connection.prepareStatement("select 1 from vouchers_tracker where voucher_id=? limit 1")) {
                 statement.setString(1, voucher_id.toString());
 
-                return statement.executeQuery().next();
+                try (final ResultSet resultSet = statement.executeQuery()) {
+                    return resultSet.next();
+                }
             } catch (final SQLException exception) {
                 this.fusion.log(true, Level.error, "<red>An error has occurred with the reason for data type <green>%s</green>, <gold>%s</gold> while checking if the voucher <gold>%s</gold> is protected!",
                         this.impl, exception.getMessage(), voucher_id);
@@ -218,7 +222,9 @@ public abstract class HikariFactory extends SqlFactory {
                     connection.prepareStatement("select 1 from vouchers_redeemed where voucher_id=? limit 1")) {
                 statement.setString(1, voucher_id);
 
-                return statement.executeQuery().next();
+                try (final ResultSet resultSet = statement.executeQuery()) {
+                    return resultSet.next();
+                }
             } catch (final SQLException exception) {
                 this.fusion.log(true, Level.error, "<red>An error has occurred with the reason for data type <green>%s</green>, <gold>%s</gold> while checking if the voucher <gold>%s</gold> is redeemed!",
                         this.impl, exception.getMessage(), voucher_id);
@@ -241,15 +247,17 @@ public abstract class HikariFactory extends SqlFactory {
 
                 int position = 1;
 
-                while (resultSet.next()) {
-                    vouchers.add(new VoucherHistory(
-                            resultSet.getString("voucher_id"),
-                            position,
-                            player_uuid,
-                            resultSet.getInt("redeem_limit"),
-                            resultSet.getLong("timestamp_redeemed")));
+                try (final ResultSet resultSet = statement.executeQuery()) {
+                    while (resultSet.next()) {
+                        vouchers.add(new VoucherHistory(
+                                resultSet.getString("voucher_id"),
+                                position,
+                                player_uuid,
+                                resultSet.getInt("redeem_limit"),
+                                resultSet.getLong("timestamp_redeemed")));
 
-                    position++;
+                        position++;
+                    }
                 }
             } catch (final SQLException exception) {
                 this.fusion.log(true, Level.error, "<red>An error has occurred with the reason for data type <green>%s</green>, <gold>%s</gold> while fetching all redeemed vouchers by page for <gold>%s's</gold>!",
@@ -269,16 +277,16 @@ public abstract class HikariFactory extends SqlFactory {
                     connection.prepareStatement("select voucher_id, redeem_limit, timestamp_redeemed from vouchers_redeemed where player_uuid=?")) {
                 statement.setString(1, player_uuid.toString());
 
-                final ResultSet resultSet = statement.executeQuery();
-
-                while (resultSet.next()) {
-                    vouchers.add(new VoucherHistory(
-                            resultSet.getString("voucher_id"),
-                            resultSet.getRow(),
-                            player_uuid,
-                            resultSet.getInt("redeem_limit"),
-                            resultSet.getLong("timestamp_redeemed")
-                    ));
+                try (final ResultSet resultSet = statement.executeQuery()) {
+                    while (resultSet.next()) {
+                        vouchers.add(new VoucherHistory(
+                                resultSet.getString("voucher_id"),
+                                resultSet.getRow(),
+                                player_uuid,
+                                resultSet.getInt("redeem_limit"),
+                                resultSet.getLong("timestamp_redeemed")
+                        ));
+                    }
                 }
             } catch (final SQLException exception) {
                 this.fusion.log(true, Level.error, "<red>An error has occurred with the reason for data type <green>%s</green>, <gold>%s</gold> while fetching all redeemed vouchers for <gold>%s's</gold>!",
@@ -297,10 +305,8 @@ public abstract class HikariFactory extends SqlFactory {
                 statement.setString(1, voucher_id);
                 statement.setString(2, player_uuid.toString());
 
-                final ResultSet resultSet = statement.executeQuery();
-
-                if (resultSet.next()) {
-                    return resultSet.getInt("redeem_limit");
+                try (final ResultSet resultSet = statement.executeQuery()) {
+                    return resultSet.next() ? resultSet.getInt("redeem_limit") : -1;
                 }
             } catch (final SQLException exception) {
                 this.fusion.log(true, Level.error, "<red>An error has occurred with the reason for data type <green>%s</green>, <gold>%s</gold> while checking the voucher <gold>%s's</gold> redeem limit!",
@@ -420,10 +426,8 @@ public abstract class HikariFactory extends SqlFactory {
                 statement.setString(1, code);
                 statement.setString(2, player_uuid.toString());
 
-                final ResultSet resultSet = statement.executeQuery();
-
-                if (resultSet.next()) {
-                    return resultSet.getInt("redeem_limit");
+                try (final ResultSet resultSet = statement.executeQuery()) {
+                    return resultSet.next() ? resultSet.getInt("redeem_limit") : -1;
                 }
             } catch (final SQLException exception) {
                 this.fusion.log(true, Level.error, "<red>An error has occurred with the reason for data type <green>%s</green>, <gold>%s</gold> while checking the voucher code <gold>%s's</gold> redeem limit!",
@@ -448,6 +452,25 @@ public abstract class HikariFactory extends SqlFactory {
                         this.impl, exception.getMessage(), code, player_uuid);
             }
         });
+    }
+
+    @Override
+    public int countRedeemedVouchers(final UUID player_uuid) {
+        return CompletableFuture.supplyAsync(() -> {
+            try (final Connection connection = this.source.getConnection(); final PreparedStatement statement =
+                    connection.prepareStatement("select count(*) from vouchers_redeemed where player_uuid=?")) {
+                statement.setString(1, player_uuid.toString());
+
+                try (final ResultSet resultSet = statement.executeQuery()) {
+                    return resultSet.next() ? resultSet.getInt(1) : 0;
+                }
+            } catch (final SQLException exception) {
+                this.fusion.log(true, Level.error, "<red>An error has occurred with the reason for data type <green>%s</green>, <gold>%s</gold> while counting how many times player <gold>%s</gold> appears!",
+                        this.impl, exception.getMessage(), player_uuid);
+            }
+
+            return -1;
+        }).join();
     }
 
     @Override

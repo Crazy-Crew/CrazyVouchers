@@ -164,6 +164,11 @@ public final class StorageHolder extends IStorageHolder {
     public List<VoucherHistory> getRedeemedVouchers(final UUID player_uuid) {
         return this.factory.getRedeemedVouchers(player_uuid);
     }
+
+    @Override
+    public int countRedeemedVouchers(final UUID player_uuid) {
+        return this.factory.countRedeemedVouchers(player_uuid);
+    }
     // generic code checks stop
 
     public boolean tableExists(final String table) {

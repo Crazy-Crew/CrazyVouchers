@@ -63,4 +63,6 @@ public abstract class ISharedMethods {
     public abstract List<VoucherHistory> getRedeemedVouchersByPage(final UUID player_uuid, final int page, final int perPage);
 
     public abstract List<VoucherHistory> getRedeemedVouchers(final UUID player_uuid);
+
+    public abstract int countRedeemedVouchers(final UUID player_uuid);
 }
