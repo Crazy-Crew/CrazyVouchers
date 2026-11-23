@@ -34,10 +34,10 @@ triumph-cmds = "2.1.0" # https://github.com/TriumphTeam/triumph-cmds
 ## Metrics API
 bStats = "3.2.1" # https://github.com/Bastian/bStats
 ## Fusion API
-fusion = "4.68.0" # https://github.com/ryderbelserion/Fusion
+fusion = "4.69.0" # https://github.com/ryderbelserion/Fusion
 ## Database API
 hikari = "7.1.0" # https://github.com/brettwooldridge/HikariCP
-postgres = "42.7.14"
+postgres = "42.7.14" # https://www.postgresql.org
 
 ## Gradle Plugins
 fix-javadoc = "1.19" # https://github.com/mfnalex/gradle-fix-javadoc-plugin
@@ -119,6 +119,7 @@ nbt-api = { module = "de.tr7zw:item-nbt-api", version.ref = "nbtapi" }
 # https://github.com/MilkBowl/Vault
 vault = { module = "com.github.MilkBowl:VaultAPI", version.ref = "vault" }
 
+# https://www.postgresql.org
 postgres = { module = "org.postgresql:postgresql", version.ref = "postgres" }
 # https://github.com/brettwooldridge/HikariCP
 hikari-cp = { module = "com.zaxxer:HikariCP", version.ref = "hikari" }

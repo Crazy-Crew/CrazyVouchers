@@ -9,6 +9,7 @@ import dev.triumphteam.cmd.core.annotations.Command;
 import dev.triumphteam.cmd.core.annotations.Suggestion;
 import dev.triumphteam.cmd.core.annotations.Syntax;
 import org.bukkit.command.CommandSender;
+import org.bukkit.entity.Player;
 import org.bukkit.permissions.PermissionDefault;
 import us.crazycrew.crazyvouchers.api.enums.messages.Message;
 import us.crazycrew.crazyvouchers.api.objects.VoucherHistory;
@@ -16,15 +17,18 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.UUID;
 
 public class CommandHistory extends BaseCommand {
 
     @Command(value = "history")
     @Permission(value = "crazyvouchers.history", def = PermissionDefault.OP)
-    @Syntax("/crazyvouchers history [player]")
-    public void give(final CommandSender sender, @ArgName("player") @Suggestion("players") PlayerBuilder target) {
-        target.getPlayer().ifPresentOrElse(player -> {
+    @Syntax("/crazyvouchers history [player] [page]")
+    public void give(final CommandSender sender, @ArgName("player") @Suggestion("players") PlayerBuilder target, @ArgName("page") @Suggestion("pages") final int page) {
+        final Optional<Player> index = target.getTarget();
+
+        index.ifPresentOrElse(player -> {
             final UUID uuid = player.getUniqueId();
             final String name = player.getName();
 
@@ -34,7 +38,7 @@ public class CommandHistory extends BaseCommand {
                 return;
             }
 
-            final List<VoucherHistory> vouchers = this.holder.getRedeemedVouchersByPage(uuid, 1, 5);
+            final List<VoucherHistory> vouchers = this.holder.getRedeemedVouchersByPage(uuid, page, 5);
             final int maxPages = calculateMaxPages(5, this.holder.getRedeemedVouchers(uuid)); //todo() find an alternative eventually.
 
             final Map<String, String> placeholders = new HashMap<>();
@@ -58,14 +62,14 @@ public class CommandHistory extends BaseCommand {
                     "{back}", Message.history_back_text.getMessage(),
                     "{next}", Message.history_next_text.getMessage(),
                     "{player}", name,
-                    "{page}", String.valueOf(1),
+                    "{page}", String.valueOf(page),
                     "{max_pages}", String.valueOf(maxPages)
             )));
             placeholders.putIfAbsent("{footer}", Message.history_footer.getMessage(sender, Map.of(
                     "{back}", Message.history_back_text.getMessage(),
                     "{next}", Message.history_next_text.getMessage(),
                     "{player}", name,
-                    "{page}", String.valueOf(1),
+                    "{page}", String.valueOf(page),
                     "{max_pages}", String.valueOf(maxPages)
             )));
 

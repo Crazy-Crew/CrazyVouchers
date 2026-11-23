@@ -16,9 +16,12 @@ import com.badbones69.crazyvouchers.commands.features.admin.migrate.enums.Migrat
 import com.badbones69.crazyvouchers.commands.features.base.CommandHelp;
 import com.badbones69.crazyvouchers.commands.features.base.CommandReload;
 import com.badbones69.crazyvouchers.commands.features.relations.ArgumentRelations;
+import com.ryderbelserion.crazyvouchers.storage.holder.StorageHolder;
+import com.ryderbelserion.fusion.paper.FusionPaper;
 import com.ryderbelserion.fusion.paper.builders.items.PlayerBuilder;
 import dev.triumphteam.cmd.bukkit.BukkitCommandManager;
 import dev.triumphteam.cmd.core.suggestion.SuggestionKey;
+import org.bukkit.OfflinePlayer;
 import org.bukkit.Server;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
@@ -28,12 +31,19 @@ import org.jspecify.annotations.NonNull;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+import java.util.Optional;
+import java.util.stream.IntStream;
 
 public class CommandHandler {
 
     private @NonNull final CrazyVouchers plugin = CrazyVouchers.get();
 
+    private @NonNull final FusionPaper fusion = this.plugin.getFusion();
+
     private @NonNull final CrazyPlatform platform = this.plugin.getPlatform();
+
+    private @NonNull final StorageHolder holder = this.platform.getStorageHolder();
 
     private @NonNull final BukkitCommandManager<CommandSender> commandManager = BukkitCommandManager.create(this.plugin);
 
@@ -72,6 +82,34 @@ public class CommandHandler {
             }
 
             return numbers;
+        });
+
+        this.commandManager.registerSuggestion(SuggestionKey.of("pages"), context -> {
+            final Map<String, String> arguments = context.argumentsMap();
+
+            if (arguments.isEmpty()) {
+                return List.of();
+            }
+
+            final String arg1 = arguments.keySet().stream().toList().getLast();
+
+            if (arg1 == null || arg1.isBlank()) {
+                return List.of();
+            }
+
+            final String value = arguments.get(arg1);
+
+            if (value.isBlank()) {
+                return List.of();
+            }
+
+            final PlayerBuilder builder = new PlayerBuilder(value);
+
+            final Optional<OfflinePlayer> player = builder.getTarget();
+
+            return player.map(offlinePlayer -> IntStream.rangeClosed(1, Math.max(1, Math.ceilDiv(this.holder.getRedeemedVouchers(offlinePlayer.getUniqueId()).size(), 5)))
+                    .mapToObj(String::valueOf)
+                    .toList()).orElseGet(List::of);
         });
 
         this.commandManager.registerSuggestion(SuggestionKey.of("codes"), sender -> {

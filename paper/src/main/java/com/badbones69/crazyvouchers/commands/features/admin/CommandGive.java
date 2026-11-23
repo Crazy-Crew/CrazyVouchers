@@ -33,7 +33,9 @@ public class CommandGive extends BaseCommand {
             return;
         }
 
-        target.getPlayer().ifPresentOrElse(player -> {
+        final java.util.Optional<Player> index = target.getTarget();
+
+        index.ifPresentOrElse(player -> {
             build(player, amount, argument, voucher).forEach(item -> Methods.addItem(player, item));
 
             final Map<String, String> placeholders = new HashMap<>();
