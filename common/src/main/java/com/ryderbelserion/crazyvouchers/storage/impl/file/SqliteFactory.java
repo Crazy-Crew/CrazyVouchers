@@ -280,7 +280,7 @@ public final class SqliteFactory extends SqlFactory {
                             resultSet.getLong("timestamp_redeemed")));
                 }
             } catch (final SQLException exception) {
-                this.fusion.log(true, Level.error, "<red>An error has occurred with the reason <gold>%s</gold> while fetching all redeemed vouchers for <gold>%s's</gold>!", exception.getMessage(), player_uuid);
+                this.fusion.log(true, Level.error, "<red>An error has occurred with the reason <gold>%s</gold> while fetching all redeemed vouchers by page for <gold>%s's</gold>!", exception.getMessage(), player_uuid);
             }
         }).join();
 

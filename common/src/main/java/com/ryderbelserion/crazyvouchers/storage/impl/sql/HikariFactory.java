@@ -227,25 +227,27 @@ public abstract class HikariFactory extends SqlFactory {
 
         CompletableFuture.runAsync(() -> {
             try (final Connection connection = this.source.getConnection(); final PreparedStatement statement =
-                    connection.prepareStatement("select voucher_id, redeem_limit, timestamp_redeemed from vouchers_redeemed where player_uuid=? order by rowid limit ? offset ?")) {
+                    connection.prepareStatement("select voucher_id, redeem_limit, timestamp_redeemed from vouchers_redeemed where player_uuid=? order by timestamp_redeemed limit ? offset ?")) {
                 statement.setString(1, player_uuid.toString());
                 statement.setInt(2, perPage);
                 statement.setInt(3, (page - 1) * perPage);
 
                 final ResultSet resultSet = statement.executeQuery();
 
-                while (resultSet.next()) {
-                    final int row = resultSet.getRow();
+                int position = 1;
 
+                while (resultSet.next()) {
                     vouchers.add(new VoucherHistory(
                             resultSet.getString("voucher_id"),
-                            row,
+                            position,
                             player_uuid,
                             resultSet.getInt("redeem_limit"),
                             resultSet.getLong("timestamp_redeemed")));
+
+                    position++;
                 }
             } catch (final SQLException exception) {
-                this.fusion.log(true, Level.error, "<red>An error has occurred with the reason <gold>%s</gold> while fetching all redeemed vouchers for <gold>%s's</gold>!", exception.getMessage(), player_uuid);
+                this.fusion.log(true, Level.error, "<red>An error has occurred with the reason <gold>%s</gold> while fetching all redeemed vouchers by page for <gold>%s's</gold>!", exception.getMessage(), player_uuid);
             }
         }).join();
 
