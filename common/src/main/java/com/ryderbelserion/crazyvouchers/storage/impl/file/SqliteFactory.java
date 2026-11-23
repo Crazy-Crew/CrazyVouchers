@@ -60,7 +60,8 @@ public final class SqliteFactory extends SqlFactory {
                     statement.executeBatch();
                 }
             } catch (final SQLException exception) {
-                this.fusion.log(true, Level.error, "<red>An error has occurred with the reason <gold>%s</gold> while removing indexes for migration!", exception.getMessage());
+                this.fusion.log(true, Level.error, "<red>An error has occurred with the reason for data type <green>%s</green>, <gold>%s</gold> while removing indexes for migration!",
+                        this.impl, exception.getMessage());
             }
         });
     }
@@ -113,7 +114,8 @@ public final class SqliteFactory extends SqlFactory {
                     statement.executeBatch();
                 }
             } catch (final SQLException exception) {
-                this.fusion.log(true, Level.error, "<red>An error has occurred with the reason <gold>%s</gold> while initializing the tables!", exception.getMessage());
+                this.fusion.log(true, Level.error, "<red>An error has occurred with the reason for data type <green>%s</green>, <gold>%s</gold> while initializing the tables!",
+                        this.impl, exception.getMessage());
             }
         });
     }
@@ -137,7 +139,8 @@ public final class SqliteFactory extends SqlFactory {
                     statement.executeBatch();
                 }
             } catch (final SQLException exception) {
-                this.fusion.log(true, Level.error, "<red>An error has occurred with the reason <gold>%s</gold> while adding indexing to the columns!", exception.getMessage());
+                this.fusion.log(true, Level.error, "<red>An error has occurred with the reason for data type <green>%s</green>, <gold>%s</gold> while adding indexing to the columns!",
+                        this.impl, exception.getMessage());
             }
         });
     }
@@ -155,7 +158,8 @@ public final class SqliteFactory extends SqlFactory {
 
                 statement.executeUpdate();
             } catch (final SQLException exception) {
-                this.fusion.log(true, Level.error, "<red>An error has occurred with the reason <gold>%s</gold> while deleting a user using the <gold>uuid %s</gold>!", exception.getMessage(), player_uuid);
+                this.fusion.log(true, Level.error, "<red>An error has occurred with the reason for data type <green>%s</green>, <gold>%s</gold> while deleting a user using the <gold>uuid %s</gold>!",
+                        this.impl, exception.getMessage(), player_uuid);
             }
         });
     }
@@ -173,7 +177,8 @@ public final class SqliteFactory extends SqlFactory {
 
                 statement.executeUpdate();
             } catch (final SQLException exception) {
-                this.fusion.log(true, Level.error, "<red>An error has occurred with the reason <gold>%s</gold> while inserting a user using the <gold>uuid %s</gold>!", exception.getMessage(), player_uuid);
+                this.fusion.log(true, Level.error, "<red>An error has occurred with the reason for data type <green>%s</green>, <gold>%s</gold> while inserting a user using the <gold>uuid %s</gold>!",
+                        this.impl, exception.getMessage(), player_uuid);
             }
         });
     }
@@ -187,7 +192,8 @@ public final class SqliteFactory extends SqlFactory {
 
                 return statement.executeQuery().next();
             } catch (final SQLException exception) {
-                this.fusion.log(true, Level.error, "<red>An error has occurred with the reason <gold>%s</gold> while checking if <gold>%s</gold> exists!", exception.getMessage(), player_uuid);
+                this.fusion.log(true, Level.error, "<red>An error has occurred with the reason for data type <green>%s</green>, <gold>%s</gold> while checking if <gold>%s</gold> exists!",
+                        this.impl, exception.getMessage(), player_uuid);
             }
 
             return false;
@@ -203,7 +209,8 @@ public final class SqliteFactory extends SqlFactory {
 
                 return statement.executeQuery().next();
             } catch (final SQLException exception) {
-                this.fusion.log(true, Level.error, "<red>An error has occurred with the reason <gold>%s</gold> while checking if the voucher <gold>%s</gold> is protected!", exception.getMessage(), voucher_id);
+                this.fusion.log(true, Level.error, "<red>An error has occurred with the reason for data type <green>%s</green>, <gold>%s</gold> while checking if the voucher <gold>%s</gold> is protected!",
+                        this.impl, exception.getMessage(), voucher_id);
             }
 
             return false;
@@ -219,7 +226,8 @@ public final class SqliteFactory extends SqlFactory {
 
                 statement.executeUpdate();
             } catch (final SQLException exception) {
-                this.fusion.log(true, Level.error, "<red>An error has occurred with the reason <gold>%s</gold> while deleting voucher_id <gold>%s</gold>!", exception.getMessage(), voucher_id);
+                this.fusion.log(true, Level.error, "<red>An error has occurred with the reason for data type <green>%s</green>, <gold>%s</gold> while deleting voucher_id <gold>%s</gold>!",
+                        this.impl, exception.getMessage(), voucher_id);
             }
         });
     }
@@ -235,7 +243,8 @@ public final class SqliteFactory extends SqlFactory {
 
                 statement.executeUpdate();
             } catch (final SQLException exception) {
-                this.fusion.log(true, Level.error, "<red>An error has occurred with the reason <gold>%s</gold> while adding a private voucher using the <gold>uuid %s</gold> (<green>voucher_id %s</green>)!", exception.getMessage(), player_uuid,  voucher_id);
+                this.fusion.log(true, Level.error, "<red>An error has occurred with the reason for data type <green>%s</green>, <gold>%s</gold> while adding a private voucher using the <gold>uuid %s</gold> (<green>voucher_id %s</green>)!",
+                        this.impl, exception.getMessage(), player_uuid,  voucher_id);
             }
         });
     }
@@ -249,7 +258,8 @@ public final class SqliteFactory extends SqlFactory {
 
                 return statement.executeQuery().next();
             } catch (final SQLException exception) {
-                this.fusion.log(true, Level.error, "<red>An error has occurred with the reason <gold>%s</gold> while checking if the voucher <gold>%s</gold> is redeemed!", exception.getMessage(), voucher_id);
+                this.fusion.log(true, Level.error, "<red>An error has occurred with the reason for data type <green>%s</green>, <gold>%s</gold> while checking if the voucher <gold>%s</gold> is redeemed!",
+                        this.impl, exception.getMessage(), voucher_id);
             }
 
             return false;
@@ -280,7 +290,8 @@ public final class SqliteFactory extends SqlFactory {
                             resultSet.getLong("timestamp_redeemed")));
                 }
             } catch (final SQLException exception) {
-                this.fusion.log(true, Level.error, "<red>An error has occurred with the reason <gold>%s</gold> while fetching all redeemed vouchers by page for <gold>%s's</gold>!", exception.getMessage(), player_uuid);
+                this.fusion.log(true, Level.error, "<red>An error has occurred with the reason for data type <green>%s</green>, <gold>%s</gold> while fetching all redeemed vouchers by page for <gold>%s's</gold>!",
+                        this.impl, exception.getMessage(), player_uuid);
             }
         }).join();
 
@@ -308,7 +319,8 @@ public final class SqliteFactory extends SqlFactory {
                    ));
                }
            } catch (final SQLException exception) {
-               this.fusion.log(true, Level.error, "<red>An error has occurred with the reason <gold>%s</gold> while fetching all redeemed vouchers for <gold>%s's</gold>!", exception.getMessage(), player_uuid);
+               this.fusion.log(true, Level.error, "<red>An error has occurred with the reason for data type <green>%s</green>, <gold>%s</gold> while fetching all redeemed vouchers for <gold>%s's</gold>!",
+                       this.impl, exception.getMessage(), player_uuid);
            }
         }).join();
 
@@ -327,7 +339,8 @@ public final class SqliteFactory extends SqlFactory {
 
                 return resultSet.getInt("redeem_limit");
             } catch (final SQLException exception) {
-                this.fusion.log(true, Level.error, "<red>An error has occurred with the reason <gold>%s</gold> while checking the voucher <gold>%s's</gold> redeem limit!", exception.getMessage(), voucher_id);
+                this.fusion.log(true, Level.error, "<red>An error has occurred with the reason for data type <green>%s</green>, <gold>%s</gold> while checking the voucher <gold>%s's</gold> redeem limit!",
+                        this.impl, exception.getMessage(), voucher_id);
             }
 
             return -1;
@@ -344,7 +357,8 @@ public final class SqliteFactory extends SqlFactory {
 
                 statement.executeUpdate();
             } catch (final SQLException exception) {
-                this.fusion.log(true, Level.error, "<red>An error has occurred with the reason <gold>%s</gold> while incrementing the redeem_limit for voucher <gold>%s</gold> with player id <gold>%s</gold>!", exception.getMessage(), voucher_id, player_uuid);
+                this.fusion.log(true, Level.error, "<red>An error has occurred with the reason for data type <green>%s</green>, <gold>%s</gold> while incrementing the redeem_limit for voucher <gold>%s</gold> with player id <gold>%s</gold>!",
+                        this.impl, exception.getMessage(), voucher_id, player_uuid);
             }
         });
     }
@@ -358,7 +372,8 @@ public final class SqliteFactory extends SqlFactory {
 
                 statement.executeUpdate();
             } catch (final SQLException exception) {
-                this.fusion.log(true, Level.error, "<red>An error has occurred with the reason <gold>%s</gold> while removing the redeemed voucher id <gold>%s</gold>!", exception.getMessage(), voucher_id);
+                this.fusion.log(true, Level.error, "<red>An error has occurred with the reason for data type <green>%s</green>, <gold>%s</gold> while removing the redeemed voucher id <gold>%s</gold>!",
+                        this.impl, exception.getMessage(), voucher_id);
             }
         });
     }
@@ -375,7 +390,8 @@ public final class SqliteFactory extends SqlFactory {
 
                 statement.executeUpdate();
             } catch (final SQLException exception) {
-                this.fusion.log(true, Level.error, "<red>An error has occurred with the reason <gold>%s</gold> while adding a voucher using the player uuid <gold>%s</gold> (<green>voucher_id %s</green>)!", exception.getMessage(), player_uuid,  voucher_id);
+                this.fusion.log(true, Level.error, "<red>An error has occurred with the reason for data type <green>%s</green>, <gold>%s</gold> while adding a voucher using the player uuid <gold>%s</gold> (<green>voucher_id %s</green>)!",
+                        this.impl, exception.getMessage(), player_uuid,  voucher_id);
             }
         });
     }
@@ -392,7 +408,8 @@ public final class SqliteFactory extends SqlFactory {
 
                statement.executeUpdate();
            } catch (final SQLException exception) {
-               this.fusion.log(true, Level.error, "<red>An error has occurred with the reason <gold>%s</gold> while adding the code <gold>%s</gold> with player id <gold>%s</gold>!", exception.getMessage(), code, player_uuid);
+               this.fusion.log(true, Level.error, "<red>An error has occurred with the reason for data type <green>%s</green>, <gold>%s</gold> while adding the code <gold>%s</gold> with player id <gold>%s</gold>!",
+                       this.impl, exception.getMessage(), code, player_uuid);
            }
         });
     }
@@ -406,7 +423,8 @@ public final class SqliteFactory extends SqlFactory {
 
                 statement.executeUpdate();
             } catch (final SQLException exception) {
-                this.fusion.log(true, Level.error, "<red>An error has occurred with the reason <gold>%s</gold> while removing the code <gold>%s</gold>!", exception.getMessage(), code);
+                this.fusion.log(true, Level.error, "<red>An error has occurred with the reason for data type <green>%s</green>, <gold>%s</gold> while removing the code <gold>%s</gold>!",
+                        this.impl, exception.getMessage(), code);
             }
         });
     }
@@ -420,7 +438,8 @@ public final class SqliteFactory extends SqlFactory {
 
                 return statement.executeQuery().next();
             } catch (final SQLException exception) {
-                this.fusion.log(true, Level.error, "<red>An error has occurred with the reason <gold>%s</gold> while checking if the voucher code <gold>%s</gold> is redeemed!", exception.getMessage(), code);
+                this.fusion.log(true, Level.error, "<red>An error has occurred with the reason for data type <green>%s</green>, <gold>%s</gold> while checking if the voucher code <gold>%s</gold> is redeemed!",
+                        this.impl, exception.getMessage(), code);
             }
 
             return false;
@@ -439,7 +458,8 @@ public final class SqliteFactory extends SqlFactory {
 
                 return resultSet.getInt("redeem_limit");
             } catch (final SQLException exception) {
-                this.fusion.log(true, Level.error, "<red>An error has occurred with the reason <gold>%s</gold> while checking the voucher code <gold>%s's</gold> redeem limit!", exception.getMessage(), code);
+                this.fusion.log(true, Level.error, "<red>An error has occurred with the reason for data type <green>%s</green>, <gold>%s</gold> while checking the voucher code <gold>%s's</gold> redeem limit!",
+                        this.impl, exception.getMessage(), code);
             }
 
             return -1;
@@ -456,7 +476,8 @@ public final class SqliteFactory extends SqlFactory {
 
                 statement.executeUpdate();
             } catch (final SQLException exception) {
-                this.fusion.log(true, Level.error, "<red>An error has occurred with the reason <gold>%s</gold> while incrementing the redeem_limit for code <gold>%s</gold> with player id <gold>%s</gold>!", exception.getMessage(), code, player_uuid);
+                this.fusion.log(true, Level.error, "<red>An error has occurred with the reason for data type <green>%s</green>, <gold>%s</gold> while incrementing the redeem_limit for code <gold>%s</gold> with player id <gold>%s</gold>!",
+                        this.impl, exception.getMessage(), code, player_uuid);
             }
         });
     }

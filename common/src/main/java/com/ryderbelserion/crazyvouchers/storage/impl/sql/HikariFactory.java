@@ -120,7 +120,8 @@ public abstract class HikariFactory extends SqlFactory {
 
                 statement.executeUpdate();
             } catch (final SQLException exception) {
-                this.fusion.log(true, Level.error, "<red>An error has occurred with the reason <gold>%s</gold> while deleting a user using the <gold>uuid %s</gold>!", exception.getMessage(), player_uuid);
+                this.fusion.log(true, Level.error, "<red>An error has occurred with the reason for data type <green>%s</green>, <gold>%s</gold> while deleting a user using the <gold>uuid %s</gold>!",
+                        this.impl, exception.getMessage(), player_uuid);
             }
         });
     }
@@ -138,7 +139,8 @@ public abstract class HikariFactory extends SqlFactory {
 
                 statement.executeUpdate();
             } catch (final SQLException exception) {
-                this.fusion.log(true, Level.error, "<red>An error has occurred with the reason <gold>%s</gold> while inserting a user using the <gold>uuid %s</gold>!", exception.getMessage(), player_uuid);
+                this.fusion.log(true, Level.error, "<red>An error has occurred with the reason for data type <green>%s</green>, <gold>%s</gold> while inserting a user using the <gold>uuid %s</gold>!",
+                        this.impl, exception.getMessage(), player_uuid);
             }
         });
     }
@@ -152,7 +154,8 @@ public abstract class HikariFactory extends SqlFactory {
 
                 return statement.executeQuery().next();
             } catch (final SQLException exception) {
-                this.fusion.log(true, Level.error, "<red>An error has occurred with the reason <gold>%s</gold> while checking if <gold>%s</gold> exists!", exception.getMessage(), player_uuid);
+                this.fusion.log(true, Level.error, "<red>An error has occurred with the reason for data type <green>%s</green>, <gold>%s</gold> while checking if <gold>%s</gold> exists!",
+                        this.impl, exception.getMessage(), player_uuid);
             }
 
             return false;
@@ -168,7 +171,8 @@ public abstract class HikariFactory extends SqlFactory {
 
                 return statement.executeQuery().next();
             } catch (final SQLException exception) {
-                this.fusion.log(true, Level.error, "<red>An error has occurred with the reason <gold>%s</gold> while checking if the voucher <gold>%s</gold> is protected!", exception.getMessage(), voucher_id);
+                this.fusion.log(true, Level.error, "<red>An error has occurred with the reason for data type <green>%s</green>, <gold>%s</gold> while checking if the voucher <gold>%s</gold> is protected!",
+                        this.impl, exception.getMessage(), voucher_id);
             }
 
             return false;
@@ -184,7 +188,8 @@ public abstract class HikariFactory extends SqlFactory {
 
                 statement.executeUpdate();
             } catch (final SQLException exception) {
-                this.fusion.log(true, Level.error, "<red>An error has occurred with the reason <gold>%s</gold> while deleting voucher_id <gold>%s</gold>!", exception.getMessage(), voucher_id);
+                this.fusion.log(true, Level.error, "<red>An error has occurred with the reason for data type <green>%s</green>, <gold>%s</gold> while deleting voucher_id <gold>%s</gold>!",
+                        this.impl, exception.getMessage(), voucher_id);
             }
         });
     }
@@ -200,7 +205,8 @@ public abstract class HikariFactory extends SqlFactory {
 
                 statement.executeUpdate();
             } catch (final SQLException exception) {
-                this.fusion.log(true, Level.error, "<red>An error has occurred with the reason <gold>%s</gold> while adding a private voucher using the <gold>uuid %s</gold> (<green>voucher_id %s</green>)!", exception.getMessage(), player_uuid,  voucher_id);
+                this.fusion.log(true, Level.error, "<red>An error has occurred with the reason for data type <green>%s</green>, <gold>%s</gold> while adding a private voucher using the <gold>uuid %s</gold> (<green>voucher_id %s</green>)!",
+                        this.impl, exception.getMessage(), player_uuid,  voucher_id);
             }
         });
     }
@@ -214,7 +220,8 @@ public abstract class HikariFactory extends SqlFactory {
 
                 return statement.executeQuery().next();
             } catch (final SQLException exception) {
-                this.fusion.log(true, Level.error, "<red>An error has occurred with the reason <gold>%s</gold> while checking if the voucher <gold>%s</gold> is redeemed!", exception.getMessage(), voucher_id);
+                this.fusion.log(true, Level.error, "<red>An error has occurred with the reason for data type <green>%s</green>, <gold>%s</gold> while checking if the voucher <gold>%s</gold> is redeemed!",
+                        this.impl, exception.getMessage(), voucher_id);
             }
 
             return false;
@@ -232,8 +239,6 @@ public abstract class HikariFactory extends SqlFactory {
                 statement.setInt(2, perPage);
                 statement.setInt(3, (page - 1) * perPage);
 
-                final ResultSet resultSet = statement.executeQuery();
-
                 int position = 1;
 
                 while (resultSet.next()) {
@@ -247,7 +252,8 @@ public abstract class HikariFactory extends SqlFactory {
                     position++;
                 }
             } catch (final SQLException exception) {
-                this.fusion.log(true, Level.error, "<red>An error has occurred with the reason <gold>%s</gold> while fetching all redeemed vouchers by page for <gold>%s's</gold>!", exception.getMessage(), player_uuid);
+                this.fusion.log(true, Level.error, "<red>An error has occurred with the reason for data type <green>%s</green>, <gold>%s</gold> while fetching all redeemed vouchers by page for <gold>%s's</gold>!",
+                        this.impl, exception.getMessage(), player_uuid);
             }
         }).join();
 
@@ -275,7 +281,8 @@ public abstract class HikariFactory extends SqlFactory {
                     ));
                 }
             } catch (final SQLException exception) {
-                this.fusion.log(true, Level.error, "<red>An error has occurred with the reason <gold>%s</gold> while fetching all redeemed vouchers for <gold>%s's</gold>!", exception.getMessage(), player_uuid);
+                this.fusion.log(true, Level.error, "<red>An error has occurred with the reason for data type <green>%s</green>, <gold>%s</gold> while fetching all redeemed vouchers for <gold>%s's</gold>!",
+                        this.impl, exception.getMessage(), player_uuid);
             }
         }).join();
 
@@ -295,10 +302,9 @@ public abstract class HikariFactory extends SqlFactory {
                 if (resultSet.next()) {
                     return resultSet.getInt("redeem_limit");
                 }
-
-                return -1;
             } catch (final SQLException exception) {
-                this.fusion.log(true, Level.error, "<red>An error has occurred with the reason <gold>%s</gold> while checking the voucher <gold>%s's</gold> redeem limit!", exception.getMessage(), voucher_id);
+                this.fusion.log(true, Level.error, "<red>An error has occurred with the reason for data type <green>%s</green>, <gold>%s</gold> while checking the voucher <gold>%s's</gold> redeem limit!",
+                        this.impl, exception.getMessage(), voucher_id);
             }
 
             return -1;
@@ -315,7 +321,8 @@ public abstract class HikariFactory extends SqlFactory {
 
                 statement.executeUpdate();
             } catch (final SQLException exception) {
-                this.fusion.log(true, Level.error, "<red>An error has occurred with the reason <gold>%s</gold> while incrementing the redeem_limit for voucher <gold>%s</gold> with player id <gold>%s</gold>!", exception.getMessage(), voucher_id, player_uuid);
+                this.fusion.log(true, Level.error, "<red>An error has occurred with the reason for data type <green>%s</green>, <gold>%s</gold> while incrementing the redeem_limit for voucher <gold>%s</gold> with player id <gold>%s</gold>!",
+                        this.impl, exception.getMessage(), voucher_id, player_uuid);
             }
         });
     }
@@ -329,7 +336,8 @@ public abstract class HikariFactory extends SqlFactory {
 
                 statement.executeUpdate();
             } catch (final SQLException exception) {
-                this.fusion.log(true, Level.error, "<red>An error has occurred with the reason <gold>%s</gold> while removing the redeemed voucher id <gold>%s</gold>!", exception.getMessage(), voucher_id);
+                this.fusion.log(true, Level.error, "<red>An error has occurred with the reason for data type <green>%s</green>, <gold>%s</gold> while removing the redeemed voucher id <gold>%s</gold>!",
+                        this.impl, exception.getMessage(), voucher_id);
             }
         });
     }
@@ -346,7 +354,8 @@ public abstract class HikariFactory extends SqlFactory {
 
                 statement.executeUpdate();
             } catch (final SQLException exception) {
-                this.fusion.log(true, Level.error, "<red>An error has occurred with the reason <gold>%s</gold> while adding a voucher using the player uuid <gold>%s</gold> (<green>voucher_id %s</green>)!", exception.getMessage(), player_uuid,  voucher_id);
+                this.fusion.log(true, Level.error, "<red>An error has occurred with the reason for data type <green>%s</green>, <gold>%s</gold> while adding a voucher using the player uuid <gold>%s</gold> (<green>voucher_id %s</green>)!",
+                        this.impl, exception.getMessage(), player_uuid,  voucher_id);
             }
         });
     }
@@ -363,7 +372,8 @@ public abstract class HikariFactory extends SqlFactory {
 
                 statement.executeUpdate();
             } catch (final SQLException exception) {
-                this.fusion.log(true, Level.error, "<red>An error has occurred with the reason <gold>%s</gold> while adding the code <gold>%s</gold> with player id <gold>%s</gold>!", exception.getMessage(), code, player_uuid);
+                this.fusion.log(true, Level.error, "<red>An error has occurred with the reason for data type <green>%s</green>, <gold>%s</gold> while adding the code <gold>%s</gold> with player id <gold>%s</gold>!",
+                        this.impl, exception.getMessage(), code, player_uuid);
             }
         });
     }
@@ -377,7 +387,8 @@ public abstract class HikariFactory extends SqlFactory {
 
                 statement.executeUpdate();
             } catch (final SQLException exception) {
-                this.fusion.log(true, Level.error, "<red>An error has occurred with the reason <gold>%s</gold> while removing the code <gold>%s</gold>!", exception.getMessage(), code);
+                this.fusion.log(true, Level.error, "<red>An error has occurred with the reason for data type <green>%s</green>, <gold>%s</gold> while removing the code <gold>%s</gold>!",
+                        this.impl, exception.getMessage(), code);
             }
         });
     }
@@ -389,9 +400,12 @@ public abstract class HikariFactory extends SqlFactory {
                     connection.prepareStatement("select 1 from codes_redeemed where code=? limit 1")) {
                 statement.setString(1, code);
 
-                return statement.executeQuery().next();
+                try (final ResultSet resultSet = statement.executeQuery()) {
+                    return resultSet.next();
+                }
             } catch (final SQLException exception) {
-                this.fusion.log(true, Level.error, "<red>An error has occurred with the reason <gold>%s</gold> while checking if the voucher code <gold>%s</gold> is redeemed!", exception.getMessage(), code);
+                this.fusion.log(true, Level.error, "<red>An error has occurred with the reason for data type <green>%s</green>, <gold>%s</gold> while checking if the voucher code <gold>%s</gold> is redeemed!",
+                        this.impl, exception.getMessage(), code);
             }
 
             return false;
@@ -411,10 +425,9 @@ public abstract class HikariFactory extends SqlFactory {
                 if (resultSet.next()) {
                     return resultSet.getInt("redeem_limit");
                 }
-
-                return -1;
             } catch (final SQLException exception) {
-                this.fusion.log(true, Level.error, "<red>An error has occurred with the reason <gold>%s</gold> while checking the voucher code <gold>%s's</gold> redeem limit!", exception.getMessage(), code);
+                this.fusion.log(true, Level.error, "<red>An error has occurred with the reason for data type <green>%s</green>, <gold>%s</gold> while checking the voucher code <gold>%s's</gold> redeem limit!",
+                        this.impl, exception.getMessage(), code);
             }
 
             return -1;
@@ -431,7 +444,8 @@ public abstract class HikariFactory extends SqlFactory {
 
                 statement.executeUpdate();
             } catch (final SQLException exception) {
-                this.fusion.log(true, Level.error, "<red>An error has occurred with the reason <gold>%s</gold> while incrementing the redeem_limit for code <gold>%s</gold> with player id <gold>%s</gold>!", exception.getMessage(), code, player_uuid);
+                this.fusion.log(true, Level.error, "<red>An error has occurred with the reason for data type <green>%s</green>, <gold>%s</gold> while incrementing the redeem_limit for code <gold>%s</gold> with player id <gold>%s</gold>!",
+                        this.impl, exception.getMessage(), code, player_uuid);
             }
         });
     }
