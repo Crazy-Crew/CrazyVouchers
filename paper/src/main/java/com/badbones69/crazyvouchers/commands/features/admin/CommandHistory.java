@@ -11,6 +11,7 @@ import dev.triumphteam.cmd.core.annotations.Syntax;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.bukkit.permissions.PermissionDefault;
+import us.crazycrew.crazyvouchers.api.config.types.RootKeys;
 import us.crazycrew.crazyvouchers.api.enums.messages.Message;
 import us.crazycrew.crazyvouchers.api.objects.VoucherHistory;
 import java.util.ArrayList;
@@ -38,8 +39,10 @@ public class CommandHistory extends BaseCommand {
                 return;
             }
 
-            final List<VoucherHistory> vouchers = this.holder.getRedeemedVouchersByPage(uuid, page, 5);
-            final int maxPages = calculateMaxPages(5, this.holder.getRedeemedVouchers(uuid)); //todo() find an alternative eventually.
+            final int perPage = this.config.getProperty(RootKeys.history_per_page);
+
+            final List<VoucherHistory> vouchers = this.holder.getRedeemedVouchersByPage(uuid, page, perPage);
+            final int maxPages = Math.max(1, Math.ceilDiv(this.holder.countRedeemedVouchers(uuid), perPage));
 
             final Map<String, String> placeholders = new HashMap<>();
 
@@ -77,9 +80,5 @@ public class CommandHistory extends BaseCommand {
 
             Message.history_body.sendMessage(sender, placeholders);
         }, () -> Message.not_online.sendMessage(sender));
-    }
-
-    public int calculateMaxPages(final int perPage, final List<VoucherHistory> vouchers) {
-        return Math.max(1, Math.ceilDiv(vouchers.size(), perPage));
     }
 }

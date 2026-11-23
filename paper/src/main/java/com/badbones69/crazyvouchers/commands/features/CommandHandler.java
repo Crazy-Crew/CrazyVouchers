@@ -17,7 +17,7 @@ import com.badbones69.crazyvouchers.commands.features.base.CommandHelp;
 import com.badbones69.crazyvouchers.commands.features.base.CommandReload;
 import com.badbones69.crazyvouchers.commands.features.relations.ArgumentRelations;
 import com.ryderbelserion.crazyvouchers.storage.holder.StorageHolder;
-import com.ryderbelserion.fusion.paper.FusionPaper;
+import com.ryderbelserion.fusion.config.properties.PropertyManager;
 import com.ryderbelserion.fusion.paper.builders.items.PlayerBuilder;
 import dev.triumphteam.cmd.bukkit.BukkitCommandManager;
 import dev.triumphteam.cmd.core.suggestion.SuggestionKey;
@@ -28,6 +28,7 @@ import org.bukkit.entity.Player;
 import org.bukkit.permissions.Permission;
 import org.bukkit.plugin.PluginManager;
 import org.jspecify.annotations.NonNull;
+import us.crazycrew.crazyvouchers.api.config.types.RootKeys;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -39,9 +40,9 @@ public class CommandHandler {
 
     private @NonNull final CrazyVouchers plugin = CrazyVouchers.get();
 
-    private @NonNull final FusionPaper fusion = this.plugin.getFusion();
-
     private @NonNull final CrazyPlatform platform = this.plugin.getPlatform();
+
+    private @NonNull final PropertyManager config = this.platform.getConfigManager().getConfig();
 
     private @NonNull final StorageHolder holder = this.platform.getStorageHolder();
 
@@ -105,9 +106,11 @@ public class CommandHandler {
 
             final PlayerBuilder builder = new PlayerBuilder(value);
 
+            final int perPage = this.config.getProperty(RootKeys.history_per_page);
+
             final Optional<OfflinePlayer> player = builder.getTarget();
 
-            return player.map(offlinePlayer -> IntStream.rangeClosed(1, Math.max(1, Math.ceilDiv(this.holder.getRedeemedVouchers(offlinePlayer.getUniqueId()).size(), 5)))
+            return player.map(offlinePlayer -> IntStream.rangeClosed(1, Math.max(1, Math.ceilDiv(this.holder.countRedeemedVouchers(offlinePlayer.getUniqueId()), perPage)))
                     .mapToObj(String::valueOf)
                     .toList()).orElseGet(List::of);
         });
