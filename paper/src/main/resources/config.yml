@@ -1,60 +1,162 @@
 # Support: https://discord.gg/badbones-s-live-chat-182615261403283459
 # Github: https://github.com/Crazy-Crew
-#
+
 # Issues: https://github.com/Crazy-Crew/CrazyVouchers/issues
 # Features: https://github.com/Crazy-Crew/CrazyVouchers/issues
 root:
   # This will allow you to use a new items layout which should be much more straight forward, less prone to errors.
   # You can run /crazyvouchers migrate -mt NewItemFormat which should migrate all existing prizes after you set this to true
-  # 
+
   # Take a backup before you run the migration as there may be bugs.
   use-different-items-layout: false
+
   # This option will tell the plugin to send all messages as action bars or messages in chat.
-  # 
+
   # send_message -> sends messages in chat.
   # send_actionbar -> sends messages in actionbar.
-  # 
   message-state: send_message
+
   # This will wipe the example folder on /crazyvouchers reload or plugin startup. so you always have fresh examples to look at.
   update-examples-folder: true
+
   # Sends anonymous statistics to https://bstats.org/plugin/bukkit/Vouchers/4536
   toggle-metrics: true
+
+  # Configuration options related to the plugin database!
+  storage:
+    # Allows you to customize, or enter credentials for external providers!
+    # If you do not know what you are doing, do not touch without asking questions.
+    connection:
+      # Define the address and port for the database.
+      #  - The standard DB engine port is used by default
+      #    (MySQL: 3306, PostgreSQL: 5432, MongoDB: 27017)
+      #  - Specify as host:port if differs
+      address: 127.0.0.1
+
+      # The username to connect to the database.
+      username: your_username
+
+      # This is only if using cloud providers like Postgres, and must not be empty!
+      # This database must exist *before* you turn the server on.
+      database: your_database
+
+      # Available Ports:
+      #   ⤷ postgres (5432)
+      #   ⤷ sqlite (N/A)
+      port: 5432
+
+      # The password to connect to the database.
+      password: your_password
+
+    # These settings apply to the MySQL connection pool.
+    #  - The default values will be suitable for the majority of users.
+    # - Do not change these settings unless you know what you're doing!
+    pool-settings:
+      # Sets the minimum number of idle connections that the pool will try to maintain.
+      #  - For maximum performance and responsiveness to spike demands, it is recommended to not set
+      #    this value and instead allow the pool to act as a fixed size connection pool.
+      #    (set this value to the same as 'maximum-pool-size')
+      minimum-idle: 10
+
+      # Sets the maximum size of the MySQL connection pool.
+      #  - Basically this value will determine the maximum number of actual
+      #    connections to the database backend.
+      #  - More information about determining the size of connection pools can be found here:
+      #    https://github.com/brettwooldridge/HikariCP/wiki/About-Pool-Sizing
+      maximum-pool-size: 10
+
+      # This setting controls the maximum number of milliseconds that the plugin will wait for a
+      # connection from the pool, before timing out.
+      #
+      # The default time is 5 seconds, or 5,000
+      connection-timeout: 5000
+
+      # This setting controls the maximum lifetime of a connection in the pool in milliseconds.
+      #  - The value should be at least 30 seconds less than any database or infrastructure imposed connection time limit.
+      #
+      # The default time is 5 minutes, or 900,000
+      maximum-lifetime: 900000
+
+      # This setting allows you to define extra properties for connections.
+      #
+      # By default, the following options are set to enable utf8 encoding. (you may need to remove
+      # these if you are using PostgreSQL)
+      #    use-unicode: true
+      #    character-encoding: utf8
+      #
+      #  You can also use this section to disable SSL connections, by uncommenting the 'use-ssl' and
+      #  'verify-server-certificate' options below.
+      properties:
+        use-unicode: true
+        character-encoding: utf8
+
+      # This setting controls how frequently the pool will 'ping' a connection in order to prevent it
+      # from being timed out by the database or network infrastructure, measured in milliseconds.
+      #  - The value should be less than maximum-lifetime and greater than 30000 (30 seconds).
+      #  - Setting the value to zero will disable the keepalive functionality.
+      heartbeat: 0
+
+    # Available Types:
+    #   ⤷ sqlite (PREFERRED FOR SINGLE SERVER PERFORMANCE)
+    #   ⤷ postgres (additional configuration required)
+    #   ⤷ mariadb (additional configuration required)
+    type: sqlite
+
 # Generic plugin settings.
 settings:
   # The prefix that shows up for all commands.
   prefix: '<gray>[<gold>CrazyVouchers<gray>]: '
+
   # This option allows you to switch between the following:
   # ⤷ vouchers.yml and codes.yml
   #  ⤷ these files handle all files!
   # ⤷ vouchers and codes that act like the crates folder in CrazyCrates
   #  ⤷ each file is considered a voucher with the name of the file being the voucher name
-  # 
+
   # ⤷ Once you switch this, You should run /crazyvouchers migrate -mt VouchersSwitch otherwise you will have no vouchers.
-  # 
+
   # ⤷ Available types
   #   ⤷ SINGLE
   #   ⤷ MULTIPLE
-  # 
   file-system: MULTIPLE
+
+  # History related settings.
+  history:
+    # The amount of entries to show in /crazyvouchers history <player> <page>
+    per-page: 5
+
   # Dupe protection settings.
   dupe-protection:
     # Vouchers will no longer be able to stack, as each one has a unique identifier
     # Once the voucher is used, the uuid attached is thrown in a file.
-    # 
+
     # If you turn this option off, no new uuids will be attached or checked
     # however previous vouchers will still not stack, obviously.
     enabled: false
+
     # Dupe protection warning settings.
     warning:
       # This decides whether a line should be added to duplicated voucher lore to avoid scams.
       enabled: false
+
       # The line to add to the lore of an item. This message supports PlaceholderAPI
       value: <red>This item has been duplicated
+
   # Whether you should only be allowed to use vouchers in survival.
   survival-only: true
+
+  # Voucher tracking settings.
+  tracking:
+    # If this option is set to true, all voucher redemptions will be logged.
+    voucher-usage: true
+
   # Recipe settings.
   recipes:
     # Whether they should be allowed to use vouchers in recipes.
     toggle: true
+
     # Whether an alert should be sent when trying to use vouchers in recipes.
     alert: false
+
+  # If you set this to true, you will be allowing vouchers to be used in off hand.
+  allow-off-hand-usage: false
