@@ -8,7 +8,6 @@ import com.zaxxer.hikari.HikariConfig;
 import com.zaxxer.hikari.HikariDataSource;
 import org.jspecify.annotations.NonNull;
 import us.crazycrew.crazyvouchers.api.objects.VoucherHistory;
-
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -16,6 +15,7 @@ import java.sql.SQLException;
 import java.time.Instant;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import java.util.UUID;
 import java.util.concurrent.CompletableFuture;
 
@@ -86,6 +86,10 @@ public abstract class HikariFactory extends SqlFactory {
                 this.credentials.address(),
                 this.credentials.port()
         );
+
+        for (final Map.Entry<String, Object> property : this.credentials.values().entrySet()) {
+            config.addDataSourceProperty(property.getKey(), property.getValue());
+        }
 
         config.setMaximumPoolSize(this.credentials.maxPoolSize());
         config.setMinimumIdle(this.credentials.minIdle());

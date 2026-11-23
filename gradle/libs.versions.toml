@@ -37,6 +37,7 @@ bStats = "3.2.1" # https://github.com/Bastian/bStats
 fusion = "4.69.0" # https://github.com/ryderbelserion/Fusion
 ## Database API
 hikari = "7.1.0" # https://github.com/brettwooldridge/HikariCP
+mariadb = "3.5.11" # https://mariadb.com/docs/connectors/mariadb-connector-j/about-mariadb-connector-j
 postgres = "42.7.14" # https://www.postgresql.org
 
 ## Gradle Plugins
@@ -119,6 +120,8 @@ nbt-api = { module = "de.tr7zw:item-nbt-api", version.ref = "nbtapi" }
 # https://github.com/MilkBowl/Vault
 vault = { module = "com.github.MilkBowl:VaultAPI", version.ref = "vault" }
 
+# https://mariadb.com/docs/connectors/mariadb-connector-j/about-mariadb-connector-j
+mariadb = { module = "org.mariadb.jdbc:mariadb-java-client", version.ref = "mariadb" }
 # https://www.postgresql.org
 postgres = { module = "org.postgresql:postgresql", version.ref = "postgres" }
 # https://github.com/brettwooldridge/HikariCP

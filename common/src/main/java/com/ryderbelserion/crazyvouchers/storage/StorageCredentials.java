@@ -1,11 +1,12 @@
 package com.ryderbelserion.crazyvouchers.storage;
 
 import org.jspecify.annotations.NonNull;
+import java.util.Map;
 
 public record StorageCredentials(
         String database, String username, String password, String address,
         long connectionTimeout, long maxLifetime, int maxPoolSize, long heartbeat, int minIdle,
-        int port
+        int port, Map<String, Object> values
 ) {
 
     public StorageCredentials(
@@ -19,8 +20,9 @@ public record StorageCredentials(
             final int maxPoolSize,
             final long heartbeat,
             final int minIdle,
-            final int port
-    ) {
+            final int port,
+            final Map<String, Object> values
+            ) {
         this.database = database;
         this.username = username;
         this.password = password;
@@ -31,6 +33,7 @@ public record StorageCredentials(
         this.maxPoolSize = maxPoolSize;
         this.heartbeat = heartbeat;
         this.minIdle = minIdle;
+        this.values = values;
         this.port = port;
     }
 }

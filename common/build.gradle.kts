@@ -11,7 +11,9 @@ dependencies {
     implementation(libs.hikari.cp) {
         exclude("org.slf4j")
     }
+
     implementation(libs.postgres)
+    implementation(libs.mariadb)
 
     api(project(":api"))
 }

@@ -8,6 +8,8 @@ import com.ryderbelserion.crazyvouchers.storage.impl.sql.types.PostgresFactory;
 import com.ryderbelserion.fusion.config.properties.PropertyManager;
 import us.crazycrew.crazyvouchers.api.config.ConfigManager;
 import us.crazycrew.crazyvouchers.api.config.types.DatabaseKeys;
+import java.util.HashMap;
+import java.util.Map;
 
 public class StorageManager {
 
@@ -22,6 +24,21 @@ public class StorageManager {
     public StorageHolder init() {
         final PropertyManager config = this.configManager.getConfig();
 
+        final Map<String, Object> values = new HashMap<>();
+
+        for (final String line : config.getProperty(DatabaseKeys.properties)) {
+            if (!line.contains(":")) {
+                continue;
+            }
+
+            final String[] splitter = line.split(":");
+
+            final String key = splitter[0];
+            final Object value = splitter[1];
+
+            values.putIfAbsent(key, value);
+        }
+
         final StorageCredentials credentials = new StorageCredentials(
                 config.getProperty(DatabaseKeys.database_name),
                 config.getProperty(DatabaseKeys.database_username),
@@ -32,7 +49,8 @@ public class StorageManager {
                 config.getProperty(DatabaseKeys.maximum_pool_size),
                 config.getProperty(DatabaseKeys.connection_heartbeat),
                 config.getProperty(DatabaseKeys.minimum_pool_size),
-                config.getProperty(DatabaseKeys.database_port)
+                config.getProperty(DatabaseKeys.database_port),
+                values
         );
 
         final String storageType = config.getProperty(DatabaseKeys.storage_type);

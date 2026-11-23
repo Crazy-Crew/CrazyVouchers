@@ -4,6 +4,7 @@ import com.ryderbelserion.fusion.config.annotations.Comment;
 import com.ryderbelserion.fusion.config.properties.builders.CommentsBuilder;
 import com.ryderbelserion.fusion.config.properties.interfaces.IPropertyHolder;
 import com.ryderbelserion.fusion.config.properties.objects.interfaces.Property;
+import com.ryderbelserion.fusion.config.properties.objects.primitives.string.ListProperty;
 import org.jspecify.annotations.NonNull;
 import java.util.List;
 import static com.ryderbelserion.fusion.config.properties.PropertyBuilder.newProperty;
@@ -115,8 +116,20 @@ public class DatabaseKeys implements IPropertyHolder {
     })
     public static final Property<Integer> connection_heartbeat = newProperty(0, "root", "storage", "pool-settings", "heartbeat");
 
-    public static final Property<Boolean> unicode_property = newProperty(true, "root", "storage", "pool-settings", "properties", "use-unicode");
-
-    public static final Property<String> character_encoding = newProperty("utf8", "root", "storage", "pool-settings", "properties", "character-encoding");
-
+    @Comment({
+            "This setting allows you to define extra properties for connections.",
+            "",
+            "By default, the following options are set to enable utf8 encoding. (you may need to remove these if you are using PostgreSQL)",
+            "useUnicode:true",
+            "characterEncoding:utf8",
+            "",
+            "You can also use this section to disable SSL connections, by uncommenting the 'useSSL' and 'verifyServerCertificate' options below."
+    })
+    public static final ListProperty properties = newProperty(List.of(
+            "useUnicode:true",
+            "characterEncoding:utf8"
+            //"verifyServerCertificate:false",
+            //"sslMode:disable"
+            //"useSSL:false"
+    ), "root", "storage", "pool-settings", "properties");
 }
