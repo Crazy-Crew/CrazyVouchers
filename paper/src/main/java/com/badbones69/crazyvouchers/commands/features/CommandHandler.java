@@ -73,13 +73,16 @@ public class CommandHandler {
                 return List.of();
             }
 
-            final String arg1 = arguments.keySet().stream().toList().getLast();
+            final List<String> keys = arguments.keySet().stream().toList();
 
-            if (arg1 == null || arg1.isBlank()) {
+            final String arg1 = keys.get(1); // fetches the <type> argument.
+            final String arg2 = keys.getLast(); // fetches the player name.
+
+            if (arg2 == null || arg2.isBlank()) {
                 return List.of();
             }
 
-            final String value = arguments.get(arg1);
+            final String value = arguments.get(arg2);
 
             if (value.isBlank()) {
                 return List.of();
@@ -91,7 +94,8 @@ public class CommandHandler {
 
             final Optional<OfflinePlayer> player = builder.getTarget();
 
-            return player.map(offlinePlayer -> IntStream.rangeClosed(1, Math.max(1, Math.ceilDiv(this.holder.countRedeemedVouchers(offlinePlayer.getUniqueId()), perPage)))
+            return player.map(offlinePlayer -> IntStream.rangeClosed(1, Math.max(1, Math.ceilDiv(arg1.equalsIgnoreCase("voucher") ?
+                            this.holder.countRedeemedVouchers(offlinePlayer.getUniqueId()) : this.holder.countRedeemedCodes(offlinePlayer.getUniqueId()), perPage)))
                     .mapToObj(String::valueOf)
                     .toList()).orElseGet(List::of);
         });
