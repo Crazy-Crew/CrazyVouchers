@@ -15,6 +15,7 @@ import java.sql.Statement;
 import java.time.Instant;
 import java.util.UUID;
 import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.TimeUnit;
 
 public abstract class SqlFactory extends FlatFactory {
 
@@ -57,10 +58,13 @@ public abstract class SqlFactory extends FlatFactory {
 
     protected final String index_codes_id = "create index if not exists idx_code_id on codes_redeemed(code)";
 
+    protected final int queryTimeout;
     protected HikariDataSource source;
 
-    public SqlFactory(final CrazyVouchersPlugin plugin, final String impl) {
+    public SqlFactory(final int queryTimeout, final CrazyVouchersPlugin plugin, final String impl) {
         super(plugin, impl);
+
+        this.queryTimeout = queryTimeout;
     }
 
     public abstract String url();
@@ -72,6 +76,8 @@ public abstract class SqlFactory extends FlatFactory {
                 if (connection == null) return;
 
                 try (final Statement statement = connection.createStatement()) {
+                    statement.setQueryTimeout(this.queryTimeout);
+
                     statement.addBatch(this.create_users_table);
 
                     statement.addBatch(this.create_vouchers_tracker_table);
@@ -123,6 +129,8 @@ public abstract class SqlFactory extends FlatFactory {
         CompletableFuture.runAsync(() -> {
             try (final Connection connection = this.source.getConnection(); final PreparedStatement statement =
                     connection.prepareStatement("insert into vouchers_players(player_uuid) values (?)")) {
+                statement.setQueryTimeout(this.queryTimeout);
+
                 statement.setString(1, player_uuid.toString());
 
                 statement.executeUpdate();
@@ -142,6 +150,8 @@ public abstract class SqlFactory extends FlatFactory {
         CompletableFuture.runAsync(() -> {
             try (final Connection connection = this.source.getConnection(); final PreparedStatement statement =
                     connection.prepareStatement("delete from vouchers_players where player_uuid=?")) {
+                statement.setQueryTimeout(this.queryTimeout);
+
                 statement.setString(1, player_uuid.toString());
 
                 statement.executeUpdate();
@@ -157,6 +167,8 @@ public abstract class SqlFactory extends FlatFactory {
         return CompletableFuture.supplyAsync(() -> {
             try (final Connection connection = this.source.getConnection(); final PreparedStatement statement =
                     connection.prepareStatement("select 1 from vouchers_players where player_uuid=? limit 1")) {
+                statement.setQueryTimeout(this.queryTimeout);
+
                 statement.setString(1, player_uuid.toString());
 
                 try (final ResultSet resultSet = statement.executeQuery()) {
@@ -176,6 +188,8 @@ public abstract class SqlFactory extends FlatFactory {
         return CompletableFuture.supplyAsync(() -> {
             try (final Connection connection = this.source.getConnection(); final PreparedStatement statement =
                     connection.prepareStatement("select 1 from vouchers_tracker where voucher_id=? limit 1")) {
+                statement.setQueryTimeout(this.queryTimeout);
+
                 statement.setString(1, voucher_id.toString());
 
                 try (final ResultSet resultSet = statement.executeQuery()) {
@@ -195,6 +209,8 @@ public abstract class SqlFactory extends FlatFactory {
         CompletableFuture.runAsync(() -> {
             try (final Connection connection = this.source.getConnection(); final PreparedStatement statement =
                     connection.prepareStatement("insert into vouchers_tracker(voucher_id, player_uuid, timestamp_redeemed) values (?, ?, ?)")) {
+                statement.setQueryTimeout(this.queryTimeout);
+
                 statement.setString(1, voucher_id.toString());
                 statement.setString(2, player_uuid.toString());
                 statement.setLong(3, Instant.now().getEpochSecond());
@@ -212,6 +228,8 @@ public abstract class SqlFactory extends FlatFactory {
         CompletableFuture.runAsync(() -> {
             try (final Connection connection = this.source.getConnection(); final PreparedStatement statement =
                     connection.prepareStatement("delete from vouchers_tracker where voucher_id=?")) {
+                statement.setQueryTimeout(this.queryTimeout);
+
                 statement.setString(1, voucher_id.toString());
 
                 statement.executeUpdate();
@@ -227,6 +245,8 @@ public abstract class SqlFactory extends FlatFactory {
         return CompletableFuture.supplyAsync(() -> {
             try (final Connection connection = this.source.getConnection(); final PreparedStatement statement =
                     connection.prepareStatement("select 1 from vouchers_redeemed where voucher_id=? limit 1")) {
+                statement.setQueryTimeout(this.queryTimeout);
+
                 statement.setString(1, voucher_id);
 
                 try (final ResultSet resultSet = statement.executeQuery()) {
@@ -246,6 +266,8 @@ public abstract class SqlFactory extends FlatFactory {
         return CompletableFuture.supplyAsync(() -> {
             try (final Connection connection = this.source.getConnection(); final PreparedStatement statement =
                     connection.prepareStatement("select redeem_limit from vouchers_redeemed where voucher_id=? and player_uuid=? limit 1")) {
+                statement.setQueryTimeout(this.queryTimeout);
+
                 statement.setString(1, voucher_id);
                 statement.setString(2, player_uuid.toString());
 
@@ -266,6 +288,8 @@ public abstract class SqlFactory extends FlatFactory {
         CompletableFuture.runAsync(() -> {
             try (final Connection connection = this.source.getConnection(); final PreparedStatement statement =
                     connection.prepareStatement("update vouchers_redeemed set redeem_limit = redeem_limit+1 where voucher_id=? and player_uuid=?")) {
+                statement.setQueryTimeout(this.queryTimeout);
+
                 statement.setString(1, voucher_id);
                 statement.setString(2, player_uuid.toString());
 
@@ -282,6 +306,8 @@ public abstract class SqlFactory extends FlatFactory {
         return CompletableFuture.supplyAsync(() -> {
             try (final Connection connection = this.source.getConnection(); final PreparedStatement statement =
                     connection.prepareStatement("select count(*) from vouchers_redeemed where player_uuid=?")) {
+                statement.setQueryTimeout(this.queryTimeout);
+
                 statement.setString(1, player_uuid.toString());
 
                 try (final ResultSet resultSet = statement.executeQuery()) {
@@ -301,6 +327,8 @@ public abstract class SqlFactory extends FlatFactory {
         CompletableFuture.runAsync(() -> {
             try (final Connection connection = this.source.getConnection(); final PreparedStatement statement =
                     connection.prepareStatement("insert into vouchers_redeemed(voucher_id, player_uuid, redeem_limit, timestamp_redeemed) values (?, ?, ?, ?)")) {
+                statement.setQueryTimeout(this.queryTimeout);
+
                 statement.setString(1, voucher_id);
                 statement.setString(2, player_uuid.toString());
                 statement.setInt(3, amount);
@@ -319,6 +347,8 @@ public abstract class SqlFactory extends FlatFactory {
         CompletableFuture.runAsync(() -> {
             try (final Connection connection = this.source.getConnection(); final PreparedStatement statement =
                     connection.prepareStatement("delete from vouchers_redeemed where voucher_id=?")) {
+                statement.setQueryTimeout(this.queryTimeout);
+
                 statement.setString(1, voucher_id);
 
                 statement.executeUpdate();
@@ -334,6 +364,8 @@ public abstract class SqlFactory extends FlatFactory {
         CompletableFuture.runAsync(() -> {
             try (final Connection connection = this.source.getConnection(); final PreparedStatement statement =
                     connection.prepareStatement("insert into codes_redeemed(code, player_uuid, redeem_limit, timestamp_redeemed) values (?, ?, ?, ?)")) {
+                statement.setQueryTimeout(this.queryTimeout);
+
                 statement.setString(1, code);
                 statement.setString(2, player_uuid.toString());
                 statement.setInt(3, 1); // redeemed once already
@@ -352,6 +384,8 @@ public abstract class SqlFactory extends FlatFactory {
         CompletableFuture.runAsync(() -> {
             try (final Connection connection = this.source.getConnection(); final PreparedStatement statement =
                     connection.prepareStatement("delete from codes_redeemed where code=?")) {
+                statement.setQueryTimeout(this.queryTimeout);
+
                 statement.setString(1, code);
 
                 statement.executeUpdate();
@@ -367,6 +401,8 @@ public abstract class SqlFactory extends FlatFactory {
         return CompletableFuture.supplyAsync(() -> {
             try (final Connection connection = this.source.getConnection(); final PreparedStatement statement =
                     connection.prepareStatement("select 1 from codes_redeemed where code=? limit 1")) {
+                statement.setQueryTimeout(this.queryTimeout);
+
                 statement.setString(1, code);
 
                 try (final ResultSet resultSet = statement.executeQuery()) {
@@ -386,6 +422,8 @@ public abstract class SqlFactory extends FlatFactory {
         return CompletableFuture.supplyAsync(() -> {
             try (final Connection connection = this.source.getConnection(); final PreparedStatement statement =
                     connection.prepareStatement("select redeem_limit from codes_redeemed where code=? and player_uuid=? limit 1")) {
+                statement.setQueryTimeout(this.queryTimeout);
+
                 statement.setString(1, code);
                 statement.setString(2, player_uuid.toString());
 
@@ -406,6 +444,8 @@ public abstract class SqlFactory extends FlatFactory {
         CompletableFuture.runAsync(() -> {
             try (final Connection connection = this.source.getConnection(); final PreparedStatement statement =
                     connection.prepareStatement("update codes_redeemed set redeem_limit = redeem_limit+1 where code=? and player_uuid=?")) {
+                statement.setQueryTimeout(this.queryTimeout);
+
                 statement.setString(1, code);
                 statement.setString(2, player_uuid.toString());
 
@@ -422,6 +462,8 @@ public abstract class SqlFactory extends FlatFactory {
         return CompletableFuture.supplyAsync(() -> {
             try (final Connection connection = this.source.getConnection(); final PreparedStatement statement =
                     connection.prepareStatement("select count(*) from codes_redeemed where player_uuid=?")) {
+                statement.setQueryTimeout(this.queryTimeout);
+
                 statement.setString(1, player_uuid.toString());
 
                 try (final ResultSet resultSet = statement.executeQuery()) {

@@ -106,7 +106,14 @@ public class DatabaseKeys implements IPropertyHolder {
             " ",
             "The default time is 5 seconds, or 5,000"
     })
-    public static final Property<Integer> connection_timeout = newProperty(5000, "root", "storage", "pool-settings", "connection-timeout");
+    public static final Property<Long> connection_timeout = newProperty(5000L, "root", "storage", "pool-settings", "connection-timeout");
+
+    @Comment({
+            "This setting controls the maximum numbers of seconds the plugin will wait for a query to complete, before timing out.",
+            " ",
+            "The default time is 3 seconds."
+    })
+    public static final Property<Integer> query_timeout = newProperty(5, "root", "storage", "pool-settings", "query-timeout");
 
     @Comment({
             "This setting controls how frequently the pool will 'ping' a connection in order to prevent it",

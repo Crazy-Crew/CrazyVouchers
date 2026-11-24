@@ -19,6 +19,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.TimeUnit;
 
 @NullMarked
 public final class SqliteFactory extends SqlFactory {
@@ -34,8 +35,8 @@ public final class SqliteFactory extends SqlFactory {
 
     private final Path path;
 
-    public SqliteFactory(final CrazyVouchersPlugin plugin) {
-        super(plugin, "SQLite");
+    public SqliteFactory(final StorageCredentials credentials, final CrazyVouchersPlugin plugin) {
+        super(credentials.queryTimeout(), plugin, "SQLite");
 
         this.path = plugin.getDataPath().resolve("crazyvouchers.db");
     }
@@ -47,6 +48,8 @@ public final class SqliteFactory extends SqlFactory {
                 if (connection == null) return;
 
                 try (final Statement statement = connection.createStatement()) {
+                    statement.setQueryTimeout(this.queryTimeout);
+
                     statement.addBatch(this.drop_index_vouchers_uuid);
                     statement.addBatch(this.drop_index_vouchers_id);
 
@@ -94,6 +97,8 @@ public final class SqliteFactory extends SqlFactory {
                 if (connection == null) return;
 
                 try (final Statement statement = connection.createStatement()) {
+                    statement.setQueryTimeout(this.queryTimeout);
+
                     statement.addBatch(this.create_users_table);
 
                     statement.addBatch(this.create_vouchers_tracker_table);
@@ -126,6 +131,8 @@ public final class SqliteFactory extends SqlFactory {
                 if (connection == null) return;
 
                 try (final Statement statement = connection.createStatement()) {
+                    statement.setQueryTimeout(this.queryTimeout);
+
                     statement.addBatch(this.index_tracker_uuid);
                     statement.addBatch(this.index_tracker_id);
 
@@ -151,6 +158,8 @@ public final class SqliteFactory extends SqlFactory {
         CompletableFuture.runAsync(() -> {
             try (final Connection connection = this.source.getConnection(); final PreparedStatement statement =
                     connection.prepareStatement("select voucher_id, redeem_limit, timestamp_redeemed from vouchers_redeemed where player_uuid=? order by rowid limit ? offset ?")) {
+                statement.setQueryTimeout(this.queryTimeout);
+
                 statement.setString(1, player_uuid.toString());
                 statement.setInt(2, perPage);
                 statement.setInt(3, (page - 1) * perPage);
@@ -182,6 +191,7 @@ public final class SqliteFactory extends SqlFactory {
            try (final Connection connection = this.source.getConnection(); final PreparedStatement statement =
                    connection.prepareStatement("select voucher_id, redeem_limit, timestamp_redeemed from vouchers_redeemed where player_uuid=?")) {
                statement.setString(1, player_uuid.toString());
+                statement.setQueryTimeout(this.queryTimeout);
 
                try (final ResultSet resultSet = statement.executeQuery()) {
                    while (resultSet.next()) {
@@ -209,6 +219,8 @@ public final class SqliteFactory extends SqlFactory {
         CompletableFuture.runAsync(() -> {
             try (final Connection connection = this.source.getConnection(); final PreparedStatement statement =
                     connection.prepareStatement("select code, redeem_limit, timestamp_redeemed from codes_redeemed where player_uuid=? order by timestamp_redeemed limit ? offset ?")) {
+                statement.setQueryTimeout(this.queryTimeout);
+
                 statement.setString(1, player_uuid.toString());
                 statement.setInt(2, perPage);
                 statement.setInt(3, (page - 1) * perPage);
@@ -239,6 +251,8 @@ public final class SqliteFactory extends SqlFactory {
         CompletableFuture.runAsync(() -> {
             try (final Connection connection = this.source.getConnection(); final PreparedStatement statement =
                     connection.prepareStatement("select code, redeem_limit, timestamp_redeemed from codes_redeemed where player_uuid=?")) {
+                statement.setQueryTimeout(this.queryTimeout);
+
                 statement.setString(1, player_uuid.toString());
 
                 try (final ResultSet resultSet = statement.executeQuery()) {

@@ -72,6 +72,11 @@ root:
       # The default time is 5 seconds, or 5,000
       connection-timeout: 5000
 
+      # This setting controls the maximum numbers of seconds the plugin will wait for a query to complete, before timing out.
+      #
+      # The default time is 3 seconds.
+      query-timeout: 3
+
       # This setting controls the maximum lifetime of a connection in the pool in milliseconds.
       #  - The value should be at least 30 seconds less than any database or infrastructure imposed connection time limit.
       #

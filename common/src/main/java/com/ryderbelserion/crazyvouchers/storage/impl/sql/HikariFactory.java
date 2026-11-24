@@ -17,6 +17,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.TimeUnit;
 
 public abstract class HikariFactory extends SqlFactory {
 
@@ -29,7 +30,7 @@ public abstract class HikariFactory extends SqlFactory {
             @NonNull final CrazyVouchersPlugin plugin,
             @NonNull final String impl
     ) {
-        super(plugin, impl);
+        super(credentials.queryTimeout(), plugin, impl);
 
         this.credentials = credentials;
     }
@@ -117,6 +118,8 @@ public abstract class HikariFactory extends SqlFactory {
         CompletableFuture.runAsync(() -> {
             try (final Connection connection = this.source.getConnection(); final PreparedStatement statement =
                     connection.prepareStatement("select voucher_id, redeem_limit, timestamp_redeemed from vouchers_redeemed where player_uuid=? order by timestamp_redeemed limit ? offset ?")) {
+                statement.setQueryTimeout(this.queryTimeout);
+
                 statement.setString(1, player_uuid.toString());
                 statement.setInt(2, perPage);
                 statement.setInt(3, (page - 1) * perPage);
@@ -151,6 +154,8 @@ public abstract class HikariFactory extends SqlFactory {
         CompletableFuture.runAsync(() -> {
             try (final Connection connection = this.source.getConnection(); final PreparedStatement statement =
                     connection.prepareStatement("select voucher_id, redeem_limit, timestamp_redeemed from vouchers_redeemed where player_uuid=?")) {
+                statement.setQueryTimeout(this.queryTimeout);
+
                 statement.setString(1, player_uuid.toString());
 
                 try (final ResultSet resultSet = statement.executeQuery()) {
@@ -184,6 +189,8 @@ public abstract class HikariFactory extends SqlFactory {
         CompletableFuture.runAsync(() -> {
             try (final Connection connection = this.source.getConnection(); final PreparedStatement statement =
                     connection.prepareStatement("select code, redeem_limit, timestamp_redeemed from codes_redeemed where player_uuid=? order by timestamp_redeemed limit ? offset ?")) {
+                statement.setQueryTimeout(this.queryTimeout);
+
                 statement.setString(1, player_uuid.toString());
                 statement.setInt(2, perPage);
                 statement.setInt(3, (page - 1) * perPage);
@@ -218,6 +225,8 @@ public abstract class HikariFactory extends SqlFactory {
         CompletableFuture.runAsync(() -> {
             try (final Connection connection = this.source.getConnection(); final PreparedStatement statement =
                     connection.prepareStatement("select code, redeem_limit, timestamp_redeemed from codes_redeemed where player_uuid=?")) {
+                statement.setQueryTimeout(this.queryTimeout);
+
                 statement.setString(1, player_uuid.toString());
 
                 try (final ResultSet resultSet = statement.executeQuery()) {
