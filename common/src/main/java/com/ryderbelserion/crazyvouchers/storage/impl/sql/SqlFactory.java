@@ -73,7 +73,11 @@ public abstract class SqlFactory extends FlatFactory {
     public void init() {
         CompletableFuture.runAsync(() -> {
             try (final Connection connection = getConnection()) {
-                if (connection == null) return;
+                if (connection == null) {
+                    return;
+                }
+
+                connection.setAutoCommit(false);
 
                 try (final Statement statement = connection.createStatement()) {
                     statement.setQueryTimeout(this.queryTimeout);
@@ -95,6 +99,10 @@ public abstract class SqlFactory extends FlatFactory {
                     statement.addBatch(this.index_codes_id);
 
                     statement.executeBatch();
+                } catch (final SQLException exception) {
+                    connection.rollback();
+                } finally {
+                    connection.setAutoCommit(true);
                 }
             } catch (final SQLException exception) {
                 this.fusion.log(true, Level.error, "<red>An error has occurred with the reason <gold>%s</gold> while initializing the tables!", exception.getMessage());

@@ -45,7 +45,11 @@ public final class SqliteFactory extends SqlFactory {
     public void migrate() {
         CompletableFuture.runAsync(() -> {
             try (final Connection connection = getConnection()) {
-                if (connection == null) return;
+                if (connection == null) {
+                    return;
+                }
+
+                connection.setAutoCommit(false);
 
                 try (final Statement statement = connection.createStatement()) {
                     statement.setQueryTimeout(this.queryTimeout);
@@ -60,6 +64,10 @@ public final class SqliteFactory extends SqlFactory {
                     statement.addBatch(this.drop_index_codes_id);
 
                     statement.executeBatch();
+                } catch (final SQLException exception) {
+                    connection.rollback();
+                } finally {
+                    connection.setAutoCommit(true);
                 }
             } catch (final SQLException exception) {
                 this.fusion.log(true, Level.error, "<red>An error has occurred with the reason for data type <green>%s</green>, <gold>%s</gold> while removing indexes for migration!",
@@ -94,7 +102,11 @@ public final class SqliteFactory extends SqlFactory {
 
         CompletableFuture.runAsync(() -> {
             try (final Connection connection = getConnection()) {
-                if (connection == null) return;
+                if (connection == null) {
+                    return;
+                }
+
+                connection.setAutoCommit(false);
 
                 try (final Statement statement = connection.createStatement()) {
                     statement.setQueryTimeout(this.queryTimeout);
@@ -116,6 +128,10 @@ public final class SqliteFactory extends SqlFactory {
                     statement.addBatch(this.index_codes_id);
 
                     statement.executeBatch();
+                } catch (final SQLException exception) {
+                    connection.rollback();
+                } finally {
+                    connection.setAutoCommit(true);
                 }
             } catch (final SQLException exception) {
                 this.fusion.log(true, Level.error, "<red>An error has occurred with the reason for data type <green>%s</green>, <gold>%s</gold> while initializing the tables!",
@@ -128,7 +144,11 @@ public final class SqliteFactory extends SqlFactory {
     public void post() {
         CompletableFuture.runAsync(() -> {
             try (final Connection connection = getConnection()) {
-                if (connection == null) return;
+                if (connection == null) {
+                    return;
+                }
+
+                connection.setAutoCommit(false);
 
                 try (final Statement statement = connection.createStatement()) {
                     statement.setQueryTimeout(this.queryTimeout);
@@ -143,6 +163,12 @@ public final class SqliteFactory extends SqlFactory {
                     statement.addBatch(this.index_codes_id);
 
                     statement.executeBatch();
+
+                    connection.commit();
+                } catch (final SQLException exception) {
+                    connection.rollback();
+                } finally {
+                    connection.setAutoCommit(true);
                 }
             } catch (final SQLException exception) {
                 this.fusion.log(true, Level.error, "<red>An error has occurred with the reason for data type <green>%s</green>, <gold>%s</gold> while adding indexing to the columns!",
