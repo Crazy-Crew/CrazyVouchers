@@ -26,4 +26,9 @@ public final class MariadbFactory extends HikariFactory {
     public int getDefaultPort() {
         return 3306;
     }
+
+    @Override
+    public String url() {
+        return "jdbc:%s://%s:%s/%s";
+    }
 }

@@ -26,4 +26,9 @@ public final class PostgresFactory extends HikariFactory {
     public int getDefaultPort() {
         return 5432;
     }
+
+    @Override
+    public String url() {
+        return "jdbc:%s://%s:%s/%s";
+    }
 }

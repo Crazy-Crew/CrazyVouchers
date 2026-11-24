@@ -51,11 +51,6 @@ public abstract class HikariFactory extends SqlFactory {
 
     }
 
-    @Override
-    public String url() {
-        return "";
-    }
-
     protected void configure(
             @NonNull final HikariConfig config,
             @NonNull final String database,
@@ -66,7 +61,7 @@ public abstract class HikariFactory extends SqlFactory {
     ) {
         config.setDriverClassName(getDriverIdentifier());
 
-        config.setJdbcUrl(String.format("jdbc:%s://%s:%s/%s", getJDBCIdentifier(), address, port == -1 ? getDefaultPort() : port, database));
+        config.setJdbcUrl(url().formatted(getJDBCIdentifier(), address, port == -1 ? getDefaultPort() : port, database));
 
         config.setUsername(username);
         config.setPassword(password);

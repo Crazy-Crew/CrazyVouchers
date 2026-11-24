@@ -43,6 +43,11 @@ public final class SqliteFactory extends SqlFactory {
     }
 
     @Override
+    public String url() {
+        return "jdbc:sqlite:" + this.path.toFile().getAbsolutePath();
+    }
+
+    @Override
     public void migrate() {
         CompletableFuture.runAsync(() -> {
             try (final Connection connection = getConnection()) {
@@ -301,10 +306,5 @@ public final class SqliteFactory extends SqlFactory {
 
             return vouchers;
         }).completeOnTimeout(List.of(), 10, TimeUnit.SECONDS).join();
-    }
-
-    @Override
-    public String url() {
-        return "jdbc:sqlite:" + this.path.toFile().getAbsolutePath();
     }
 }
