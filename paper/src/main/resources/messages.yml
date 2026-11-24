@@ -52,16 +52,22 @@ commands:
       back-hover-text: "<red>Back Button"
     # The header of the message.
     #
-    # Available Placeholders: {player}, {page}, {max_pages} and {back}/{next}
+    # Available Placeholders: {player}, {type}, {page}, {max_pages} and {back}/{next}
     header: " <bold><gold>━━━━━━━━━━━━━━━━━━━ <red>{back} Page {page}/{max_pages} {next}</red> ━━━━━━━━━━━━━━━━━━━</gold></bold>"
     # The footer of the message.
     #
-    # Available Placeholders: {player}, {page}, {max_pages} and {back}/{next}
+    # Available Placeholders: {player}, {type}, {page}, {max_pages} and {back}/{next}
     footer: " <bold><gold>━━━━━━━━━━━━━━━━━━━ <red>{back} Page {page}/{max_pages} {next}</red> ━━━━━━━━━━━━━━━━━━━</gold></bold>"
     # The format for each voucher.
     #
     # Available placeholders: {voucher_id}, {position}, {player}, {redeem_limit}, {timestamp}
     format: "<dark_gray>[<green>#{position}<dark_gray>]: <red>Name: {voucher_id}<dark_gray>, <red>Redeem Limit: {redeem_limit}<dark_gray>, <red>Timestamp: {timestamp}<dark_gray>"
+    # Only sent when a player has no data.
+    not-found:
+      # Available Placeholders: {player}
+      codes: "<red>The user {player} has no code history!"
+      # Available Placeholders: {player}
+      vouchers: "<red>The user {player} has no code history!"
     # The main body of the message.
     # Available Placeholders: {player}, {header}, {footer}, {vouchers}
     body:

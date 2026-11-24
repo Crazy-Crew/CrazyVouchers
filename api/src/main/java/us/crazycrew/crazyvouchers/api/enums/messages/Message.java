@@ -156,6 +156,8 @@ public enum Message {
             "",
             "Available placeholders: {voucher_id}, {position}, {player}, {redeem_limit}, {timestamp}"
     ), "#{position}: ID: {voucher_id}, Limit: {redeem_limit}, Timestamp: {timestamp}", "commands", "history", "format"),
+    history_no_codes_found("command.history.not.found.codes", "Available Placeholders: {player}", "<red>The user {player} has no code history!", "commands", "history", "not-found", "codes"),
+    history_no_vouchers_found("command.history.not.found.vouchers", "Available Placeholders: {player}", "<red>The user {player} has no voucher history!", "commands", "history", "not-found", "vouchers"),
 
     help("misc.help", "", List.of(
             "<dark_gray>- <gold>/crazyvouchers help <aqua>Lists all the commands for vouchers.",
