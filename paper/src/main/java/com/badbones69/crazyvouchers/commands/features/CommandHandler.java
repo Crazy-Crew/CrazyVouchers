@@ -59,31 +59,12 @@ public class CommandHandler {
 
         new ArgumentRelations(this.commandManager).build();
 
+        this.commandManager.registerStaticSuggestion(SuggestionKey.of("types"), List.of("voucher", "code"));
+        this.commandManager.registerStaticSuggestion(SuggestionKey.of("numbers"), getIntegers());
+        this.commandManager.registerStaticSuggestion(SuggestionKey.of("doubles"), getDoubles());
+        this.commandManager.registerStaticSuggestion(SuggestionKey.of("migrators"), getTypes());
+
         this.commandManager.registerSuggestion(SuggestionKey.of("players"), _ -> server.getOnlinePlayers().stream().map(Player::getName).toList());
-
-        this.commandManager.registerSuggestion(SuggestionKey.of("numbers"), _ -> {
-            final List<String> numbers = new ArrayList<>();
-
-            for (int i = 1; i <= 100; i++) numbers.add(String.valueOf(i));
-
-            return numbers;
-        });
-
-        this.commandManager.registerSuggestion(SuggestionKey.of("doubles"), _ -> {
-            final List<String> numbers = new ArrayList<>();
-
-            int count = 0;
-
-            while (count <= 1000) {
-                double x = count / 10.0;
-
-                numbers.add(String.valueOf(x));
-
-                count++;
-            }
-
-            return numbers;
-        });
 
         this.commandManager.registerSuggestion(SuggestionKey.of("pages"), context -> {
             final Map<String, String> arguments = context.argumentsMap();
@@ -160,18 +141,6 @@ public class CommandHandler {
             return suggestions;
         });
 
-        this.commandManager.registerSuggestion(SuggestionKey.of("migrators"), sender -> {
-            final List<String> migrators = new ArrayList<>();
-
-            for (MigrationType value : MigrationType.values()) {
-                final String name = value.getName();
-
-                migrators.add(name);
-            }
-
-            return migrators;
-        });
-
         this.commandManager.registerArgument(PlayerBuilder.class, (_, context) -> new PlayerBuilder(context));
 
         List.of(
@@ -207,5 +176,41 @@ public class CommandHandler {
 
     public @NonNull final BukkitCommandManager<CommandSender> getCommandManager() {
         return this.commandManager;
+    }
+
+    public List<String> getDoubles() {
+        final List<String> numbers = new ArrayList<>();
+
+        int count = 0;
+
+        while (count <= 1000) {
+            double x = count / 10.0;
+
+            numbers.add(String.valueOf(x));
+
+            count++;
+        }
+
+        return numbers;
+    }
+
+    public List<String> getIntegers() {
+        final List<String> numbers = new ArrayList<>();
+
+        for (int i = 1; i <= 100; i++) numbers.add(String.valueOf(i));
+
+        return numbers;
+    }
+
+    public List<String> getTypes() {
+        final List<String> migrators = new ArrayList<>();
+
+        for (MigrationType value : MigrationType.values()) {
+            final String name = value.getName();
+
+            migrators.add(name);
+        }
+
+        return migrators;
     }
 }
