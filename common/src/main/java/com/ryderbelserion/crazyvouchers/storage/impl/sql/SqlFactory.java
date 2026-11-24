@@ -188,7 +188,7 @@ public abstract class SqlFactory extends FlatFactory {
             }
 
             return false;
-        }).join();
+        }).completeOnTimeout(false, 10, TimeUnit.SECONDS).join();
     }
 
     @Override
@@ -209,7 +209,7 @@ public abstract class SqlFactory extends FlatFactory {
             }
 
             return false;
-        }).join();
+        }).completeOnTimeout(false, 10, TimeUnit.SECONDS).join();
     }
 
     @Override
@@ -266,7 +266,7 @@ public abstract class SqlFactory extends FlatFactory {
             }
 
             return false;
-        }).join();
+        }).completeOnTimeout(false, 10, TimeUnit.SECONDS).join();
     }
 
     @Override
@@ -288,7 +288,7 @@ public abstract class SqlFactory extends FlatFactory {
             }
 
             return -1;
-        }).join();
+        }).completeOnTimeout(-1, 10, TimeUnit.SECONDS).join();
     }
 
     @Override
@@ -327,7 +327,7 @@ public abstract class SqlFactory extends FlatFactory {
             }
 
             return -1;
-        }).join();
+        }).completeOnTimeout(-1, 10, TimeUnit.SECONDS).join();
     }
 
     @Override
@@ -422,7 +422,7 @@ public abstract class SqlFactory extends FlatFactory {
             }
 
             return false;
-        }).join();
+        }).completeOnTimeout(false, 10, TimeUnit.SECONDS).join();
     }
 
     @Override
@@ -444,7 +444,7 @@ public abstract class SqlFactory extends FlatFactory {
             }
 
             return -1;
-        }).join();
+        }).completeOnTimeout(-1, 10, TimeUnit.SECONDS).join();
     }
 
     @Override
@@ -483,7 +483,7 @@ public abstract class SqlFactory extends FlatFactory {
             }
 
             return -1;
-        }).join();
+        }).completeOnTimeout(-1, 10, TimeUnit.SECONDS).join();
     }
 
     @Override

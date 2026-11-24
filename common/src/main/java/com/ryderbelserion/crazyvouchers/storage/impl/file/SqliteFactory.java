@@ -1,6 +1,7 @@
 package com.ryderbelserion.crazyvouchers.storage.impl.file;
 
 import com.ryderbelserion.crazyvouchers.CrazyVouchersPlugin;
+import com.ryderbelserion.crazyvouchers.storage.StorageCredentials;
 import us.crazycrew.crazyvouchers.api.objects.VoucherHistory;
 import com.ryderbelserion.crazyvouchers.storage.impl.sql.SqlFactory;
 import com.ryderbelserion.fusion.api.enums.Level;
@@ -179,9 +180,9 @@ public final class SqliteFactory extends SqlFactory {
 
     @Override
     public List<VoucherHistory> getRedeemedVouchersByPage(final UUID player_uuid, final int page, final int perPage) {
-        final List<VoucherHistory> vouchers = new ArrayList<>();
+        return CompletableFuture.supplyAsync(() -> {
+            final List<VoucherHistory> vouchers = new ArrayList<>();
 
-        CompletableFuture.runAsync(() -> {
             try (final Connection connection = this.source.getConnection(); final PreparedStatement statement =
                     connection.prepareStatement("select voucher_id, redeem_limit, timestamp_redeemed from vouchers_redeemed where player_uuid=? order by rowid limit ? offset ?")) {
                 statement.setQueryTimeout(this.queryTimeout);
@@ -204,45 +205,46 @@ public final class SqliteFactory extends SqlFactory {
                 this.fusion.log(true, Level.error, "<red>An error has occurred with the reason for data type <green>%s</green>, <gold>%s</gold> while fetching all redeemed vouchers by page for <gold>%s's</gold>!",
                         this.impl, exception.getMessage(), player_uuid);
             }
-        }).join();
 
-        return vouchers;
+            return vouchers;
+        }).completeOnTimeout(List.of(), 10, TimeUnit.SECONDS).join();
     }
 
     @Override
     public List<VoucherHistory> getRedeemedVouchers(final UUID player_uuid) {
-        final List<VoucherHistory> vouchers = new ArrayList<>();
+        return CompletableFuture.supplyAsync(() -> {
+            final List<VoucherHistory> vouchers = new ArrayList<>();
 
-        CompletableFuture.runAsync(() -> {
-           try (final Connection connection = this.source.getConnection(); final PreparedStatement statement =
-                   connection.prepareStatement("select voucher_id, redeem_limit, timestamp_redeemed from vouchers_redeemed where player_uuid=?")) {
-               statement.setString(1, player_uuid.toString());
+            try (final Connection connection = this.source.getConnection(); final PreparedStatement statement =
+                    connection.prepareStatement("select voucher_id, redeem_limit, timestamp_redeemed from vouchers_redeemed where player_uuid=?")) {
                 statement.setQueryTimeout(this.queryTimeout);
 
-               try (final ResultSet resultSet = statement.executeQuery()) {
-                   while (resultSet.next()) {
-                       vouchers.add(new VoucherHistory(
-                               resultSet.getString("voucher_id"),
-                               resultSet.getRow(),
-                               player_uuid,
-                               resultSet.getInt("redeem_limit"),
-                               resultSet.getLong("timestamp_redeemed")));
-                   }
-               }
-           } catch (final SQLException exception) {
-               this.fusion.log(true, Level.error, "<red>An error has occurred with the reason for data type <green>%s</green>, <gold>%s</gold> while fetching all redeemed vouchers for <gold>%s's</gold>!",
-                       this.impl, exception.getMessage(), player_uuid);
-           }
-        }).join();
+                statement.setString(1, player_uuid.toString());
 
-        return vouchers;
+                try (final ResultSet resultSet = statement.executeQuery()) {
+                    while (resultSet.next()) {
+                        vouchers.add(new VoucherHistory(
+                                resultSet.getString("voucher_id"),
+                                resultSet.getRow(),
+                                player_uuid,
+                                resultSet.getInt("redeem_limit"),
+                                resultSet.getLong("timestamp_redeemed")));
+                    }
+                }
+            } catch (final SQLException exception) {
+                this.fusion.log(true, Level.error, "<red>An error has occurred with the reason for data type <green>%s</green>, <gold>%s</gold> while fetching all redeemed vouchers for <gold>%s's</gold>!",
+                        this.impl, exception.getMessage(), player_uuid);
+            }
+
+            return vouchers;
+        }).completeOnTimeout(List.of(), 10, TimeUnit.SECONDS).join();
     }
 
     @Override
     public List<VoucherHistory> getRedeemedCodesByPage(final UUID player_uuid, final int page, final int perPage) {
-        final List<VoucherHistory> vouchers = new ArrayList<>();
+        return CompletableFuture.supplyAsync(() -> {
+            final List<VoucherHistory> vouchers = new ArrayList<>();
 
-        CompletableFuture.runAsync(() -> {
             try (final Connection connection = this.source.getConnection(); final PreparedStatement statement =
                     connection.prepareStatement("select code, redeem_limit, timestamp_redeemed from codes_redeemed where player_uuid=? order by timestamp_redeemed limit ? offset ?")) {
                 statement.setQueryTimeout(this.queryTimeout);
@@ -265,16 +267,16 @@ public final class SqliteFactory extends SqlFactory {
                 this.fusion.log(true, Level.error, "<red>An error has occurred with the reason for data type <green>%s</green>, <gold>%s</gold> while fetching all redeemed codes by page for <gold>%s's</gold>!",
                         this.impl, exception.getMessage(), player_uuid);
             }
-        }).join();
 
-        return vouchers;
+            return vouchers;
+        }).completeOnTimeout(List.of(), 10, TimeUnit.SECONDS).join();
     }
 
     @Override
     public List<VoucherHistory> getRedeemedCodes(final UUID player_uuid) {
-        final List<VoucherHistory> vouchers = new ArrayList<>();
+        return CompletableFuture.supplyAsync(() -> {
+            final List<VoucherHistory> vouchers = new ArrayList<>();
 
-        CompletableFuture.runAsync(() -> {
             try (final Connection connection = this.source.getConnection(); final PreparedStatement statement =
                     connection.prepareStatement("select code, redeem_limit, timestamp_redeemed from codes_redeemed where player_uuid=?")) {
                 statement.setQueryTimeout(this.queryTimeout);
@@ -296,9 +298,9 @@ public final class SqliteFactory extends SqlFactory {
                 this.fusion.log(true, Level.error, "<red>An error has occurred with the reason for data type <green>%s</green>, <gold>%s</gold> while fetching all redeemed codes for <gold>%s's</gold>!",
                         this.impl, exception.getMessage(), player_uuid);
             }
-        }).join();
 
-        return vouchers;
+            return vouchers;
+        }).completeOnTimeout(List.of(), 10, TimeUnit.SECONDS).join();
     }
 
     @Override

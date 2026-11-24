@@ -113,9 +113,9 @@ public abstract class HikariFactory extends SqlFactory {
 
     @Override
     public List<VoucherHistory> getRedeemedVouchersByPage(final UUID player_uuid, final int page, final int perPage) {
-        final List<VoucherHistory> vouchers = new ArrayList<>();
+        return CompletableFuture.supplyAsync(() -> {
+            final List<VoucherHistory> vouchers = new ArrayList<>();
 
-        CompletableFuture.runAsync(() -> {
             try (final Connection connection = this.source.getConnection(); final PreparedStatement statement =
                     connection.prepareStatement("select voucher_id, redeem_limit, timestamp_redeemed from vouchers_redeemed where player_uuid=? order by timestamp_redeemed limit ? offset ?")) {
                 statement.setQueryTimeout(this.queryTimeout);
@@ -142,16 +142,16 @@ public abstract class HikariFactory extends SqlFactory {
                 this.fusion.log(true, Level.error, "<red>An error has occurred with the reason for data type <green>%s</green>, <gold>%s</gold> while fetching all redeemed vouchers by page for <gold>%s's</gold>!",
                         this.impl, exception.getMessage(), player_uuid);
             }
-        }).join();
 
-        return vouchers;
+            return vouchers;
+        }).completeOnTimeout(List.of(), 10, TimeUnit.SECONDS).join();
     }
 
     @Override
     public List<VoucherHistory> getRedeemedVouchers(final UUID player_uuid) {
-        final List<VoucherHistory> vouchers = new ArrayList<>();
+        return CompletableFuture.supplyAsync(() -> {
+            final List<VoucherHistory> vouchers = new ArrayList<>();
 
-        CompletableFuture.runAsync(() -> {
             try (final Connection connection = this.source.getConnection(); final PreparedStatement statement =
                     connection.prepareStatement("select voucher_id, redeem_limit, timestamp_redeemed from vouchers_redeemed where player_uuid=?")) {
                 statement.setQueryTimeout(this.queryTimeout);
@@ -177,16 +177,16 @@ public abstract class HikariFactory extends SqlFactory {
                 this.fusion.log(true, Level.error, "<red>An error has occurred with the reason for data type <green>%s</green>, <gold>%s</gold> while fetching all redeemed vouchers for <gold>%s's</gold>!",
                         this.impl, exception.getMessage(), player_uuid);
             }
-        }).join();
 
-        return vouchers;
+            return vouchers;
+        }).completeOnTimeout(List.of(), 10, TimeUnit.SECONDS).join();
     }
 
     @Override
     public List<VoucherHistory> getRedeemedCodesByPage(final UUID player_uuid, final int page, final int perPage) {
-        final List<VoucherHistory> vouchers = new ArrayList<>();
+        return CompletableFuture.supplyAsync(() -> {
+            final List<VoucherHistory> vouchers = new ArrayList<>();
 
-        CompletableFuture.runAsync(() -> {
             try (final Connection connection = this.source.getConnection(); final PreparedStatement statement =
                     connection.prepareStatement("select code, redeem_limit, timestamp_redeemed from codes_redeemed where player_uuid=? order by timestamp_redeemed limit ? offset ?")) {
                 statement.setQueryTimeout(this.queryTimeout);
@@ -213,16 +213,16 @@ public abstract class HikariFactory extends SqlFactory {
                 this.fusion.log(true, Level.error, "<red>An error has occurred with the reason for data type <green>%s</green>, <gold>%s</gold> while fetching all redeemed codes by page for <gold>%s's</gold>!",
                         this.impl, exception.getMessage(), player_uuid);
             }
-        }).join();
 
-        return vouchers;
+            return vouchers;
+        }).completeOnTimeout(List.of(), 10, TimeUnit.SECONDS).join();
     }
 
     @Override
     public List<VoucherHistory> getRedeemedCodes(final UUID player_uuid) {
-        final List<VoucherHistory> vouchers = new ArrayList<>();
+        return CompletableFuture.supplyAsync(() -> {
+            final List<VoucherHistory> vouchers = new ArrayList<>();
 
-        CompletableFuture.runAsync(() -> {
             try (final Connection connection = this.source.getConnection(); final PreparedStatement statement =
                     connection.prepareStatement("select code, redeem_limit, timestamp_redeemed from codes_redeemed where player_uuid=?")) {
                 statement.setQueryTimeout(this.queryTimeout);
@@ -248,9 +248,9 @@ public abstract class HikariFactory extends SqlFactory {
                 this.fusion.log(true, Level.error, "<red>An error has occurred with the reason for data type <green>%s</green>, <gold>%s</gold> while fetching all redeemed codes for <gold>%s's</gold>!",
                         this.impl, exception.getMessage(), player_uuid);
             }
-        }).join();
 
-        return vouchers;
+            return vouchers;
+        }).completeOnTimeout(List.of(), 10, TimeUnit.SECONDS).join();
     }
 
     @Override
