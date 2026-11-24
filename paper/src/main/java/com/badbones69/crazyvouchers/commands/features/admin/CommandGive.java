@@ -43,7 +43,7 @@ public class CommandGive extends BaseCommand {
             placeholders.put("{player}", player.getName());
             placeholders.put("{voucher}", voucher.getStrippedName());
 
-            Message.sent_voucher.sendMessage(sender, placeholders);
+            Message.sent_voucher.sendMessage(player, placeholders);
         }, () -> Message.not_online.sendMessage(sender));
     }
 
