@@ -42,6 +42,12 @@ public abstract class ISharedMethods {
         addRedeemedVoucher(voucher_id, player_uuid, 1);
     }
 
+    public abstract List<VoucherHistory> getRedeemedVouchersByPage(final UUID player_uuid, final int page, final int perPage);
+
+    public abstract List<VoucherHistory> getRedeemedVouchers(final UUID player_uuid);
+
+    public abstract int countRedeemedVouchers(final UUID player_uuid);
+
     public abstract int getVoucherLimit(final String voucher_id, final UUID player_uuid);
 
     public abstract void incrementVoucherLimit(final String voucher_id, final UUID player_uuid);
@@ -60,9 +66,9 @@ public abstract class ISharedMethods {
 
     public abstract void incrementCodeLimit(final String code, final UUID player_uuid);
 
-    public abstract List<VoucherHistory> getRedeemedVouchersByPage(final UUID player_uuid, final int page, final int perPage);
+    public abstract List<VoucherHistory> getRedeemedCodesByPage(final UUID player_uuid, final int page, final int perPage);
 
-    public abstract List<VoucherHistory> getRedeemedVouchers(final UUID player_uuid);
+    public abstract List<VoucherHistory> getRedeemedCodes(final UUID player_uuid);
 
-    public abstract int countRedeemedVouchers(final UUID player_uuid);
+    public abstract int countRedeemedCodes(final UUID player_uuid);
 }
