@@ -21,6 +21,7 @@ import java.util.Optional;
 import java.util.Set;
 import java.util.UUID;
 import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.TimeUnit;
 
 public class DatabaseMigrator extends IVoucherMigrator {
 
@@ -30,6 +31,8 @@ public class DatabaseMigrator extends IVoucherMigrator {
 
     @Override
     public void run() {
+        final int timeout = this.platform.timeout();
+
         final List<String> failed = new ArrayList<>();
         final List<String> success = new ArrayList<>();
 
@@ -73,7 +76,7 @@ public class DatabaseMigrator extends IVoucherMigrator {
                     } catch (final SQLException exception) {
                         this.fusion.log(true, Level.error, "<red>Failed to fetch connection! Cannot migrate data.yml. (<gold>%s</gold>)", exception.getMessage());
                     }
-                });
+                }).orTimeout(timeout, TimeUnit.SECONDS);
             });
         }
 
@@ -175,7 +178,7 @@ public class DatabaseMigrator extends IVoucherMigrator {
                     } catch (final SQLException exception) {
                         this.fusion.log(true, Level.error, "<red>Failed to fetch connection! Cannot migrate users.yml, Rolling back! (<gold>%s</gold>)", exception.getMessage());
                     }
-                });
+                }).orTimeout(timeout, TimeUnit.SECONDS);
             });
         }
 

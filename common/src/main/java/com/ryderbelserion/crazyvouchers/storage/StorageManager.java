@@ -45,7 +45,6 @@ public class StorageManager {
                 config.getProperty(DatabaseKeys.database_password),
                 config.getProperty(DatabaseKeys.database_address),
                 config.getProperty(DatabaseKeys.connection_timeout),
-                config.getProperty(DatabaseKeys.query_timeout),
                 config.getProperty(DatabaseKeys.maximum_lifetime),
                 config.getProperty(DatabaseKeys.maximum_pool_size),
                 config.getProperty(DatabaseKeys.connection_heartbeat),
@@ -57,7 +56,7 @@ public class StorageManager {
         final String storageType = config.getProperty(DatabaseKeys.storage_type);
 
         return switch (storageType.toLowerCase()) {
-            case "sqlite" -> new StorageHolder(new SqliteFactory(credentials, this.plugin)).init();
+            case "sqlite" -> new StorageHolder(new SqliteFactory(this.plugin)).init();
             case "mariadb" -> new StorageHolder(new MariadbFactory(credentials, this.plugin)).init();
             case "postgres" -> new StorageHolder(new PostgresFactory(credentials, this.plugin)).init();
             default -> throw new IllegalStateException("Unexpected storage type value: " + storageType);

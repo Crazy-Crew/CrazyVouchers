@@ -30,7 +30,7 @@ public abstract class HikariFactory extends SqlFactory {
             @NonNull final CrazyVouchersPlugin plugin,
             @NonNull final String impl
     ) {
-        super(credentials.queryTimeout(), plugin, impl);
+        super(plugin, impl);
 
         this.credentials = credentials;
     }
@@ -113,7 +113,7 @@ public abstract class HikariFactory extends SqlFactory {
 
             try (final Connection connection = this.source.getConnection(); final PreparedStatement statement =
                     connection.prepareStatement("select voucher_id, redeem_limit, timestamp_redeemed from vouchers_redeemed where player_uuid=? order by timestamp_redeemed limit ? offset ?")) {
-                statement.setQueryTimeout(this.queryTimeout);
+                statement.setQueryTimeout(queryTimeout());
 
                 statement.setString(1, player_uuid.toString());
                 statement.setInt(2, perPage);
@@ -139,7 +139,7 @@ public abstract class HikariFactory extends SqlFactory {
             }
 
             return vouchers;
-        }).completeOnTimeout(List.of(), 10, TimeUnit.SECONDS).join();
+        }).completeOnTimeout(List.of(), timeout(), TimeUnit.SECONDS).join();
     }
 
     @Override
@@ -149,7 +149,7 @@ public abstract class HikariFactory extends SqlFactory {
 
             try (final Connection connection = this.source.getConnection(); final PreparedStatement statement =
                     connection.prepareStatement("select voucher_id, redeem_limit, timestamp_redeemed from vouchers_redeemed where player_uuid=?")) {
-                statement.setQueryTimeout(this.queryTimeout);
+                statement.setQueryTimeout(queryTimeout());
 
                 statement.setString(1, player_uuid.toString());
 
@@ -174,7 +174,7 @@ public abstract class HikariFactory extends SqlFactory {
             }
 
             return vouchers;
-        }).completeOnTimeout(List.of(), 10, TimeUnit.SECONDS).join();
+        }).completeOnTimeout(List.of(), timeout(), TimeUnit.SECONDS).join();
     }
 
     @Override
@@ -184,7 +184,7 @@ public abstract class HikariFactory extends SqlFactory {
 
             try (final Connection connection = this.source.getConnection(); final PreparedStatement statement =
                     connection.prepareStatement("select code, redeem_limit, timestamp_redeemed from codes_redeemed where player_uuid=? order by timestamp_redeemed limit ? offset ?")) {
-                statement.setQueryTimeout(this.queryTimeout);
+                statement.setQueryTimeout(queryTimeout());
 
                 statement.setString(1, player_uuid.toString());
                 statement.setInt(2, perPage);
@@ -210,7 +210,7 @@ public abstract class HikariFactory extends SqlFactory {
             }
 
             return vouchers;
-        }).completeOnTimeout(List.of(), 10, TimeUnit.SECONDS).join();
+        }).completeOnTimeout(List.of(), timeout(), TimeUnit.SECONDS).join();
     }
 
     @Override
@@ -220,7 +220,7 @@ public abstract class HikariFactory extends SqlFactory {
 
             try (final Connection connection = this.source.getConnection(); final PreparedStatement statement =
                     connection.prepareStatement("select code, redeem_limit, timestamp_redeemed from codes_redeemed where player_uuid=?")) {
-                statement.setQueryTimeout(this.queryTimeout);
+                statement.setQueryTimeout(queryTimeout());
 
                 statement.setString(1, player_uuid.toString());
 
@@ -245,7 +245,7 @@ public abstract class HikariFactory extends SqlFactory {
             }
 
             return vouchers;
-        }).completeOnTimeout(List.of(), 10, TimeUnit.SECONDS).join();
+        }).completeOnTimeout(List.of(), timeout(), TimeUnit.SECONDS).join();
     }
 
     @Override

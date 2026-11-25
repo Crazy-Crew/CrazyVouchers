@@ -5,7 +5,7 @@ import java.util.Map;
 
 public record StorageCredentials(
         String database, String username, String password, String address,
-        long connectionTimeout, int queryTimeout, long maxLifetime, int maxPoolSize, long heartbeat, int minIdle,
+        long connectionTimeout, long maxLifetime, int maxPoolSize, long heartbeat, int minIdle,
         int port, Map<String, Object> values
 ) {
 
@@ -16,7 +16,6 @@ public record StorageCredentials(
             @NonNull final String address,
 
             final long connectionTimeout,
-            final int queryTimeout,
             final long maxLifetime,
             final int maxPoolSize,
             final long heartbeat,
@@ -30,7 +29,6 @@ public record StorageCredentials(
         this.address = address;
 
         this.connectionTimeout = connectionTimeout;
-        this.queryTimeout = queryTimeout;
         this.maxLifetime = maxLifetime;
         this.maxPoolSize = maxPoolSize;
         this.heartbeat = heartbeat;

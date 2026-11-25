@@ -62,14 +62,25 @@ public class RootKeys implements IPropertyHolder {
     })
     public static final EnumProperty<State> message_state = newEnumProperty(State.class, State.send_message, "root", "message-state");
 
-    @Comment("The amount of entries to show in /crazyvouchers history <player> <page>")
-    public static final Property<Integer> history_per_page = newProperty(5, "settings", "history", "per-page");
-
     @Comment("This will wipe the example folder on /crazyvouchers reload or plugin startup. so you always have fresh examples to look at.")
     public static final Property<Boolean> update_examples_folder = newProperty(true, "root", "update-examples-folder");
 
+    @Comment("The amount of entries to show in /crazyvouchers history <player> <type> <page>")
+    public static final Property<Integer> history_per_page = newProperty(5, "settings", "history", "per-page");
+
     @Comment("The prefix that shows up for all commands.")
     public static final Property<String> command_prefix = newProperty("<gray>[<gold>CrazyVouchers<gray>]: ", "settings", "prefix");
+
+    @Comment("""
+            CrazyVouchers runs certain functions off the main thread using what we call CompletableFutures which is specifically important for Minecraft.
+            
+            By default, every CompletableFuture when running database queries or insertions, it has a default timeout of 10 seconds.
+            If you notice any issues, You can increase this value, and by default without this. CompletableFutures do not expire technically, so have fun.
+            Do not decrease this lower than 10 if you don't know what your doing, some futures can take a while.
+            
+            If you ignore all these warnings, I've given you the tool to shoot yourself in the foot.
+            """)
+    public static final Property<Integer> future_timeout = newProperty(10, "settings", "futures", "timeout");
 
     @Comment("""
             This option allows you to switch between the following:

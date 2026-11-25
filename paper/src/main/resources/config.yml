@@ -74,8 +74,8 @@ root:
 
       # This setting controls the maximum numbers of seconds the plugin will wait for a query to complete, before timing out.
       #
-      # The default time is 3 seconds.
-      query-timeout: 3
+      # The default time is 5 seconds, If you notice issues... Increase this number!
+      query-timeout: 5
 
       # This setting controls the maximum lifetime of a connection in the pool in milliseconds.
       #  - The value should be at least 30 seconds less than any database or infrastructure imposed connection time limit.
@@ -104,7 +104,7 @@ root:
       heartbeat: 0
 
     # Available Types:
-    #   ⤷ sqlite (PREFERRED FOR SINGLE SERVER PERFORMANCE)
+    #   ⤷ sqlite (preferred for single server performance)
     #   ⤷ postgres (additional configuration required)
     #   ⤷ mariadb (additional configuration required)
     #   ⤷ mysql (no)
@@ -114,6 +114,17 @@ root:
 settings:
   # The prefix that shows up for all commands.
   prefix: '<gray>[<gold>CrazyVouchers<gray>]: '
+
+  # Settings related to CompletableFutures
+  futures:
+    # CrazyVouchers runs certain functions off the main thread using what we call CompletableFutures which is specifically important for Minecraft.
+    #
+    # By default, every CompletableFuture when running database queries or insertions, it has a default timeout of 10 seconds.
+    # If you notice any issues, You can increase this value, and by default without this. CompletableFutures do not expire technically, so have fun.
+    # Do not decrease this lower than 10 if you don't know what your doing, some futures can take a while.
+    #
+    # If you ignore all these warnings, I've given you the tool to shoot yourself in the foot.
+    timeout: 10
 
   # This option allows you to switch between the following:
   # ⤷ vouchers.yml and codes.yml
@@ -130,7 +141,7 @@ settings:
 
   # History related settings.
   history:
-    # The amount of entries to show in /crazyvouchers history <player> <page>
+    # The amount of entries to show in /crazyvouchers history <player> <type> <page>
     per-page: 5
 
   # Dupe protection settings.

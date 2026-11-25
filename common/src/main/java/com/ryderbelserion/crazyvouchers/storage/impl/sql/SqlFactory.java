@@ -57,14 +57,11 @@ public abstract class SqlFactory extends FlatFactory {
     protected final String index_codes_uuid = "create index if not exists idx_code_player_uuid on codes_redeemed(player_uuid)";
 
     protected final String index_codes_id = "create index if not exists idx_code_id on codes_redeemed(code)";
-
-    protected final int queryTimeout;
+    
     protected HikariDataSource source;
-
-    public SqlFactory(final int queryTimeout, final CrazyVouchersPlugin plugin, final String impl) {
+    
+    public SqlFactory(final CrazyVouchersPlugin plugin, final String impl) {
         super(plugin, impl);
-
-        this.queryTimeout = queryTimeout;
     }
 
     public abstract String url();
@@ -80,7 +77,7 @@ public abstract class SqlFactory extends FlatFactory {
                 connection.setAutoCommit(false);
 
                 try (final Statement statement = connection.createStatement()) {
-                    statement.setQueryTimeout(this.queryTimeout);
+                    statement.setQueryTimeout(queryTimeout());
 
                     statement.addBatch(this.create_users_table);
 
@@ -107,7 +104,7 @@ public abstract class SqlFactory extends FlatFactory {
             } catch (final SQLException exception) {
                 this.fusion.log(true, Level.error, "<red>An error has occurred with the reason <gold>%s</gold> while initializing the tables!", exception.getMessage());
             }
-        });
+        }).orTimeout(timeout(), TimeUnit.SECONDS);
     }
 
     @Override
@@ -137,7 +134,7 @@ public abstract class SqlFactory extends FlatFactory {
         CompletableFuture.runAsync(() -> {
             try (final Connection connection = this.source.getConnection(); final PreparedStatement statement =
                     connection.prepareStatement("insert into vouchers_players(player_uuid) values (?)")) {
-                statement.setQueryTimeout(this.queryTimeout);
+                statement.setQueryTimeout(queryTimeout());
 
                 statement.setString(1, player_uuid.toString());
 
@@ -146,7 +143,7 @@ public abstract class SqlFactory extends FlatFactory {
                 this.fusion.log(true, Level.error, "<red>An error has occurred with the reason for data type <green>%s</green>, <gold>%s</gold> while inserting a user using the <gold>uuid %s</gold>!",
                         this.impl, exception.getMessage(), player_uuid);
             }
-        });
+        }).orTimeout(timeout(), TimeUnit.SECONDS);
     }
 
     @Override
@@ -158,7 +155,7 @@ public abstract class SqlFactory extends FlatFactory {
         CompletableFuture.runAsync(() -> {
             try (final Connection connection = this.source.getConnection(); final PreparedStatement statement =
                     connection.prepareStatement("delete from vouchers_players where player_uuid=?")) {
-                statement.setQueryTimeout(this.queryTimeout);
+                statement.setQueryTimeout(queryTimeout());
 
                 statement.setString(1, player_uuid.toString());
 
@@ -167,7 +164,7 @@ public abstract class SqlFactory extends FlatFactory {
                 this.fusion.log(true, Level.error, "<red>An error has occurred with the reason for data type <green>%s</green>, <gold>%s</gold> while deleting a user using the <gold>uuid %s</gold>!",
                         this.impl, exception.getMessage(), player_uuid);
             }
-        });
+        }).orTimeout(timeout(), TimeUnit.SECONDS);
     }
 
     @Override
@@ -175,7 +172,7 @@ public abstract class SqlFactory extends FlatFactory {
         return CompletableFuture.supplyAsync(() -> {
             try (final Connection connection = this.source.getConnection(); final PreparedStatement statement =
                     connection.prepareStatement("select 1 from vouchers_players where player_uuid=? limit 1")) {
-                statement.setQueryTimeout(this.queryTimeout);
+                statement.setQueryTimeout(queryTimeout());
 
                 statement.setString(1, player_uuid.toString());
 
@@ -188,7 +185,7 @@ public abstract class SqlFactory extends FlatFactory {
             }
 
             return false;
-        }).completeOnTimeout(false, 10, TimeUnit.SECONDS).join();
+        }).completeOnTimeout(false, timeout(), TimeUnit.SECONDS).join();
     }
 
     @Override
@@ -196,7 +193,7 @@ public abstract class SqlFactory extends FlatFactory {
         return CompletableFuture.supplyAsync(() -> {
             try (final Connection connection = this.source.getConnection(); final PreparedStatement statement =
                     connection.prepareStatement("select 1 from vouchers_tracker where voucher_id=? limit 1")) {
-                statement.setQueryTimeout(this.queryTimeout);
+                statement.setQueryTimeout(queryTimeout());
 
                 statement.setString(1, voucher_id.toString());
 
@@ -209,7 +206,7 @@ public abstract class SqlFactory extends FlatFactory {
             }
 
             return false;
-        }).completeOnTimeout(false, 10, TimeUnit.SECONDS).join();
+        }).completeOnTimeout(false, timeout(), TimeUnit.SECONDS).join();
     }
 
     @Override
@@ -217,7 +214,7 @@ public abstract class SqlFactory extends FlatFactory {
         CompletableFuture.runAsync(() -> {
             try (final Connection connection = this.source.getConnection(); final PreparedStatement statement =
                     connection.prepareStatement("insert into vouchers_tracker(voucher_id, player_uuid, timestamp_redeemed) values (?, ?, ?)")) {
-                statement.setQueryTimeout(this.queryTimeout);
+                statement.setQueryTimeout(queryTimeout());
 
                 statement.setString(1, voucher_id.toString());
                 statement.setString(2, player_uuid.toString());
@@ -228,7 +225,7 @@ public abstract class SqlFactory extends FlatFactory {
                 this.fusion.log(true, Level.error, "<red>An error has occurred with the reason for data type <green>%s</green>, <gold>%s</gold> while adding a private voucher using the <gold>uuid %s</gold> (<green>voucher_id %s</green>)!",
                         this.impl, exception.getMessage(), player_uuid,  voucher_id);
             }
-        });
+        }).orTimeout(timeout(), TimeUnit.SECONDS);
     }
 
     @Override
@@ -236,7 +233,7 @@ public abstract class SqlFactory extends FlatFactory {
         CompletableFuture.runAsync(() -> {
             try (final Connection connection = this.source.getConnection(); final PreparedStatement statement =
                     connection.prepareStatement("delete from vouchers_tracker where voucher_id=?")) {
-                statement.setQueryTimeout(this.queryTimeout);
+                statement.setQueryTimeout(queryTimeout());
 
                 statement.setString(1, voucher_id.toString());
 
@@ -245,7 +242,7 @@ public abstract class SqlFactory extends FlatFactory {
                 this.fusion.log(true, Level.error, "<red>An error has occurred with the reason for data type <green>%s</green>, <gold>%s</gold> while deleting voucher_id <gold>%s</gold>!",
                         this.impl, exception.getMessage(), voucher_id);
             }
-        });
+        }).orTimeout(timeout(), TimeUnit.SECONDS);
     }
 
     @Override
@@ -253,7 +250,7 @@ public abstract class SqlFactory extends FlatFactory {
         return CompletableFuture.supplyAsync(() -> {
             try (final Connection connection = this.source.getConnection(); final PreparedStatement statement =
                     connection.prepareStatement("select 1 from vouchers_redeemed where voucher_id=? limit 1")) {
-                statement.setQueryTimeout(this.queryTimeout);
+                statement.setQueryTimeout(queryTimeout());
 
                 statement.setString(1, voucher_id);
 
@@ -266,7 +263,7 @@ public abstract class SqlFactory extends FlatFactory {
             }
 
             return false;
-        }).completeOnTimeout(false, 10, TimeUnit.SECONDS).join();
+        }).completeOnTimeout(false, timeout(), TimeUnit.SECONDS).join();
     }
 
     @Override
@@ -274,7 +271,7 @@ public abstract class SqlFactory extends FlatFactory {
         return CompletableFuture.supplyAsync(() -> {
             try (final Connection connection = this.source.getConnection(); final PreparedStatement statement =
                     connection.prepareStatement("select redeem_limit from vouchers_redeemed where voucher_id=? and player_uuid=? limit 1")) {
-                statement.setQueryTimeout(this.queryTimeout);
+                statement.setQueryTimeout(queryTimeout());
 
                 statement.setString(1, voucher_id);
                 statement.setString(2, player_uuid.toString());
@@ -288,7 +285,7 @@ public abstract class SqlFactory extends FlatFactory {
             }
 
             return -1;
-        }).completeOnTimeout(-1, 10, TimeUnit.SECONDS).join();
+        }).completeOnTimeout(-1, timeout(), TimeUnit.SECONDS).join();
     }
 
     @Override
@@ -296,7 +293,7 @@ public abstract class SqlFactory extends FlatFactory {
         CompletableFuture.runAsync(() -> {
             try (final Connection connection = this.source.getConnection(); final PreparedStatement statement =
                     connection.prepareStatement("update vouchers_redeemed set redeem_limit = redeem_limit+1 where voucher_id=? and player_uuid=?")) {
-                statement.setQueryTimeout(this.queryTimeout);
+                statement.setQueryTimeout(queryTimeout());
 
                 statement.setString(1, voucher_id);
                 statement.setString(2, player_uuid.toString());
@@ -306,7 +303,7 @@ public abstract class SqlFactory extends FlatFactory {
                 this.fusion.log(true, Level.error, "<red>An error has occurred with the reason for data type <green>%s</green>, <gold>%s</gold> while incrementing the redeem_limit for voucher <gold>%s</gold> with player id <gold>%s</gold>!",
                         this.impl, exception.getMessage(), voucher_id, player_uuid);
             }
-        });
+        }).orTimeout(timeout(), TimeUnit.SECONDS);
     }
 
     @Override
@@ -314,7 +311,7 @@ public abstract class SqlFactory extends FlatFactory {
         return CompletableFuture.supplyAsync(() -> {
             try (final Connection connection = this.source.getConnection(); final PreparedStatement statement =
                     connection.prepareStatement("select count(*) from vouchers_redeemed where player_uuid=?")) {
-                statement.setQueryTimeout(this.queryTimeout);
+                statement.setQueryTimeout(queryTimeout());
 
                 statement.setString(1, player_uuid.toString());
 
@@ -327,7 +324,7 @@ public abstract class SqlFactory extends FlatFactory {
             }
 
             return -1;
-        }).completeOnTimeout(-1, 10, TimeUnit.SECONDS).join();
+        }).completeOnTimeout(-1, timeout(), TimeUnit.SECONDS).join();
     }
 
     @Override
@@ -335,7 +332,7 @@ public abstract class SqlFactory extends FlatFactory {
         CompletableFuture.runAsync(() -> {
             try (final Connection connection = this.source.getConnection(); final PreparedStatement statement =
                     connection.prepareStatement("insert into vouchers_redeemed(voucher_id, player_uuid, redeem_limit, timestamp_redeemed) values (?, ?, ?, ?)")) {
-                statement.setQueryTimeout(this.queryTimeout);
+                statement.setQueryTimeout(queryTimeout());
 
                 statement.setString(1, voucher_id);
                 statement.setString(2, player_uuid.toString());
@@ -347,7 +344,7 @@ public abstract class SqlFactory extends FlatFactory {
                 this.fusion.log(true, Level.error, "<red>An error has occurred with the reason for data type <green>%s</green>, <gold>%s</gold> while adding a voucher using the player uuid <gold>%s</gold> (<green>voucher_id %s</green>)!",
                         this.impl, exception.getMessage(), player_uuid,  voucher_id);
             }
-        });
+        }).orTimeout(timeout(), TimeUnit.SECONDS);
     }
 
     @Override
@@ -355,7 +352,7 @@ public abstract class SqlFactory extends FlatFactory {
         CompletableFuture.runAsync(() -> {
             try (final Connection connection = this.source.getConnection(); final PreparedStatement statement =
                     connection.prepareStatement("delete from vouchers_redeemed where voucher_id=?")) {
-                statement.setQueryTimeout(this.queryTimeout);
+                statement.setQueryTimeout(queryTimeout());
 
                 statement.setString(1, voucher_id);
 
@@ -364,7 +361,7 @@ public abstract class SqlFactory extends FlatFactory {
                 this.fusion.log(true, Level.error, "<red>An error has occurred with the reason for data type <green>%s</green>, <gold>%s</gold> while removing the redeemed voucher id <gold>%s</gold>!",
                         this.impl, exception.getMessage(), voucher_id);
             }
-        });
+        }).orTimeout(timeout(), TimeUnit.SECONDS);
     }
 
     @Override
@@ -372,7 +369,7 @@ public abstract class SqlFactory extends FlatFactory {
         CompletableFuture.runAsync(() -> {
             try (final Connection connection = this.source.getConnection(); final PreparedStatement statement =
                     connection.prepareStatement("insert into codes_redeemed(code, player_uuid, redeem_limit, timestamp_redeemed) values (?, ?, ?, ?)")) {
-                statement.setQueryTimeout(this.queryTimeout);
+                statement.setQueryTimeout(queryTimeout());
 
                 statement.setString(1, code);
                 statement.setString(2, player_uuid.toString());
@@ -384,7 +381,7 @@ public abstract class SqlFactory extends FlatFactory {
                 this.fusion.log(true, Level.error, "<red>An error has occurred with the reason for data type <green>%s</green>, <gold>%s</gold> while adding the code <gold>%s</gold> with player id <gold>%s</gold>!",
                         this.impl, exception.getMessage(), code, player_uuid);
             }
-        });
+        }).orTimeout(timeout(), TimeUnit.SECONDS);
     }
 
     @Override
@@ -392,7 +389,7 @@ public abstract class SqlFactory extends FlatFactory {
         CompletableFuture.runAsync(() -> {
             try (final Connection connection = this.source.getConnection(); final PreparedStatement statement =
                     connection.prepareStatement("delete from codes_redeemed where code=?")) {
-                statement.setQueryTimeout(this.queryTimeout);
+                statement.setQueryTimeout(queryTimeout());
 
                 statement.setString(1, code);
 
@@ -401,7 +398,7 @@ public abstract class SqlFactory extends FlatFactory {
                 this.fusion.log(true, Level.error, "<red>An error has occurred with the reason for data type <green>%s</green>, <gold>%s</gold> while removing the code <gold>%s</gold>!",
                         this.impl, exception.getMessage(), code);
             }
-        });
+        }).orTimeout(timeout(), TimeUnit.SECONDS);
     }
 
     @Override
@@ -409,7 +406,7 @@ public abstract class SqlFactory extends FlatFactory {
         return CompletableFuture.supplyAsync(() -> {
             try (final Connection connection = this.source.getConnection(); final PreparedStatement statement =
                     connection.prepareStatement("select 1 from codes_redeemed where code=? limit 1")) {
-                statement.setQueryTimeout(this.queryTimeout);
+                statement.setQueryTimeout(queryTimeout());
 
                 statement.setString(1, code);
 
@@ -422,7 +419,7 @@ public abstract class SqlFactory extends FlatFactory {
             }
 
             return false;
-        }).completeOnTimeout(false, 10, TimeUnit.SECONDS).join();
+        }).completeOnTimeout(false, timeout(), TimeUnit.SECONDS).join();
     }
 
     @Override
@@ -430,7 +427,7 @@ public abstract class SqlFactory extends FlatFactory {
         return CompletableFuture.supplyAsync(() -> {
             try (final Connection connection = this.source.getConnection(); final PreparedStatement statement =
                     connection.prepareStatement("select redeem_limit from codes_redeemed where code=? and player_uuid=? limit 1")) {
-                statement.setQueryTimeout(this.queryTimeout);
+                statement.setQueryTimeout(queryTimeout());
 
                 statement.setString(1, code);
                 statement.setString(2, player_uuid.toString());
@@ -444,7 +441,7 @@ public abstract class SqlFactory extends FlatFactory {
             }
 
             return -1;
-        }).completeOnTimeout(-1, 10, TimeUnit.SECONDS).join();
+        }).completeOnTimeout(-1, timeout(), TimeUnit.SECONDS).join();
     }
 
     @Override
@@ -452,7 +449,7 @@ public abstract class SqlFactory extends FlatFactory {
         CompletableFuture.runAsync(() -> {
             try (final Connection connection = this.source.getConnection(); final PreparedStatement statement =
                     connection.prepareStatement("update codes_redeemed set redeem_limit = redeem_limit+1 where code=? and player_uuid=?")) {
-                statement.setQueryTimeout(this.queryTimeout);
+                statement.setQueryTimeout(queryTimeout());
 
                 statement.setString(1, code);
                 statement.setString(2, player_uuid.toString());
@@ -470,7 +467,7 @@ public abstract class SqlFactory extends FlatFactory {
         return CompletableFuture.supplyAsync(() -> {
             try (final Connection connection = this.source.getConnection(); final PreparedStatement statement =
                     connection.prepareStatement("select count(*) from codes_redeemed where player_uuid=?")) {
-                statement.setQueryTimeout(this.queryTimeout);
+                statement.setQueryTimeout(queryTimeout());
 
                 statement.setString(1, player_uuid.toString());
 
@@ -483,7 +480,7 @@ public abstract class SqlFactory extends FlatFactory {
             }
 
             return -1;
-        }).completeOnTimeout(-1, 10, TimeUnit.SECONDS).join();
+        }).completeOnTimeout(-1, timeout(), TimeUnit.SECONDS).join();
     }
 
     @Override

@@ -1,7 +1,6 @@
 package com.ryderbelserion.crazyvouchers.storage.impl.file;
 
 import com.ryderbelserion.crazyvouchers.CrazyVouchersPlugin;
-import com.ryderbelserion.crazyvouchers.storage.StorageCredentials;
 import us.crazycrew.crazyvouchers.api.objects.VoucherHistory;
 import com.ryderbelserion.crazyvouchers.storage.impl.sql.SqlFactory;
 import com.ryderbelserion.fusion.api.enums.Level;
@@ -36,8 +35,8 @@ public final class SqliteFactory extends SqlFactory {
 
     private final Path path;
 
-    public SqliteFactory(final StorageCredentials credentials, final CrazyVouchersPlugin plugin) {
-        super(credentials.queryTimeout(), plugin, "SQLite");
+    public SqliteFactory(final CrazyVouchersPlugin plugin) {
+        super(plugin, "SQLite");
 
         this.path = plugin.getDataPath().resolve("crazyvouchers.db");
     }
@@ -58,7 +57,7 @@ public final class SqliteFactory extends SqlFactory {
                 connection.setAutoCommit(false);
 
                 try (final Statement statement = connection.createStatement()) {
-                    statement.setQueryTimeout(this.queryTimeout);
+                    statement.setQueryTimeout(queryTimeout());
 
                     statement.addBatch(this.drop_index_vouchers_uuid);
                     statement.addBatch(this.drop_index_vouchers_id);
@@ -79,7 +78,7 @@ public final class SqliteFactory extends SqlFactory {
                 this.fusion.log(true, Level.error, "<red>An error has occurred with the reason for data type <green>%s</green>, <gold>%s</gold> while removing indexes for migration!",
                         this.impl, exception.getMessage());
             }
-        });
+        }).orTimeout(timeout(), TimeUnit.SECONDS);
     }
 
     @Override
@@ -115,7 +114,7 @@ public final class SqliteFactory extends SqlFactory {
                 connection.setAutoCommit(false);
 
                 try (final Statement statement = connection.createStatement()) {
-                    statement.setQueryTimeout(this.queryTimeout);
+                    statement.setQueryTimeout(queryTimeout());
 
                     statement.addBatch(this.create_users_table);
 
@@ -143,7 +142,7 @@ public final class SqliteFactory extends SqlFactory {
                 this.fusion.log(true, Level.error, "<red>An error has occurred with the reason for data type <green>%s</green>, <gold>%s</gold> while initializing the tables!",
                         this.impl, exception.getMessage());
             }
-        });
+        }).orTimeout(timeout(), TimeUnit.SECONDS);
     }
 
     @Override
@@ -157,7 +156,7 @@ public final class SqliteFactory extends SqlFactory {
                 connection.setAutoCommit(false);
 
                 try (final Statement statement = connection.createStatement()) {
-                    statement.setQueryTimeout(this.queryTimeout);
+                    statement.setQueryTimeout(queryTimeout());
 
                     statement.addBatch(this.index_tracker_uuid);
                     statement.addBatch(this.index_tracker_id);
@@ -180,7 +179,7 @@ public final class SqliteFactory extends SqlFactory {
                 this.fusion.log(true, Level.error, "<red>An error has occurred with the reason for data type <green>%s</green>, <gold>%s</gold> while adding indexing to the columns!",
                         this.impl, exception.getMessage());
             }
-        });
+        }).orTimeout(timeout(), TimeUnit.SECONDS);
     }
 
     @Override
@@ -190,7 +189,7 @@ public final class SqliteFactory extends SqlFactory {
 
             try (final Connection connection = this.source.getConnection(); final PreparedStatement statement =
                     connection.prepareStatement("select voucher_id, redeem_limit, timestamp_redeemed from vouchers_redeemed where player_uuid=? order by rowid limit ? offset ?")) {
-                statement.setQueryTimeout(this.queryTimeout);
+                statement.setQueryTimeout(queryTimeout());
 
                 statement.setString(1, player_uuid.toString());
                 statement.setInt(2, perPage);
@@ -212,7 +211,7 @@ public final class SqliteFactory extends SqlFactory {
             }
 
             return vouchers;
-        }).completeOnTimeout(List.of(), 10, TimeUnit.SECONDS).join();
+        }).completeOnTimeout(List.of(), timeout(), TimeUnit.SECONDS).join();
     }
 
     @Override
@@ -222,7 +221,7 @@ public final class SqliteFactory extends SqlFactory {
 
             try (final Connection connection = this.source.getConnection(); final PreparedStatement statement =
                     connection.prepareStatement("select voucher_id, redeem_limit, timestamp_redeemed from vouchers_redeemed where player_uuid=?")) {
-                statement.setQueryTimeout(this.queryTimeout);
+                statement.setQueryTimeout(queryTimeout());
 
                 statement.setString(1, player_uuid.toString());
 
@@ -242,7 +241,7 @@ public final class SqliteFactory extends SqlFactory {
             }
 
             return vouchers;
-        }).completeOnTimeout(List.of(), 10, TimeUnit.SECONDS).join();
+        }).completeOnTimeout(List.of(), timeout(), TimeUnit.SECONDS).join();
     }
 
     @Override
@@ -252,7 +251,7 @@ public final class SqliteFactory extends SqlFactory {
 
             try (final Connection connection = this.source.getConnection(); final PreparedStatement statement =
                     connection.prepareStatement("select code, redeem_limit, timestamp_redeemed from codes_redeemed where player_uuid=? order by timestamp_redeemed limit ? offset ?")) {
-                statement.setQueryTimeout(this.queryTimeout);
+                statement.setQueryTimeout(queryTimeout());
 
                 statement.setString(1, player_uuid.toString());
                 statement.setInt(2, perPage);
@@ -274,7 +273,7 @@ public final class SqliteFactory extends SqlFactory {
             }
 
             return vouchers;
-        }).completeOnTimeout(List.of(), 10, TimeUnit.SECONDS).join();
+        }).completeOnTimeout(List.of(), timeout(), TimeUnit.SECONDS).join();
     }
 
     @Override
@@ -284,7 +283,7 @@ public final class SqliteFactory extends SqlFactory {
 
             try (final Connection connection = this.source.getConnection(); final PreparedStatement statement =
                     connection.prepareStatement("select code, redeem_limit, timestamp_redeemed from codes_redeemed where player_uuid=?")) {
-                statement.setQueryTimeout(this.queryTimeout);
+                statement.setQueryTimeout(queryTimeout());
 
                 statement.setString(1, player_uuid.toString());
 
@@ -305,6 +304,6 @@ public final class SqliteFactory extends SqlFactory {
             }
 
             return vouchers;
-        }).completeOnTimeout(List.of(), 10, TimeUnit.SECONDS).join();
+        }).completeOnTimeout(List.of(), timeout(), TimeUnit.SECONDS).join();
     }
 }

@@ -22,4 +22,14 @@ public abstract class FlatFactory extends ConnectionFactory {
     public String getImpl() {
         return this.impl;
     }
+
+    @Override
+    public int queryTimeout() {
+        return this.plugin.queryTime();
+    }
+
+    @Override
+    public int timeout() {
+        return this.plugin.timeout();
+    }
 }

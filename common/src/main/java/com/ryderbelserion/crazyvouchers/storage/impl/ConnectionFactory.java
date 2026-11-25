@@ -22,6 +22,10 @@ public abstract class ConnectionFactory extends ISharedMethods {
 
     public abstract void save();
 
+    public abstract int queryTimeout();
+
+    public abstract int timeout();
+
     public boolean tableExists(final String table) {
         return true;
     }

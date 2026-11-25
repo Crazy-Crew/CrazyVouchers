@@ -111,7 +111,7 @@ public class DatabaseKeys implements IPropertyHolder {
     @Comment({
             "This setting controls the maximum numbers of seconds the plugin will wait for a query to complete, before timing out.",
             " ",
-            "The default time is 3 seconds."
+            "The default time is 5 seconds, If you notice issues... Increase this number!"
     })
     public static final Property<Integer> query_timeout = newProperty(5, "root", "storage", "pool-settings", "query-timeout");
 

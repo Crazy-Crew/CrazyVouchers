@@ -8,6 +8,7 @@ import com.ryderbelserion.fusion.files.enums.FileType;
 import org.jspecify.annotations.NonNull;
 import us.crazycrew.crazyvouchers.VouchersProvider;
 import us.crazycrew.crazyvouchers.api.config.ConfigManager;
+import us.crazycrew.crazyvouchers.api.config.types.DatabaseKeys;
 import us.crazycrew.crazyvouchers.api.config.types.RootKeys;
 import us.crazycrew.crazyvouchers.api.enums.FileKeys;
 import us.crazycrew.crazyvouchers.api.enums.messages.Message;
@@ -233,6 +234,16 @@ public abstract class CrazyVouchersPlugin<S, F extends FusionKyori<S>> extends C
     @Override
     public @NonNull StorageHolder getStorageHolder() {
         return this.storageHolder;
+    }
+
+    @Override
+    public final int queryTime() {
+        return this.config.getProperty(DatabaseKeys.query_timeout);
+    }
+
+    @Override
+    public final int timeout() {
+        return this.config.getProperty(RootKeys.future_timeout);
     }
 
     public void move(@NonNull final Path input, @NonNull final Path output) {

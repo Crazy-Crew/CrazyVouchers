@@ -67,4 +67,9 @@ public abstract class CrazyVouchers<C, S> {
     @ApiStatus.Internal
     public abstract void init();
 
+    public abstract int queryTime();
+
+    @ApiStatus.Internal
+    public abstract int timeout();
+
 }
