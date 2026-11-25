@@ -11,6 +11,7 @@ Do not delete your data.yml or users.yml!
 If you have any issues with migrating, or issues with the new database system. Submit a bug report!
 
 ### Changes
+- Added a new command which is /crazyvouchers history <player> <type> <page>
 - Added message for when you reach the voucher/code limit to messages.yml.
 - Fixed multiple bugs with the limiter feature.
 - Updated to 26.3

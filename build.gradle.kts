@@ -48,6 +48,7 @@ tasks {
 val releaseType = rootProject.ext.get("release_type").toString()
 val color = rootProject.property("${releaseType.lowercase()}_color").toString()
 val isRelease = releaseType.equals("release", true)
+val isWebhookEnabled: Boolean = System.getenv().getOrDefault("is_webhook_enabled", "true").lowercase() == "true"
 
 val lines = rootProject.ext.get("mc_changelog").toString()
 val result: String = if (lines.length > 1024) {
@@ -67,6 +68,8 @@ feather {
         webhook {
             group(rootProject.name.lowercase())
             task("release-build")
+
+            isEnabled(isWebhookEnabled)
 
             if (System.getenv("BUILD_WEBHOOK") != null) {
                 post(System.getenv("BUILD_WEBHOOK"))
@@ -122,6 +125,8 @@ feather {
         webhook {
             group(rootProject.name.lowercase())
             task("failed-build")
+
+            isEnabled(isWebhookEnabled)
 
             if (System.getenv("BUILD_WEBHOOK") != null) {
                 post(System.getenv("BUILD_WEBHOOK"))
