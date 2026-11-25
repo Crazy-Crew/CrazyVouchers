@@ -50,12 +50,12 @@ public abstract class CrazyVouchersPlugin<S, F extends FusionKyori<S>> extends C
     public void init() {
         this.configManager.init();
 
+        this.config = this.configManager.getConfig();
+
         this.storageManager = new StorageManager(this);
 
         this.storageHolder = this.storageManager.init();
         this.storageHolder.save();
-
-        this.config = this.configManager.getConfig();
 
         final Path version = this.path.resolve("version.json");
 
