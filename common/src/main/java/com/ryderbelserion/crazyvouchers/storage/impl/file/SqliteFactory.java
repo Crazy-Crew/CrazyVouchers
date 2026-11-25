@@ -116,6 +116,9 @@ public final class SqliteFactory extends SqlFactory {
                 try (final Statement statement = connection.createStatement()) {
                     statement.setQueryTimeout(queryTimeout());
 
+                    statement.addBatch(this.create_offline_vouchers_table);
+                    statement.addBatch(this.index_offline_uuid);
+
                     statement.addBatch(this.create_users_table);
 
                     statement.addBatch(this.create_vouchers_tracker_table);
@@ -183,14 +186,12 @@ public final class SqliteFactory extends SqlFactory {
     }
 
     @Override
-    public List<VoucherHistory> getRedeemedVouchersByPage(final UUID player_uuid, final int page, final int perPage) {
+    public List<VoucherHistory> getRedeemedVouchersByPage(final UUID player_uuid, final int page, final int perPage) { // no timeout for this one since the per page count can be very high and people are special.
         return CompletableFuture.supplyAsync(() -> {
             final List<VoucherHistory> vouchers = new ArrayList<>();
 
             try (final Connection connection = this.source.getConnection(); final PreparedStatement statement =
                     connection.prepareStatement("select voucher_id, redeem_limit, timestamp_redeemed from vouchers_redeemed where player_uuid=? order by rowid limit ? offset ?")) {
-                statement.setQueryTimeout(queryTimeout());
-
                 statement.setString(1, player_uuid.toString());
                 statement.setInt(2, perPage);
                 statement.setInt(3, (page - 1) * perPage);
@@ -211,7 +212,7 @@ public final class SqliteFactory extends SqlFactory {
             }
 
             return vouchers;
-        }).completeOnTimeout(List.of(), timeout(), TimeUnit.SECONDS).join();
+        }).join();
     }
 
     @Override
@@ -245,14 +246,12 @@ public final class SqliteFactory extends SqlFactory {
     }
 
     @Override
-    public List<VoucherHistory> getRedeemedCodesByPage(final UUID player_uuid, final int page, final int perPage) {
+    public List<VoucherHistory> getRedeemedCodesByPage(final UUID player_uuid, final int page, final int perPage) { // no timeout for this one since the per page count can be very high and people are special.
         return CompletableFuture.supplyAsync(() -> {
             final List<VoucherHistory> vouchers = new ArrayList<>();
 
             try (final Connection connection = this.source.getConnection(); final PreparedStatement statement =
                     connection.prepareStatement("select code, redeem_limit, timestamp_redeemed from codes_redeemed where player_uuid=? order by timestamp_redeemed limit ? offset ?")) {
-                statement.setQueryTimeout(queryTimeout());
-
                 statement.setString(1, player_uuid.toString());
                 statement.setInt(2, perPage);
                 statement.setInt(3, (page - 1) * perPage);
@@ -273,7 +272,7 @@ public final class SqliteFactory extends SqlFactory {
             }
 
             return vouchers;
-        }).completeOnTimeout(List.of(), timeout(), TimeUnit.SECONDS).join();
+        }).join();
     }
 
     @Override

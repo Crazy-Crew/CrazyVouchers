@@ -3,6 +3,7 @@ package com.badbones69.crazyvouchers.commands;
 import com.badbones69.crazyvouchers.CrazyVouchers;
 import com.badbones69.crazyvouchers.api.CrazyPlatform;
 import com.badbones69.crazyvouchers.api.InventoryManager;
+import com.badbones69.crazyvouchers.api.registry.PaperUserRegistry;
 import com.ryderbelserion.crazyvouchers.storage.holder.StorageHolder;
 import com.ryderbelserion.fusion.config.properties.PropertyManager;
 import com.ryderbelserion.fusion.paper.FusionPaper;
@@ -19,6 +20,8 @@ public abstract class BaseCommand {
     protected @NonNull final Server server = this.plugin.getServer();
 
     protected @NonNull final CrazyPlatform platform = this.plugin.getPlatform();
+
+    protected @NonNull final PaperUserRegistry userRegistry = this.platform.getUserRegistry();
 
     protected @NonNull final StorageHolder holder = this.platform.getStorageHolder();
 

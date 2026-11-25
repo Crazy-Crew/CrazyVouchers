@@ -7,6 +7,7 @@ import com.ryderbelserion.crazyvouchers.storage.holder.StorageHolder;
 import com.ryderbelserion.crazyvouchers.utils.ConfigUtils;
 import com.ryderbelserion.fusion.config.properties.PropertyManager;
 import com.ryderbelserion.fusion.kyori.api.constants.ModSupport;
+import net.kyori.adventure.audience.Audience;
 import us.crazycrew.crazyvouchers.api.config.ConfigManager;
 import us.crazycrew.crazyvouchers.api.config.types.RootKeys;
 import us.crazycrew.crazyvouchers.api.enums.messages.Message;
@@ -565,11 +566,11 @@ public class Voucher {
         return this.hasArgument;
     }
     
-    public ItemStack buildItem(@NonNull final Player player) {
+    public ItemStack buildItem(@NonNull final Audience player) {
         return buildItem(player, 1);
     }
 
-    public ItemStack buildItem(@NonNull final Player player, final int amount) {
+    public ItemStack buildItem(@NonNull final Audience player, final int amount) {
         final ItemStack item = this.itemBuilder.setAmount(amount).asItemStack(player);
 
         setUniqueId(item);

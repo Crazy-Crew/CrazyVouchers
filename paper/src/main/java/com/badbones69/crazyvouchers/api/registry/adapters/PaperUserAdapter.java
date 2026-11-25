@@ -9,6 +9,8 @@ import org.bukkit.command.ConsoleCommandSender;
 import org.bukkit.entity.Player;
 import org.jspecify.annotations.NonNull;
 import us.crazycrew.crazyvouchers.api.adapters.sender.ISenderAdapter;
+import us.crazycrew.crazyvouchers.api.objects.VoucherSimple;
+
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -57,6 +59,11 @@ public class PaperUserAdapter extends ISenderAdapter<Component, Audience> {
         }
 
         this.sender.sendActionBar(component);
+    }
+
+    @Override
+    public PaperUserAdapter init() {
+        return (PaperUserAdapter) super.init();
     }
 
     @Override
@@ -126,6 +133,41 @@ public class PaperUserAdapter extends ISenderAdapter<Component, Audience> {
         }
 
         return this.fusion.replacePlaceholders(this.fusion.papi(this.sender, value), map);
+    }
+
+    @Override
+    public void addOfflineVoucher(final String voucher_id, final int amount) {
+        this.holder.addOfflineVoucher(this.uuid, voucher_id, amount);
+    }
+
+    @Override
+    public void removeOfflineVouchers(final List<VoucherSimple> vouchers) {
+        this.holder.removeOfflineVouchers(vouchers);
+    }
+
+    @Override
+    public void removeOfflineVoucher(final VoucherSimple voucher) {
+        this.holder.removeOfflineVoucher(voucher);
+    }
+
+    @Override
+    public List<VoucherSimple> getOfflineVouchers() {
+        return this.holder.getOfflineVouchers(this.uuid);
+    }
+
+    @Override
+    public boolean hasOfflinePlayer() {
+        return this.holder.hasOfflinePlayer(this.uuid);
+    }
+
+    @Override
+    public boolean hasOfflineVoucher(final String voucher_id) {
+        return this.holder.hasOfflineVoucher(voucher_id);
+    }
+
+    @Override
+    public <T> T getSender() {
+        return (T) this.sender;
     }
 
     @Override

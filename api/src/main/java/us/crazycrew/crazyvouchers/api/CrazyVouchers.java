@@ -12,7 +12,7 @@ import java.util.List;
 import java.util.UUID;
 
 @NullMarked
-public abstract class CrazyVouchers<C, S> {
+public abstract class CrazyVouchers<C, S, A extends ISenderAdapter<C, S>> {
 
     public static final UUID CONSOLE_UUID = new UUID(0, 0);
     public static final String CONSOLE_NAME = "Console";
@@ -28,9 +28,9 @@ public abstract class CrazyVouchers<C, S> {
 
     public abstract List<Path> getCodeFiles();
 
-    public abstract ISenderAdapter<C, S> getSenderAdapter(final UUID uuid);
+    public abstract A getSenderAdapter(final UUID uuid);
 
-    public abstract IUserRegistry<C, S> getUserRegistry();
+    public abstract IUserRegistry<C, S, A> getUserRegistry();
 
     public abstract IStorageHolder getStorageHolder();
 

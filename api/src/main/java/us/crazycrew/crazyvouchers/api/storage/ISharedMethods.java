@@ -2,6 +2,8 @@ package us.crazycrew.crazyvouchers.api.storage;
 
 import org.jetbrains.annotations.ApiStatus;
 import us.crazycrew.crazyvouchers.api.objects.VoucherHistory;
+import us.crazycrew.crazyvouchers.api.objects.VoucherSimple;
+
 import java.util.List;
 import java.util.UUID;
 
@@ -13,6 +15,20 @@ public abstract class ISharedMethods {
     public abstract void addUser(final UUID player_uuid);
 
     public abstract boolean hasUser(final UUID player_uuid);
+
+    public abstract void addOfflineVoucher(final UUID player_uuid, final String voucher_id, final int amount);
+
+    public abstract void updateOfflineVoucher(final UUID player_uuid, final String voucher_id, final int amount);
+
+    public abstract void removeOfflineVouchers(final List<VoucherSimple> vouchers);
+
+    public abstract void removeOfflineVoucher(final VoucherSimple voucher);
+
+    public abstract List<VoucherSimple> getOfflineVouchers(final UUID player_uuid);
+
+    public abstract boolean hasOfflinePlayer(final UUID player_uuid);
+
+    public abstract boolean hasOfflineVoucher(final String voucher_id);
 
     public abstract boolean isVoucherProtected(final UUID voucher_id);
 

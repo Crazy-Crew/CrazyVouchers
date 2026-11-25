@@ -5,15 +5,17 @@ import us.crazycrew.crazyvouchers.api.adapters.sender.ISenderAdapter;
 import java.util.Optional;
 import java.util.UUID;
 
-public interface IUserRegistry<C, S> {
+public interface IUserRegistry<C, S, A extends ISenderAdapter<C, S>> {
 
-    Optional<? extends ISenderAdapter<C, S>> getUser(@NonNull final UUID uuid);
+    Optional<A> getUser(@NonNull final UUID uuid);
 
-    ISenderAdapter<C, S> removeUser(@NonNull final UUID uuid);
+    void loadVouchers(A adapter);
 
-    ISenderAdapter<C, S> addUser(@NonNull final S player);
+    A removeUser(@NonNull final UUID uuid);
 
-    ISenderAdapter<C, S> getConsole();
+    A addUser(@NonNull final S player);
+
+    A getConsole();
 
     void init();
 

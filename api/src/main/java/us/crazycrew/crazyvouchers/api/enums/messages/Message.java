@@ -121,9 +121,15 @@ public enum Message {
     code_used("voucher.code.used", "", "{prefix}<red>The voucher code <gold>{arg} <red>has already been redeemed.", "voucher", "code", "used"),
     code_limit("voucher.code.limit", "Available Placeholders: {prefix}, {code}", "{prefix}<red>You have hit your limit while trying to redeem {code}.", "voucher", "code", "limit"),
 
-    sent_everyone_voucher("voucher.sent.everyone.voucher", "", "{prefix}<aqua>You have just given all players a <gold>{voucher} <aqua>voucher.", "voucher", "sent-everyone-voucher"),
-    sent_voucher("voucher.sent.voucher", "", "{prefix}<aqua>You have just given <gold>{player} <aqua>a <gold>{voucher} <aqua>voucher.", "voucher", "sent-voucher"),
+    sent_everyone_voucher("voucher.sent.everyone.voucher", "Available Placeholders: {amount}, {voucher}", "{prefix}<aqua>You have given all players <gold>{amount} {voucher} voucher's</gold>!", "voucher", "sent-everyone-voucher"),
+    sent_voucher("voucher.sent.voucher", "Available Placeholders: {player}, {amount}, {voucher}", "{prefix}<aqua>You have given <gold>{player} {amount} {voucher} voucher's</gold>.", "voucher", "sent-voucher"),
+    sent_voucher_offline("voucher.sent.voucher.offline", "Available Placeholders: {player}, {amount}, {voucher}", "{prefix}<aqua>You have given the offline player <gold>{player} {amount} {voucher} voucher's</gold>.", "voucher", "sent-voucher-offline"),
     cooldown_active("voucher.cooldown", "Available placeholders: {time}", "{prefix}Please wait {time}, before using the voucher again", "voucher", "cooldown"),
+
+    claim_vouchers("voucher.claim", "The message sent when a player has not claimed all vouchers.", "{prefix}<red>You have vouchers still yet unclaimed! Please run /crazyvouchers claim.", "commands", "claim", "not-claimed"),
+    claimed_vouchers("voucher.claimed", "The message sent when vouchers are successfully claimed using /crazyvouchers claim", "{prefix}<red>You have claimed your vouchers!", "commands", "claim", "claimed"),
+
+    cannot_find_in_cache("voucher.invalid-cache", "", "{prefix}<red>You could not be found in the cache!", "player", "not-in-cache"),
 
     config_reload("misc.config.reload", "", "{prefix}<gray>You have just reloaded the configurations.", "misc", "config-reload"),
     player_only("misc.player.only", "", "{prefix}<red>Only players can use this command.", "misc", "player-only"),

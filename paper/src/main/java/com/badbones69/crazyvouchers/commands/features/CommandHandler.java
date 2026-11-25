@@ -14,6 +14,7 @@ import com.badbones69.crazyvouchers.commands.features.admin.CommandTypes;
 import com.badbones69.crazyvouchers.commands.features.admin.CommandVersion;
 import com.badbones69.crazyvouchers.commands.features.admin.migrate.enums.MigrationType;
 import com.badbones69.crazyvouchers.commands.features.base.CommandHelp;
+import com.badbones69.crazyvouchers.commands.features.base.CommandClaim;
 import com.badbones69.crazyvouchers.commands.features.base.CommandReload;
 import com.badbones69.crazyvouchers.commands.features.relations.ArgumentRelations;
 import com.ryderbelserion.crazyvouchers.storage.holder.StorageHolder;
@@ -156,6 +157,9 @@ public class CommandHandler {
                 new CommandRedeem(),
                 new CommandTypes(),
                 new CommandHelp(),
+
+                new CommandClaim(),
+
                 new CommandReload(),
                 new CommandVersion()
         ).forEach(this.commandManager::registerCommand);

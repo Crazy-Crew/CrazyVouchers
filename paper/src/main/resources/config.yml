@@ -126,6 +126,15 @@ settings:
     # If you ignore all these warnings, I've given you the tool to shoot yourself in the foot.
     timeout: 10
 
+  # Settings related to offline player support. (not related to online-mode=false)
+  offline-player-support:
+    # Should we store attempts of giving vouchers to offline players?
+    toggle: false
+    # If this option is true, we will attempt to give players their vouchers on join.
+    on-join: false
+    # Should we tell them they have vouchers not claimed if the inventory is full or if the above toggle is false?
+    vouchers-not-claimed: false
+
   # This option allows you to switch between the following:
   # ⤷ vouchers.yml and codes.yml
   #  ⤷ these files handle all files!
@@ -177,5 +186,5 @@ settings:
     # Whether an alert should be sent when trying to use vouchers in recipes.
     alert: false
 
-  # If you set this to true, you will be allowing vouchers to be used in off hand.
+  # If you set this to true, you will be allowing vouchers to be used in off-hand.
   allow-off-hand-usage: false

@@ -7,6 +7,7 @@ import com.ryderbelserion.fusion.files.enums.FileAction;
 import com.ryderbelserion.fusion.files.enums.FileType;
 import org.jspecify.annotations.NonNull;
 import us.crazycrew.crazyvouchers.VouchersProvider;
+import us.crazycrew.crazyvouchers.api.adapters.sender.ISenderAdapter;
 import us.crazycrew.crazyvouchers.api.config.ConfigManager;
 import us.crazycrew.crazyvouchers.api.config.types.DatabaseKeys;
 import us.crazycrew.crazyvouchers.api.config.types.RootKeys;
@@ -28,7 +29,7 @@ import java.util.Comparator;
 import java.util.List;
 import java.util.stream.Stream;
 
-public abstract class CrazyVouchersPlugin<S, F extends FusionKyori<S>> extends CrazyVouchers<Component, S> {
+public abstract class CrazyVouchersPlugin<S, F extends FusionKyori<S>, A extends ISenderAdapter<Component, S>> extends CrazyVouchers<Component, S, A> {
 
     protected final ConfigManager configManager;
     protected final FileManager fileManager;

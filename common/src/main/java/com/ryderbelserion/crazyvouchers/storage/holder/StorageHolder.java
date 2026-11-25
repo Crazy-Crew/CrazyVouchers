@@ -5,6 +5,7 @@ import com.ryderbelserion.crazyvouchers.storage.impl.ConnectionFactory;
 import com.ryderbelserion.fusion.api.exceptions.FusionException;
 import org.jetbrains.annotations.ApiStatus;
 import org.jspecify.annotations.NullMarked;
+import us.crazycrew.crazyvouchers.api.objects.VoucherSimple;
 import us.crazycrew.crazyvouchers.api.storage.IStorageHolder;
 import java.sql.Connection;
 import java.sql.SQLException;
@@ -80,6 +81,41 @@ public final class StorageHolder extends IStorageHolder {
         return this.factory.hasUser(player_uuid);
     }
 
+    @Override
+    public void addOfflineVoucher(final UUID player_uuid, final String voucher_id, final int amount) {
+        this.factory.addOfflineVoucher(player_uuid, voucher_id, Math.max(1, amount));
+    }
+
+    @Override
+    public void updateOfflineVoucher(final UUID player_uuid, final String voucher_id, final int amount) {
+        this.factory.updateOfflineVoucher(player_uuid, voucher_id, Math.max(1, amount));
+    }
+
+    @Override
+    public void removeOfflineVoucher(final VoucherSimple voucher) {
+        this.factory.removeOfflineVoucher(voucher);
+    }
+
+    @Override
+    public void removeOfflineVouchers(final List<VoucherSimple> vouchers) {
+        this.factory.removeOfflineVouchers(vouchers);
+    }
+
+    @Override
+    public List<VoucherSimple> getOfflineVouchers(final UUID player_uuid) {
+        return this.factory.getOfflineVouchers(player_uuid);
+    }
+
+    @Override
+    public boolean hasOfflineVoucher(final String voucher_id) {
+        return this.factory.hasOfflineVoucher(voucher_id);
+    }
+
+    @Override
+    public boolean hasOfflinePlayer(final UUID player_uuid) {
+        return this.factory.hasOfflinePlayer(player_uuid);
+    }
+
     // dupe protection start
     @Override
     public boolean isVoucherProtected(final UUID voucher_id) {
@@ -115,7 +151,7 @@ public final class StorageHolder extends IStorageHolder {
 
     @Override
     public void addRedeemedVoucher(final String voucher_id, final UUID player_uuid, final int amount) {
-        this.factory.addRedeemedVoucher(voucher_id, player_uuid, amount);
+        this.factory.addRedeemedVoucher(voucher_id, player_uuid, Math.max(1, amount));
     }
 
     @Override

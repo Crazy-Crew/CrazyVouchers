@@ -7,17 +7,28 @@ import com.ryderbelserion.fusion.api.exceptions.FusionException;
 import com.zaxxer.hikari.HikariDataSource;
 import org.jspecify.annotations.NonNull;
 import org.jspecify.annotations.NullUnmarked;
+import us.crazycrew.crazyvouchers.api.objects.VoucherSimple;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.time.Instant;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.UUID;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.TimeUnit;
 
 public abstract class SqlFactory extends FlatFactory {
+
+    protected final String create_offline_vouchers_table = "create table if not exists offline_vouchers(%s, %s, %s)".formatted(
+            "voucher_id varchar(36) not null primary key",
+            "player_uuid varchar(36) not null",
+            "amount int not null"
+    );
+
+    protected final String index_offline_uuid = "create index if not exists idx_offline_vouchers_player_uuid on offline_vouchers(player_uuid)"; // set index on player uuid
 
     protected final String create_vouchers_redeemed_table = "create table if not exists vouchers_redeemed(%s, %s, %s, %s)".formatted(
             "voucher_id varchar(36) not null",
@@ -78,6 +89,9 @@ public abstract class SqlFactory extends FlatFactory {
 
                 try (final Statement statement = connection.createStatement()) {
                     statement.setQueryTimeout(queryTimeout());
+
+                    statement.addBatch(this.create_offline_vouchers_table);
+                    statement.addBatch(this.index_offline_uuid);
 
                     statement.addBatch(this.create_users_table);
 
@@ -186,6 +200,161 @@ public abstract class SqlFactory extends FlatFactory {
 
             return false;
         }).completeOnTimeout(false, timeout(), TimeUnit.SECONDS).join();
+    }
+
+    @Override
+    public void addOfflineVoucher(final UUID player_uuid, final String voucher_id, final int amount) {
+        CompletableFuture.runAsync(() -> {
+            try (final Connection connection = this.source.getConnection(); final PreparedStatement statement =
+                    connection.prepareStatement("insert into offline_vouchers(voucher_id, player_uuid, amount) values (?, ?, ?)")) {
+                statement.setQueryTimeout(queryTimeout());
+
+                statement.setString(1, voucher_id);
+                statement.setString(2, player_uuid.toString());
+                statement.setInt(3, amount);
+
+                statement.executeUpdate();
+            } catch (final SQLException exception) {
+                this.fusion.log(true, Level.error, "<red>An error has occurred with the reason for data type <green>%s</green>, <gold>%s</gold> while inserting a user using the <gold>uuid: %s, id: %s</gold>!",
+                        this.impl, exception.getMessage(), player_uuid, voucher_id);
+            }
+        }).orTimeout(timeout(), TimeUnit.SECONDS);
+    }
+
+    @Override
+    public void updateOfflineVoucher(final UUID player_uuid, final String voucher_id, final int amount) {
+        CompletableFuture.runAsync(() -> {
+            try (final Connection connection = this.source.getConnection(); final PreparedStatement statement =
+                    connection.prepareStatement("update offline_vouchers set amount = amount+? where voucher_id=? and player_uuid=?")) {
+                statement.setQueryTimeout(queryTimeout());
+
+                statement.setInt(1, amount);
+                statement.setString(2, voucher_id);
+                statement.setString(3, String.valueOf(player_uuid));
+
+                statement.executeUpdate();
+            } catch (final SQLException exception) {
+                this.fusion.log(true, Level.error, "<red>An error has occurred with the reason for data type <green>%s</green>, <gold>%s</gold> while incrementing the redeem_limit for code <gold>%s</gold> with player id <gold>%s</gold>!",
+                        this.impl, exception.getMessage(), voucher_id, amount);
+            }
+        });
+    }
+
+    @Override
+    public boolean hasOfflineVoucher(final String voucher_id) {
+        return CompletableFuture.supplyAsync(() -> {
+            try (final Connection connection = this.source.getConnection(); final PreparedStatement statement =
+                    connection.prepareStatement("select 1 from offline_vouchers where voucher_id=? limit 1")) {
+                statement.setQueryTimeout(queryTimeout());
+
+                statement.setString(1, String.valueOf(voucher_id));
+
+                try (final ResultSet resultSet = statement.executeQuery()) {
+                    return resultSet.next();
+                }
+            } catch (final SQLException exception) {
+                this.fusion.log(true, Level.error, "<red>An error has occurred with the reason for data type <green>%s</green>, <gold>%s</gold> while checking <gold>%s</gold> for offline vouchers!",
+                        this.impl, exception.getMessage(), voucher_id);
+            }
+
+            return false;
+        }).completeOnTimeout(false, timeout(), TimeUnit.SECONDS).join();
+    }
+
+    @Override
+    public boolean hasOfflinePlayer(final UUID player_uuid) {
+        return CompletableFuture.supplyAsync(() -> {
+            try (final Connection connection = this.source.getConnection(); final PreparedStatement statement =
+                    connection.prepareStatement("select 1 from offline_vouchers where player_uuid=? limit 1")) {
+                statement.setQueryTimeout(queryTimeout());
+
+                statement.setString(1, String.valueOf(player_uuid));
+
+                try (final ResultSet resultSet = statement.executeQuery()) {
+                    return resultSet.next();
+                }
+            } catch (final SQLException exception) {
+                this.fusion.log(true, Level.error, "<red>An error has occurred with the reason for data type <green>%s</green>, <gold>%s</gold> while checking <gold>%s</gold> for offline vouchers!",
+                        this.impl, exception.getMessage(), player_uuid);
+            }
+
+            return false;
+        }).completeOnTimeout(false, timeout(), TimeUnit.SECONDS).join();
+    }
+
+    @Override
+    public List<VoucherSimple> getOfflineVouchers(final UUID player_uuid) {
+        return CompletableFuture.supplyAsync(() -> {
+            final List<VoucherSimple> vouchers = new ArrayList<>();
+
+            try (final Connection connection = this.source.getConnection(); final PreparedStatement statement =
+                    connection.prepareStatement("select voucher_id, amount from offline_vouchers where player_uuid=?")) {
+                statement.setString(1, player_uuid.toString());
+
+                try (final ResultSet resultSet = statement.executeQuery()) {
+                    while (resultSet.next()) {
+                        vouchers.add(new VoucherSimple(
+                                player_uuid,
+                                resultSet.getString("voucher_id"),
+                                resultSet.getInt("amount")
+                        ));
+                    }
+                }
+            } catch (final SQLException exception) {
+                this.fusion.log(true, Level.error, "<red>An error has occurred with the reason for data type <green>%s</green>, <gold>%s</gold> while fetching offline vouchers for <gold>%s's</gold>!",
+                        this.impl, exception.getMessage(), player_uuid);
+            }
+
+            return vouchers;
+        }).join();
+    }
+
+    @Override
+    public void removeOfflineVouchers(final List<VoucherSimple> vouchers) { // do not set any timeout, we want this to finish.
+        CompletableFuture.runAsync(() -> {
+            try (final Connection connection = this.source.getConnection()) {
+                connection.setAutoCommit(false);
+
+                try (final PreparedStatement index = connection.prepareStatement("update offline_vouchers set amount = ? where voucher_id=? and player_uuid=?");
+                     final PreparedStatement purge = connection.prepareStatement("delete from offline_vouchers where voucher_id=?")) {
+                    for (final VoucherSimple voucher : vouchers) {
+                        final int amount = voucher.getAmount();
+                        final String id = voucher.getId();
+
+                        if (amount <= 0) {
+                            purge.setString(1, id);
+                            purge.addBatch();
+                        } else {
+                            index.setInt(1, amount);
+                            index.setString(2, id);
+                            index.setString(3, String.valueOf(voucher.getUUID()));
+
+                            index.addBatch();
+                        }
+                    }
+
+                    index.executeBatch();
+                    purge.executeBatch();
+
+                    connection.commit();
+                } catch (final SQLException exception) {
+                    this.fusion.log(true, Level.error, "<red>An error has occurred while trying to batch remove vouchers from the offline table for data type <green>%s</green>, <gold>%s</gold>!",
+                            this.impl, exception.getMessage());
+
+                    connection.rollback();
+                } finally {
+                    connection.setAutoCommit(true);
+                }
+            } catch (final SQLException exception) {
+                this.fusion.log(true, Level.error, "<red>An error has occurred fetching a connection while trying to batch remove vouchers from the offline table for data type <green>%s</green>, <gold>%s</gold>!",
+                        this.impl, exception.getMessage());
+            }
+        });
+    }
+
+    @Override
+    public void removeOfflineVoucher(final VoucherSimple voucher) {
+        removeOfflineVouchers(List.of(voucher));
     }
 
     @Override

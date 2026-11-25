@@ -1,6 +1,8 @@
 package com.badbones69.crazyvouchers.commands.features.admin;
 
 import com.badbones69.crazyvouchers.Methods;
+import org.bukkit.OfflinePlayer;
+import us.crazycrew.crazyvouchers.api.config.types.RootKeys;
 import us.crazycrew.crazyvouchers.api.enums.messages.Message;
 import com.badbones69.crazyvouchers.api.objects.Voucher;
 import com.badbones69.crazyvouchers.commands.BaseCommand;
@@ -18,6 +20,7 @@ import org.bukkit.permissions.PermissionDefault;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.UUID;
 
 public class CommandGive extends BaseCommand {
 
@@ -33,15 +36,45 @@ public class CommandGive extends BaseCommand {
             return;
         }
 
-        final java.util.Optional<Player> index = target.getTarget();
+        final java.util.Optional<OfflinePlayer> index = target.getTarget();
 
-        index.ifPresentOrElse(player -> {
-            build(player, amount, argument, voucher).forEach(item -> Methods.addItem(player, item));
+        index.ifPresentOrElse(offlinePlayer -> {
+            final String id = voucher.getStrippedName();
 
             final Map<String, String> placeholders = new HashMap<>();
 
+            placeholders.put("{voucher}", id);
+            placeholders.put("{amount}", String.valueOf(amount));
+
+            if (this.config.getProperty(RootKeys.offline_player_support) && !offlinePlayer.isOnline()) {
+                final UUID uuid = offlinePlayer.getUniqueId();
+
+                if (this.holder.hasOfflineVoucher(id)) {
+                    this.holder.updateOfflineVoucher(uuid, id, amount);
+                } else {
+                    this.holder.addOfflineVoucher(uuid, id, amount);
+                }
+
+                placeholders.put("{player}", target.getName());
+
+                Message.sent_voucher_offline.sendMessage(sender, placeholders);
+
+                return;
+            }
+
+            final Player player = offlinePlayer.getPlayer();
+
+            if (player == null) {
+                placeholders.put("{player}", target.getName());
+
+                Message.not_online.sendMessage(sender, placeholders);
+
+                return;
+            }
+
+            build(player, amount, argument, voucher).forEach(item -> Methods.addItem(player, item));
+
             placeholders.put("{player}", player.getName());
-            placeholders.put("{voucher}", voucher.getStrippedName());
 
             Message.sent_voucher.sendMessage(player, placeholders);
         }, () -> Message.not_online.sendMessage(sender));

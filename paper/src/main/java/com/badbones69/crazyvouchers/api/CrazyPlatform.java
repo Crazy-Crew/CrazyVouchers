@@ -29,7 +29,7 @@ import java.util.Optional;
 import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
 
-public class CrazyPlatform extends CrazyVouchersPlugin<Audience, FusionPaper> {
+public class CrazyPlatform extends CrazyVouchersPlugin<Audience, FusionPaper, PaperUserAdapter> {
 
     private @NonNull final List<String> brokenVouchers = new ArrayList<>();
     private @NonNull final List<Voucher> vouchers = new ArrayList<>();

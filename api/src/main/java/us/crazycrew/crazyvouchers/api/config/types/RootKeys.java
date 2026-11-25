@@ -40,6 +40,10 @@ public class RootKeys implements IPropertyHolder {
         configuration.setComment("Should the server or staff be informed of a duplicated item?", "settings", "dupe-protection", "warning");
 
         configuration.setComment("Allows you to configure whether vouchers can be used in recipes!", "settings", "recipes");
+
+        configuration.setComment("Settings related to CompletableFutures", "settings", "futures");
+
+        configuration.setComment("Settings related to offline player support. (not related to online-mode=false)", "settings", "offline-player-support");
     }
 
     @Comment("Sends anonymous statistics to https://bstats.org/plugin/bukkit/Vouchers/4536")
@@ -82,6 +86,15 @@ public class RootKeys implements IPropertyHolder {
             """)
     public static final Property<Integer> future_timeout = newProperty(10, "settings", "futures", "timeout");
 
+    @Comment("Should we store attempts of giving vouchers to offline players?")
+    public static final Property<Boolean> offline_player_support = newProperty(false, "settings", "offline-player-support", "toggle");
+
+    @Comment("If this option is true, we will attempt to give players their vouchers on join.")
+    public static final Property<Boolean> offline_player_support_on_join = newProperty(false, "settings", "offline-player-support", "on-join");
+
+    @Comment("Should we tell them they have vouchers not claimed if the inventory is full or if the above toggle is false?")
+    public static final Property<Boolean> offline_player_support_vouchers_not_claimed = newProperty(false, "settings", "offline-player-support", "vouchers-not-claimed");
+
     @Comment("""
             This option allows you to switch between the following:
             ⤷ vouchers.yml and codes.yml
@@ -115,7 +128,7 @@ public class RootKeys implements IPropertyHolder {
     @Comment("If this option is set to true, all voucher redemptions will be logged.")
     public static final Property<Boolean> track_voucher_usage = newProperty(false, "settings", "tracking", "voucher-usage");
 
-    @Comment("If you set this to true, you will be allowing vouchers to be used in off hand.")
+    @Comment("If you set this to true, you will be allowing vouchers to be used in off-hand.")
     public static final Property<Boolean> allow_off_hand_usage = newProperty(false, "settings", "allow-off-hand-usage");
 
     @Comment("Whether you should only be allowed to use vouchers in survival.")

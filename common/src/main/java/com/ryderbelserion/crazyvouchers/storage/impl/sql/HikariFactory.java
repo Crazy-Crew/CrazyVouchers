@@ -107,14 +107,12 @@ public abstract class HikariFactory extends SqlFactory {
     }
 
     @Override
-    public List<VoucherHistory> getRedeemedVouchersByPage(final UUID player_uuid, final int page, final int perPage) {
+    public List<VoucherHistory> getRedeemedVouchersByPage(final UUID player_uuid, final int page, final int perPage) { // no timeout for this one since the per page count can be very high and people are special.
         return CompletableFuture.supplyAsync(() -> {
             final List<VoucherHistory> vouchers = new ArrayList<>();
 
             try (final Connection connection = this.source.getConnection(); final PreparedStatement statement =
                     connection.prepareStatement("select voucher_id, redeem_limit, timestamp_redeemed from vouchers_redeemed where player_uuid=? order by timestamp_redeemed limit ? offset ?")) {
-                statement.setQueryTimeout(queryTimeout());
-
                 statement.setString(1, player_uuid.toString());
                 statement.setInt(2, perPage);
                 statement.setInt(3, (page - 1) * perPage);
@@ -139,7 +137,7 @@ public abstract class HikariFactory extends SqlFactory {
             }
 
             return vouchers;
-        }).completeOnTimeout(List.of(), timeout(), TimeUnit.SECONDS).join();
+        }).join();
     }
 
     @Override
@@ -178,14 +176,12 @@ public abstract class HikariFactory extends SqlFactory {
     }
 
     @Override
-    public List<VoucherHistory> getRedeemedCodesByPage(final UUID player_uuid, final int page, final int perPage) {
+    public List<VoucherHistory> getRedeemedCodesByPage(final UUID player_uuid, final int page, final int perPage) { // no timeout for this one since the per page count can be very high and people are special.
         return CompletableFuture.supplyAsync(() -> {
             final List<VoucherHistory> vouchers = new ArrayList<>();
 
             try (final Connection connection = this.source.getConnection(); final PreparedStatement statement =
                     connection.prepareStatement("select code, redeem_limit, timestamp_redeemed from codes_redeemed where player_uuid=? order by timestamp_redeemed limit ? offset ?")) {
-                statement.setQueryTimeout(queryTimeout());
-
                 statement.setString(1, player_uuid.toString());
                 statement.setInt(2, perPage);
                 statement.setInt(3, (page - 1) * perPage);
@@ -210,7 +206,7 @@ public abstract class HikariFactory extends SqlFactory {
             }
 
             return vouchers;
-        }).completeOnTimeout(List.of(), timeout(), TimeUnit.SECONDS).join();
+        }).join();
     }
 
     @Override

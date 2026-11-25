@@ -8,6 +8,7 @@ player:
   target-not-online: "{prefix}<red>That player is not online."
   two-step-authentication: "{prefix}<gray>Right click again to confirm that you want to use this voucher."
   hit-limit: "{prefix}<red>You have hit your limit for using this voucher."
+  not-in-cache: "{prefix}<red>You could not be found in the cache!"
 voucher:
   requirements:
     not-a-number: "{prefix}<red>{arg} is not a number."
@@ -20,8 +21,12 @@ voucher:
     unavailable: "{prefix}<red>The voucher code <gold>{arg} <red>has already been redeemed."
     # Available Placeholders: {prefix}, {code}
     limit: "{prefix}<red>You have hit your limit while trying to redeem {code}."
-  sent-voucher: "{prefix}<aqua>You have given <gold>{player} <aqua>a <gold>{voucher} <aqua>voucher."
-  sent-everyone-voucher: "{prefix}<aqua>You have given all players a <gold>{voucher} <aqua>voucher."
+  # Available Placeholders: {player}, {amount}, {voucher}
+  sent-voucher: "{prefix}<aqua>You have given <gold>{player} <gold>{amount} {voucher} voucher's</gold>."
+  # Available Placeholders: {amount}, {voucher}
+  sent-everyone-voucher: "{prefix}<aqua>You have given all players <gold>{amount} {voucher} voucher's</gold>!"
+  # Available Placeholders: {player}, {amount}, {voucher}
+  sent-voucher-offline: "{prefix}<aqua>You have given the offline player <gold>{player} {amount} {voucher} voucher's</gold>."
 misc:
   player-only: "{prefix}<red>Only players can use this command."
   config-reload: "{prefix}<gray>You have reloaded the plugin!"
@@ -38,6 +43,12 @@ storage:
   user-does-not-exist: "{prefix}<red>{player} is not stored yet."
 # All messages handling commands!
 commands:
+  # /crazyvouchers claim
+  claim:
+    # The message sent when a player has not claimed all vouchers.
+    not-claimed: "{prefix}<red>You have vouchers still yet unclaimed! Please run /crazyvouchers claim."
+    # The message sent when vouchers are successfully claimed using /crazyvouchers claim
+    claimed: "{prefix}<red>You have claimed your vouchers!"
   # /crazyvouchers history
   history:
     # Navigation text
