@@ -95,7 +95,7 @@ root:
         #- "characterEncoding:utf8"
         - "verifyServerCertificate:false"
         #- "sslMode:disable"
-        - "useSSL:false"
+        - "sslMode:trust"
 
       # This setting controls how frequently the pool will 'ping' a connection in order to prevent it
       # from being timed out by the database or network infrastructure, measured in milliseconds.
