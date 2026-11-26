@@ -7,6 +7,8 @@ tasks {
     shadowJar {
         archiveClassifier.set("")
 
+        mergeServiceFiles()
+
         exclude("META-INF/**")
     }
 }

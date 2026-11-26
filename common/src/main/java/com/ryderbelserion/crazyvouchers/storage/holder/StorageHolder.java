@@ -6,14 +6,14 @@ import com.ryderbelserion.fusion.api.exceptions.FusionException;
 import org.jetbrains.annotations.ApiStatus;
 import org.jspecify.annotations.NullMarked;
 import us.crazycrew.crazyvouchers.api.objects.VoucherSimple;
-import us.crazycrew.crazyvouchers.api.storage.IStorageHolder;
+import us.crazycrew.crazyvouchers.api.storage.AbstractStorageHolder;
 import java.sql.Connection;
 import java.sql.SQLException;
 import java.util.List;
 import java.util.UUID;
 
 @NullMarked
-public final class StorageHolder extends IStorageHolder {
+public final class StorageHolder extends AbstractStorageHolder {
 
     private final ConnectionFactory factory;
 
@@ -32,7 +32,7 @@ public final class StorageHolder extends IStorageHolder {
     }
 
     @Override
-    public IStorageHolder migrate() {
+    public AbstractStorageHolder migrate() {
         this.factory.migrate();
 
         return this;
@@ -46,7 +46,7 @@ public final class StorageHolder extends IStorageHolder {
     }
 
     @Override
-    public IStorageHolder post() {
+    public AbstractStorageHolder post() {
         this.factory.post();
 
         return this;

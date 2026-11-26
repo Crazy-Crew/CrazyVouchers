@@ -137,6 +137,5 @@ public class DatabaseKeys implements IPropertyHolder {
             "characterEncoding:utf8"
             //"verifyServerCertificate:false",
             //"sslMode:disable"
-            //"useSSL:false"
     ), "root", "storage", "pool-settings", "properties");
 }

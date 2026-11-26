@@ -1,13 +1,14 @@
 package com.badbones69.crazyvouchers.commands.features.admin;
 
 import com.badbones69.crazyvouchers.commands.features.admin.migrate.types.database.DatabaseMigrator;
+import com.ryderbelserion.crazyvouchers.utils.ConfigUtils;
+import com.ryderbelserion.fusion.core.utils.StringUtils;
 import us.crazycrew.crazyvouchers.api.enums.messages.Message;
 import com.badbones69.crazyvouchers.commands.BaseCommand;
 import com.badbones69.crazyvouchers.commands.features.admin.migrate.enums.MigrationType;
 import com.badbones69.crazyvouchers.commands.features.admin.migrate.types.VoucherDeprecated;
 import com.badbones69.crazyvouchers.commands.features.admin.migrate.types.deprecation.LegacyColorMigrator;
 import com.badbones69.crazyvouchers.commands.features.admin.migrate.types.VoucherFileMigrator;
-import com.badbones69.crazyvouchers.commands.features.admin.migrate.types.VoucherNbtMigrator;
 import com.badbones69.crazyvouchers.commands.features.admin.migrate.types.VoucherSwitchMigrator;
 import com.badbones69.crazyvouchers.commands.features.admin.migrate.types.deprecation.NewItemMigrator;
 import dev.triumphteam.cmd.core.annotations.Command;
@@ -16,9 +17,9 @@ import dev.triumphteam.cmd.bukkit.annotation.Permission;
 import dev.triumphteam.cmd.core.annotations.Syntax;
 import dev.triumphteam.cmd.core.argument.keyed.Flags;
 import org.bukkit.command.CommandSender;
-import org.bukkit.entity.Player;
 import org.bukkit.permissions.PermissionDefault;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 
@@ -61,15 +62,11 @@ public class CommandMigrate extends BaseCommand {
         switch (type) {
             case VOUCHERS_SWITCH -> new VoucherSwitchMigrator(sender).run();
 
-            case VOUCHERS_NBT_API -> {
-                if (!(sender instanceof Player player)) {
-                    Message.player_only.sendMessage(sender);
-
-                    return;
-                }
-
-                new VoucherNbtMigrator(player).run();
-            }
+            case VOUCHERS_NBT_API -> sender.sendRichMessage(this.fusion.replacePlaceholders(StringUtils.toString(List.of(
+                    "<bold><gold>━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━</gold></bold>",
+                    " <red>⤷</red> <gold>NBT API is no longer included in the plugin, I'm tired of looking at it.",
+                    "<bold><gold>━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━</gold></bold>"
+            )), Map.of("{prefix}", ConfigUtils.getPrefix())));
 
             case NEW_ITEM_FORMAT -> new NewItemMigrator(sender).run();
 

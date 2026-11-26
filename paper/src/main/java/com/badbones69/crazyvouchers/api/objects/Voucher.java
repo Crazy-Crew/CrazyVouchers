@@ -8,6 +8,7 @@ import com.ryderbelserion.crazyvouchers.utils.ConfigUtils;
 import com.ryderbelserion.fusion.config.properties.PropertyManager;
 import com.ryderbelserion.fusion.kyori.api.constants.ModSupport;
 import net.kyori.adventure.audience.Audience;
+import org.tinylog.Logger;
 import us.crazycrew.crazyvouchers.api.config.ConfigManager;
 import us.crazycrew.crazyvouchers.api.config.types.RootKeys;
 import us.crazycrew.crazyvouchers.api.enums.messages.Message;
@@ -34,6 +35,7 @@ import org.bukkit.inventory.PlayerInventory;
 import org.bukkit.persistence.PersistentDataType;
 import org.jspecify.annotations.NonNull;
 import org.spongepowered.configurate.CommentedConfigurationNode;
+import java.time.Instant;
 import java.util.*;
 import java.util.concurrent.atomic.AtomicBoolean;
 
@@ -449,6 +451,10 @@ public class Voucher {
         this.server.getPluginManager().callEvent(event);
 
         if (event.isCancelled()) return;
+
+        if (this.config.getProperty(RootKeys.log_voucher_usage)) {
+            Logger.info("{} ({}) has opened the voucher {} @ {}", player.getName(), uuid, name, this.platform.formatTime(Instant.now().getEpochSecond()));
+        }
 
         final PlayerInventory inventory = player.getInventory();
 

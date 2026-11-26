@@ -2,6 +2,8 @@ package com.badbones69.crazyvouchers.commands.features.admin;
 
 import com.badbones69.crazyvouchers.Methods;
 import com.ryderbelserion.crazyvouchers.utils.ConfigUtils;
+import org.tinylog.Logger;
+import us.crazycrew.crazyvouchers.api.config.types.RootKeys;
 import us.crazycrew.crazyvouchers.api.enums.messages.Message;
 import com.badbones69.crazyvouchers.api.enums.PermissionKeys;
 import com.badbones69.crazyvouchers.api.events.VoucherRedeemCodeEvent;
@@ -14,11 +16,11 @@ import dev.triumphteam.cmd.bukkit.annotation.Permission;
 import dev.triumphteam.cmd.core.annotations.Suggestion;
 import dev.triumphteam.cmd.core.annotations.Syntax;
 import org.bukkit.Location;
-import org.bukkit.Server;
 import org.bukkit.Sound;
 import org.bukkit.SoundCategory;
 import org.bukkit.entity.Player;
 import org.bukkit.permissions.PermissionDefault;
+import java.time.Instant;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -53,8 +55,6 @@ public class CommandRedeem extends BaseCommand {
         if (code == null) {
             return;
         }
-
-        final Server server = this.plugin.getServer();
 
         // Checking the permissions of the code.
         if (!player.isOp() && !PermissionKeys.crazyvouchers_bypass.hasPermission(player)) {
@@ -128,9 +128,13 @@ public class CommandRedeem extends BaseCommand {
         // Gives the reward to the player.
         final VoucherRedeemCodeEvent event = new VoucherRedeemCodeEvent(player, code);
 
-        server.getPluginManager().callEvent(event);
+        this.server.getPluginManager().callEvent(event);
 
         if (!event.isCancelled()) {
+            if (this.config.getProperty(RootKeys.log_code_usage)) {
+                Logger.info("{} ({}) has redeemed code {} @ {}", player.getName(), uuid, name, this.platform.formatTime(Instant.now().getEpochSecond()));
+            }
+
             if (!this.holder.isCodeRedeemed(id)) { // only add if code is not redeemed.
                 this.holder.addRedeemedCode(id, uuid);
             }

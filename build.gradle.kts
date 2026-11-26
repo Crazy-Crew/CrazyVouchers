@@ -5,45 +5,43 @@ plugins {
     id("modrinth-plugin")
     id("hangar-plugin")
 
-    `java-plugin`
+    `shadow-plugin`
+}
+
+dependencies {
+    implementation(project(":paper"))
+}
+
+tasks {
+    shadowJar {
+        listOf(
+            "com.ryderbelserion.fusion",
+            "com.zaxxer.hikari",
+
+            "io.leangen.geantyref",
+
+            "dev.triumphteam.cmd",
+
+            "org.spongepowered",
+            "org.jspecify",
+            "org.tinylog",
+            "org.bstats",
+            "org.yaml"
+        ).forEach { relocate(it, "libs.$it") }
+    }
+
+    jar {
+        enabled = false
+
+        dependsOn(shadowJar)
+    }
+
+    build {
+        dependsOn(shadowJar)
+    }
 }
 
 val git = feather.builder
-
-// https://github.com/granny/Pl3xMap/blob/0547bbba3f0b7468db17983412e95bf59a1a0b7d/build.gradle.kts#L10
-tasks {
-    jar {
-        duplicatesStrategy = DuplicatesStrategy.EXCLUDE
-
-        subprojects {
-            dependsOn(project.tasks.build)
-        }
-
-        archiveClassifier = ""
-
-        val files = subprojects.filter { it.name != "common" && it.name != "api" }.mapNotNull {
-            val file = it.tasks.jar.get().archiveFile
-
-            if (file.isPresent) {
-                zipTree(file.get().asFile)
-            } else {
-                null
-            }
-        }
-
-        from(files) {
-            exclude("META-INF/MANIFEST.MF")
-        }
-
-        doFirst {
-            files.forEach { file ->
-                file.matching { include("META-INF/MANIFEST.MF") }.files.forEach {
-                    manifest.from(it)
-                }
-            }
-        }
-    }
-}
 
 val releaseType = rootProject.ext.get("release_type").toString()
 val color = rootProject.property("${releaseType.lowercase()}_color").toString()

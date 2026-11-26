@@ -9,7 +9,7 @@ import org.jspecify.annotations.NonNull;
 import us.crazycrew.crazyvouchers.VouchersProvider;
 import us.crazycrew.crazyvouchers.api.CrazyVouchers;
 import us.crazycrew.crazyvouchers.api.objects.VoucherSimple;
-import us.crazycrew.crazyvouchers.api.storage.IStorageHolder;
+import us.crazycrew.crazyvouchers.api.storage.AbstractStorageHolder;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -23,7 +23,7 @@ public abstract class ISenderAdapter<C, S> {
 
     protected final CrazyVouchers<C, S, ?> instance = VouchersProvider.api();
 
-    protected final IStorageHolder holder = this.instance.getStorageHolder();
+    protected final AbstractStorageHolder holder = this.instance.getStorageHolder();
 
     protected final S sender;
 

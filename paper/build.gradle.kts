@@ -18,39 +18,14 @@ repositories {
 
 dependencies {
     implementation(project(":common"))
-
     implementation(libs.fusion.paper)
-
     implementation(libs.triumph.cmds)
-
-    implementation(libs.nbt.api)
-
     implementation(libs.metrics)
 
     compileOnly(libs.bundles.shared)
 }
 
 tasks {
-    build {
-        dependsOn(shadowJar)
-    }
-
-    shadowJar {
-        listOf(
-            "com.ryderbelserion.fusion",
-            "io.leangen.geantyref",
-            "dev.triumphteam.cmd",
-            "de.tr7zw.changeme",
-            "org.spongepowered",
-            "com.google.gson",
-            "org.jspecify",
-            "org.bstats",
-            "org.yaml"
-        ).forEach {
-            relocate(it, "libs.$it")
-        }
-    }
-
     runPaper.folia.registerTask()
 
     runServer {

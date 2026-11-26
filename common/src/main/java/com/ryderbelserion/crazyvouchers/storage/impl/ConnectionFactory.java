@@ -1,12 +1,12 @@
 package com.ryderbelserion.crazyvouchers.storage.impl;
 
 import org.jspecify.annotations.NullMarked;
-import us.crazycrew.crazyvouchers.api.storage.ISharedMethods;
+import us.crazycrew.crazyvouchers.api.storage.AbstractUserHolder;
 import java.sql.Connection;
 import java.sql.SQLException;
 
 @NullMarked
-public abstract class ConnectionFactory extends ISharedMethods {
+public abstract class ConnectionFactory extends AbstractUserHolder {
 
     public abstract Connection getConnection() throws SQLException;
 

@@ -66,6 +66,12 @@ public class RootKeys implements IPropertyHolder {
     })
     public static final EnumProperty<State> message_state = newEnumProperty(State.class, State.send_message, "root", "message-state");
 
+    @Comment("This will log all voucher usage to console and to file!")
+    public static final Property<Boolean> log_voucher_usage = newProperty(false, "root", "log-voucher-usage");
+
+    @Comment("This will log all code usage to console and to file!")
+    public static final Property<Boolean> log_code_usage = newProperty(false, "root", "log-code-usage");
+
     @Comment("This will wipe the example folder on /crazyvouchers reload or plugin startup. so you always have fresh examples to look at.")
     public static final Property<Boolean> update_examples_folder = newProperty(true, "root", "update-examples-folder");
 

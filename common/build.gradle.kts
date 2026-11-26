@@ -5,15 +5,15 @@ plugins {
 project.group = "${rootProject.group}"
 
 dependencies {
-    compileOnly(libs.bundles.adventure)
-    compileOnly(libs.fusion.kyori)
-
-    implementation(libs.hikari.cp) {
+    api(libs.bundles.databases) {
+        exclude("org.checkerframework")
         exclude("org.slf4j")
     }
-
-    implementation(libs.postgres)
-    implementation(libs.mariadb)
-
     api(project(":api"))
+    api(libs.bundles.tinylog)
+
+    // bundled by mojang, or other platforms
+    compileOnly(libs.bundles.adventure)
+    compileOnly(libs.fusion.kyori)
+    compileOnly(libs.gson)
 }

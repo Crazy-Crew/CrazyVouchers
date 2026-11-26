@@ -7,7 +7,7 @@ import us.crazycrew.crazyvouchers.api.adapters.sender.ISenderAdapter;
 import us.crazycrew.crazyvouchers.api.config.ConfigManager;
 import us.crazycrew.crazyvouchers.api.objects.other.PluginVersion;
 import us.crazycrew.crazyvouchers.api.registry.IUserRegistry;
-import us.crazycrew.crazyvouchers.api.storage.IStorageHolder;
+import us.crazycrew.crazyvouchers.api.storage.AbstractStorageHolder;
 import java.nio.file.Path;
 import java.util.List;
 import java.util.UUID;
@@ -33,7 +33,7 @@ public abstract class CrazyVouchers<C, S, A extends ISenderAdapter<C, S>> {
 
     public abstract IUserRegistry<C, S, A> getUserRegistry();
 
-    public abstract IStorageHolder getStorageHolder();
+    public abstract AbstractStorageHolder getStorageHolder();
 
     public abstract PluginVersion.VersionInfo getVersionInfo();
 

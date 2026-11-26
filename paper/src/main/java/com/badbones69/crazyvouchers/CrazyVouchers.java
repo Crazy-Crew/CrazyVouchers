@@ -14,6 +14,7 @@ import com.ryderbelserion.fusion.paper.FusionPaper;
 import org.bukkit.plugin.PluginManager;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.jspecify.annotations.NonNull;
+import java.nio.file.Path;
 import java.util.List;
 import java.util.Locale;
 
@@ -38,7 +39,11 @@ public class CrazyVouchers extends JavaPlugin {
         this.fusion = new FusionPaper(this);
         this.fusion.init().post();
 
-        this.platform = new CrazyPlatform(this.fusion, getDataPath());
+        final Path path = getDataPath();
+
+        System.setProperty("crazyvouchers.directory", path.toString());
+
+        this.platform = new CrazyPlatform(this.fusion, path);
         this.platform.init();
 
         this.inventoryManager = new InventoryManager();

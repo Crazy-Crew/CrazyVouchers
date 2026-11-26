@@ -8,7 +8,7 @@ import java.util.List;
 import java.util.UUID;
 
 @ApiStatus.Internal
-public abstract class ISharedMethods {
+public abstract class AbstractUserHolder {
 
     public abstract void removeUser(final UUID player_uuid);
 

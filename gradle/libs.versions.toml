@@ -37,16 +37,18 @@ bStats = "3.2.1" # https://github.com/Bastian/bStats
 fusion = "4.72.0" # https://github.com/ryderbelserion/Fusion
 ## Database API
 hikari = "7.1.0" # https://github.com/brettwooldridge/HikariCP
-mariadb = "3.5.11" # https://mariadb.com/docs/connectors/mariadb-connector-j/about-mariadb-connector-j
-postgres = "42.7.14" # https://www.postgresql.org
+postgres = "42.7.14" # https://github.com/postgres/postgres
+mariadb = "3.5.11" # https://mariadb.com
 
 ## Gradle Plugins
 fix-javadoc = "1.19" # https://github.com/mfnalex/gradle-fix-javadoc-plugin
 run-paper = "3.1.0" # https://github.com/jpenilla/run-task
 minotaur = "2.10.0" # https://github.com/modrinth/minotaur
-feather = "0.9.0" # https://github.com/ryderbelserion/Feather
+feather = "0.10.0" # https://github.com/ryderbelserion/Feather
 hangar = "0.1.4" # https://github.com/HangarMC/hangar-publish-plugin
 shadow = "9.6.1" # https://github.com/GradleUp/shadow
+
+tinylog = "2.8.1" # https://tinylog.org/getting-started/
 
 gson = "2.14.0" # https://github.com/google/gson
 
@@ -132,6 +134,9 @@ postgres = { module = "org.postgresql:postgresql", version.ref = "postgres" }
 # https://github.com/brettwooldridge/HikariCP
 hikari-cp = { module = "com.zaxxer:HikariCP", version.ref = "hikari" }
 
+tinylog-impl = { module = "org.tinylog:tinylog-impl", version.ref = "tinylog" }
+tinylog-api = { module = "org.tinylog:tinylog-api", version.ref = "tinylog" }
+
 [bundles]
 adventure = [
     "kyori-logger",
@@ -172,4 +177,16 @@ build = [
 paper = [
     "paperweight",
     "run-paper"
+]
+
+databases = [
+    "postgres",
+    "mariadb",
+
+    "hikari-cp"
+]
+
+tinylog = [
+    "tinylog-impl",
+    "tinylog-api"
 ]
