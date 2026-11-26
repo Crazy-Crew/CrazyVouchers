@@ -34,7 +34,7 @@ triumph-cmds = "2.1.0" # https://github.com/TriumphTeam/triumph-cmds
 ## Metrics API
 bStats = "3.2.1" # https://github.com/Bastian/bStats
 ## Fusion API
-fusion = "4.70.0" # https://github.com/ryderbelserion/Fusion
+fusion = "4.72.0" # https://github.com/ryderbelserion/Fusion
 ## Database API
 hikari = "7.1.0" # https://github.com/brettwooldridge/HikariCP
 mariadb = "3.5.11" # https://mariadb.com/docs/connectors/mariadb-connector-j/about-mariadb-connector-j
@@ -47,6 +47,8 @@ minotaur = "2.10.0" # https://github.com/modrinth/minotaur
 feather = "0.9.0" # https://github.com/ryderbelserion/Feather
 hangar = "0.1.4" # https://github.com/HangarMC/hangar-publish-plugin
 shadow = "9.6.1" # https://github.com/GradleUp/shadow
+
+gson = "2.14.0" # https://github.com/google/gson
 
 [plugins]
 # https://github.com/mfnalex/gradle-fix-javadoc-plugin
@@ -89,6 +91,9 @@ hmcwraps = { module = "de.skyslycer.hmcwraps:api", version.ref = "hmcwraps" }
 oraxen = { module = "io.th0rgal:oraxen", version.ref = "oraxen" }
 # https://github.com/Nexo-MC
 nexo = { module = "com.nexomc:nexo", version.ref = "nexo" }
+
+# https://github.com/google/gson
+gson = { module = "com.google.code.gson:gson", version.ref = "gson" }
 
 # https://modrinth.com/plugin/decentholograms
 decent-holograms = { module = "com.github.decentsoftware-eu:decentholograms", version.ref = "decentholograms" }

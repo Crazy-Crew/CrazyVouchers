@@ -5,11 +5,9 @@ import com.ryderbelserion.fusion.api.exceptions.FusionException;
 import com.ryderbelserion.fusion.files.FileManager;
 import com.ryderbelserion.fusion.files.enums.FileAction;
 import com.ryderbelserion.fusion.files.enums.FileType;
-import com.ryderbelserion.fusion.files.types.JsonCustomFile;
 import com.ryderbelserion.fusion.files.types.YamlCustomFile;
 import com.ryderbelserion.fusion.kyori.FusionKyori;
 import org.jspecify.annotations.NullMarked;
-import org.spongepowered.configurate.BasicConfigurationNode;
 import org.spongepowered.configurate.CommentedConfigurationNode;
 import java.nio.file.Path;
 import java.util.List;
@@ -28,25 +26,12 @@ public enum FileKeys {
     private final FileManager fileManager = this.fusion.getFileManager();
 
     private final FileType fileType;
+    private final String name;
     private final Path path;
 
     FileKeys(final String path, final FileType fileType) {
-        this.path = this.dataPath.resolve(path);
+        this.path = this.dataPath.resolve(this.name = path);
         this.fileType = fileType;
-    }
-
-    public final JsonCustomFile getJsonCustomFile() {
-        final Optional<JsonCustomFile> customFile = this.fileManager.getJsonFile(this.path);
-
-        if (customFile.isEmpty()) {
-            throw new FusionException("Could not find custom file for " + this.path);
-        }
-
-        return customFile.get();
-    }
-
-    public final BasicConfigurationNode getBasicConfiguration() {
-        return getJsonCustomFile().getConfig();
     }
 
     public final YamlCustomFile getYamlCustomFile() {
@@ -77,6 +62,10 @@ public enum FileKeys {
 
     public final FileType getFileType() {
         return this.fileType;
+    }
+
+    public final String getName() {
+        return this.name;
     }
 
     public final Path getPath() {

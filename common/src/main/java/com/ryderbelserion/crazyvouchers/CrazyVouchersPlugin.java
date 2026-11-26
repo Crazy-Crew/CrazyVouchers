@@ -1,5 +1,7 @@
 package com.ryderbelserion.crazyvouchers;
 
+import com.google.gson.Gson;
+import us.crazycrew.crazyvouchers.api.objects.other.PluginVersion;
 import com.ryderbelserion.crazyvouchers.storage.StorageManager;
 import com.ryderbelserion.crazyvouchers.storage.holder.StorageHolder;
 import com.ryderbelserion.fusion.config.properties.PropertyManager;
@@ -21,10 +23,14 @@ import net.kyori.adventure.text.Component;
 import org.spongepowered.configurate.CommentedConfigurationNode;
 import us.crazycrew.crazyvouchers.api.CrazyVouchers;
 import us.crazycrew.crazyvouchers.api.enums.other.FileSystem;
+import java.io.BufferedReader;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.StandardCopyOption;
+import java.time.Instant;
+import java.time.ZoneId;
+import java.time.format.DateTimeFormatter;
 import java.util.Comparator;
 import java.util.List;
 import java.util.stream.Stream;
@@ -43,6 +49,7 @@ public abstract class CrazyVouchersPlugin<S, F extends FusionKyori<S>, A extends
         this.fusion = fusion;
     }
 
+    protected PluginVersion.VersionInfo versionInfo;
     protected StorageManager storageManager;
     protected StorageHolder storageHolder;
     protected PropertyManager config;
@@ -81,12 +88,20 @@ public abstract class CrazyVouchersPlugin<S, F extends FusionKyori<S>, A extends
 
         for (final FileKeys file : FileKeys.values()) {
             switch (file.getFileType()) {
-                case JSON -> file.addFile(List.of(
-                        FileAction.EXTRACT_FILE,
-                        FileAction.KEEP_FILE
-                ));
+                case JSON -> this.fileManager.extractFile(file.getName());
                 default -> file.addFile();
             }
+        }
+
+        try (final BufferedReader reader = Files.newBufferedReader(version)) {
+            this.versionInfo = new Gson().fromJson(reader, PluginVersion.VersionInfo.class);
+        } catch (final Exception exception) {
+            this.versionInfo = new PluginVersion.VersionInfo("N/A", "N/A", new PluginVersion.GitInfo(
+                    "N/A",
+                    "N/A"
+            ));
+
+            this.fusion.log(true, Level.error, "Failed to read version.json! (%s)", exception.getMessage());
         }
 
         loadExamples();
@@ -213,6 +228,14 @@ public abstract class CrazyVouchersPlugin<S, F extends FusionKyori<S>, A extends
     }
 
     @Override
+    public @NonNull String formatTime(final long timestamp) {
+        return Instant.ofEpochSecond(timestamp)
+                .atZone(ZoneId.systemDefault())
+                .toLocalDateTime()
+                .format(DateTimeFormatter.ofPattern("yyyy-MM-dd hh:mm a"));
+    }
+
+    @Override
     public @NonNull List<Path> getVoucherFiles() {
         return this.config.getProperty(RootKeys.file_system) == FileSystem.MULTIPLE ? this.fileManager.getFilesByPath(this.path.resolve("vouchers"), ".yml") : List.of(this.path.resolve("vouchers.yml"));
     }
@@ -245,6 +268,11 @@ public abstract class CrazyVouchersPlugin<S, F extends FusionKyori<S>, A extends
     @Override
     public final int timeout() {
         return this.config.getProperty(RootKeys.future_timeout);
+    }
+
+    @Override
+    public final PluginVersion.@NonNull VersionInfo getVersionInfo() {
+        return this.versionInfo;
     }
 
     public void move(@NonNull final Path input, @NonNull final Path output) {

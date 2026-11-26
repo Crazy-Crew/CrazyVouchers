@@ -5,6 +5,7 @@ import org.jetbrains.annotations.ApiStatus;
 import org.jspecify.annotations.NullMarked;
 import us.crazycrew.crazyvouchers.api.adapters.sender.ISenderAdapter;
 import us.crazycrew.crazyvouchers.api.config.ConfigManager;
+import us.crazycrew.crazyvouchers.api.objects.other.PluginVersion;
 import us.crazycrew.crazyvouchers.api.registry.IUserRegistry;
 import us.crazycrew.crazyvouchers.api.storage.IStorageHolder;
 import java.nio.file.Path;
@@ -33,6 +34,10 @@ public abstract class CrazyVouchers<C, S, A extends ISenderAdapter<C, S>> {
     public abstract IUserRegistry<C, S, A> getUserRegistry();
 
     public abstract IStorageHolder getStorageHolder();
+
+    public abstract PluginVersion.VersionInfo getVersionInfo();
+
+    public abstract String formatTime(final long timestamp);
 
     @ApiStatus.Internal
     public abstract ConfigManager getConfigManager();
@@ -71,5 +76,4 @@ public abstract class CrazyVouchers<C, S, A extends ISenderAdapter<C, S>> {
 
     @ApiStatus.Internal
     public abstract int timeout();
-
 }
