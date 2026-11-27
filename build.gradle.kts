@@ -16,17 +16,15 @@ tasks {
     shadowJar {
         listOf(
             "com.ryderbelserion.fusion",
-            "com.zaxxer.hikari",
 
             "io.leangen.geantyref",
 
             "dev.triumphteam.cmd",
 
-            "org.spongepowered",
+            "com.zaxxer.hikari",
+
             "org.jspecify",
-            "org.tinylog",
-            "org.bstats",
-            "org.yaml"
+            "org.tinylog"
         ).forEach { relocate(it, "libs.$it") }
     }
 

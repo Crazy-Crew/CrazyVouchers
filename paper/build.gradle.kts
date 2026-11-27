@@ -26,6 +26,14 @@ dependencies {
 }
 
 tasks {
+    shadowJar {
+        listOf(
+            "org.spongepowered",
+            "org.bstats",
+            "org.yaml"
+        ).forEach { relocate(it, "libs.$it") }
+    }
+
     runPaper.folia.registerTask()
 
     runServer {
